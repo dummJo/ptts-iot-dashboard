@@ -5,6 +5,7 @@ import StatusDonut from "@/components/StatusDonut";
 import VibrationBar from "@/components/VibrationBar";
 import AlertsTable from "@/components/AlertsTable";
 import AssetTable from "@/components/AssetTable";
+import ThemeToggle from "@/components/ThemeToggle";
 import { kpiData } from "@/lib/mock-data";
 
 export default function DashboardPage() {
@@ -16,23 +17,32 @@ export default function DashboardPage() {
   });
 
   return (
-    <div className="flex min-h-screen bg-[#f0efed]">
+    <div className="flex min-h-screen" style={{ background: "var(--bg)" }}>
       <Sidebar />
 
       <main className="flex-1 overflow-auto">
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-[#f0efed]/90 backdrop-blur-sm border-b border-[#e8e2d6] px-7 py-4 flex items-center justify-between">
+        <div
+          className="sticky top-0 z-10 backdrop-blur-sm px-7 py-4 flex items-center justify-between border-b"
+          style={{
+            background: "color-mix(in srgb, var(--bg) 85%, transparent)",
+            borderColor: "var(--border)",
+          }}
+        >
           <div>
-            <h1 className="text-base font-bold text-[#1a1814]">Dashboard</h1>
-            <p className="text-xs text-[#6b6560] mt-0.5">{now}</p>
+            <h1 className="text-base font-bold" style={{ color: "var(--text)" }}>
+              Dashboard
+            </h1>
+            <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>{now}</p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1.5 text-xs text-[#4caf7d] font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4caf7d] animate-pulse" />
-              Live · updates every 60s
-            </span>
-            <div className="h-4 w-px bg-[#e8e2d6]" />
-            <span className="text-xs text-[#6b6560]">ABB + RONDS</span>
+            <ThemeToggle />
+            <div className="h-4 w-px" style={{ background: "var(--border)" }} />
+            <div className="flex gap-1.5">
+              <span className="text-[10px] px-2 py-0.5 rounded font-bold bg-[#CC0000]/15 text-[#CC0000]">ABB</span>
+              <span className="text-[10px] px-2 py-0.5 rounded font-bold bg-[#FFD700]/15 text-[#b89800]">FLUKE</span>
+              <span className="text-[10px] px-2 py-0.5 rounded font-bold bg-[#003DA5]/15 text-[#003DA5]">SKF</span>
+            </div>
           </div>
         </div>
 
@@ -46,30 +56,21 @@ export default function DashboardPage() {
 
           {/* Charts Row */}
           <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-2">
-              <TrendChart />
-            </div>
-            <div>
-              <StatusDonut />
-            </div>
+            <div className="col-span-2"><TrendChart /></div>
+            <div><StatusDonut /></div>
           </div>
 
           {/* Bottom Row */}
           <div className="grid grid-cols-3 gap-4">
-            <div className="col-span-2">
-              <AssetTable />
-            </div>
-            <div className="space-y-4">
-              <VibrationBar />
-            </div>
+            <div className="col-span-2"><AssetTable /></div>
+            <div><VibrationBar /></div>
           </div>
 
           {/* Alerts */}
           <AlertsTable />
 
-          {/* Footer */}
-          <p className="text-center text-[10px] text-[#9a9390] pb-2">
-            PTTS SmartSensor Dashboard · PT Prima Tekindo Tirta Sejahtera · Mock data — live API pending
+          <p className="text-center text-[10px] pb-2" style={{ color: "var(--text-faint)" }}>
+            PTTS SmartSensor Dashboard · Mock data — live API pending · v0.1.0
           </p>
         </div>
       </main>

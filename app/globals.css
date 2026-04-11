@@ -1,25 +1,109 @@
 @import "tailwindcss";
 
+/* ─── Brand Palette ─────────────────────────────────────────── */
+/* PTTS  → #005F8E (ocean blue) / #00A3B4 (teal)               */
+/* ABB   → #CC0000 (red) — fault / critical                    */
+/* FLUKE → #FFD700 (yellow) — warning                          */
+/* SKF   → #003DA5 (blue) — vibration / info                   */
+/* ──────────────────────────────────────────────────────────── */
+
+/* Light mode */
 :root {
-  --bg: #f0efed;
-  --sidebar: #1a1814;
-  --gold: #c9a96e;
-  --card: #ffffff;
-  --border: #e8e2d6;
-  --text: #1a1814;
-  --muted: #6b6560;
-  --green: #4caf7d;
-  --amber: #f59e0b;
-  --red: #ef4444;
-  --blue: #4a90d9;
+  --bg:          #f0f5f8;
+  --surface:     #ffffff;
+  --surface-2:   #f7fafb;
+  --border:      #d8e8ef;
+  --text:        #0a1628;
+  --text-muted:  #4a6070;
+  --text-faint:  #8aacbc;
+
+  --ptts-primary:  #005F8E;
+  --ptts-teal:     #00A3B4;
+  --ptts-dark:     #003F5C;
+  --ptts-light:    #e6f4f9;
+
+  --abb-red:       #CC0000;
+  --fluke-yellow:  #FFD700;
+  --skf-blue:      #003DA5;
+  --online:        #22c55e;
+  --sidebar-bg:    #003F5C;
+  --sidebar-text:  #c8dde8;
+  --sidebar-muted: #6a99ad;
+}
+
+/* Dark mode */
+.dark {
+  --bg:          #060d18;
+  --surface:     #0c1626;
+  --surface-2:   #111e30;
+  --border:      #1e3048;
+  --text:        #ddeaf2;
+  --text-muted:  #6a99ad;
+  --text-faint:  #3a5a70;
+
+  --ptts-light:    #0c2234;
+  --sidebar-bg:    #040c18;
+  --sidebar-text:  #9abfcf;
+  --sidebar-muted: #3a5a70;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
-::-webkit-scrollbar { width: 4px; }
+/* ─── Splash Animations ──────────────────────────────────────── */
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin-cw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes spin-ccw {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+
+@keyframes pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0px #005F8E40; }
+  50%       { box-shadow: 0 0 0 12px #005F8E00; }
+}
+
+@keyframes bar-fill {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in    { animation: fade-in  0.6s ease forwards; }
+.animate-fade-up    { animation: fade-up  0.5s ease forwards; }
+.animate-spin-cw    { animation: spin-cw  3s linear infinite; }
+.animate-spin-ccw   { animation: spin-ccw 2s linear infinite; }
+.animate-pulse-ring { animation: pulse-ring 2s ease infinite; }
+.animate-blink      { animation: blink 1s step-end infinite; }
+.animate-slide-in   { animation: slide-in 0.5s ease forwards; }
+
+/* ─── Scrollbar ─────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
