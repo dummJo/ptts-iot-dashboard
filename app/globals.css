@@ -42,13 +42,14 @@
   --surface:     #eaf1f7;
   --surface-2:   #f2f7fb;
   --surface-3:   #ffffff;
-  --border:      #bdd0e0;
-  --border-dim:  #cddce9;
+  --border:      #9db5c8;
+  --border-dim:  #b5c9d8;
   --text:        #0d1e2d;
-  --text-muted:  #3a6080;
-  --text-faint:  #8aaabf;
+  --text-muted:  #1a3a52;
+  --text-faint:  #4a6a8a;
   --text-bright: #0a1828;
-  --sidebar-bg:  #0d1e2d;
+  --sidebar-bg:  #c5d5e3;
+  --warning:     #B8860B;
 }
 
 body {
