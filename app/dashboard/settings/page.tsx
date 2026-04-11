@@ -1,8 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
 import ThemeToggle from "@/components/ThemeToggle";
-import { createUserAction } from "@/app/actions/auth";
+import { createUserAction, fetchUsersAction } from "@/app/actions/auth";
 
 export default function SettingsPage() {
   const [apiKeys, setApiKeys] = useState({
@@ -14,6 +14,8 @@ export default function SettingsPage() {
   const [newUser, setNewUser] = useState({ username: "", password: "", role: "operator" });
   const [userCreated, setUserCreated] = useState<{ success: boolean; message: string } | null>(null);
   const [isCreatingUser, setIsCreatingUser] = useState(false);
+  const [users, setUsers] = useState<Array<{ username: string; hash: string; role: string }>>([]);
+  const [isFetchingUsers, setIsFetchingUsers] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -44,6 +46,8 @@ export default function SettingsPage() {
         setUserCreated({ success: true, message: `User "${newUser.username}" created successfully` });
         setNewUser({ username: "", password: "", role: "operator" });
         setTimeout(() => setUserCreated(null), 3000);
+        // Refresh users list after creating a new user
+        fetchUsers();
       } else {
         setUserCreated({ success: false, message: result?.error || "Failed to create user" });
       }
@@ -53,6 +57,27 @@ export default function SettingsPage() {
       setIsCreatingUser(false);
     }
   };
+
+  const fetchUsers = async () => {
+    setIsFetchingUsers(true);
+    try {
+      const result = await fetchUsersAction();
+      if (result?.success && result.users) {
+        setUsers(result.users);
+      }
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    } finally {
+      setIsFetchingUsers(false);
+    }
+  };
+
+  // Fetch users when users tab is opened
+  useEffect(() => {
+    if (tab === "users") {
+      fetchUsers();
+    }
+  }, [tab]);
 
   return (
     <div className="flex min-h-screen" style={{ background: "var(--bg)" }}>
@@ -331,6 +356,57 @@ export default function SettingsPage() {
                     <p className="text-[8px]" style={{ color: "var(--text-faint)" }}>
                       Create new user accounts with username, password, and role assignment. Users must have unique usernames and minimum 6 characters for passwords.
                     </p>
+                  </div>
+
+                  {/* Users List */}
+                  <div className="mt-6">
+                    <h3 className="text-sm font-bold tracking-widest mb-3" style={{ color: "#00A3B4" }}>
+                      REGISTERED USERS
+                    </h3>
+                    {isFetchingUsers ? (
+                      <div className="p-4 rounded-sm text-center" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
+                        <p className="text-[9px] tracking-widest" style={{ color: "var(--text-faint)" }}>LOADING...</p>
+                      </div>
+                    ) : users.length === 0 ? (
+                      <div className="p-4 rounded-sm text-center" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
+                        <p className="text-[9px] tracking-widest" style={{ color: "var(--text-faint)" }}>NO USERS REGISTERED</p>
+                      </div>
+                    ) : (
+                      <div className="overflow-x-auto rounded-sm" style={{ border: "1px solid var(--border-dim)" }}>
+                        <table className="w-full text-[8px]" style={{ background: "var(--bg)" }}>
+                          <thead>
+                            <tr style={{ borderBottom: "1px solid var(--border-dim)" }}>
+                              <th className="px-3 py-2 text-left font-bold tracking-widest" style={{ color: "#00A3B4" }}>USERNAME</th>
+                              <th className="px-3 py-2 text-left font-bold tracking-widest" style={{ color: "#00A3B4" }}>PASSWORD HASH</th>
+                              <th className="px-3 py-2 text-left font-bold tracking-widest" style={{ color: "#00A3B4" }}>ROLE</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {users.map((user) => (
+                              <tr key={user.username} style={{ borderBottom: "1px solid var(--border-dim)" }}>
+                                <td className="px-3 py-2" style={{ color: "#c8d8e8", fontFamily: "monospace" }}>{user.username}</td>
+                                <td className="px-3 py-2" style={{ color: "#c8d8e8", fontFamily: "monospace" }}>
+                                  <span title={user.hash} style={{ cursor: "help" }}>
+                                    {user.hash.substring(0, 16)}...
+                                  </span>
+                                </td>
+                                <td className="px-3 py-2">
+                                  <span
+                                    className="px-2 py-1 rounded-sm text-[7px] font-bold tracking-widest"
+                                    style={{
+                                      background: user.role === "admin" ? "#CC000025" : user.role === "operator" ? "#00A3B425" : "#005F8E25",
+                                      color: user.role === "admin" ? "#CC0000" : user.role === "operator" ? "#00A3B4" : "#005F8E",
+                                      border: `1px solid ${user.role === "admin" ? "#CC000040" : user.role === "operator" ? "#00A3B440" : "#005F8E40"}`
+                                    }}>
+                                    {user.role.toUpperCase()}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

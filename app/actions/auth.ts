@@ -121,3 +121,29 @@ export async function createUserAction(
 
   return { success: true };
 }
+
+export async function fetchUsersAction(): Promise<
+  { success: boolean; users?: Array<{ username: string; hash: string; role: string }>; error?: string }
+> {
+  // Verify admin authorization
+  const jar = await cookies();
+  const sessionToken = jar.get("ptts-session")?.value;
+
+  if (!sessionToken) {
+    return { success: false, error: "Not authenticated." };
+  }
+
+  const session = await verifySession(sessionToken);
+  if (!session || session.role !== "admin") {
+    return { success: false, error: "Admin access required." };
+  }
+
+  // Return all users
+  const users = Object.entries(USERS).map(([username, data]) => ({
+    username,
+    hash: data.hash,
+    role: data.role,
+  }));
+
+  return { success: true, users };
+}
