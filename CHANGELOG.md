@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-04-11
+
+### Added
+- Multi-user authentication: `admin`, `operator`, `engineer` roles (SHA-256 + timing-safe compare)
+- Role stored in JWT payload — each user gets role-scoped session token
+
+### Fixed
+- Login page text contrast outside card box: "PTTS" label → white, "OPERATOR SIGN IN" → `#7ab8cc`, footer → `#4a7a96`
+- Version number in login footer corrected to v0.4.0
+
 ## [0.3.0] — 2026-04-11
 
 ### Added
@@ -75,7 +85,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mock data: ABB SmartSensor + RONDS SmartSensor asset set
 - Recharts and lucide-react dependencies
 
-[Unreleased]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/dummJo/ptts-iot-dashboard/releases/tag/v0.1.0

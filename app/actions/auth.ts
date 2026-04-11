@@ -4,9 +4,11 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSession } from "@/lib/session";
 
-// SHA-256 hash of "admin" — replace with DB lookup + bcrypt in production
-const USERS: Record<string, string> = {
-  admin: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
+// SHA-256 hashes — replace with DB lookup + bcrypt in production
+const USERS: Record<string, { hash: string; role: string }> = {
+  admin:    { hash: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918", role: "admin" },
+  operator: { hash: "06e55b633481f7bb072957eabcf110c972e86691c3cfedabe088024bffe42f23", role: "operator" },
+  engineer: { hash: "7826b958b79c70626801b880405eb5111557dadceb2fee2b1ed69a18eed0c6dc", role: "engineer" },
 };
 
 // Block common injection patterns
@@ -28,15 +30,15 @@ export async function loginAction(
     return { error: "Invalid input detected." };
   }
 
-  const storedHash = USERS[username];
-  if (!storedHash) return { error: "Invalid credentials." };
+  const user = USERS[username];
+  if (!user) return { error: "Invalid credentials." };
 
   const inputHash = crypto.createHash("sha256").update(password).digest("hex");
 
   let valid = false;
   try {
     valid = crypto.timingSafeEqual(
-      Buffer.from(storedHash, "hex"),
+      Buffer.from(user.hash, "hex"),
       Buffer.from(inputHash, "hex")
     );
   } catch {
@@ -45,7 +47,7 @@ export async function loginAction(
 
   if (!valid) return { error: "Invalid credentials." };
 
-  const token = await createSession(username);
+  const token = await createSession(username, user.role);
   const jar = await cookies();
   jar.set("ptts-session", token, {
     httpOnly: true,

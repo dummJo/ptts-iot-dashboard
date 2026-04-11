@@ -143,9 +143,9 @@ export default function LoginClient() {
           style={{ border: "1.5px solid #005F8E50", background: "#0d1628" }}>
           <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-1" />
         </div>
-        <p className="text-[9px] tracking-[.35em] text-[#00A3B4] mb-0.5">PTTS</p>
+        <p className="text-[9px] tracking-[.35em] text-white mb-0.5">PTTS</p>
         <h1 className="text-lg font-bold tracking-[.12em] text-white mb-0.5">SMARTSENSOR</h1>
-        <p className="text-[9px] tracking-widest text-[#3a5a70] mb-8">OPERATOR SIGN IN</p>
+        <p className="text-[9px] tracking-widest text-[#7ab8cc] mb-8">OPERATOR SIGN IN</p>
 
         {/* Card */}
         <div className="w-full rounded-sm p-6 space-y-4"
@@ -212,8 +212,8 @@ export default function LoginClient() {
         </div>
       </div>
 
-      <div className="absolute bottom-4 text-[9px] tracking-widest text-[#1a2235]">
-        PT PRIMA TEKINDO TIRTA SEJAHTERA · v0.2.0
+      <div className="absolute bottom-4 text-[9px] tracking-widest text-[#4a7a96]">
+        PT PRIMA TEKINDO TIRTA SEJAHTERA · v0.4.0
       </div>
     </div>
   );
