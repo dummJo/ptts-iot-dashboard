@@ -16,6 +16,7 @@ export default function SettingsPage() {
   const [isCreatingUser, setIsCreatingUser] = useState(false);
   const [users, setUsers] = useState<Array<{ username: string; hash: string; role: string }>>([]);
   const [isFetchingUsers, setIsFetchingUsers] = useState(false);
+  const [hoveredHash, setHoveredHash] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -385,9 +386,28 @@ export default function SettingsPage() {
                             {users.map((user) => (
                               <tr key={user.username} style={{ borderBottom: "1px solid var(--border-dim)" }}>
                                 <td className="px-3 py-2" style={{ color: "#c8d8e8", fontFamily: "monospace" }}>{user.username}</td>
-                                <td className="px-3 py-2" style={{ color: "#c8d8e8", fontFamily: "monospace" }}>
-                                  <span title={user.hash} style={{ cursor: "help" }}>
+                                <td className="px-3 py-2 relative" style={{ color: "#c8d8e8", fontFamily: "monospace" }}>
+                                  <span
+                                    onMouseEnter={() => setHoveredHash(user.hash)}
+                                    onMouseLeave={() => setHoveredHash(null)}
+                                    style={{ cursor: "help", position: "relative" }}>
                                     {user.hash.substring(0, 16)}...
+                                    {hoveredHash === user.hash && (
+                                      <div
+                                        className="absolute px-3 py-2 rounded-sm text-[8px] font-bold tracking-widest whitespace-nowrap"
+                                        style={{
+                                          background: "#0b0e13",
+                                          border: "2px solid #00A3B4",
+                                          color: "#00A3B4",
+                                          zIndex: 9999,
+                                          left: "50%",
+                                          transform: "translateX(-50%)",
+                                          top: "-40px",
+                                          boxShadow: "0 0 10px rgba(0, 163, 180, 0.5)"
+                                        }}>
+                                        {user.hash}
+                                      </div>
+                                    )}
                                   </span>
                                 </td>
                                 <td className="px-3 py-2">
