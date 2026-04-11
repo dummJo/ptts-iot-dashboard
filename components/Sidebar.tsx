@@ -107,15 +107,15 @@ export default function Sidebar() {
       </div>
 
       {/* User */}
-      <div className="px-3 py-3" style={{ borderTop: "1px solid var(--border-dim)" }}>
+      <div className="px-3 py-3 mx-2 mb-2 rounded-sm" style={{ background: "#005F8E15", border: "1px solid #005F8E30", borderTop: "2px solid #00a868" }}>
         <div className="flex items-center gap-2 px-2 mb-2">
           <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold"
-            style={{ background: "#005F8E25", color: "#00A3B4", border: "1px solid #005F8E40" }}>
+            style={{ background: "#005F8E40", color: "#00a868", border: "1.5px solid #00a868" }}>
             AM
           </div>
           <div>
-            <p className="text-[10px] font-bold" style={{ color: "var(--text)" }}>Adam Muhammad</p>
-            <p className="text-[8px] tracking-widest" style={{ color: "var(--text-faint)" }}>ENGINEER</p>
+            <p className="text-[10px] font-bold" style={{ color: "#fff" }}>Adam Muhammad</p>
+            <p className="text-[8px] tracking-widest" style={{ color: "#00a868" }}>ENGINEER</p>
           </div>
         </div>
         <LogoutButton />

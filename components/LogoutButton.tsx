@@ -5,11 +5,23 @@ export default function LogoutButton() {
     <form action={logoutAction}>
       <button
         type="submit"
-        className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-xs transition-all
-          text-[var(--sidebar-muted)] hover:text-[#CC0000] hover:bg-[#CC0000]/10"
+        className="flex items-center gap-2 w-full px-3 py-2 rounded-sm text-[9px] font-bold tracking-widest transition-all"
+        style={{
+          color: "#CC0000",
+          background: "#CC000015",
+          border: "1px solid #CC000030",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "#CC000025";
+          e.currentTarget.style.borderColor = "#CC000050";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "#CC000015";
+          e.currentTarget.style.borderColor = "#CC000030";
+        }}
       >
         <span>⏻</span>
-        <span>Sign out</span>
+        <span>LOGOUT</span>
       </button>
     </form>
   );
