@@ -1,3 +1,5 @@
+"use client";
+import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import KPICard from "@/components/KPICard";
 import TrendChart from "@/components/TrendChart";
@@ -9,9 +11,28 @@ import ThemeToggle from "@/components/ThemeToggle";
 import { kpiData } from "@/lib/mock-data";
 
 export default function DashboardPage() {
-  const now = new Date();
-  const dateStr = now.toLocaleDateString("id-ID", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
-  const timeStr = now.toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit", second:"2-digit" });
+  const [dateStr, setDateStr] = useState("");
+  const [timeStr, setTimeStr] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setDateStr(now.toLocaleDateString("id-ID", { weekday:"long", year:"numeric", month:"long", day:"numeric" }));
+      setTimeStr(now.toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit", second:"2-digit" }));
+    };
+
+    updateTime();
+    const iv = setInterval(updateTime, 1000);
+    return () => clearInterval(iv);
+  }, []);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    // Simulate database refresh
+    await new Promise(resolve => setTimeout(resolve, 800));
+    setRefreshing(false);
+  };
 
   return (
     <div className="flex min-h-screen" style={{ background:"var(--bg)" }}>
@@ -43,9 +64,10 @@ export default function DashboardPage() {
           {/* Right — controls */}
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <button className="text-[9px] px-2.5 py-1.5 rounded-sm font-bold tracking-widest transition-all"
+            <button onClick={handleRefresh} disabled={refreshing}
+              className="text-[9px] px-2.5 py-1.5 rounded-sm font-bold tracking-widest transition-all disabled:opacity-50"
               style={{ border:"1px solid var(--border)", color:"var(--text-muted)", background:"var(--surface)" }}>
-              ⟳ REFRESH
+              {refreshing ? "◯ SYNCING..." : "⟳ REFRESH"}
             </button>
           </div>
         </div>

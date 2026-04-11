@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import LogoutButton from "./LogoutButton";
 
-const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/published/logo-ptts.jpg";
+const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png";
 
 const nav = [
   { href: "/dashboard",          label: "OVERVIEW",  icon: "▣" },
@@ -15,6 +16,32 @@ const nav = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const [uptime, setUptime] = useState("00:00:00");
+
+  useEffect(() => {
+    // Get server startup time from sessionStorage or initialize
+    const storageKey = "db-startup-time";
+    let startTime = sessionStorage.getItem(storageKey);
+    if (!startTime) {
+      startTime = new Date().getTime().toString();
+      sessionStorage.setItem(storageKey, startTime);
+    }
+
+    const updateUptime = () => {
+      const elapsed = Math.floor((Date.now() - parseInt(startTime!)) / 1000);
+      const hours = Math.floor(elapsed / 3600);
+      const mins = Math.floor((elapsed % 3600) / 60);
+      const secs = elapsed % 60;
+      setUptime(
+        `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`
+      );
+    };
+
+    updateUptime();
+    const iv = setInterval(updateUptime, 1000);
+    return () => clearInterval(iv);
+  }, []);
+
   return (
     <aside className="flex flex-col w-52 min-h-screen shrink-0"
       style={{ background: "var(--sidebar-bg)", borderRight: "1px solid var(--border)" }}>
@@ -67,7 +94,7 @@ export default function Sidebar() {
         style={{ background: "var(--surface)", border: "1px solid var(--border-dim)" }}>
         <div className="flex justify-between">
           <span style={{ color: "var(--text-faint)" }}>UPTIME</span>
-          <span style={{ color: "var(--text-muted)" }}>04:12:33</span>
+          <span style={{ color: "var(--text-muted)", fontFamily: "monospace" }}>{uptime}</span>
         </div>
         <div className="flex justify-between">
           <span style={{ color: "var(--text-faint)" }}>TAGS</span>
