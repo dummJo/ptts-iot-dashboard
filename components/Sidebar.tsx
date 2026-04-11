@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useActionState } from "react";
 import LogoutButton from "./LogoutButton";
+import { loginAction } from "@/app/actions/auth";
 
 const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png";
 
@@ -17,6 +18,8 @@ const nav = [
 export default function Sidebar() {
   const pathname = usePathname();
   const [uptime, setUptime] = useState("00:00:00");
+  const [showSwitch, setShowSwitch] = useState(false);
+  const [switchState, switchAction, switchPending] = useActionState(loginAction, null);
 
   useEffect(() => {
     // Get server startup time from sessionStorage or initialize
@@ -118,8 +121,73 @@ export default function Sidebar() {
             <p className="text-[8px] tracking-widest" style={{ color: "#00a868" }}>ENGINEER</p>
           </div>
         </div>
-        <LogoutButton />
+        <div className="flex gap-1.5">
+          <LogoutButton />
+          <button
+            onClick={() => setShowSwitch(true)}
+            className="flex items-center justify-center px-2 py-2 rounded-sm text-[9px] font-bold tracking-widest transition-all shrink-0"
+            style={{ color: "#7a9ab8", background: "#1a2235", border: "1px solid #242d3f" }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = "#00A3B4"; e.currentTarget.style.borderColor = "#00A3B440"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = "#7a9ab8"; e.currentTarget.style.borderColor = "#242d3f"; }}
+            title="Switch Account"
+          >
+            ⇄
+          </button>
+        </div>
       </div>
+
+      {/* Switch Account Modal */}
+      {showSwitch && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-start"
+          style={{ background: "#00000080" }}
+          onClick={(e) => { if (e.target === e.currentTarget) setShowSwitch(false); }}
+        >
+          <div
+            className="mx-2 mb-2 w-52 rounded-sm p-4 space-y-3"
+            style={{ background: "#0d1628", border: "1px solid #005F8E60", borderTop: "2px solid #00A3B4" }}
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-[9px] font-bold tracking-[.2em]" style={{ color: "#00A3B4" }}>SWITCH ACCOUNT</p>
+              <button
+                onClick={() => setShowSwitch(false)}
+                className="text-[11px] leading-none"
+                style={{ color: "#4a6a8a" }}
+              >✕</button>
+            </div>
+
+            <form action={switchAction} className="space-y-2">
+              <input
+                name="username"
+                type="text"
+                placeholder="USERNAME"
+                autoComplete="username"
+                className="w-full px-2.5 py-2 text-[10px] rounded-sm outline-none tracking-widest"
+                style={{ background: "#0b0e13", border: "1px solid #242d3f", color: "#d4e4f4" }}
+              />
+              <input
+                name="password"
+                type="password"
+                placeholder="PASSWORD"
+                autoComplete="current-password"
+                className="w-full px-2.5 py-2 text-[10px] rounded-sm outline-none tracking-widest"
+                style={{ background: "#0b0e13", border: "1px solid #242d3f", color: "#d4e4f4" }}
+              />
+              {switchState?.error && (
+                <p className="text-[9px] tracking-widest" style={{ color: "#CC0000" }}>{switchState.error}</p>
+              )}
+              <button
+                type="submit"
+                disabled={switchPending}
+                className="w-full py-2 text-[9px] font-bold tracking-widest rounded-sm transition-all disabled:opacity-50"
+                style={{ background: "#005F8E", color: "#fff", border: "1px solid #00A3B440" }}
+              >
+                {switchPending ? "AUTHENTICATING..." : "SWITCH →"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }

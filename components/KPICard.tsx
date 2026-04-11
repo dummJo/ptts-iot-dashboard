@@ -21,7 +21,7 @@ export default function KPICard({ label, value, unit, sub, trend, trendUp, color
           <span className="scada-value" style={{ color }}>{value}</span>
           {unit && <span className="scada-unit pb-1">{unit}</span>}
         </div>
-        <p className="text-[10px]" style={{ color: "var(--text-faint)" }}>{sub}</p>
+        <p className="text-[10px]" style={{ color: "var(--text-muted)" }}>{sub}</p>
         <div className="flex items-center gap-1.5 text-[10px] font-bold tracking-wide"
           style={{ color: trendUp ? "#00e676" : "#CC0000" }}>
           <span>{trendUp ? "▲" : "▼"}</span>

@@ -5,7 +5,7 @@ export default function LogoutButton() {
     <form action={logoutAction}>
       <button
         type="submit"
-        className="flex items-center gap-2 w-full px-3 py-2 rounded-sm text-[9px] font-bold tracking-widest transition-all"
+        className="flex items-center gap-2 flex-1 px-3 py-2 rounded-sm text-[9px] font-bold tracking-widest transition-all"
         style={{
           color: "#CC0000",
           background: "#CC000015",
