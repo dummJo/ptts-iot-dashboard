@@ -4,7 +4,7 @@ import { loginAction } from "@/app/actions/auth";
 
 type Phase = "logo" | "text" | "init" | "bar" | "ready" | "login";
 
-const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/published/logo-ptts.jpg";
+const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png";
 
 const INIT_LINES = [
   { tag: "SYS ", text: "Initializing runtime environment" },
@@ -148,7 +148,8 @@ export default function LoginClient() {
         <p className="text-[9px] tracking-widest text-[#7ab8cc] mb-8">OPERATOR SIGN IN</p>
 
         {/* Card */}
-        <div className="w-full rounded-sm p-6 space-y-4"
+        <form id="login-form" action={formAction}
+          className="w-full rounded-sm p-6 space-y-4"
           style={{ background: "#111520", border: "1px solid #242d3f", borderTop: "2px solid #005F8E" }}>
 
           {state?.error && (
@@ -188,23 +189,19 @@ export default function LoginClient() {
                 onBlur={e => e.target.style.borderColor = "#242d3f"}
               />
               <button type="button" onClick={() => setShowPass(!showPass)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] tracking-widest transition-colors"
+                className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-2 text-[9px] tracking-widest transition-colors rounded-sm"
                 style={{ color: "#3a5a70" }}>
                 {showPass ? "HIDE" : "SHOW"}
               </button>
             </div>
           </div>
 
-          <button type="submit" form="login-form" disabled={isPending}
-            onClick={() => {}}
+          <button type="submit" disabled={isPending}
             className="w-full py-2.5 text-sm font-bold tracking-[.15em] rounded-sm transition-all disabled:opacity-50"
             style={{ background: isPending ? "#003F5C" : "#005F8E", color: "#fff" }}>
             {isPending ? "AUTHENTICATING..." : "SIGN IN"}
           </button>
-
-          {/* hidden form to use with useActionState */}
-          <form id="login-form" action={formAction} className="hidden" />
-        </div>
+        </form>
 
         <div className="flex items-center gap-2 mt-4">
           <span className="led led-online" style={{ width: 6, height: 6 }} />
