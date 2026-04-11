@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import ThemeToggle from "@/components/ThemeToggle";
+import { createUserAction } from "@/app/actions/auth";
 
 export default function SettingsPage() {
   const [apiKeys, setApiKeys] = useState({
@@ -9,7 +10,10 @@ export default function SettingsPage() {
     smartSensorRonds: "",
   });
   const [savedKeys, setSavedKeys] = useState<string[]>([]);
-  const [tab, setTab] = useState<"swagger" | "api">("swagger");
+  const [tab, setTab] = useState<"swagger" | "api" | "users">("swagger");
+  const [newUser, setNewUser] = useState({ username: "", password: "", role: "operator" });
+  const [userCreated, setUserCreated] = useState<{ success: boolean; message: string } | null>(null);
+  const [isCreatingUser, setIsCreatingUser] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -21,6 +25,32 @@ export default function SettingsPage() {
       setSavedKeys(prev =>
         prev.includes(key) ? prev : [...prev, key]
       );
+    }
+  };
+
+  const handleCreateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newUser.username || !newUser.password) return;
+
+    setIsCreatingUser(true);
+    try {
+      const formData = new FormData();
+      formData.append("username", newUser.username);
+      formData.append("password", newUser.password);
+      formData.append("role", newUser.role);
+
+      const result = await createUserAction(formData);
+      if (result?.success) {
+        setUserCreated({ success: true, message: `User "${newUser.username}" created successfully` });
+        setNewUser({ username: "", password: "", role: "operator" });
+        setTimeout(() => setUserCreated(null), 3000);
+      } else {
+        setUserCreated({ success: false, message: result?.error || "Failed to create user" });
+      }
+    } catch (error) {
+      setUserCreated({ success: false, message: "Error creating user" });
+    } finally {
+      setIsCreatingUser(false);
     }
   };
 
@@ -69,6 +99,16 @@ export default function SettingsPage() {
                   border: "1px solid var(--border)"
                 }}>
                 API CONFIGURATION
+              </button>
+              <button
+                onClick={() => setTab("users")}
+                className="px-4 py-2 text-[9px] font-bold tracking-widest rounded-sm transition-all"
+                style={{
+                  background: tab === "users" ? "#005F8E" : "var(--surface)",
+                  color: tab === "users" ? "#fff" : "var(--text-muted)",
+                  border: "1px solid var(--border)"
+                }}>
+                USER MANAGEMENT
               </button>
             </div>
 
@@ -198,6 +238,100 @@ export default function SettingsPage() {
                       ? "NO KEYS CONFIGURED"
                       : `${savedKeys.length} API KEY${savedKeys.length !== 1 ? "S" : ""} ACTIVE`}
                   </span>
+                </div>
+              </div>
+            )}
+
+            {/* User Management Tab */}
+            {tab === "users" && (
+              <div className="rounded-sm p-6 space-y-4"
+                style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+                <div>
+                  <h2 className="text-sm font-bold tracking-widest mb-4"
+                    style={{ color: "#00A3B4" }}>USER MANAGEMENT</h2>
+
+                  <div className="space-y-4">
+                    {/* Create New User Form */}
+                    <form onSubmit={handleCreateUser} className="p-4 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
+                      <div className="space-y-3">
+                        <div>
+                          <label className="scada-label block mb-2">USERNAME</label>
+                          <input
+                            type="text"
+                            value={newUser.username}
+                            onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
+                            placeholder="Enter username"
+                            className="w-full px-3 py-2.5 text-[10px] rounded-sm outline-none transition-all"
+                            style={{
+                              background: "#0b0e13",
+                              border: "1px solid #242d3f",
+                              color: "#d4e4f4"
+                            }}
+                          />
+                        </div>
+
+                        <div>
+                          <label className="scada-label block mb-2">PASSWORD</label>
+                          <input
+                            type="password"
+                            value={newUser.password}
+                            onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                            placeholder="Enter password"
+                            className="w-full px-3 py-2.5 text-[10px] rounded-sm outline-none transition-all"
+                            style={{
+                              background: "#0b0e13",
+                              border: "1px solid #242d3f",
+                              color: "#d4e4f4"
+                            }}
+                          />
+                        </div>
+
+                        <div>
+                          <label className="scada-label block mb-2">ROLE</label>
+                          <select
+                            value={newUser.role}
+                            onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                            className="w-full px-3 py-2.5 text-[10px] rounded-sm outline-none transition-all"
+                            style={{
+                              background: "#0b0e13",
+                              border: "1px solid #242d3f",
+                              color: "#d4e4f4"
+                            }}>
+                            <option value="engineer">ENGINEER</option>
+                            <option value="operator">OPERATOR</option>
+                            <option value="admin">ADMIN</option>
+                          </select>
+                        </div>
+
+                        {userCreated && (
+                          <div className="p-2 rounded-sm text-[9px] tracking-widest"
+                            style={{
+                              background: userCreated.success ? "#00e67608" : "#CC000015",
+                              border: `1px solid ${userCreated.success ? "#00e67620" : "#CC000030"}`,
+                              color: userCreated.success ? "#00e676" : "#CC0000"
+                            }}>
+                            {userCreated.message}
+                          </div>
+                        )}
+
+                        <button
+                          type="submit"
+                          disabled={isCreatingUser || !newUser.username || !newUser.password}
+                          className="w-full py-2.5 text-[9px] font-bold rounded-sm transition-all tracking-widest disabled:opacity-50"
+                          style={{
+                            background: "#005F8E",
+                            color: "#fff",
+                            border: "1px solid #00A3B440"
+                          }}>
+                          {isCreatingUser ? "CREATING..." : "CREATE USER"}
+                        </button>
+                      </div>
+                    </form>
+
+                    <p className="text-[8px]" style={{ color: "var(--text-faint)" }}>
+                      Create new user accounts with username, password, and role assignment. Users must have unique usernames and minimum 6 characters for passwords.
+                    </p>
+                  </div>
                 </div>
               </div>
             )}

@@ -111,7 +111,12 @@ export default function Sidebar() {
 
       {/* User */}
       <div className="px-3 py-3 mx-2 mb-2 rounded-sm" style={{ background: "#005F8E15", border: "1px solid #005F8E30", borderTop: "2px solid #00a868" }}>
-        <div className="flex items-center gap-2 px-2 mb-2">
+        <div
+          className="flex items-center gap-2 px-2 mb-2 rounded-sm cursor-pointer transition-all"
+          style={{ background: "transparent" }}
+          onClick={() => setShowSwitch(true)}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "#00a86825"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}>
           <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold"
             style={{ background: "#005F8E40", color: "#00a868", border: "1.5px solid #00a868" }}>
             AM
@@ -123,28 +128,18 @@ export default function Sidebar() {
         </div>
         <div className="flex gap-1.5">
           <LogoutButton />
-          <button
-            onClick={() => setShowSwitch(true)}
-            className="flex items-center justify-center px-2 py-2 rounded-sm text-[9px] font-bold tracking-widest transition-all shrink-0"
-            style={{ color: "#7a9ab8", background: "#1a2235", border: "1px solid #242d3f" }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = "#00A3B4"; e.currentTarget.style.borderColor = "#00A3B440"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = "#7a9ab8"; e.currentTarget.style.borderColor = "#242d3f"; }}
-            title="Switch Account"
-          >
-            ⇄
-          </button>
         </div>
       </div>
 
       {/* Switch Account Modal */}
       {showSwitch && (
         <div
-          className="fixed inset-0 z-50 flex items-end justify-start"
+          className="fixed inset-0 z-50 flex items-center justify-center"
           style={{ background: "#00000080" }}
           onClick={(e) => { if (e.target === e.currentTarget) setShowSwitch(false); }}
         >
           <div
-            className="mx-2 mb-2 w-52 rounded-sm p-4 space-y-3"
+            className="w-72 rounded-sm p-4 space-y-3"
             style={{ background: "#0d1628", border: "1px solid #005F8E60", borderTop: "2px solid #00A3B4" }}
           >
             <div className="flex items-center justify-between">

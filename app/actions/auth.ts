@@ -2,7 +2,7 @@
 import crypto from "crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { createSession } from "@/lib/session";
+import { createSession, verifySession } from "@/lib/session";
 
 // SHA-256 hashes — replace with DB lookup + bcrypt in production
 const USERS: Record<string, { hash: string; role: string }> = {
@@ -64,4 +64,60 @@ export async function logoutAction() {
   const jar = await cookies();
   jar.delete("ptts-session");
   redirect("/login");
+}
+
+export async function createUserAction(
+  formData: FormData
+): Promise<{ success: boolean; error?: string }> {
+  // Verify admin authorization
+  const jar = await cookies();
+  const sessionToken = jar.get("ptts-session")?.value;
+
+  if (!sessionToken) {
+    return { success: false, error: "Not authenticated." };
+  }
+
+  const session = await verifySession(sessionToken);
+  if (!session || session.role !== "admin") {
+    return { success: false, error: "Admin access required." };
+  }
+
+  // Extract and sanitize input
+  const username = sanitize(formData.get("username") as string ?? "");
+  const password = sanitize(formData.get("password") as string ?? "");
+  const role = sanitize(formData.get("role") as string ?? "operator");
+
+  // Validate input
+  if (!username || !password) {
+    return { success: false, error: "Username and password required." };
+  }
+
+  if (username.length < 3) {
+    return { success: false, error: "Username must be at least 3 characters." };
+  }
+
+  if (password.length < 6) {
+    return { success: false, error: "Password must be at least 6 characters." };
+  }
+
+  if (INJECTION_PATTERN.test(username) || INJECTION_PATTERN.test(password)) {
+    return { success: false, error: "Invalid input detected." };
+  }
+
+  if (!["admin", "operator", "engineer"].includes(role)) {
+    return { success: false, error: "Invalid role." };
+  }
+
+  // Check if user already exists
+  if (USERS[username]) {
+    return { success: false, error: "Username already exists." };
+  }
+
+  // Create password hash
+  const hash = crypto.createHash("sha256").update(password).digest("hex");
+
+  // Add user to USERS object
+  USERS[username] = { hash, role };
+
+  return { success: true };
 }
