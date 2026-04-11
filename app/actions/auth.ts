@@ -147,3 +147,21 @@ export async function fetchUsersAction(): Promise<
 
   return { success: true, users };
 }
+
+export async function getCurrentSessionAction(): Promise<
+  { success: boolean; username?: string; role?: string; error?: string }
+> {
+  const jar = await cookies();
+  const sessionToken = jar.get("ptts-session")?.value;
+
+  if (!sessionToken) {
+    return { success: false, error: "Not authenticated." };
+  }
+
+  const session = await verifySession(sessionToken);
+  if (!session) {
+    return { success: false, error: "Invalid session." };
+  }
+
+  return { success: true, username: session.username, role: session.role };
+}

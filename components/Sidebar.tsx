@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useActionState } from "react";
 import LogoutButton from "./LogoutButton";
-import { loginAction } from "@/app/actions/auth";
+import { loginAction, getCurrentSessionAction } from "@/app/actions/auth";
 
 const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png";
 
@@ -20,8 +20,18 @@ export default function Sidebar() {
   const [uptime, setUptime] = useState("00:00:00");
   const [showSwitch, setShowSwitch] = useState(false);
   const [switchState, switchAction, switchPending] = useActionState(loginAction, null);
+  const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null);
 
   useEffect(() => {
+    // Fetch current session on mount
+    const fetchSession = async () => {
+      const session = await getCurrentSessionAction();
+      if (session.success && session.username && session.role) {
+        setCurrentUser({ username: session.username, role: session.role });
+      }
+    };
+    fetchSession();
+
     // Get server startup time from sessionStorage or initialize
     const storageKey = "db-startup-time";
     let startTime = sessionStorage.getItem(storageKey);
@@ -122,8 +132,8 @@ export default function Sidebar() {
             AM
           </div>
           <div>
-            <p className="text-[10px] font-bold" style={{ color: "#fff" }}>Adam Muhammad</p>
-            <p className="text-[8px] tracking-widest" style={{ color: "#00a868" }}>ENGINEER</p>
+            <p className="text-[10px] font-bold" style={{ color: "#fff" }}>{currentUser?.username || "..."}</p>
+            <p className="text-[8px] tracking-widest" style={{ color: "#00a868" }}>{currentUser?.role?.toUpperCase() || "..."}</p>
           </div>
         </div>
         <div className="flex gap-1.5">
