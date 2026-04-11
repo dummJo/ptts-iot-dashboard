@@ -1,70 +1,71 @@
+"use client";
 import { topAssets } from "@/lib/mock-data";
 
-const statusDot: Record<string, string> = {
-  online:  "bg-[#22c55e]",
-  warning: "bg-[#FFD700]",
-  fault:   "bg-[#CC0000]",
-  offline: "bg-[#6b7280]",
-};
-const statusLabel: Record<string, string> = {
-  online: "Online", warning: "Warning", fault: "Fault", offline: "Offline",
+const statusMap: Record<string, { cls: string; label: string }> = {
+  online:  { cls: "led-online",  label: "ONLINE"  },
+  warning: { cls: "led-warning", label: "WARN"    },
+  fault:   { cls: "led-fault",   label: "FAULT"   },
+  offline: { cls: "led-offline", label: "OFFLINE" },
 };
 
 export default function AssetTable() {
   return (
-    <div className="rounded-xl border p-5" style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h3 className="text-sm font-semibold" style={{ color: "var(--text)" }}>Asset Overview</h3>
-          <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>Live sensor readings</p>
-        </div>
-        <button className="text-xs font-medium hover:underline" style={{ color: "#00A3B4" }}>All assets →</button>
+    <div className="scada-card flex flex-col">
+      <div className="scada-card-header">
+        <span className="scada-label">ASSET TAG LIST · LIVE READINGS</span>
+        <button className="text-[9px] font-bold tracking-widest transition-all"
+          style={{ color:"#00A3B4" }}>ALL →</button>
       </div>
-      <table className="w-full text-xs">
-        <thead>
-          <tr className="border-b" style={{ borderColor: "var(--border)" }}>
-            {["Asset", "Source", "Temp", "Vibration", "Status"].map((h) => (
-              <th key={h} className={`pb-2 font-semibold ${h === "Temp" || h === "Vibration" ? "text-right" : "text-left"}`}
-                style={{ color: "var(--text-muted)" }}>
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y" style={{ borderColor: "var(--border)" }}>
-          {topAssets.map((a) => (
-            <tr key={a.id} className="hover:opacity-80 transition-opacity">
-              <td className="py-2.5">
-                <p className="font-semibold" style={{ color: "var(--text)" }}>{a.name}</p>
-                <p className="text-[10px] font-mono" style={{ color: "var(--text-faint)" }}>{a.id}</p>
-              </td>
-              <td className="py-2.5">
-                <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${
-                  a.type.startsWith("ABB")
-                    ? "bg-[#CC0000]/10 text-[#CC0000]"
-                    : "bg-[#003DA5]/10 text-[#003DA5]"
-                }`}>
-                  {a.type.startsWith("ABB") ? "ABB" : "RONDS"}
-                </span>
-              </td>
-              <td className="py-2.5 text-right font-mono font-semibold"
-                style={{ color: a.temp > 58 ? "#CC0000" : a.temp > 53 ? "#b89800" : "var(--text)" }}>
-                {a.temp}°C
-              </td>
-              <td className="py-2.5 text-right font-mono font-semibold"
-                style={{ color: a.vib > 3.5 ? "#CC0000" : a.vib > 2.5 ? "#b89800" : "#003DA5" }}>
-                {a.vib} mm/s
-              </td>
-              <td className="py-2.5">
-                <span className="flex items-center gap-1.5">
-                  <span className={`w-1.5 h-1.5 rounded-full ${statusDot[a.status]}`} />
-                  <span style={{ color: "var(--text-muted)" }}>{statusLabel[a.status]}</span>
-                </span>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="w-full text-[11px]">
+          <thead>
+            <tr style={{ borderBottom:"1px solid var(--border-dim)", background:"var(--surface-2)" }}>
+              {["TAG ID","ASSET","TYPE","TEMP","VIBRATION","STATUS"].map((h,i) => (
+                <th key={h} className={`px-3 py-2 font-bold tracking-[.12em] text-[9px]
+                  ${i>=3?"text-right":"text-left"} ${i===5?"text-left pl-4":""}`}
+                  style={{ color:"var(--text-faint)" }}>
+                  {h}
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {topAssets.map((a, idx) => {
+              const st = statusMap[a.status];
+              const tempColor = a.temp > 60 ? "#CC0000" : a.temp > 55 ? "#FFD700" : "var(--text)";
+              const vibColor  = a.vib > 3.5 ? "#CC0000" : a.vib > 2.5 ? "#FFD700" : "#003DA5";
+              return (
+                <tr key={a.id}
+                  className="transition-colors cursor-pointer"
+                  style={{
+                    borderBottom:"1px solid var(--border-dim)",
+                    background: idx % 2 === 0 ? "transparent" : "var(--surface-2)",
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "#005F8E10")}
+                  onMouseLeave={e => (e.currentTarget.style.background = idx % 2 === 0 ? "transparent" : "var(--surface-2)")}>
+                  <td className="px-3 py-2.5 font-mono text-[9px]" style={{ color:"var(--text-faint)" }}>{a.id}</td>
+                  <td className="px-3 py-2.5 font-bold" style={{ color:"var(--text)" }}>{a.name}</td>
+                  <td className="px-3 py-2.5 text-[9px] tracking-wide" style={{ color:"var(--text-muted)" }}>
+                    {a.type.replace("ABB ","").replace("RONDS ","").toUpperCase()}
+                  </td>
+                  <td className="px-3 py-2.5 text-right font-mono font-bold tabular-nums"
+                    style={{ color: tempColor }}>{a.temp}°C</td>
+                  <td className="px-3 py-2.5 text-right font-mono font-bold tabular-nums"
+                    style={{ color: vibColor }}>{a.vib} mm/s</td>
+                  <td className="px-3 py-2.5 pl-4">
+                    <span className="flex items-center gap-1.5">
+                      <span className={`led ${st.cls}`} style={{ width:7, height:7 }} />
+                      <span className="text-[9px] tracking-widest font-bold" style={{ color:"var(--text-muted)" }}>
+                        {st.label}
+                      </span>
+                    </span>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

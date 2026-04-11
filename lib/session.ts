@@ -8,7 +8,7 @@ export async function createSession(username: string): Promise<string> {
   return new SignJWT({ username, role: "engineer" })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("8h")
+    .setExpirationTime("60m")
     .sign(SECRET);
 }
 

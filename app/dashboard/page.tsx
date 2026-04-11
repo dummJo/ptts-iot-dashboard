@@ -9,69 +9,77 @@ import ThemeToggle from "@/components/ThemeToggle";
 import { kpiData } from "@/lib/mock-data";
 
 export default function DashboardPage() {
-  const now = new Date().toLocaleDateString("id-ID", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const now = new Date();
+  const dateStr = now.toLocaleDateString("id-ID", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
+  const timeStr = now.toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit", second:"2-digit" });
 
   return (
-    <div className="flex min-h-screen" style={{ background: "var(--bg)" }}>
+    <div className="flex min-h-screen" style={{ background:"var(--bg)" }}>
       <Sidebar />
 
-      <main className="flex-1 overflow-auto">
-        {/* Header */}
-        <div
-          className="sticky top-0 z-10 backdrop-blur-sm px-7 py-4 flex items-center justify-between border-b"
-          style={{
-            background: "color-mix(in srgb, var(--bg) 85%, transparent)",
-            borderColor: "var(--border)",
-          }}
-        >
-          <div>
-            <h1 className="text-base font-bold" style={{ color: "var(--text)" }}>
-              Dashboard
-            </h1>
-            <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>{now}</p>
+      <main className="flex-1 overflow-auto flex flex-col">
+        {/* ── Top bar ── */}
+        <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-2"
+          style={{ background:"var(--sidebar-bg)", borderBottom:"1px solid var(--border)", minHeight:40 }}>
+          {/* Left — breadcrumb */}
+          <div className="flex items-center gap-2 text-[9px] tracking-widest font-bold">
+            <span style={{ color:"var(--text-faint)" }}>PTTS</span>
+            <span style={{ color:"var(--border)" }}>›</span>
+            <span style={{ color:"var(--text-faint)" }}>SMARTSENSOR</span>
+            <span style={{ color:"var(--border)" }}>›</span>
+            <span style={{ color:"#00A3B4" }}>OVERVIEW</span>
           </div>
-          <div className="flex items-center gap-3">
+
+          {/* Center — timestamp */}
+          <div className="flex items-center gap-3 text-[9px] font-mono">
+            <span style={{ color:"var(--text-faint)" }}>{dateStr.toUpperCase()}</span>
+            <span className="tabular-nums" style={{ color:"var(--text-muted)" }}>{timeStr}</span>
+            <span className="flex items-center gap-1.5">
+              <span className="led led-online" style={{ width:6, height:6 }} />
+              <span style={{ color:"#00e676" }}>LIVE</span>
+            </span>
+          </div>
+
+          {/* Right — controls */}
+          <div className="flex items-center gap-2">
             <ThemeToggle />
-            <div className="h-4 w-px" style={{ background: "var(--border)" }} />
-            <div className="flex gap-1.5">
-              <span className="text-[10px] px-2 py-0.5 rounded font-bold bg-[#CC0000]/15 text-[#CC0000]">ABB</span>
-              <span className="text-[10px] px-2 py-0.5 rounded font-bold bg-[#FFD700]/15 text-[#b89800]">FLUKE</span>
-              <span className="text-[10px] px-2 py-0.5 rounded font-bold bg-[#003DA5]/15 text-[#003DA5]">SKF</span>
-            </div>
+            <button className="text-[9px] px-2.5 py-1.5 rounded-sm font-bold tracking-widest transition-all"
+              style={{ border:"1px solid var(--border)", color:"var(--text-muted)", background:"var(--surface)" }}>
+              ⟳ REFRESH
+            </button>
           </div>
         </div>
 
-        <div className="px-7 py-6 space-y-5">
-          {/* KPI Row */}
-          <div className="grid grid-cols-4 gap-4">
-            {kpiData.map((k) => (
-              <KPICard key={k.label} {...k} />
-            ))}
+        {/* ── Content ── */}
+        <div className="flex-1 p-4 space-y-3">
+
+          {/* KPI row */}
+          <div className="grid grid-cols-4 gap-3">
+            {kpiData.map((k) => <KPICard key={k.label} {...k} />)}
           </div>
 
-          {/* Charts Row */}
-          <div className="grid grid-cols-3 gap-4">
+          {/* Trend + Donut */}
+          <div className="grid grid-cols-3 gap-3">
             <div className="col-span-2"><TrendChart /></div>
             <div><StatusDonut /></div>
           </div>
 
-          {/* Bottom Row */}
-          <div className="grid grid-cols-3 gap-4">
+          {/* Asset table + Vib bar */}
+          <div className="grid grid-cols-3 gap-3">
             <div className="col-span-2"><AssetTable /></div>
             <div><VibrationBar /></div>
           </div>
 
-          {/* Alerts */}
+          {/* Alarms */}
           <AlertsTable />
 
-          <p className="text-center text-[10px] pb-2" style={{ color: "var(--text-faint)" }}>
-            PTTS SmartSensor Dashboard · Mock data — live API pending · v0.1.0
-          </p>
+          {/* Footer bar */}
+          <div className="flex items-center justify-between px-2 py-1 text-[9px] tracking-widest"
+            style={{ color:"var(--text-faint)" }}>
+            <span>PTTS SMARTSENSOR IoT PLATFORM · v0.3.0</span>
+            <span>MOCK DATA · LIVE API PENDING</span>
+            <span>SESSION: 60 MIN · JWT HS256</span>
+          </div>
         </div>
       </main>
     </div>

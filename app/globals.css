@@ -1,109 +1,137 @@
 @import "tailwindcss";
 
-/* ─── Brand Palette ─────────────────────────────────────────── */
-/* PTTS  → #005F8E (ocean blue) / #00A3B4 (teal)               */
-/* ABB   → #CC0000 (red) — fault / critical                    */
-/* FLUKE → #FFD700 (yellow) — warning                          */
-/* SKF   → #003DA5 (blue) — vibration / info                   */
-/* ──────────────────────────────────────────────────────────── */
+/* ─── Color System ───────────────────────────────────────────── */
+/* Reference palette (not displayed as labels):                  */
+/*   #CC0000  → fault / critical                                 */
+/*   #FFD700  → warning / temperature                            */
+/*   #003DA5  → vibration / info                                 */
+/*   #005F8E  → PTTS primary                                     */
+/*   #00A3B4  → PTTS teal accent                                 */
+/* ──────────────────────────────────────────────────────────────*/
 
-/* Light mode */
+/* Dark (Ignition SCADA default) */
 :root {
-  --bg:          #f0f5f8;
-  --surface:     #ffffff;
-  --surface-2:   #f7fafb;
-  --border:      #d8e8ef;
-  --text:        #0a1628;
-  --text-muted:  #4a6070;
-  --text-faint:  #8aacbc;
+  --bg:          #0b0e13;
+  --surface:     #111520;
+  --surface-2:   #161b26;
+  --surface-3:   #1c2333;
+  --border:      #242d3f;
+  --border-dim:  #1a2235;
+  --text:        #c8d8e8;
+  --text-muted:  #5a7a96;
+  --text-faint:  #2e4560;
+  --text-bright: #e8f4ff;
 
-  --ptts-primary:  #005F8E;
-  --ptts-teal:     #00A3B4;
-  --ptts-dark:     #003F5C;
-  --ptts-light:    #e6f4f9;
+  /* PTTS */
+  --ptts:        #005F8E;
+  --ptts-teal:   #00A3B4;
+  --ptts-glow:   #00A3B480;
 
-  --abb-red:       #CC0000;
-  --fluke-yellow:  #FFD700;
-  --skf-blue:      #003DA5;
-  --online:        #22c55e;
-  --sidebar-bg:    #003F5C;
-  --sidebar-text:  #c8dde8;
-  --sidebar-muted: #6a99ad;
+  /* Status LEDs */
+  --online:      #00e676;
+  --warning:     #FFD700;
+  --fault:       #CC0000;
+  --offline:     #3a4a5a;
+
+  --sidebar-bg:  #080b10;
 }
 
-/* Dark mode */
-.dark {
-  --bg:          #060d18;
-  --surface:     #0c1626;
-  --surface-2:   #111e30;
-  --border:      #1e3048;
-  --text:        #ddeaf2;
-  --text-muted:  #6a99ad;
-  --text-faint:  #3a5a70;
-
-  --ptts-light:    #0c2234;
-  --sidebar-bg:    #040c18;
-  --sidebar-text:  #9abfcf;
-  --sidebar-muted: #3a5a70;
+/* Light mode */
+.light {
+  --bg:          #dde6ef;
+  --surface:     #eaf1f7;
+  --surface-2:   #f2f7fb;
+  --surface-3:   #ffffff;
+  --border:      #bdd0e0;
+  --border-dim:  #cddce9;
+  --text:        #0d1e2d;
+  --text-muted:  #3a6080;
+  --text-faint:  #8aaabf;
+  --text-bright: #0a1828;
+  --sidebar-bg:  #0d1e2d;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  transition: background 0.3s ease, color 0.3s ease;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+  transition: background 0.25s, color 0.25s;
 }
 
-/* ─── Splash Animations ──────────────────────────────────────── */
-@keyframes fade-in {
-  from { opacity: 0; transform: scale(0.92); }
-  to   { opacity: 1; transform: scale(1); }
-}
+/* ─── Splash / SCADA Animations ─────────────────────────────── */
+@keyframes fade-in    { from { opacity:0; transform:scale(0.94); } to { opacity:1; transform:scale(1); } }
+@keyframes fade-up    { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes slide-in   { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+@keyframes spin-cw    { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+@keyframes spin-ccw   { from { transform:rotate(0deg); } to { transform:rotate(-360deg); } }
+@keyframes pulse-ring { 0%,100%{ box-shadow:0 0 0 0 #005F8E50; } 60%{ box-shadow:0 0 0 14px #005F8E00; } }
+@keyframes blink      { 0%,100%{ opacity:1; } 50%{ opacity:0; } }
+@keyframes led-on     { 0%,100%{ opacity:1; } 50%{ opacity:.6; } }
+@keyframes scan       { from{ transform:translateY(-100%); } to{ transform:translateY(100vh); } }
+@keyframes flicker    { 0%,100%{ opacity:1; } 92%{ opacity:.95; } 94%{ opacity:.85; } 96%{ opacity:.98; } }
 
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes spin-cw {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-@keyframes spin-ccw {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(-360deg); }
-}
-
-@keyframes pulse-ring {
-  0%, 100% { box-shadow: 0 0 0 0px #005F8E40; }
-  50%       { box-shadow: 0 0 0 12px #005F8E00; }
-}
-
-@keyframes bar-fill {
-  from { width: 0%; }
-  to   { width: 100%; }
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
-}
-
-@keyframes slide-in {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-in    { animation: fade-in  0.6s ease forwards; }
-.animate-fade-up    { animation: fade-up  0.5s ease forwards; }
-.animate-spin-cw    { animation: spin-cw  3s linear infinite; }
-.animate-spin-ccw   { animation: spin-ccw 2s linear infinite; }
-.animate-pulse-ring { animation: pulse-ring 2s ease infinite; }
+.animate-fade-in    { animation: fade-in  .55s ease forwards; }
+.animate-fade-up    { animation: fade-up  .4s  ease forwards; }
+.animate-slide-in   { animation: slide-in .45s ease forwards; }
+.animate-spin-cw    { animation: spin-cw  3s   linear infinite; }
+.animate-spin-ccw   { animation: spin-ccw 2s   linear infinite; }
+.animate-pulse-ring { animation: pulse-ring 2.5s ease infinite; }
 .animate-blink      { animation: blink 1s step-end infinite; }
-.animate-slide-in   { animation: slide-in 0.5s ease forwards; }
+.animate-led        { animation: led-on 2s ease infinite; }
+.animate-flicker    { animation: flicker 8s ease infinite; }
 
-/* ─── Scrollbar ─────────────────────────────────────────────── */
-::-webkit-scrollbar       { width: 4px; }
+/* ─── SCADA card chrome ──────────────────────────────────────── */
+.scada-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--ptts);
+  border-radius: 4px;
+}
+
+.scada-card-header {
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.scada-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.scada-value {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-bright);
+  font-variant-numeric: tabular-nums;
+}
+
+.scada-unit {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+/* LED */
+.led {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.led-online  { background: var(--online);  box-shadow: 0 0 6px var(--online); animation: led-on 3s ease infinite; }
+.led-warning { background: var(--warning); box-shadow: 0 0 6px var(--warning); animation: led-on 1.5s ease infinite; }
+.led-fault   { background: var(--fault);   box-shadow: 0 0 8px var(--fault);   animation: led-on 0.8s ease infinite; }
+.led-offline { background: var(--offline); }
+
+/* Scrollbar */
+::-webkit-scrollbar       { width: 3px; height: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }

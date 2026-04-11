@@ -1,47 +1,57 @@
 "use client";
-import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, Legend, ResponsiveContainer,
-} from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from "recharts";
 import { trendData } from "@/lib/mock-data";
 
 export default function TrendChart() {
   return (
-    <div className="rounded-xl border p-5" style={{ background: "var(--surface)", borderColor: "var(--border)" }}>
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h3 className="text-sm font-semibold" style={{ color: "var(--text)" }}>Sensor Trend — Today</h3>
-          <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
-            Temperature (FLUKE) · Vibration (SKF) · 24h
-          </p>
-        </div>
+    <div className="scada-card flex flex-col">
+      <div className="scada-card-header">
+        <span className="scada-label">TREND · TEMPERATURE & VIBRATION · 24H</span>
         <div className="flex gap-1">
-          <button className="text-xs px-3 py-1 rounded-md font-medium text-white" style={{ background: "#005F8E" }}>24h</button>
-          <button className="text-xs px-3 py-1 rounded-md" style={{ color: "var(--text-muted)" }}>7d</button>
+          {["24H","7D","30D"].map((t,i) => (
+            <button key={t} className="text-[9px] px-2 py-0.5 rounded-sm font-bold tracking-widest transition-all"
+              style={i===0
+                ? { background:"#005F8E", color:"#fff" }
+                : { color:"var(--text-faint)", border:"1px solid var(--border)" }}>
+              {t}
+            </button>
+          ))}
         </div>
       </div>
-      <ResponsiveContainer width="100%" height={220}>
-        <LineChart data={trendData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-          <XAxis dataKey="time" tick={{ fontSize: 10, fill: "var(--text-faint)" }} tickLine={false} axisLine={false} />
-          <YAxis yAxisId="temp" tick={{ fontSize: 10, fill: "var(--text-faint)" }} tickLine={false} axisLine={false} unit="°C" />
-          <YAxis yAxisId="vib" orientation="right" tick={{ fontSize: 10, fill: "var(--text-faint)" }} tickLine={false} axisLine={false} unit=" mm/s" />
-          <Tooltip
-            contentStyle={{
-              fontSize: 12,
-              border: "1px solid var(--border)",
-              borderRadius: 8,
-              background: "var(--surface)",
-              color: "var(--text)",
-            }}
-          />
-          <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
-          {/* Temperature — FLUKE Yellow */}
-          <Line yAxisId="temp" type="monotone" dataKey="temp" stroke="#FFD700" strokeWidth={2} dot={false} name="Temperature °C" />
-          {/* Vibration — SKF Blue */}
-          <Line yAxisId="vib" type="monotone" dataKey="vib" stroke="#003DA5" strokeWidth={2} dot={false} name="Vibration mm/s" />
-        </LineChart>
-      </ResponsiveContainer>
+      <div className="p-4">
+        <ResponsiveContainer width="100%" height={210}>
+          <LineChart data={trendData} margin={{ top:4, right:8, left:-18, bottom:0 }}>
+            <CartesianGrid strokeDasharray="2 4" stroke="var(--border-dim)" />
+            <XAxis dataKey="time" tick={{ fontSize:9, fill:"var(--text-faint)", fontFamily:"inherit" }}
+              tickLine={false} axisLine={false} />
+            <YAxis yAxisId="temp" tick={{ fontSize:9, fill:"var(--text-faint)", fontFamily:"inherit" }}
+              tickLine={false} axisLine={false} unit="°" />
+            <YAxis yAxisId="vib" orientation="right" tick={{ fontSize:9, fill:"var(--text-faint)", fontFamily:"inherit" }}
+              tickLine={false} axisLine={false} unit="↕" />
+            {/* warning threshold lines */}
+            <ReferenceLine yAxisId="temp" y={60} stroke="#CC0000" strokeDasharray="4 4" strokeOpacity={0.5} />
+            <ReferenceLine yAxisId="vib" y={3.5} stroke="#FFD700" strokeDasharray="4 4" strokeOpacity={0.5} />
+            <Tooltip
+              contentStyle={{ background:"var(--surface-2)", border:"1px solid var(--border)", borderRadius:2, fontSize:11, fontFamily:"inherit" }}
+              labelStyle={{ color:"var(--text-muted)", fontWeight:700 }}
+              itemStyle={{ color:"var(--text)" }}
+            />
+            <Legend wrapperStyle={{ fontSize:9, paddingTop:8, fontFamily:"inherit", letterSpacing:"0.1em" }} />
+            <Line yAxisId="temp" type="monotone" dataKey="temp" stroke="#FFD700" strokeWidth={1.5}
+              dot={false} name="TEMP °C" activeDot={{ r:3, fill:"#FFD700" }} />
+            <Line yAxisId="vib" type="monotone" dataKey="vib" stroke="#003DA5" strokeWidth={1.5}
+              dot={false} name="VIB mm/s" activeDot={{ r:3, fill:"#003DA5" }} />
+          </LineChart>
+        </ResponsiveContainer>
+        <div className="flex gap-4 mt-2 px-1">
+          <span className="text-[9px] tracking-widest" style={{ color:"var(--text-faint)" }}>
+            — — TEMP LIMIT: 60°C
+          </span>
+          <span className="text-[9px] tracking-widest" style={{ color:"var(--text-faint)" }}>
+            — — VIB LIMIT: 3.5 mm/s
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
