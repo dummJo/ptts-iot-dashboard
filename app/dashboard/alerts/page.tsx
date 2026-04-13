@@ -8,6 +8,7 @@ import { apiClient } from "@/lib/apiClient";
 export default function AlarmsPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [dashboardData, setDashboardData] = useState<any>(null);
+  const [pollInterval, setPollInterval] = useState(60000);
 
   const fetchDashboardData = async () => {
     try {
@@ -20,9 +21,11 @@ export default function AlarmsPage() {
 
   useEffect(() => {
     fetchDashboardData();
-    const intervalId = setInterval(fetchDashboardData, 5000);
-    return () => clearInterval(intervalId);
-  }, []);
+    if (pollInterval > 0) {
+      const intervalId = setInterval(fetchDashboardData, pollInterval);
+      return () => clearInterval(intervalId);
+    }
+  }, [pollInterval]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -45,7 +48,7 @@ export default function AlarmsPage() {
     <div className="flex min-h-screen" style={{ background:"var(--bg)" }}>
       <Sidebar />
       <main className="flex-1 overflow-auto flex flex-col">
-        <TopBar title="ALARMS" onRefresh={handleRefresh} refreshing={refreshing} connected={dashboardData?.system?.connected} />
+        <TopBar title="ALARMS" onRefresh={handleRefresh} refreshing={refreshing} connected={dashboardData?.system?.connected} pollInterval={pollInterval} onPollChange={setPollInterval} />
         
         <div className="flex-1 p-4 space-y-3">
           <div className="flex gap-2">

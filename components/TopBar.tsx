@@ -7,9 +7,11 @@ interface TopBarProps {
   onRefresh?: () => void;
   refreshing?: boolean;
   connected?: boolean;
+  pollInterval?: number;
+  onPollChange?: (val: number) => void;
 }
 
-export default function TopBar({ title, onRefresh, refreshing, connected = true }: TopBarProps) {
+export default function TopBar({ title, onRefresh, refreshing, connected = true, pollInterval, onPollChange }: TopBarProps) {
   const [dateStr, setDateStr] = useState("");
   const [timeStr, setTimeStr] = useState("");
 
@@ -45,7 +47,7 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true 
           style={{ background: connected ? "#00e67610" : "#CC000010", border: `1px solid ${connected ? "#00e67640" : "#CC000040"}` }}>
           <span className={`led ${connected ? "led-online" : "led-fault"}`} style={{ width:6, height:6 }} />
           <span style={{ color: connected ? "#00e676" : "#CC0000" }} className="tracking-widest font-bold">
-            {connected ? "LIVE" : "OFFLINE (RETAINED DATA)"}
+            {connected ? "LIVE DEMO" : "OFFLINE (RETAINED DATA)"}
           </span>
         </div>
       </div>
@@ -53,6 +55,16 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true 
       {/* Right — controls */}
       <div className="flex items-center gap-2">
         <ThemeToggle />
+        {onPollChange && (
+          <select value={pollInterval} onChange={(e) => onPollChange(Number(e.target.value))}
+            className="text-[9px] px-2 py-1.5 rounded-sm font-bold tracking-widest transition-all outline-none"
+            style={{ border:"1px solid var(--border)", color:"var(--text-muted)", background:"var(--surface)" }}>
+            <option value={5000}>POLL: 5s</option>
+            <option value={60000}>POLL: 1m</option>
+            <option value={300000}>POLL: 5m</option>
+            <option value={0}>POLL: OFF</option>
+          </select>
+        )}
         {onRefresh && (
           <button onClick={onRefresh} disabled={refreshing}
             className="text-[9px] px-2.5 py-1.5 rounded-sm font-bold tracking-widest transition-all disabled:opacity-50"

@@ -14,6 +14,7 @@ import { apiClient } from "@/lib/apiClient";
 export default function DashboardPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [dashboardData, setDashboardData] = useState<any>(null);
+  const [pollInterval, setPollInterval] = useState(60000);
 
   const fetchDashboardData = async () => {
     try {
@@ -26,10 +27,11 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchDashboardData();
-    // Poll API every 5 seconds
-    const intervalId = setInterval(fetchDashboardData, 5000);
-    return () => clearInterval(intervalId);
-  }, []);
+    if (pollInterval > 0) {
+      const intervalId = setInterval(fetchDashboardData, pollInterval);
+      return () => clearInterval(intervalId);
+    }
+  }, [pollInterval]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -56,7 +58,7 @@ export default function DashboardPage() {
 
       <main className="flex-1 overflow-auto flex flex-col">
         {/* ── Top bar ── */}
-        <TopBar title="OVERVIEW" onRefresh={handleRefresh} refreshing={refreshing} connected={dashboardData?.system?.connected} />
+        <TopBar title="OVERVIEW" onRefresh={handleRefresh} refreshing={refreshing} connected={dashboardData?.system?.connected} pollInterval={pollInterval} onPollChange={setPollInterval} />
 
         {/* ── Content ── */}
         <div className="flex-1 p-4 space-y-3">
