@@ -10,10 +10,11 @@ import AlertsTable from "@/components/AlertsTable";
 import ThemeToggle from "@/components/ThemeToggle";
 import TopBar from "@/components/TopBar";
 import { apiClient } from "@/lib/apiClient";
+import type { DashboardData } from "@/lib/types";
 
 export default function DashboardPage() {
   const [refreshing, setRefreshing] = useState(false);
-  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [pollInterval, setPollInterval] = useState(60000);
 
   const fetchDashboardData = async () => {

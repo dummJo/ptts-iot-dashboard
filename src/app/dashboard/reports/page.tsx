@@ -5,10 +5,11 @@ import TopBar from "@/components/TopBar";
 import TrendChart from "@/components/TrendChart";
 import VibrationBar from "@/components/VibrationBar";
 import { apiClient } from "@/lib/apiClient";
+import type { DashboardData } from "@/lib/types";
 
 export default function TrendsPage() {
   const [refreshing, setRefreshing] = useState(false);
-  const [dashboardData, setDashboardData] = useState<any>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [pollInterval, setPollInterval] = useState(60000);
 
   const fetchDashboardData = async () => {

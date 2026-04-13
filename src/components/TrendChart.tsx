@@ -1,7 +1,8 @@
 "use client";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from "recharts";
+import type { TrendPoint } from '@/lib/types';
 
-export default function TrendChart({ trendData = [] }: { trendData?: any[] }) {
+export default function TrendChart({ trendData = [] }: { trendData?: TrendPoint[] }) {
   return (
     <div className="scada-card flex flex-col">
       <div className="scada-card-header">

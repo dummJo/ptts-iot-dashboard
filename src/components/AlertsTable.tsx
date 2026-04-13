@@ -1,10 +1,12 @@
+import type { Alarm } from '@/lib/types';
+
 const sev: Record<string, { led:string; color:string; bg:string }> = {
   critical: { led:"led-fault",   color:"#CC0000", bg:"#CC000012" },
   warning:  { led:"led-warning", color:"#FFD700", bg:"#FFD70010" },
   info:     { led:"led-online",  color:"#00e676", bg:"#00e67608" },
 };
 
-export default function AlertsTable({ alerts = [] }: { alerts?: any[] }) {
+export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
   return (
     <div className="scada-card flex flex-col">
       <div className="scada-card-header">

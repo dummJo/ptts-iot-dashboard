@@ -1,4 +1,5 @@
 "use client";
+import type { Asset } from '@/lib/types';
 
 const statusMap: Record<string, { cls: string; label: string }> = {
   online:  { cls: "led-online",  label: "ONLINE"  },
@@ -7,7 +8,7 @@ const statusMap: Record<string, { cls: string; label: string }> = {
   offline: { cls: "led-offline", label: "OFFLINE" },
 };
 
-export default function AssetTable({ assets = [] }: { assets?: any[] }) {
+export default function AssetTable({ assets = [] }: { assets?: Asset[] }) {
   return (
     <div className="scada-card flex flex-col">
       <div className="scada-card-header">

@@ -1,7 +1,8 @@
 "use client";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine } from "recharts";
+import type { VibrationEntry } from '@/lib/types';
 
-export default function VibrationBar({ vibrationData = [] }: { vibrationData?: any[] }) {
+export default function VibrationBar({ vibrationData = [] }: { vibrationData?: VibrationEntry[] }) {
   return (
     <div className="scada-card flex flex-col">
       <div className="scada-card-header">

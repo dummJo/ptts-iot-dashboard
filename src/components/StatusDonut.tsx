@@ -1,7 +1,8 @@
 "use client";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import type { StatusSegment } from '@/lib/types';
 
-export default function StatusDonut({ statusData = [] }: { statusData?: any[] }) {
+export default function StatusDonut({ statusData = [] }: { statusData?: StatusSegment[] }) {
   const total = statusData.reduce((s, d) => s + d.value, 0);
   return (
     <div className="scada-card flex flex-col">
