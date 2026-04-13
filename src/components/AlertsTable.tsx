@@ -1,4 +1,5 @@
 import type { Alarm } from '@/lib/types';
+import { truncate } from '@/lib/utils';
 
 const sev: Record<string, { led:string; color:string; bg:string }> = {
   critical: { led:"led-fault",   color:"#CC0000", bg:"#CC000012" },
@@ -33,8 +34,8 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
                 </div>
                 <span className="text-[9px] font-mono" style={{ color:"var(--text-faint)" }}>{a.time}</span>
               </div>
-              <p className="text-[11px] font-bold" style={{ color:"var(--text-bright)" }}>{a.asset}</p>
-              <p className="text-[10px] leading-relaxed" style={{ color:"var(--text-muted)" }}>{a.message}</p>
+              <p className="text-[11px] font-bold" style={{ color:"var(--text-bright)" }}>{truncate(a.asset, 24)}</p>
+              <p className="text-[10px] leading-relaxed" style={{ color:"var(--text-muted)" }}>{truncate(a.message, 80)}</p>
               <div className="flex items-center justify-between mt-1">
                 <span className="text-[9px] font-mono" style={{ color:"var(--text-faint)" }}>{a.id}</span>
                 <button className="text-[9px] px-2 py-1 rounded-sm font-bold tracking-widest transition-all"

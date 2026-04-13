@@ -1,5 +1,5 @@
-"use client";
 import type { Asset } from '@/lib/types';
+import { formatTemp, formatVib } from '@/lib/utils';
 
 const statusMap: Record<string, { cls: string; label: string }> = {
   online:  { cls: "led-online",  label: "ONLINE"  },
@@ -49,9 +49,9 @@ export default function AssetTable({ assets = [] }: { assets?: Asset[] }) {
                     {a.type.replace("ABB ","").replace("RONDS ","").toUpperCase()}
                   </td>
                   <td className="px-3 py-2.5 text-right font-mono font-bold tabular-nums"
-                    style={{ color: tempColor }}>{a.temp}°C</td>
+                    style={{ color: tempColor }}>{formatTemp(a.temp)}</td>
                   <td className="px-3 py-2.5 text-right font-mono font-bold tabular-nums"
-                    style={{ color: vibColor }}>{a.vib} mm/s</td>
+                    style={{ color: vibColor }}>{formatVib(a.vib)}</td>
                   <td className="px-3 py-2.5 pl-4">
                     <span className="flex items-center gap-1.5">
                       <span className={`led ${st.cls}`} style={{ width:7, height:7 }} />
