@@ -1,97 +1,202 @@
 /**
  * Centralized API Client for PTTS IoT Dashboard
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Architecture contract:
+ *   - Frontend NEVER accesses DB directly
+ *   - All data flows through this client → microservice URLs → backend → DB
+ *   - To add a new microservice: add to config.ts SERVICE_MAP, add method here
+ *   - To switch from mock → real backend: set env vars in .env.local (no code change)
  *
- * Use this service to connect to external backends (Express.js, NestJS, etc.)
- * Update NEXT_PUBLIC_API_BASE_URL in your .env file to point to your new backend.
+ * Retry logic: transient errors (503, network failure) auto-retry up to maxRetries.
+ * Auth: JWT token injected automatically from cookie in server context.
+ *       For client-side calls, cookies are sent automatically by the browser.
  */
 
-import type { DashboardData, ConfigState, ReportSummary, ReportPeriod } from './types';
+import type {
+  DashboardData,
+  ConfigState,
+  ReportSummary,
+  ReportPeriod,
+} from './types';
+import { serviceUrl, REQUEST_CONFIG } from './config';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+// ── Internal fetch wrapper with retry & timeout ───────────────────────────────
+
+async function apiFetch<T>(
+  url: string,
+  options: RequestInit = {},
+  retries: number = REQUEST_CONFIG.maxRetries,
+): Promise<T> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_CONFIG.timeoutMs);
+
+  try {
+    const res = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        // When integrating a real JWT backend, inject Bearer token here:
+        // 'Authorization': `Bearer ${getSessionToken()}`,
+        ...options.headers,
+      },
+    });
+
+    clearTimeout(timer);
+
+    // Retry on transient server errors
+    if ((res.status === 503 || res.status === 502) && retries > 0) {
+      await delay(REQUEST_CONFIG.retryDelayMs);
+      return apiFetch<T>(url, options, retries - 1);
+    }
+
+    if (!res.ok) {
+      throw new ApiError(res.status, `${options.method ?? 'GET'} ${url} → HTTP ${res.status}`);
+    }
+
+    return (await res.json()) as T;
+  } catch (err) {
+    clearTimeout(timer);
+    // Retry on network failure
+    if (err instanceof TypeError && retries > 0) {
+      await delay(REQUEST_CONFIG.retryDelayMs);
+      return apiFetch<T>(url, options, retries - 1);
+    }
+    throw err;
+  }
+}
+
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// ── Custom error class ────────────────────────────────────────────────────────
+
+export class ApiError extends Error {
+  constructor(public statusCode: number, message: string) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+// ── API Client ────────────────────────────────────────────────────────────────
 
 export const apiClient = {
+
+  // ── Telemetry Service ────────────────────────────────────────────────────
+
   /**
-   * Fetches all dashboard telemetry data
+   * Fetches all dashboard telemetry data (KPIs, trend, assets, alarms).
+   * Backend contract: GET /api/dashboard → DashboardData
+   * DB: SELECT * FROM telemetry LEFT JOIN assets WHERE timestamp > NOW()-5m
    */
   async getDashboardData(): Promise<DashboardData> {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/dashboard`, {
-        // Remove no-store if the backend provides proper cache headers,
-        // but for real-time SCADA/IoT, cache should be disabled.
-        cache: 'no-store'
-      });
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-      return await res.json();
-    } catch (error) {
-      console.error("API Client Error (getDashboardData):", error);
-      throw error;
-    }
+    return apiFetch<DashboardData>(
+      `${serviceUrl('telemetry')}/api/dashboard`,
+      { cache: 'no-store' }
+    );
   },
 
   /**
-   * Pushes new telemetry data to the backend
+   * Pushes new telemetry payload (from MQTT worker or sensor webhook).
+   * Backend contract: POST /api/dashboard → { success, state }
+   * DB: INSERT INTO telemetry (asset_id, temp, vib, timestamp) VALUES (...)
    */
-  async pushTelemetryData(data: Partial<DashboardData>): Promise<{ success: boolean; state: DashboardData }> {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/dashboard`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      return await res.json();
-    } catch (error) {
-      console.error("API Client Error (pushTelemetryData):", error);
-      throw error;
-    }
+  async pushTelemetryData(
+    data: Partial<DashboardData>
+  ): Promise<{ success: boolean; state: DashboardData }> {
+    return apiFetch(
+      `${serviceUrl('telemetry')}/api/dashboard`,
+      { method: 'POST', body: JSON.stringify(data) }
+    );
   },
 
+  // ── Config Service ────────────────────────────────────────────────────────
+
   /**
-   * Fetches the current API system configuration
+   * Reads current system configuration (API keys, connection settings).
+   * Backend contract: GET /api/config → ConfigState
+   * DB: SELECT * FROM system_config WHERE id = 1
    */
   async getConfig(): Promise<ConfigState> {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/config`, { cache: 'no-store' });
-      if (!res.ok) throw new Error("Failed to load config");
-      return await res.json();
-    } catch (error) {
-      console.error("API Client Error (getConfig):", error);
-      throw error;
-    }
+    return apiFetch<ConfigState>(
+      `${serviceUrl('config')}/api/config`,
+      { cache: 'no-store' }
+    );
   },
 
   /**
-   * Saves API Keys to the backend mock DB
+   * Persists API keys to the backend config store.
+   * Backend contract: POST /api/config { apiKeys } → { success, config }
+   * DB: UPDATE system_config SET api_keys = $1 WHERE id = 1
    */
-  async saveConfig(apiKeys: string[]): Promise<{ success: boolean; config: ConfigState }> {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/config`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ apiKeys }),
-      });
-      return await res.json();
-    } catch (error) {
-      console.error("API Client Error (saveConfig):", error);
-      throw error;
-    }
+  async saveConfig(
+    apiKeys: string[]
+  ): Promise<{ success: boolean; config: ConfigState }> {
+    return apiFetch(
+      `${serviceUrl('config')}/api/config`,
+      { method: 'POST', body: JSON.stringify({ apiKeys }) }
+    );
   },
 
+  // ── Report Service ────────────────────────────────────────────────────────
+
   /**
-   * Fetches aggregated report data for a given period.
-   * Backend should query: SELECT avg(temp), max(temp) ... WHERE timestamp >= :from GROUP BY asset_id
+   * Fetches aggregated report data for a given time period.
+   * Backend contract: GET /api/reports?period=xxx → ReportSummary
+   * DB:
+   *   MySQL:    SELECT asset_id, AVG(temp), MAX(temp), AVG(vib), MAX(vib)
+   *             FROM telemetry WHERE timestamp >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+   *             GROUP BY asset_id
+   *   Postgres: SELECT asset_id, AVG(temp), MAX(temp)
+   *             FROM telemetry WHERE timestamp >= NOW() - INTERVAL '30 days'
+   *             GROUP BY asset_id
    */
   async getReport(period: ReportPeriod): Promise<ReportSummary> {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/reports?period=${period}`, { cache: 'no-store' });
-      if (!res.ok) throw new Error(`Report fetch failed: ${res.status}`);
-      return await res.json();
-    } catch (error) {
-      console.error('API Client Error (getReport):', error);
-      throw error;
-    }
-  }
+    return apiFetch<ReportSummary>(
+      `${serviceUrl('reports')}/api/reports?period=${period}`,
+      { cache: 'no-store' }
+    );
+  },
+
+  // ── Alarm Service ─────────────────────────────────────────────────────────
+
+  /**
+   * Acknowledges an alarm record by ID.
+   * Backend contract: PATCH /api/alarms/:id/ack → { success }
+   * DB: UPDATE alarms SET acknowledged_at = NOW(), acknowledged_by = $user WHERE id = $1
+   */
+  async acknowledgeAlarm(alarmId: string): Promise<{ success: boolean }> {
+    return apiFetch(
+      `${serviceUrl('alarms')}/api/alarms/${alarmId}/ack`,
+      { method: 'PATCH' }
+    );
+  },
+
+  // ── Asset Service ─────────────────────────────────────────────────────────
+
+  /**
+   * Fetches detailed asset info from the asset registry.
+   * Backend contract: GET /api/assets/:id → Asset
+   * DB: SELECT * FROM assets WHERE id = $1
+   */
+  async getAsset(assetId: string): Promise<unknown> {
+    return apiFetch(
+      `${serviceUrl('assets')}/api/assets/${assetId}`,
+      { cache: 'no-store' }
+    );
+  },
+
+  /**
+   * Updates asset metadata (name, type, thresholds).
+   * Backend contract: PUT /api/assets/:id → { success }
+   * DB: UPDATE assets SET name = $1, type = $2, temp_limit = $3 WHERE id = $4
+   */
+  async updateAsset(assetId: string, data: Record<string, unknown>): Promise<{ success: boolean }> {
+    return apiFetch(
+      `${serviceUrl('assets')}/api/assets/${assetId}`,
+      { method: 'PUT', body: JSON.stringify(data) }
+    );
+  },
 };

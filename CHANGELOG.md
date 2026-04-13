@@ -7,7 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.7.0] — 2026-04-13
+## [0.8.0] — 2026-04-13
+
+### Added
+- `src/lib/config.ts` — **Service Registry**: each microservice (telemetry, reports, config, alarms, assets) has its own env-configurable URL; falls back to global base URL
+- `src/lib/config.ts` — **Feature Flags**: `FEATURES.reports`, `alarmsAck`, `assetTopoMap`, `mqttPush` — controlled via `.env.local`, no code change needed
+- `.env.example` — Documents all environment variables with inline descriptions for onboarding
+- **Retry logic** in `apiClient`: auto-retries on `503`/`502`/network failure up to `maxRetries` with configurable delay
+- **Request timeout** via `AbortController` (default 10s) preventing hung fetch calls
+- `ApiError` custom class for structured error handling in frontend catch blocks
+- `apiClient.acknowledgeAlarm(id)` — Alarm ACK endpoint stub (wired to alarms microservice)
+- `apiClient.getAsset(id)` / `apiClient.updateAsset(id, data)` — Asset CRUD stubs
+
+### Changed
+- `apiClient` fully rewritten to use `serviceUrl()` from config registry — ready for multi-service routing
+- All fetch calls now share a single `apiFetch<T>()` wrapper (DRY, typed, retryable)
+
+
 
 ### Added
 - **Report Generator** — `GET /api/reports?period=...` route with full aggregated mock data (daily, weekly, monthly, 3M, 6M, 12M)
