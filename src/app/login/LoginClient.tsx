@@ -3,376 +3,314 @@ import { useEffect, useState, useActionState, useRef } from "react";
 import { loginAction } from "@/app/actions/auth";
 
 type Phase = "logo" | "text" | "init" | "bar" | "ready" | "login";
-type Lang = "en" | "id" | "ja" | "ko" | "zh";
+type Lang  = "en" | "id" | "ja" | "ko" | "zh";
 
 const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png";
 
 const INIT_LINES = [
-  { tag: "SYS ", text: "Initializing runtime environment" },
-  { tag: "NET ", text: "Establishing secure connection" },
-  { tag: "DATA", text: "Loading asset tag database" },
+  { tag: "SYS",  text: "Initializing runtime environment" },
+  { tag: "NET",  text: "Establishing secure channel" },
+  { tag: "DATA", text: "Loading asset registry" },
   { tag: "AUTH", text: "Generating encrypted session" },
 ];
 
-const LANGS: { code: Lang; label: string; flag: string }[] = [
-  { code: "en", label: "English",    flag: "🇬🇧" },
-  { code: "id", label: "Indonesia",  flag: "🇮🇩" },
-  { code: "ja", label: "日本語",      flag: "🇯🇵" },
-  { code: "ko", label: "한국어",      flag: "🇰🇷" },
-  { code: "zh", label: "中文",        flag: "🇨🇳" },
+const LANGS: { code: Lang; label: string; native: string }[] = [
+  { code: "en", label: "EN", native: "English"  },
+  { code: "id", label: "ID", native: "Indonesia" },
+  { code: "ja", label: "JP", native: "日本語"    },
+  { code: "ko", label: "KO", native: "한국어"    },
+  { code: "zh", label: "ZH", native: "中文"      },
 ];
 
 const T: Record<Lang, {
-  tagline: string; subtitle: string; signin: string;
-  username: string; userplaceholder: string;
-  password: string; passplaceholder: string;
-  remember: string; signinBtn: string; signingIn: string;
-  footer: string; secured: string; error: string;
+  sub: string; uid: string; uid_ph: string;
+  pwd: string; pwd_ph: string; remember: string;
+  btn: string; pending: string; footer: string;
 }> = {
-  en: {
-    tagline: "Industrial IoT Monitoring Platform",
-    subtitle: "Operator Sign In",
-    signin: "SIGN IN",
-    username: "Operator ID",
-    userplaceholder: "Enter your operator ID",
-    password: "Password",
-    passplaceholder: "Enter your password",
-    remember: "Remember me",
-    signinBtn: "Sign In",
-    signingIn: "Authenticating...",
-    footer: "PT Prima Tekindo Tirta Sejahtera",
-    secured: "Secured · JWT HS256 · 60 min session",
-    error: "Invalid credentials",
-  },
-  id: {
-    tagline: "Platform Monitoring IoT Industrial",
-    subtitle: "Masuk Operator",
-    signin: "MASUK",
-    username: "ID Operator",
-    userplaceholder: "Masukkan ID operator Anda",
-    password: "Kata Sandi",
-    passplaceholder: "Masukkan kata sandi Anda",
-    remember: "Ingat saya",
-    signinBtn: "Masuk",
-    signingIn: "Mengautentikasi...",
-    footer: "PT Prima Tekindo Tirta Sejahtera",
-    secured: "Aman · JWT HS256 · Sesi 60 menit",
-    error: "Kredensial tidak valid",
-  },
-  ja: {
-    tagline: "産業用 IoT モニタリングプラットフォーム",
-    subtitle: "オペレーターサインイン",
-    signin: "サインイン",
-    username: "オペレーター ID",
-    userplaceholder: "オペレーター ID を入力",
-    password: "パスワード",
-    passplaceholder: "パスワードを入力",
-    remember: "ログイン状態を保持",
-    signinBtn: "サインイン",
-    signingIn: "認証中...",
-    footer: "PT プリマ テキンド ティルタ セジャテラ",
-    secured: "セキュア · JWT HS256 · 60分セッション",
-    error: "認証情報が無効です",
-  },
-  ko: {
-    tagline: "산업용 IoT 모니터링 플랫폼",
-    subtitle: "운영자 로그인",
-    signin: "로그인",
-    username: "운영자 ID",
-    userplaceholder: "운영자 ID를 입력하세요",
-    password: "비밀번호",
-    passplaceholder: "비밀번호를 입력하세요",
-    remember: "로그인 상태 유지",
-    signinBtn: "로그인",
-    signingIn: "인증 중...",
-    footer: "PT 프리마 테킨도 티르타 세자테라",
-    secured: "보안 · JWT HS256 · 60분 세션",
-    error: "잘못된 인증 정보",
-  },
-  zh: {
-    tagline: "工业 IoT 监控平台",
-    subtitle: "操作员登录",
-    signin: "登录",
-    username: "操作员 ID",
-    userplaceholder: "请输入操作员 ID",
-    password: "密码",
-    passplaceholder: "请输入密码",
-    remember: "记住我",
-    signinBtn: "登录",
-    signingIn: "正在验证...",
-    footer: "PT 普里马 特金多 蒂尔塔 塞贾特拉",
-    secured: "安全 · JWT HS256 · 60 分钟会话",
-    error: "凭据无效",
-  },
+  en: { sub:"Operator Sign In",    uid:"Operator ID",  uid_ph:"Enter your operator ID",   pwd:"Password",   pwd_ph:"Enter your password",    remember:"Stay signed in", btn:"Sign In",  pending:"Verifying...", footer:"PT Prima Tekindo Tirta Sejahtera" },
+  id: { sub:"Masuk Operator",      uid:"ID Operator",  uid_ph:"Masukkan ID operator Anda", pwd:"Kata Sandi", pwd_ph:"Masukkan kata sandi",     remember:"Ingat saya",     btn:"Masuk",    pending:"Memverifikasi...", footer:"PT Prima Tekindo Tirta Sejahtera" },
+  ja: { sub:"オペレーターサインイン", uid:"オペレーター ID", uid_ph:"ID を入力してください",    pwd:"パスワード",  pwd_ph:"パスワードを入力してください", remember:"ログイン状態を保持", btn:"サインイン", pending:"確認中...", footer:"PT プリマ テキンド ティルタ セジャテラ" },
+  ko: { sub:"운영자 로그인",          uid:"운영자 ID",     uid_ph:"운영자 ID를 입력하세요",   pwd:"비밀번호",   pwd_ph:"비밀번호를 입력하세요",    remember:"로그인 유지",     btn:"로그인",    pending:"확인 중...", footer:"PT 프리마 테킨도 티르타 세자테라" },
+  zh: { sub:"操作员登录",             uid:"操作员 ID",     uid_ph:"请输入操作员 ID",          pwd:"密码",       pwd_ph:"请输入密码",               remember:"保持登录",        btn:"登录",      pending:"验证中...", footer:"PT 普里马 特金多 蒂尔塔 塞贾特拉" },
 };
 
-/* Animated mesh SVG background — mimics ABB wave */
-function MeshBackground() {
+/* ── colour tokens ─────────────────────────────────────────── */
+const C = {
+  bg:       "#0e0d0b",
+  bgPanel:  "#111009",
+  bgInput:  "#0a0908",
+  bgCard:   "#131210",
+  border:   "#2a2620",
+  borderHi: "#c9a96e",
+  cream:    "#e8e2d6",
+  muted:    "#7a7060",
+  faint:    "#3a3428",
+  gold:     "#c9a96e",
+  goldDim:  "#a07d4a",
+};
+
+/* ── Subtle grid background ────────────────────────────────── */
+function Grid() {
   return (
-    <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+    <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      {Array.from({ length: 18 }).map((_, i) => (
+        <line key={`h${i}`} x1="0" y1={`${i * 5.88}%`} x2="100%" y2={`${i * 5.88}%`}
+          stroke={C.gold} strokeOpacity="0.025" strokeWidth="1" />
+      ))}
+      {Array.from({ length: 24 }).map((_, i) => (
+        <line key={`v${i}`} x1={`${i * 4.17}%`} y1="0" x2={`${i * 4.17}%`} y2="100%"
+          stroke={C.gold} strokeOpacity="0.025" strokeWidth="1" />
+      ))}
       <defs>
-        <radialGradient id="rg1" cx="30%" cy="40%" r="60%">
-          <stop offset="0%" stopColor="#00A3B4" stopOpacity="0.12" />
-          <stop offset="100%" stopColor="#080b10" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id="rg2" cx="80%" cy="70%" r="50%">
-          <stop offset="0%" stopColor="#005F8E" stopOpacity="0.1" />
-          <stop offset="100%" stopColor="#080b10" stopOpacity="0" />
+        <radialGradient id="glow" cx="35%" cy="50%" r="55%">
+          <stop offset="0%"   stopColor={C.gold} stopOpacity="0.06" />
+          <stop offset="100%" stopColor={C.bg}   stopOpacity="0" />
         </radialGradient>
       </defs>
-      <rect width="100%" height="100%" fill="url(#rg1)" />
-      <rect width="100%" height="100%" fill="url(#rg2)" />
-      {/* Grid lines */}
-      {Array.from({ length: 20 }).map((_, i) => (
-        <line key={`h${i}`} x1="0" y1={`${i * 5.26}%`} x2="100%" y2={`${i * 5.26}%`}
-          stroke="#00A3B4" strokeOpacity="0.04" strokeWidth="1" />
-      ))}
-      {Array.from({ length: 30 }).map((_, i) => (
-        <line key={`v${i}`} x1={`${i * 3.33}%`} y1="0" x2={`${i * 3.33}%`} y2="100%"
-          stroke="#00A3B4" strokeOpacity="0.04" strokeWidth="1" />
-      ))}
-      {/* Diagonal accent */}
-      <line x1="0" y1="100%" x2="50%" y2="0" stroke="#00A3B4" strokeOpacity="0.06" strokeWidth="1" />
-      <line x1="20%" y1="100%" x2="70%" y2="0" stroke="#00A3B4" strokeOpacity="0.04" strokeWidth="1" />
+      <rect width="100%" height="100%" fill="url(#glow)" />
     </svg>
   );
 }
 
 export default function LoginClient() {
-  const [phase, setPhase]           = useState<Phase>("logo");
-  const [visibleLines, setVisible]  = useState(0);
-  const [progress, setProgress]     = useState(0);
-  const [showPass, setShowPass]     = useState(false);
-  const [lang, setLang]             = useState<Lang>("en");
-  const [langOpen, setLangOpen]     = useState(false);
-  const [remember, setRemember]     = useState(true);
-  const [state, formAction, isPending] = useActionState(loginAction, null);
-  const langRef = useRef<HTMLDivElement>(null);
-
+  const [phase, setPhase]  = useState<Phase>("logo");
+  const [lines, setLines]  = useState(0);
+  const [pct,   setPct]    = useState(0);
+  const [showPw, setShowPw]= useState(false);
+  const [lang,  setLang]   = useState<Lang>("en");
+  const [open,  setOpen]   = useState(false);
+  const [remember, setRem] = useState(true);
+  const [state, action, pending] = useActionState(loginAction, null);
+  const dropRef = useRef<HTMLDivElement>(null);
   const t = T[lang];
-  const currentLang = LANGS.find(l => l.code === lang)!;
 
+  /* splash timing */
   useEffect(() => {
-    const t: ReturnType<typeof setTimeout>[] = [];
-    t.push(setTimeout(() => setPhase("text"),         700));
-    t.push(setTimeout(() => { setPhase("init"); setVisible(1); }, 1400));
-    t.push(setTimeout(() => setVisible(2),            2000));
-    t.push(setTimeout(() => setVisible(3),            2600));
-    t.push(setTimeout(() => setVisible(4),            3200));
-    t.push(setTimeout(() => setPhase("bar"),          3600));
-    t.push(setTimeout(() => {
+    const ids: ReturnType<typeof setTimeout>[] = [];
+    ids.push(setTimeout(() => setPhase("text"),                700));
+    ids.push(setTimeout(() => { setPhase("init"); setLines(1); }, 1400));
+    ids.push(setTimeout(() => setLines(2), 2000));
+    ids.push(setTimeout(() => setLines(3), 2600));
+    ids.push(setTimeout(() => setLines(4), 3200));
+    ids.push(setTimeout(() => setPhase("bar"), 3600));
+    ids.push(setTimeout(() => {
       let p = 0;
-      const iv = setInterval(() => {
-        p = Math.min(p + 2, 100);
-        setProgress(p);
-        if (p >= 100) clearInterval(iv);
-      }, 18);
+      const iv = setInterval(() => { p = Math.min(p + 2, 100); setPct(p); if (p >= 100) clearInterval(iv); }, 18);
     }, 3700));
-    t.push(setTimeout(() => setPhase("ready"),        5000));
-    t.push(setTimeout(() => setPhase("login"),        5600));
-    return () => t.forEach(clearTimeout);
+    ids.push(setTimeout(() => setPhase("ready"), 5000));
+    ids.push(setTimeout(() => setPhase("login"),  5600));
+    return () => ids.forEach(clearTimeout);
   }, []);
 
-  /* close lang dropdown on outside click */
+  /* close dropdown on outside click */
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (langRef.current && !langRef.current.contains(e.target as Node)) {
-        setLangOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    const h = (e: MouseEvent) => { if (dropRef.current && !dropRef.current.contains(e.target as Node)) setOpen(false); };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
   }, []);
 
-  /* ── SPLASH ─────────────────────────────────────────────── */
-  if ((phase as string) !== "login") return (
+  /* ── SPLASH ──────────────────────────────────────────────── */
+  if (phase !== "login") return (
     <div className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden"
-      style={{ background: "#080b10" }}>
-      <MeshBackground />
+      style={{ background: C.bg }}>
+      <Grid />
 
-      <div className="pointer-events-none absolute inset-0 opacity-[0.025]"
-        style={{ backgroundImage: "repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 4px)" }} />
+      {/* scanline */}
+      <div className="pointer-events-none absolute inset-0"
+        style={{ backgroundImage: `repeating-linear-gradient(0deg,${C.gold}08 0,${C.gold}08 1px,transparent 1px,transparent 5px)` }} />
 
       {/* top bar */}
-      <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-6 py-2 border-b z-10"
-        style={{ borderColor: "#1a2235", background: "#060810ee" }}>
-        <span className="text-[9px] tracking-[.25em] text-[#a0c0d0] font-bold">PTTS · INDUSTRIAL IOT PLATFORM</span>
-        <span className="text-[9px] tracking-[.25em] text-[#00e676] font-bold animate-blink">■ CONNECTING</span>
+      <div className="absolute top-0 inset-x-0 flex items-center justify-between px-8 py-2.5 z-10"
+        style={{ borderBottom: `1px solid ${C.border}`, background: C.bgPanel + "ee" }}>
+        <span className="text-[9px] tracking-[.3em] font-bold" style={{ color: C.muted }}>
+          PTTS · INDUSTRIAL IOT PLATFORM
+        </span>
+        <span className="text-[9px] tracking-[.25em] font-bold animate-blink" style={{ color: C.gold }}>
+          ■ CONNECTING
+        </span>
       </div>
 
       <div className="relative z-10 flex flex-col items-center">
-        {/* Logo with rings */}
-        <div className="relative w-32 h-32 mb-8">
-          <div className="absolute inset-0 rounded-full border border-[#005F8E]/30 animate-spin-cw" />
-          <div className="absolute inset-2 rounded-full border border-dashed border-[#00A3B4]/25 animate-spin-ccw" />
-          <div className="absolute inset-4 rounded-full animate-pulse-ring" />
-          <div className="absolute inset-5 rounded-full overflow-hidden bg-[#0d1628] flex items-center justify-center">
+        {/* Logo rings */}
+        <div className="relative w-28 h-28 mb-8">
+          <div className="absolute inset-0 rounded-full animate-spin-cw"
+            style={{ border: `1px solid ${C.gold}25` }} />
+          <div className="absolute inset-2 rounded-full border-dashed animate-spin-ccw"
+            style={{ border: `1px dashed ${C.gold}18` }} />
+          <div className="absolute inset-5 rounded-full overflow-hidden flex items-center justify-center"
+            style={{ background: C.bgPanel }}>
             <img src={LOGO} alt="PTTS"
-              className={`w-full h-full object-contain p-1 transition-opacity duration-700
-                ${phase === "logo" ? "opacity-0 animate-fade-in" : "opacity-100"}`} />
+              className={`w-full h-full object-contain p-1.5 transition-opacity duration-700 ${phase === "logo" ? "opacity-0" : "opacity-100"}`} />
           </div>
         </div>
 
         {/* Title */}
-        <div className={`text-center mb-8 transition-all duration-500
-          ${phase === "logo" ? "opacity-0" : "opacity-100 animate-fade-up"}`}>
-          <p className="text-[9px] tracking-[.4em] text-[#00A3B4] font-bold mb-1.5 animate-flicker">
+        <div className={`text-center mb-8 transition-all duration-500 ${phase === "logo" ? "opacity-0" : "opacity-100"}`}>
+          <p className="text-[8px] tracking-[.45em] font-bold mb-1.5" style={{ color: C.goldDim }}>
             PT PRIMA TEKINDO TIRTA SEJAHTERA
           </p>
-          <h1 className="text-3xl font-bold tracking-[.18em] text-white mb-1 drop-shadow-md">SMARTSENSOR</h1>
-          <p className="text-[10px] tracking-[.25em] text-[#8aacc0] font-bold">INDUSTRIAL IOT MONITORING SYSTEM</p>
+          <h1 className="text-3xl font-bold tracking-[.2em] mb-1" style={{ color: C.cream }}>
+            SMARTSENSOR
+          </h1>
+          <p className="text-[9px] tracking-[.3em] font-bold" style={{ color: C.muted }}>
+            INDUSTRIAL IOT MONITORING SYSTEM
+          </p>
         </div>
 
         {/* Init lines */}
         {["init","bar","ready"].includes(phase) && (
-          <div className="font-mono text-[11px] space-y-1.5 mb-6 w-96">
-            {INIT_LINES.slice(0, visibleLines).map((ln, i) => (
+          <div className="font-mono text-[11px] space-y-2 mb-6 w-80">
+            {INIT_LINES.slice(0, lines).map((ln, i) => (
               <div key={i} className="flex items-center gap-3 animate-fade-up">
-                <span className="text-[9px] px-1.5 py-0.5 rounded-sm font-bold text-[#00A3B4]"
-                  style={{ background: "#00A3B415", border: "1px solid #00A3B450" }}>
+                <span className="text-[9px] px-1.5 py-0.5 font-bold w-10 text-center"
+                  style={{ background: C.faint, border: `1px solid ${C.border}`, color: C.gold }}>
                   {ln.tag}
                 </span>
-                <span className="flex-1 text-[#c8d8e8] font-mono">{ln.text}</span>
-                {i < visibleLines - 1 || phase !== "init"
-                  ? <span className="text-[#00e676] text-[10px] font-bold">OK</span>
-                  : <span className="text-white animate-blink">_</span>}
+                <span className="flex-1" style={{ color: C.cream }}>{ln.text}</span>
+                {i < lines - 1 || phase !== "init"
+                  ? <span className="text-[10px] font-bold" style={{ color: C.gold }}>OK</span>
+                  : <span style={{ color: C.cream }} className="animate-blink">_</span>}
               </div>
             ))}
           </div>
         )}
 
-        {/* Progress */}
+        {/* Progress bar */}
         {["bar","ready"].includes(phase) && (
-          <div className="w-96 animate-fade-up">
-            <div className="h-1 rounded-full overflow-hidden" style={{ background: "#1a2235" }}>
-              <div className="h-full rounded-full transition-all duration-75"
-                style={{ width: `${progress}%`, background: "linear-gradient(90deg,#005F8E,#00A3B4)" }} />
+          <div className="w-80 animate-fade-up">
+            <div className="h-px overflow-hidden" style={{ background: C.border }}>
+              <div className="h-full transition-all duration-75" style={{ width: `${pct}%`, background: C.gold }} />
             </div>
-            <div className="flex justify-between mt-1.5">
-              <span className="text-[9px] text-[#8aacc0] font-bold tracking-widest">
-                {phase === "ready" ? "SYSTEM READY" : "LOADING..."}
+            <div className="flex justify-between mt-2">
+              <span className="text-[9px] font-bold tracking-widest" style={{ color: C.muted }}>
+                {phase === "ready" ? "SYSTEM READY" : "LOADING"}
               </span>
-              <span className="text-[9px] text-[#00e676] font-bold">{progress}%</span>
+              <span className="text-[9px] font-bold" style={{ color: C.gold }}>{pct}%</span>
             </div>
           </div>
         )}
       </div>
 
       {/* bottom bar */}
-      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-6 py-2 border-t z-10"
-        style={{ borderColor: "#1a2235", background: "#060810ee" }}>
-        <span className="text-[9px] text-[#6b8b9e] font-bold tracking-widest">v0.7.0</span>
-        <span className="text-[9px] text-[#6b8b9e] font-bold tracking-widest">SESSION SECURED · JWT HS256</span>
+      <div className="absolute bottom-0 inset-x-0 flex items-center justify-between px-8 py-2.5 z-10"
+        style={{ borderTop: `1px solid ${C.border}`, background: C.bgPanel + "ee" }}>
+        <span className="text-[9px] font-bold tracking-widest" style={{ color: C.faint }}>v0.7.0</span>
+        <span className="text-[9px] font-bold tracking-widest" style={{ color: C.faint }}>JWT HS256</span>
       </div>
     </div>
   );
 
-  /* ── LOGIN FORM (ABB-inspired split layout) ──────────────── */
+  /* ── LOGIN FORM ──────────────────────────────────────────── */
   return (
-    <div className="fixed inset-0 flex animate-slide-in overflow-hidden" style={{ background: "#080b10" }}>
+    <div className="fixed inset-0 flex overflow-hidden animate-slide-in" style={{ background: C.bg }}>
 
-      {/* ── LEFT PANEL — branding / mesh ── */}
-      <div className="hidden lg:flex flex-col justify-between w-[52%] relative overflow-hidden p-10"
-        style={{ background: "#060911" }}>
-        <MeshBackground />
+      {/* ── LEFT — branding ── */}
+      <div className="hidden lg:flex flex-col justify-between w-[52%] relative overflow-hidden p-12"
+        style={{ background: C.bgPanel, borderRight: `1px solid ${C.border}` }}>
+        <Grid />
 
-        {/* Top-left: logo + company */}
-        <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0"
-            style={{ border: "1px solid #00A3B430", background: "#0d1628" }}>
-            <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-1" />
+        {/* Logo + company */}
+        <div className="relative z-10 flex items-start gap-4">
+          <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mt-0.5"
+            style={{ background: C.bgCard, border: `1px solid ${C.border}` }}>
+            <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-1.5" />
           </div>
           <div>
-            <p className="text-[9px] tracking-[.3em] text-[#00A3B4] font-bold">PT PRIMA TEKINDO TIRTA SEJAHTERA</p>
-            <p className="text-[8px] tracking-[.2em] text-[#4a6070] font-bold">ABB AUTHORIZED PARTNER</p>
+            <p className="text-[9px] tracking-[.3em] font-bold leading-relaxed" style={{ color: C.muted }}>
+              PT PRIMA TEKINDO<br />TIRTA SEJAHTERA
+            </p>
           </div>
         </div>
 
-        {/* Center: hero text */}
+        {/* Hero */}
         <div className="relative z-10">
-          <div className="w-8 h-0.5 mb-6" style={{ background: "#CC0000" }} />
-          <h1 className="text-4xl font-bold text-white leading-tight mb-3 tracking-tight">
+          {/* Gold rule */}
+          <div className="w-8 h-px mb-8" style={{ background: C.gold }} />
+
+          <h1 className="text-[2.6rem] font-bold leading-[1.1] tracking-tight mb-5" style={{ color: C.cream }}>
             SmartSensor™<br />
-            <span style={{ color: "#00A3B4" }}>Industrial IoT</span><br />
-            Platform
+            <span style={{ color: C.gold }}>Industrial</span><br />
+            IoT Platform
           </h1>
-          <p className="text-sm text-[#6b8b9e] leading-relaxed max-w-xs">
-            {t.tagline}
+          <p className="text-sm leading-relaxed max-w-xs" style={{ color: C.muted }}>
+            Real-time condition monitoring for rotating assets — motor, pump, and compressor health at a glance.
           </p>
 
-          {/* Feature pills */}
-          <div className="flex flex-wrap gap-2 mt-6">
-            {["ABB SmartSensor", "RONDS", "MQTT", "SCADA/HMI", "PostgreSQL"].map(tag => (
-              <span key={tag} className="text-[9px] px-2 py-1 rounded-sm font-bold tracking-wider"
-                style={{ background: "#00A3B410", border: "1px solid #00A3B430", color: "#00A3B4" }}>
-                {tag}
-              </span>
+          {/* Subtle stat row */}
+          <div className="flex gap-8 mt-10">
+            {[["MQTT", "Realtime"], ["JWT", "Secured"], ["PostgreSQL", "Persistent"]].map(([label, sub]) => (
+              <div key={label}>
+                <p className="text-xs font-bold tracking-wider" style={{ color: C.gold }}>{label}</p>
+                <p className="text-[10px] mt-0.5" style={{ color: C.muted }}>{sub}</p>
+              </div>
             ))}
           </div>
         </div>
 
-        {/* Bottom: version */}
+        {/* Footer left */}
         <div className="relative z-10">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="led led-online" style={{ width: 6, height: 6 }} />
-            <span className="text-[9px] text-[#00e676] font-bold tracking-widest">SYSTEM ONLINE</span>
+          <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full" style={{ background: C.gold }} />
+            <span className="text-[9px] font-bold tracking-widest" style={{ color: C.muted }}>SYSTEM ONLINE</span>
           </div>
-          <p className="text-[9px] text-[#4a6070] font-bold tracking-widest">v0.7.0 · {t.secured}</p>
+          <p className="text-[9px] font-bold tracking-widest mt-1" style={{ color: C.faint }}>
+            v0.7.0 · JWT HS256 · 60 MIN SESSION
+          </p>
         </div>
       </div>
 
-      {/* ── RIGHT PANEL — form ── */}
-      <div className="flex-1 flex flex-col relative" style={{ background: "#0c1018" }}>
+      {/* ── RIGHT — form ── */}
+      <div className="flex-1 flex flex-col" style={{ background: C.bg }}>
 
-        {/* Top bar: language selector */}
-        <div className="flex items-center justify-end px-8 py-4 border-b"
-          style={{ borderColor: "#1a2235" }}>
+        {/* Top bar: lang picker */}
+        <div className="flex items-center justify-end px-10 py-4"
+          style={{ borderBottom: `1px solid ${C.border}` }}>
 
-          {/* Mobile: logo */}
-          <div className="lg:hidden flex items-center gap-2 mr-auto">
-            <div className="w-7 h-7 rounded-full overflow-hidden" style={{ background: "#0d1628", border: "1px solid #00A3B430" }}>
-              <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-0.5" />
+          {/* Mobile logo */}
+          <div className="lg:hidden flex items-center gap-3 mr-auto">
+            <div className="w-7 h-7 rounded-full overflow-hidden"
+              style={{ background: C.bgPanel, border: `1px solid ${C.border}` }}>
+              <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-1" />
             </div>
-            <span className="text-[9px] tracking-widest text-[#00A3B4] font-bold">PTTS SMARTSENSOR</span>
+            <span className="text-[9px] tracking-widest font-bold" style={{ color: C.muted }}>PTTS SMARTSENSOR</span>
           </div>
 
-          {/* Language picker */}
-          <div className="relative" ref={langRef}>
-            <button onClick={() => setLangOpen(!langOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-sm text-[11px] font-bold tracking-wider transition-colors"
-              style={{ border: "1px solid #1a2235", color: "#8aacc0", background: langOpen ? "#1a2235" : "transparent" }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          {/* Language dropdown */}
+          <div className="relative" ref={dropRef}>
+            <button onClick={() => setOpen(!open)}
+              className="flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold tracking-widest transition-colors"
+              style={{
+                border: `1px solid ${open ? C.borderHi : C.border}`,
+                color: open ? C.gold : C.muted,
+                background: "transparent",
+                borderRadius: 2,
+              }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
               </svg>
-              <span>{currentLang.flag} {currentLang.label}</span>
-              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                style={{ transform: langOpen ? "rotate(180deg)" : "none", transition: "transform 0.2s" }}>
+              {LANGS.find(l => l.code === lang)?.label}
+              <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                style={{ transition: "transform .2s", transform: open ? "rotate(180deg)" : "none" }}>
                 <polyline points="6 9 12 15 18 9"/>
               </svg>
             </button>
 
-            {langOpen && (
-              <div className="absolute right-0 top-full mt-1 w-40 rounded-sm shadow-xl z-50 overflow-hidden animate-fade-up"
-                style={{ background: "#111520", border: "1px solid #242d3f" }}>
+            {open && (
+              <div className="absolute right-0 top-full mt-1 w-36 z-50 overflow-hidden animate-fade-up"
+                style={{ background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: 2 }}>
                 {LANGS.map(l => (
-                  <button key={l.code} onClick={() => { setLang(l.code); setLangOpen(false); }}
-                    className="flex items-center gap-2.5 w-full px-3 py-2 text-[11px] font-bold tracking-wider transition-colors text-left"
+                  <button key={l.code} onClick={() => { setLang(l.code); setOpen(false); }}
+                    className="flex items-center justify-between w-full px-3 py-2 text-[10px] font-bold tracking-widest transition-colors text-left"
                     style={{
-                      color: lang === l.code ? "#00A3B4" : "#8aacc0",
-                      background: lang === l.code ? "#00A3B410" : "transparent",
-                      borderBottom: "1px solid #1a2235",
+                      color:      lang === l.code ? C.gold  : C.muted,
+                      background: lang === l.code ? C.faint : "transparent",
+                      borderBottom: `1px solid ${C.border}`,
                     }}>
-                    <span>{l.flag}</span>
                     <span>{l.label}</span>
-                    {lang === l.code && (
-                      <svg className="ml-auto" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12"/>
-                      </svg>
-                    )}
+                    <span className="font-normal text-[9px]" style={{ color: C.muted }}>{l.native}</span>
                   </button>
                 ))}
               </div>
@@ -380,61 +318,55 @@ export default function LoginClient() {
           </div>
         </div>
 
-        {/* Form area */}
-        <div className="flex-1 flex flex-col items-center justify-center px-8">
-          <div className="w-full max-w-sm">
+        {/* Form */}
+        <div className="flex-1 flex items-center justify-center px-8">
+          <div className="w-full max-w-[340px]">
 
-            {/* Header */}
-            <div className="mb-8">
-              <div className="w-6 h-0.5 mb-4" style={{ background: "#CC0000" }} />
-              <h2 className="text-2xl font-bold text-white mb-1 tracking-tight">
+            {/* Heading */}
+            <div className="mb-9">
+              <div className="w-6 h-px mb-6" style={{ background: C.gold }} />
+              <h2 className="text-2xl font-bold tracking-tight mb-1.5" style={{ color: C.cream }}>
                 SmartSensor™
               </h2>
-              <p className="text-sm text-[#6b8b9e]">{t.subtitle}</p>
+              <p className="text-sm" style={{ color: C.muted }}>{t.sub}</p>
             </div>
 
             {/* Error */}
             {state?.error && (
-              <div className="flex items-center gap-2 text-xs px-3 py-2.5 rounded-sm mb-4 animate-fade-up"
-                style={{ background: "#CC000015", border: "1px solid #CC000040", color: "#ff6b6b" }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+              <div className="flex items-center gap-2 text-xs px-3 py-2.5 mb-5 animate-fade-up"
+                style={{ background: "#3a100810", border: `1px solid #7a201830`, color: "#c0705a", borderRadius: 2 }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24"
                   fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
                 </svg>
-                <span>{state.error}</span>
+                {state.error}
               </div>
             )}
 
-            {/* Form */}
-            <form action={formAction} className="space-y-4">
+            <form action={action} className="space-y-5">
 
               {/* Username */}
               <div>
-                <label className="block text-xs font-semibold mb-1.5 tracking-wider" style={{ color: "#8aacc0" }}>
-                  {t.username.toUpperCase()}
+                <label className="block text-[10px] font-bold tracking-widest mb-2" style={{ color: C.muted }}>
+                  {t.uid.toUpperCase()}
                 </label>
                 <div className="relative">
                   <input type="text" name="username" autoComplete="username"
-                    required maxLength={64} placeholder={t.userplaceholder}
-                    className="w-full px-4 py-3 text-sm rounded-sm outline-none transition-all"
+                    required maxLength={64} placeholder={t.uid_ph}
+                    className="w-full px-4 py-3 text-sm outline-none transition-all"
                     style={{
-                      background: "#080b10",
-                      border: "1px solid #242d3f",
-                      color: "white",
+                      background: C.bgInput,
+                      border: `1px solid ${C.border}`,
+                      color: C.cream,
                       fontFamily: "inherit",
+                      borderRadius: 2,
                     }}
-                    onFocus={e => {
-                      e.target.style.borderColor = "#00A3B4";
-                      e.target.style.boxShadow = "0 0 0 2px #00A3B420";
-                    }}
-                    onBlur={e => {
-                      e.target.style.borderColor = "#242d3f";
-                      e.target.style.boxShadow = "none";
-                    }}
+                    onFocus={e => { e.target.style.borderColor = C.borderHi; e.target.style.boxShadow = `0 0 0 2px ${C.gold}15`; }}
+                    onBlur={e  => { e.target.style.borderColor = C.border;   e.target.style.boxShadow = "none"; }}
                   />
-                  <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[#4a6070]">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                      fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2" style={{ color: C.faint }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                      fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
                     </svg>
                   </div>
@@ -443,88 +375,84 @@ export default function LoginClient() {
 
               {/* Password */}
               <div>
-                <label className="block text-xs font-semibold mb-1.5 tracking-wider" style={{ color: "#8aacc0" }}>
-                  {t.password.toUpperCase()}
+                <label className="block text-[10px] font-bold tracking-widest mb-2" style={{ color: C.muted }}>
+                  {t.pwd.toUpperCase()}
                 </label>
                 <div className="relative">
-                  <input type={showPass ? "text" : "password"} name="password"
+                  <input type={showPw ? "text" : "password"} name="password"
                     autoComplete="current-password" required maxLength={64}
-                    placeholder={t.passplaceholder}
-                    className="w-full px-4 py-3 text-sm rounded-sm outline-none transition-all pr-20"
+                    placeholder={t.pwd_ph}
+                    className="w-full px-4 py-3 text-sm outline-none transition-all pr-16"
                     style={{
-                      background: "#080b10",
-                      border: "1px solid #242d3f",
-                      color: "white",
+                      background: C.bgInput,
+                      border: `1px solid ${C.border}`,
+                      color: C.cream,
                       fontFamily: "inherit",
+                      borderRadius: 2,
                     }}
-                    onFocus={e => {
-                      e.target.style.borderColor = "#00A3B4";
-                      e.target.style.boxShadow = "0 0 0 2px #00A3B420";
-                    }}
-                    onBlur={e => {
-                      e.target.style.borderColor = "#242d3f";
-                      e.target.style.boxShadow = "none";
-                    }}
+                    onFocus={e => { e.target.style.borderColor = C.borderHi; e.target.style.boxShadow = `0 0 0 2px ${C.gold}15`; }}
+                    onBlur={e  => { e.target.style.borderColor = C.border;   e.target.style.boxShadow = "none"; }}
                   />
-                  <button type="button" onClick={() => setShowPass(!showPass)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold tracking-widest transition-colors"
-                    style={{ color: "#4a6070" }}
-                    onMouseEnter={e => (e.currentTarget.style.color = "#00A3B4")}
-                    onMouseLeave={e => (e.currentTarget.style.color = "#4a6070")}>
-                    {showPass ? "HIDE" : "SHOW"}
+                  <button type="button" onClick={() => setShowPw(!showPw)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[9px] font-bold tracking-widest transition-colors"
+                    style={{ color: C.muted }}
+                    onMouseEnter={e => (e.currentTarget.style.color = C.gold)}
+                    onMouseLeave={e => (e.currentTarget.style.color = C.muted)}>
+                    {showPw ? "HIDE" : "SHOW"}
                   </button>
                 </div>
               </div>
 
               {/* Remember me */}
               <div className="flex items-center gap-2.5">
-                <button type="button" onClick={() => setRemember(!remember)}
-                  className="w-4 h-4 rounded-sm flex-shrink-0 flex items-center justify-center transition-all"
+                <button type="button" onClick={() => setRem(!remember)}
+                  className="w-3.5 h-3.5 flex-shrink-0 flex items-center justify-center transition-all"
                   style={{
-                    background: remember ? "#00A3B4" : "transparent",
-                    border: `1px solid ${remember ? "#00A3B4" : "#242d3f"}`,
+                    background: remember ? C.gold : "transparent",
+                    border: `1px solid ${remember ? C.gold : C.border}`,
+                    borderRadius: 2,
                   }}>
                   {remember && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24"
-                      fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24"
+                      fill="none" stroke={C.bg} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="20 6 9 17 4 12"/>
                     </svg>
                   )}
                 </button>
-                <span className="text-xs" style={{ color: "#6b8b9e" }}>{t.remember}</span>
+                <span className="text-xs" style={{ color: C.muted }}>{t.remember}</span>
               </div>
 
               {/* Submit */}
-              <button type="submit" disabled={isPending}
-                className="w-full py-3 text-sm font-bold tracking-[.1em] rounded-sm transition-all disabled:opacity-60 mt-2"
+              <button type="submit" disabled={pending}
+                className="w-full py-3 text-xs font-bold tracking-[.15em] transition-all disabled:opacity-50 mt-1"
                 style={{
-                  background: isPending ? "#003F5C" : "#CC0000",
-                  color: "#fff",
+                  background: pending ? C.faint : C.gold,
+                  color: pending ? C.muted : C.bg,
                   border: "none",
-                  letterSpacing: "0.08em",
+                  borderRadius: 2,
                 }}
-                onMouseEnter={e => { if (!isPending) e.currentTarget.style.background = "#aa0000"; }}
-                onMouseLeave={e => { if (!isPending) e.currentTarget.style.background = "#CC0000"; }}>
-                {isPending ? t.signingIn : t.signinBtn}
+                onMouseEnter={e => { if (!pending) e.currentTarget.style.background = C.goldDim; }}
+                onMouseLeave={e => { if (!pending) e.currentTarget.style.background = C.gold; }}>
+                {pending ? t.pending : t.btn.toUpperCase()}
               </button>
             </form>
 
-            {/* Footer links */}
-            <div className="mt-6 pt-4 border-t" style={{ borderColor: "#1a2235" }}>
-              <p className="text-[10px] text-center" style={{ color: "#4a6070" }}>
+            {/* Footer */}
+            <div className="mt-8 pt-5" style={{ borderTop: `1px solid ${C.border}` }}>
+              <p className="text-[9px] text-center font-bold tracking-widest" style={{ color: C.faint }}>
                 {t.footer}
               </p>
             </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="flex items-center justify-between px-8 py-3 border-t"
-          style={{ borderColor: "#1a2235" }}>
-          <span className="text-[9px] font-bold tracking-widest" style={{ color: "#4a6070" }}>v0.7.0</span>
-          <div className="flex items-center gap-1.5">
-            <span className="led led-online" style={{ width: 5, height: 5 }} />
-            <span className="text-[9px] font-bold tracking-widest" style={{ color: "#4a6070" }}>JWT HS256</span>
+        {/* Status bar */}
+        <div className="flex items-center justify-between px-10 py-3"
+          style={{ borderTop: `1px solid ${C.border}` }}>
+          <span className="text-[9px] font-bold tracking-widest" style={{ color: C.faint }}>v0.7.0</span>
+          <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full" style={{ background: C.gold }} />
+            <span className="text-[9px] font-bold tracking-widest" style={{ color: C.faint }}>SECURED · JWT HS256</span>
           </div>
         </div>
       </div>
