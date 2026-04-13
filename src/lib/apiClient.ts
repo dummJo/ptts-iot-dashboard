@@ -5,7 +5,7 @@
  * Update NEXT_PUBLIC_API_BASE_URL in your .env file to point to your new backend.
  */
 
-import type { DashboardData, ConfigState } from './types';
+import type { DashboardData, ConfigState, ReportSummary, ReportPeriod } from './types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
@@ -76,6 +76,21 @@ export const apiClient = {
       return await res.json();
     } catch (error) {
       console.error("API Client Error (saveConfig):", error);
+      throw error;
+    }
+  },
+
+  /**
+   * Fetches aggregated report data for a given period.
+   * Backend should query: SELECT avg(temp), max(temp) ... WHERE timestamp >= :from GROUP BY asset_id
+   */
+  async getReport(period: ReportPeriod): Promise<ReportSummary> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/reports?period=${period}`, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`Report fetch failed: ${res.status}`);
+      return await res.json();
+    } catch (error) {
+      console.error('API Client Error (getReport):', error);
       throw error;
     }
   }

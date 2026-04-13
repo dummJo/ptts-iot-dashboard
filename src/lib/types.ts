@@ -83,3 +83,34 @@ export interface DashboardData {
   vibrationBarData: VibrationEntry[];
   system: SystemState;
 }
+
+// ── Report ─────────────────────────────────────────────────────────────
+export type ReportPeriod = 'daily' | 'weekly' | 'monthly' | '3months' | '6months' | '12months';
+
+export interface AssetReportRow {
+  id: string;
+  name: string;
+  type: string;
+  avgTemp: number;
+  maxTemp: number;
+  avgVib: number;
+  maxVib: number;
+  uptime: number;       // percentage 0-100
+  alarmCount: number;
+  status: AssetStatus;
+}
+
+export interface ReportSummary {
+  period: ReportPeriod;
+  dateRange: { from: string; to: string };
+  generatedAt: string;
+  totalNodes: number;
+  avgUptime: number;
+  totalAlarms: number;
+  criticalAlarms: number;
+  warningAlarms: number;
+  avgTemp: number;
+  avgVib: number;
+  assets: AssetReportRow[];
+  trendData: TrendPoint[];
+}
