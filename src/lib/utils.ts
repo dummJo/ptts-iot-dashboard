@@ -49,3 +49,22 @@ export function getStatusColor(status: string): string {
     default:        return 'var(--text-faint)';
   }
 }
+
+/**
+ * Returns the CSS color associated with machine condition health.
+ */
+export function getHealthColor(health: string): string {
+  switch (health?.toLowerCase()) {
+    case 'good':    return 'var(--online)';
+    case 'warning': return 'var(--warning)';
+    case 'fault':   return 'var(--fault)';
+    default:        return 'var(--text-faint)';
+  }
+}
+
+/**
+ * Returns the CSS color associated with sensor connectivity (link).
+ */
+export function getLinkColor(link: string): string {
+  return link?.toLowerCase() === 'online' ? 'var(--online)' : 'var(--offline)';
+}

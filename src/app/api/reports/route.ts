@@ -38,31 +38,31 @@ function generateAssetRows(period: ReportPeriod): AssetReportRow[] {
       id: 'ABB-001', name: 'Pump Motor #1',    type: 'ABB SmartSensor',
       avgTemp: +(54.2 * m).toFixed(1), maxTemp: +(58.8 * m).toFixed(1),
       avgVib: +(3.2 * m).toFixed(2),  maxVib: +(4.1 * m).toFixed(2),
-      uptime: 97.3, alarmCount: 2, status: 'warning',
+      uptime: 97.3, alarmCount: 2, link: 'online', health: 'warning',
     },
     {
       id: 'ABB-002', name: 'Crane Drive A',    type: 'ABB PowerTrain',
       avgTemp: +(59.1 * m).toFixed(1), maxTemp: +(63.5 * m).toFixed(1),
       avgVib: +(3.8 * m).toFixed(2),  maxVib: +(4.6 * m).toFixed(2),
-      uptime: 88.1, alarmCount: 5, status: 'fault',
+      uptime: 88.1, alarmCount: 5, link: 'online', health: 'fault',
     },
     {
       id: 'RND-003', name: 'Compressor Unit',  type: 'RONDS SmartSensor',
       avgTemp: +(53.0 * m).toFixed(1), maxTemp: +(57.2 * m).toFixed(1),
       avgVib: +(2.7 * m).toFixed(2),  maxVib: +(3.3 * m).toFixed(2),
-      uptime: 99.1, alarmCount: 1, status: 'warning',
+      uptime: 99.1, alarmCount: 1, link: 'online', health: 'warning',
     },
     {
       id: 'ABB-004', name: 'VSD Panel #3',     type: 'ABB SmartSensor',
       avgTemp: +(44.8 * m).toFixed(1), maxTemp: +(49.0 * m).toFixed(1),
       avgVib: +(1.5 * m).toFixed(2),  maxVib: +(2.0 * m).toFixed(2),
-      uptime: 100, alarmCount: 0, status: 'online',
+      uptime: 100, alarmCount: 0, link: 'online', health: 'good',
     },
     {
       id: 'RND-005', name: 'Fan Motor B',      type: 'RONDS SmartSensor',
       avgTemp: +(42.3 * m).toFixed(1), maxTemp: +(46.1 * m).toFixed(1),
       avgVib: +(1.2 * m).toFixed(2),  maxVib: +(1.8 * m).toFixed(2),
-      uptime: 100, alarmCount: 0, status: 'online',
+      uptime: 100, alarmCount: 0, link: 'offline', health: 'good',
     },
   ];
 }

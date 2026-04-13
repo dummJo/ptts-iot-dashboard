@@ -17,7 +17,7 @@ const nav = [
 
 const VERSION = "v0.8.0-industrial";
 
-export default function Sidebar() {
+export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: number }) {
   const pathname = usePathname();
   const [uptime, setUptime] = useState("00:00:00");
   const [showSwitch, setShowSwitch] = useState(false);
@@ -74,10 +74,15 @@ export default function Sidebar() {
           </div>
         </div>
         {/* Live status */}
-        <div className="flex items-center gap-2 px-2 py-1.5 rounded-sm"
-          style={{ background: "#00e67608", border: "1px solid #00e67620" }}>
-          <span className="led led-online" style={{ width: 6, height: 6 }} />
-          <span className="text-[9px] tracking-widest text-[#00e676]">LIVE · 60s</span>
+        <div className="flex items-center gap-2 px-2 py-1.5 rounded-sm transition-all"
+          style={{ 
+            background: pollInterval === 0 ? "var(--surface)" : "#00e67608", 
+            border: pollInterval === 0 ? "1px solid var(--border-dim)" : "1px solid #00e67620" 
+          }}>
+          <span className={`led ${pollInterval === 0 ? "led-offline" : "led-online"}`} style={{ width: 6, height: 6 }} />
+          <span className="text-[9px] tracking-widest font-black" style={{ color: pollInterval === 0 ? "var(--text-faint)" : "#00e676" }}>
+            {pollInterval === 0 ? "POLL: OFF" : `LIVE · ${pollInterval >= 60000 ? pollInterval / 60000 + "M" : pollInterval / 1000 + "S"}`}
+          </span>
         </div>
       </div>
 
@@ -116,8 +121,8 @@ export default function Sidebar() {
           <span style={{ color: "var(--text-muted)" }}>147 / 200</span>
         </div>
         <div className="flex justify-between">
-          <span style={{ color: "var(--text-faint)" }}>DB</span>
-          <span className="text-[#00e676]">CONNECTED</span>
+          <span style={{ color: "var(--text-faint)" }}>DATA</span>
+          <span className="text-ptts-teal">SIMULATED</span>
         </div>
       </div>
 

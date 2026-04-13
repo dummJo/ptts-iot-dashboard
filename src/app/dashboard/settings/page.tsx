@@ -103,7 +103,7 @@ export default function SettingsPage() {
 
   return (
     <div className="flex min-h-screen" style={{ background: "var(--bg)" }}>
-      <Sidebar />
+      <Sidebar pollInterval={0} />
 
       <main className="flex-1 overflow-auto flex flex-col">
         {/* Top bar */}

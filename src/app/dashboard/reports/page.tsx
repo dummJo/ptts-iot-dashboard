@@ -6,6 +6,7 @@ import TrendChart from "@/components/TrendChart";
 import VibrationBar from "@/components/VibrationBar";
 import { apiClient } from "@/lib/apiClient";
 import type { DashboardData, ReportPeriod, ReportSummary, AssetReportRow } from "@/lib/types";
+import { getHealthColor, getLinkColor } from "@/lib/utils";
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -16,10 +17,6 @@ const PERIOD_LABELS: Record<ReportPeriod, string> = {
   "3months": "3 BULAN",
   "6months": "6 BULAN",
   "12months":"12 BULAN / TAHUNAN",
-};
-
-const statusColor: Record<string, string> = {
-  online: "#00e676", warning: "#FFD700", fault: "#CC0000", offline: "#6b7280",
 };
 
 function csvExport(report: ReportSummary) {
@@ -39,9 +36,9 @@ function csvExport(report: ReportSummary) {
     ["Avg Getaran (mm/s)", report.avgVib],
     [],
     ["KONDISI ASET"],
-    ["TAG ID","NAMA ASET","TIPE","AVG SUHU","MAX SUHU","AVG GETARAN","MAX GETARAN","UPTIME (%)","JML ALARM","STATUS"],
+    ["TAG ID","NAMA ASET","TIPE","AVG SUHU","MAX SUHU","AVG GETARAN","MAX GETARAN","UPTIME (%)","JML ALARM","LINK","HEALTH"],
     ...report.assets.map((a) => [
-      a.id, a.name, a.type, a.avgTemp, a.maxTemp, a.avgVib, a.maxVib, a.uptime, a.alarmCount, a.status.toUpperCase()
+      a.id, a.name, a.type, a.avgTemp, a.maxTemp, a.avgVib, a.maxVib, a.uptime, a.alarmCount, a.link.toUpperCase(), a.health.toUpperCase()
     ]),
   ];
   const csv = rows.map((r) => r.join(",")).join("\n");
@@ -67,8 +64,8 @@ function PrintTemplate({ report }: { report: ReportSummary }) {
         <img src={LOGO} alt="PTTS" style={{ width:64, height:64, objectFit:"contain" }} />
         <div style={{ marginLeft:16 }}>
           <div style={{ fontSize:14, fontWeight:700, color:"#003DA5", letterSpacing:2 }}>PT PRIMA TEKINDO TIRTA SEJAHTERA</div>
-          <div style={{ fontSize:11, color:"#555" }}>Jl. Contoh No.1, Jakarta · Telp: +62 21 XXXXXXX</div>
-          <div style={{ fontSize:10, color:"#888", marginTop:2 }}>Powered by PTTS SmartSensor IoT Platform</div>
+          <div style={{ fontSize:10, color:"#555" }}>Jl. Pangeran Jayakarta, Ruko 141 Blok A1 No. 11, Jembatan Merah, Jakarta Pusat, 10730</div>
+          <div style={{ fontSize:9, color:"#888", marginTop:2 }}>Tel: (021) 629 3028 · Email: info@ptts.co.id · Web: www.ptts.co.id</div>
         </div>
         <div style={{ marginLeft:"auto", textAlign:"right" }}>
           <div style={{ fontSize:13, fontWeight:700, color:"#003DA5" }}>EQUIPMENT CONDITION REPORT</div>
@@ -98,8 +95,8 @@ function PrintTemplate({ report }: { report: ReportSummary }) {
           </tr>
           <tr>
             {[
-              ["ALARM KRITIS",  report.criticalAlarms, "#CC0000"],
-              ["ALARM WARNING", report.warningAlarms,  "#D97706"],
+              ["ALARM KRITIS",  report.criticalAlarms, "#dc2626"],
+              ["ALARM WARNING", report.warningAlarms,  "#d97706"],
             ].map(([label, val, color]) => (
               <td key={String(label)} colSpan={2} style={{ padding:"10px 14px", border:"1px solid #d0d9ed", textAlign:"center" }}>
                 <div style={{ fontSize:9, color:"#555", letterSpacing:1 }}>{label as string}</div>
@@ -118,7 +115,7 @@ function PrintTemplate({ report }: { report: ReportSummary }) {
       <table style={{ width:"100%", borderCollapse:"collapse", marginBottom:20 }}>
         <thead>
           <tr style={{ background:"#003DA5", color:"white" }}>
-            {["TAG ID","NAMA ASET","TIPE","AVG SUHU","MAX SUHU","AVG VIB","MAX VIB","UPTIME","ALARM","STATUS"].map((h) => (
+            {["TAG ID","NAMA ASET","TIPE","AVG SUHU","MAX SUHU","AVG VIB","MAX VIB","LINK","HEALTH"].map((h) => (
               <th key={h} style={{ padding:"6px 8px", fontSize:9, textAlign:"center", letterSpacing:0.5 }}>{h}</th>
             ))}
           </tr>
@@ -129,13 +126,12 @@ function PrintTemplate({ report }: { report: ReportSummary }) {
               <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", fontFamily:"monospace", fontSize:9 }}>{a.id}</td>
               <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", fontWeight:600 }}>{a.name}</td>
               <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", fontSize:9, color:"#666" }}>{a.type}</td>
-              <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", textAlign:"center", color: a.avgTemp > 55 ? "#CC0000" : a.avgTemp > 50 ? "#D97706" : "#16a34a" }}>{a.avgTemp}°C</td>
-              <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", textAlign:"center", fontWeight:700, color: a.maxTemp > 60 ? "#CC0000" : "#333" }}>{a.maxTemp}°C</td>
-              <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", textAlign:"center", color: a.avgVib > 3 ? "#D97706" : "#16a34a" }}>{a.avgVib}</td>
-              <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", textAlign:"center", fontWeight:700, color: a.maxVib > 3.5 ? "#CC0000" : "#333" }}>{a.maxVib}</td>
-              <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", textAlign:"center" }}>{a.uptime}%</td>
-              <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", textAlign:"center", fontWeight:700, color: a.alarmCount > 0 ? "#CC0000" : "#16a34a" }}>{a.alarmCount}</td>
-              <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", textAlign:"center", fontSize:9, fontWeight:700, color: statusColor[a.status] }}>{a.status.toUpperCase()}</td>
+              <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", textAlign:"center", color: a.avgTemp > 55 ? "#dc2626" : a.avgTemp > 50 ? "#d97706" : "#059669" }}>{a.avgTemp}°C</td>
+              <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", textAlign:"center", fontWeight:700, color: a.maxTemp > 60 ? "#dc2626" : "#333" }}>{a.maxTemp}°C</td>
+              <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", textAlign:"center", color: a.avgVib > 3 ? "#d97706" : "#059669" }}>{a.avgVib}</td>
+              <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", textAlign:"center", fontWeight:700, color: a.maxVib > 3.5 ? "#dc2626" : "#333" }}>{a.maxVib}</td>
+              <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", textAlign:"center", fontSize:8, fontWeight:700, color: a.link === 'online' ? "#059669" : "#64748b" }}>{a.link.toUpperCase()}</td>
+              <td style={{ padding:"6px 8px", border:"1px solid #e0e8f0", textAlign:"center", fontSize:9, fontWeight:700, color: a.health === 'fault' ? "#dc2626" : a.health === 'warning' ? "#d97706" : "#059669" }}>{a.health.toUpperCase()}</td>
             </tr>
           ))}
         </tbody>
@@ -146,8 +142,8 @@ function PrintTemplate({ report }: { report: ReportSummary }) {
         <b>Catatan:</b> Laporan ini dibuat secara otomatis oleh sistem PTTS SmartSensor. Batas suhu normal: &lt;60°C. Batas getaran normal (ISO 10816-3): &lt;3.5 mm/s RMS. Data bersumber dari unit ABB SmartSensor & RONDS SmartSensor.
       </div>
       <div style={{ fontSize:9, color:"#888", marginTop:8, display:"flex", justifyContent:"space-between" }}>
-        <span>PTTS SmartSensor IoT Platform · v0.6.0</span>
-        <span>Dokumen ini adalah laporan otomatis — bukan pengganti inspeksi manual</span>
+        <span>PTTS SmartSensor IoT Platform · v1.1.0 (LIVE DEMO)</span>
+        <span>Dokumen ini adalah data simulasi — bukan pengganti inspeksi manual</span>
       </div>
     </div>
   );
@@ -221,7 +217,7 @@ export default function TrendsPage() {
       {report && <PrintTemplate report={report} />}
 
       <div className="flex min-h-screen print:hidden" style={{ background: "var(--bg)" }}>
-        <Sidebar />
+        <Sidebar pollInterval={pollInterval} />
         <main className="flex-1 overflow-auto flex flex-col">
           <TopBar title="REPORTS" onRefresh={handleRefresh} refreshing={refreshing}
             connected={dashboardData?.system?.connected} pollInterval={pollInterval} onPollChange={setPollInterval} />
@@ -317,11 +313,11 @@ export default function TrendsPage() {
                   {/* KPI summary strip */}
                   <div className="grid grid-cols-5 gap-2">
                     {[
-                      { label:"TOTAL NODE",     val:`${report.totalNodes}`,        color:"#00A3B4" },
-                      { label:"AVG UPTIME",     val:`${report.avgUptime}%`,        color:"#00e676" },
-                      { label:"AVG SUHU",       val:`${report.avgTemp}°C`,         color:"#FFD700" },
-                      { label:"AVG GETARAN",    val:`${report.avgVib} mm/s`,       color:"#003DA5" },
-                      { label:"TOTAL ALARM",    val:`${report.totalAlarms}`,       color: report.totalAlarms > 5 ? "#CC0000" : "#FFD700" },
+                      { label:"TOTAL NODE",     val:`${report.totalNodes}`,        color:"var(--ptts-teal)" },
+                      { label:"AVG UPTIME",     val:`${report.avgUptime}%`,        color:"var(--online)" },
+                      { label:"AVG SUHU",       val:`${report.avgTemp}°C`,         color:"var(--warning)" },
+                      { label:"AVG GETARAN",    val:`${report.avgVib} mm/s`,       color:"var(--ptts-teal)" },
+                      { label:"TOTAL ALARM",    val:`${report.totalAlarms}`,       color: report.totalAlarms > 5 ? "var(--fault)" : "var(--warning)" },
                     ].map(({ label, val, color }) => (
                       <div key={label} className="flex flex-col gap-1 px-3 py-3 rounded-sm"
                         style={{ background:"var(--surface-2)", border:`1px solid ${color}30` }}>
@@ -336,7 +332,7 @@ export default function TrendsPage() {
                     <table className="w-full text-[11px]">
                       <thead>
                         <tr style={{ background:"var(--surface-2)", borderBottom:"1px solid var(--border)" }}>
-                          {["TAG ID","NAMA ASET","TIPE","AVG SUHU","MAX SUHU","AVG VIB","MAX VIB","UPTIME","ALARM","STATUS"].map((h) => (
+                          {["TAG ID","NAMA ASET","TIPE","AVG SUHU","MAX SUHU","AVG VIB","MAX VIB","UPTIME","LINK","HEALTH"].map((h) => (
                             <th key={h} className="px-3 py-2 text-left text-[9px] font-bold tracking-widest"
                               style={{ color:"var(--text-faint)" }}>{h}</th>
                           ))}
@@ -344,8 +340,10 @@ export default function TrendsPage() {
                       </thead>
                       <tbody>
                         {report.assets.map((a: AssetReportRow, i: number) => {
-                          const tempC = a.avgTemp > 55 ? "#CC0000" : a.avgTemp > 50 ? "#FFD700" : "var(--text)";
-                          const vibC  = a.avgVib  > 3  ? "#FFD700" : "var(--text)";
+                          const hColor = getHealthColor(a.health);
+                          const lColor = getLinkColor(a.link);
+                          const tempC = a.avgTemp > 55 ? "var(--fault)" : a.avgTemp > 50 ? "var(--warning)" : "var(--text)";
+                          const vibC  = a.avgVib  > 3  ? "var(--warning)" : "var(--text)";
                           return (
                             <tr key={a.id} style={{
                               borderBottom:"1px solid var(--border-dim)",
@@ -355,15 +353,14 @@ export default function TrendsPage() {
                               <td className="px-3 py-2.5 font-bold" style={{ color:"var(--text)" }}>{a.name}</td>
                               <td className="px-3 py-2.5 text-[9px]" style={{ color:"var(--text-muted)" }}>{a.type}</td>
                               <td className="px-3 py-2.5 font-mono tabular-nums" style={{ color:tempC }}>{a.avgTemp}°C</td>
-                              <td className="px-3 py-2.5 font-mono font-bold tabular-nums" style={{ color: a.maxTemp > 60 ? "#CC0000" : "var(--text)" }}>{a.maxTemp}°C</td>
+                              <td className="px-3 py-2.5 font-mono font-bold tabular-nums" style={{ color: a.maxTemp > 60 ? "var(--fault)" : "var(--text)" }}>{a.maxTemp}°C</td>
                               <td className="px-3 py-2.5 font-mono tabular-nums" style={{ color:vibC }}>{a.avgVib}</td>
-                              <td className="px-3 py-2.5 font-mono font-bold tabular-nums" style={{ color: a.maxVib > 3.5 ? "#CC0000" : "var(--text)" }}>{a.maxVib}</td>
-                              <td className="px-3 py-2.5 font-bold text-[#00e676]">{a.uptime}%</td>
-                              <td className="px-3 py-2.5 font-bold tabular-nums" style={{ color: a.alarmCount > 0 ? "#FFD700" : "var(--text-faint)" }}>{a.alarmCount}</td>
+                              <td className="px-3 py-2.5 font-mono font-bold tabular-nums" style={{ color: a.maxVib > 3.5 ? "var(--fault)" : "var(--text)" }}>{a.maxVib}</td>
+                              <td className="px-3 py-2.5 font-bold text-[9px]" style={{ color: lColor }}>{a.link.toUpperCase()}</td>
                               <td className="px-3 py-2.5">
                                 <span className="text-[9px] font-bold tracking-widest px-2 py-0.5 rounded-sm"
-                                  style={{ color: statusColor[a.status], background:`${statusColor[a.status]}15`, border:`1px solid ${statusColor[a.status]}40` }}>
-                                  {a.status.toUpperCase()}
+                                  style={{ color: hColor, background:`${hColor}15`, border:`1px solid ${hColor}40` }}>
+                                  {a.health.toUpperCase()}
                                 </span>
                               </td>
                             </tr>

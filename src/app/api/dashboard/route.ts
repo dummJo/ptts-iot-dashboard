@@ -7,6 +7,8 @@ import {
   recentAlerts,
   vibrationBarData,
   configDbState,
+  getLinkSummary,
+  getHealthSummary,
 } from '@/lib/mock-data';
 
 // In-memory data store using the mock data as the initial state
@@ -24,6 +26,8 @@ export async function GET() {
   
   return NextResponse.json({
     ...dashboardState,
+    linkSummary: getLinkSummary(dashboardState.topAssets),
+    healthSummary: getHealthSummary(dashboardState.topAssets),
     system: {
       connected: isConnected,
       lastSync: isConnected ? new Date().toISOString() : "Not Connected"
@@ -43,6 +47,8 @@ export async function POST(req: Request) {
       success: true, 
       state: {
          ...dashboardState,
+         linkSummary: getLinkSummary(dashboardState.topAssets),
+         healthSummary: getHealthSummary(dashboardState.topAssets),
          system: {
            connected: isConnected,
            lastSync: isConnected ? new Date().toISOString() : "Not Connected"
@@ -53,4 +59,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 }
-

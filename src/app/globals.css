@@ -9,57 +9,57 @@
 /*   #00A3B4  → PTTS teal accent                                 */
 /* ──────────────────────────────────────────────────────────────*/
 
-/* Dark (Ignition SCADA — high contrast, refined) */
+/* Dark (Ignition SCADA — High Accessibility / 40++ Optimized) */
 :root {
-  --bg:          #070a0f;
-  --surface:     #0d1117;
-  --surface-2:   #131a24;
-  --surface-3:   #1a2232;
-  --border:      #1e2d42;
-  --border-dim:  #152033;
-  --text:        #ccd9e8;
-  --text-muted:  #6b90b0;
-  --text-faint:  #3d5a75;
-  --text-bright: #f0f7ff;
+  --bg:          #05070a;
+  --surface:     #0b0f15;
+  --surface-2:   #121822;
+  --surface-3:   #18212e;
+  --border:      #25354d;
+  --border-dim:  #182436;
+  --text:        #ffffff;
+  --text-muted:  #a0aec0;
+  --text-faint:  #718096;
+  --text-bright: #ffffff;
 
-  /* PTTS brand */
-  --ptts:        #006ba6;
-  --ptts-teal:   #00bcd4;
-  --ptts-glow:   #00bcd460;
+  /* PTTS brand (punchy) */
+  --ptts:        #007dbd;
+  --ptts-teal:   #00e5ff;
+  --ptts-glow:   #00e5ff80;
 
-  /* Status */
-  --online:      #00e676;
-  --warning:     #ffc107;
-  --fault:       #f44336;
-  --offline:     #455a64;
+  /* Status (Vibrant) */
+  --online:      #00ff88;
+  --warning:     #ffdd00;
+  --fault:       #ff3333;
+  --offline:     #556677;
 
-  --sidebar-bg:  #050810;
+  --sidebar-bg:  #030508;
 }
 
-/* Light mode — clean industrial slate */
+/* Light mode — Sharp industrial High Contrast */
 .light {
-  --bg:          #e8eef4;
-  --surface:     #f5f8fb;
-  --surface-2:   #ffffff;
+  --bg:          #f0f4f8;
+  --surface:     #ffffff;
+  --surface-2:   #f8fafc;
   --surface-3:   #ffffff;
-  --border:      #b0c4d6;
-  --border-dim:  #c8d8e6;
-  --text:        #0d1e2e;
-  --text-muted:  #2c4a62;
-  --text-faint:  #5a7a96;
-  --text-bright: #060f18;
-  --sidebar-bg:  #d4e0eb;
+  --border:      #94a3b8;
+  --border-dim:  #cbd5e1;
+  --text:        #000000;
+  --text-muted:  #1e293b;
+  --text-faint:  #475569;
+  --text-bright: #000000;
+  --sidebar-bg:  #e2e8f0;
 
-  /* Keep brand colors */
+  /* Keep brand colors saturated */
   --ptts:        #005F8E;
-  --ptts-teal:   #0097a7;
-  --ptts-glow:   #0097a730;
+  --ptts-teal:   #0d9488;
+  --ptts-glow:   #0d948830;
 
-  /* Status (slightly dimmed for light bg) */
-  --online:      #00a651;
-  --warning:     #e09000;
-  --fault:       #c62828;
-  --offline:     #607d8b;
+  /* Status (Deep contrast) */
+  --online:      #059669;
+  --warning:     #d97706;
+  --fault:       #dc2626;
+  --offline:     #475569;
 }
 
 body {

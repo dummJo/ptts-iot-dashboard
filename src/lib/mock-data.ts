@@ -6,7 +6,7 @@ export const kpiData = [
     sub:      "6 nodes offline or unreachable",
     trend:    "+2 this week",
     trendUp:  true,
-    color:    "#00A3B4",
+    color:    "var(--online)",
     ledClass: "led-online",
   },
   {
@@ -16,7 +16,7 @@ export const kpiData = [
     sub:      "1 critical · 2 warning",
     trend:    "1 unacknowledged",
     trendUp:  false,
-    color:    "#CC0000",
+    color:    "var(--fault)",
     ledClass: "led-fault",
   },
   {
@@ -26,7 +26,7 @@ export const kpiData = [
     sub:      "Limit: 60°C · Across all nodes",
     trend:    "+1.2°C vs yesterday",
     trendUp:  false,
-    color:    "#FFD700",
+    color:    "var(--warning)",
     ledClass: "led-warning",
   },
   {
@@ -36,7 +36,7 @@ export const kpiData = [
     sub:      "RMS overall · Limit: 3.5 mm/s",
     trend:    "Within threshold",
     trendUp:  true,
-    color:    "#003DA5",
+    color:    "var(--online)",
     ledClass: "led-online",
   },
 ];
@@ -57,18 +57,17 @@ export const trendData = [
 ];
 
 export const statusData = [
-  { name: "ONLINE",  value: 20, color: "#00e676" },
-  { name: "WARNING", value:  3, color: "#FFD700" },
-  { name: "OFFLINE", value:  1, color: "#3a4a5a" },
-  { name: "FAULT",   value:  2, color: "#CC0000" },
+  { name: "GOOD",    value: 20, color: "var(--online)"  },
+  { name: "WARNING", value:  3, color: "var(--warning)" },
+  { name: "FAULT",   value:  2, color: "var(--fault)"   },
 ];
 
 export const topAssets = [
-  { id:"ABB-001", name:"Pump Motor #1",   type:"ABB SmartSensor",   temp:58.2, vib:3.8, status:"warning" },
-  { id:"ABB-002", name:"Crane Drive A",   type:"ABB PowerTrain",    temp:61.5, vib:4.2, status:"fault"   },
-  { id:"RND-003", name:"Compressor Unit", type:"RONDS SmartSensor", temp:55.1, vib:2.9, status:"warning" },
-  { id:"ABB-004", name:"VSD Panel #3",    type:"ABB SmartSensor",   temp:47.3, vib:1.8, status:"online"  },
-  { id:"RND-005", name:"Fan Motor B",     type:"RONDS SmartSensor", temp:44.6, vib:1.4, status:"online"  },
+  { id:"ABB-001", name:"Pump Motor #1",   type:"ABB SmartSensor",   temp:58.2, vib:3.8, link:"online",  health:"warning" },
+  { id:"ABB-002", name:"Crane Drive A",   type:"ABB PowerTrain",    temp:61.5, vib:4.2, link:"online",  health:"fault"   },
+  { id:"RND-003", name:"Compressor Unit", type:"RONDS SmartSensor", temp:55.1, vib:2.9, link:"online",  health:"warning" },
+  { id:"ABB-004", name:"VSD Panel #3",    type:"ABB SmartSensor",   temp:47.3, vib:1.8, link:"online",  health:"good"    },
+  { id:"RND-005", name:"Fan Motor B",     type:"RONDS SmartSensor", temp:0,    vib:0,   link:"offline", health:"good"    },
 ];
 
 export const recentAlerts = [
@@ -106,6 +105,19 @@ export const vibrationBarData = [
   { name:"VSD Panel #3",  value:1.8 },
 ];
 
+
 export const configDbState = {
   apiKeys: [] as string[]
 };
+
+// Dynamic summary calculators
+export const getLinkSummary = (assets: any[]) => ({
+  online: assets.filter(a => a.link === 'online').length,
+  offline: assets.filter(a => a.link === 'offline').length,
+});
+
+export const getHealthSummary = (assets: any[]) => ({
+  good: assets.filter(a => a.health === 'good').length,
+  warning: assets.filter(a => a.health === 'warning').length,
+  fault: assets.filter(a => a.health === 'fault').length,
+});

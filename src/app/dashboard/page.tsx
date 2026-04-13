@@ -51,11 +51,35 @@ export default function DashboardPage() {
     );
   }
 
-  const { kpiData, trendData, statusData, topAssets, recentAlerts, vibrationBarData } = dashboardData;
+  const { kpiData, trendData, topAssets, recentAlerts, vibrationBarData, linkSummary, healthSummary } = dashboardData;
+
+  const dynamicKPIs = [
+    {
+      label: "TOTAL NODES",
+      value: (linkSummary.online + linkSummary.offline).toString(),
+      unit: "/ 200",
+      sub: `${linkSummary.offline} nodes currently unreachable`,
+      trend: "Within capacity",
+      trendUp: true,
+      color: "var(--ptts-teal)",
+      ledClass: "led-online",
+    },
+    {
+      label: "ACTIVE ALARMS",
+      value: (healthSummary.warning + healthSummary.fault).toString(),
+      unit: "EVENTS",
+      sub: `${healthSummary.fault} fault · ${healthSummary.warning} warning`,
+      trend: "Priority: HIGH",
+      trendUp: false,
+      color: "var(--fault)",
+      ledClass: "led-fault",
+    },
+    ...kpiData.slice(2) // Keep the other 2 KPIs (Temp/Vib) from mock for now
+  ];
 
   return (
     <div className="flex min-h-screen" style={{ background:"var(--bg)" }}>
-      <Sidebar />
+      <Sidebar pollInterval={pollInterval} />
 
       <main className="flex-1 overflow-auto flex flex-col">
         {/* ── Top bar ── */}
@@ -66,13 +90,13 @@ export default function DashboardPage() {
 
           {/* KPI row */}
           <div className="grid grid-cols-4 gap-3">
-            {kpiData?.map((k: any) => <KPICard key={k.label} {...k} />)}
+            {dynamicKPIs.map((k: any) => <KPICard key={k.label} {...k} />)}
           </div>
 
           {/* Trend + Donut */}
           <div className="grid grid-cols-3 gap-3">
             <div className="col-span-2"><TrendChart trendData={trendData} /></div>
-            <div><StatusDonut statusData={statusData} /></div>
+            <div><StatusDonut linkSummary={linkSummary} healthSummary={healthSummary} /></div>
           </div>
 
           {/* Asset table + Vib bar */}
@@ -87,8 +111,8 @@ export default function DashboardPage() {
           {/* Footer bar */}
           <div className="flex items-center justify-between px-2 py-1 text-[9px] tracking-widest"
             style={{ color:"var(--text-faint)" }}>
-            <span>PTTS SMARTSENSOR IoT PLATFORM · v0.3.0</span>
-            <span>API CONNECTED · NODE.JS READY</span>
+            <span>PTTS SMARTSENSOR IoT PLATFORM · v1.1.0</span>
+            <span>LIVE DEMO · SIMULATED DATALINK</span>
             <span>SESSION: 60 MIN · JWT HS256</span>
           </div>
         </div>

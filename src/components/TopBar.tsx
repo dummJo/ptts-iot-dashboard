@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import ThemeToggle from "@/components/ThemeToggle";
+import ChangelogModal from "@/components/ChangelogModal";
 
 interface TopBarProps {
   title: string;
@@ -14,6 +15,7 @@ interface TopBarProps {
 export default function TopBar({ title, onRefresh, refreshing, connected = true, pollInterval, onPollChange }: TopBarProps) {
   const [dateStr, setDateStr] = useState("");
   const [timeStr, setTimeStr] = useState("");
+  const [showChangelog, setShowChangelog] = useState(false);
 
   useEffect(() => {
     const updateTime = () => {
@@ -54,6 +56,14 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
 
       {/* Right — controls */}
       <div className="flex items-center gap-2">
+        <button 
+          onClick={() => setShowChangelog(true)}
+          className="w-8 h-8 flex items-center justify-center rounded-sm text-[12px] font-bold transition-all border border-border bg-surface hover:bg-surface-2"
+          title="System Logs"
+          style={{ color: "var(--ptts-teal)" }}
+        >
+          ⓘ
+        </button>
         <ThemeToggle />
         {onPollChange && (
           <select value={pollInterval} onChange={(e) => onPollChange(Number(e.target.value))}
@@ -73,6 +83,8 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
           </button>
         )}
       </div>
+
+      <ChangelogModal isOpen={showChangelog} onClose={() => setShowChangelog(false)} />
     </div>
   );
 }

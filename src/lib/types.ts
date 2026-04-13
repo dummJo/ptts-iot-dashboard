@@ -33,15 +33,17 @@ export interface StatusSegment {
 }
 
 // ── Asset / Equipment ─────────────────────────────────────────────────
-export type AssetStatus = 'online' | 'warning' | 'fault' | 'offline';
+export type LinkStatus   = 'online' | 'offline';
+export type HealthStatus = 'good' | 'warning' | 'fault';
 
 export interface Asset {
   id: string;
   name: string;
   type: string;
-  temp: number;    // °C
-  vib: number;     // mm/s
-  status: AssetStatus;
+  temp: number;      // °C
+  vib: number;       // mm/s
+  link: LinkStatus;  // Connectivity status
+  health: HealthStatus; // Machine condition health
 }
 
 // ── Alarm / Alert ─────────────────────────────────────────────────────
@@ -77,7 +79,9 @@ export interface ConfigState {
 export interface DashboardData {
   kpiData: KPIItem[];
   trendData: TrendPoint[];
-  statusData: StatusSegment[];
+  statusData: StatusSegment[]; // Original for compat, but we'll use below
+  linkSummary: { online: number; offline: number };
+  healthSummary: { good: number; warning: number; fault: number };
   topAssets: Asset[];
   recentAlerts: Alarm[];
   vibrationBarData: VibrationEntry[];
@@ -97,7 +101,8 @@ export interface AssetReportRow {
   maxVib: number;
   uptime: number;       // percentage 0-100
   alarmCount: number;
-  status: AssetStatus;
+  link: LinkStatus;
+  health: HealthStatus;
 }
 
 export interface ReportSummary {

@@ -47,7 +47,7 @@ export default function AlarmsPage() {
 
   return (
     <div className="flex min-h-screen" style={{ background:"var(--bg)" }}>
-      <Sidebar />
+      <Sidebar pollInterval={pollInterval} />
       <main className="flex-1 overflow-auto flex flex-col">
         <TopBar title="ALARMS" onRefresh={handleRefresh} refreshing={refreshing} connected={dashboardData?.system?.connected} pollInterval={pollInterval} onPollChange={setPollInterval} />
         

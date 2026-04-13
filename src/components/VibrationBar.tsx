@@ -24,7 +24,7 @@ export default function VibrationBar({ vibrationData = [] }: { vibrationData?: V
             />
             <Bar dataKey="value" radius={[0,2,2,0]} barSize={12}>
               {vibrationData.map((e,i) => (
-                <Cell key={i} fill={e.value>=3.5?"#CC0000":e.value>=2.5?"#FFD700":"#003DA5"} />
+                <Cell key={i} fill={e.value >= 3.5 ? "var(--fault)" : e.value >= 2.5 ? "var(--warning)" : "var(--ptts-teal)"} />
               ))}
             </Bar>
           </BarChart>
