@@ -7,7 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.6.0] — 2026-04-13
+## [0.7.0] — 2026-04-13
+
+### Added
+- **Report Generator** — `GET /api/reports?period=...` route with full aggregated mock data (daily, weekly, monthly, 3M, 6M, 12M)
+- **Drill-down TrendChart** — Recharts `<Brush>` component enables drag-to-zoom; auto-switches granularity (5min → 15min → 1hr → daily) based on selection span
+- **Granularity selector** on TrendChart (5 MIN / 15 MIN / 1 JAM / 1 HARI / 1 MGG) mirroring DB `GROUP BY` interval logic
+- **PDF Export** — `window.print()` with branded PTTS print template (logo, company header, colored asset table, ISO notes)
+- **CSV Export** — UTF-8 BOM compatible, Excel-safe download with full report payload
+- `src/lib/types.ts` extended with `ReportPeriod`, `AssetReportRow`, `ReportSummary`
+- `apiClient.getReport(period)` — fully typed report fetch method
+- `draft/`, `analysis/`, `tests/` workspace directories tracked via `.gitkeep`
+
+### Changed
+- **Refactored project structure** — all source code moved to `src/` (Next.js standard)
+- **CSS Design Tokens** — refreshed dark and light mode palettes for higher contrast and industrial clarity
+- **README.md** — complete rewrite with industrial digitalization aesthetic, ASCII banner, architecture diagram, API table, stack matrix
+- All `any` types eliminated; replaced with strict interfaces from `src/lib/types.ts`
+
+
 
 ### Added
 - Configurable polling interval dropdown directly in the `TopBar` (5s, 1m, 5m, OFF)
