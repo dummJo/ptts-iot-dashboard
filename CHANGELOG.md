@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-04-13
+
+### Added
+- Next.js API route `/api/dashboard` as a temporary in-memory datalink store (GET/POST)
+- Auto-polling system in dashboard `page.tsx` (refreshing data every 5 seconds)
+- API connection status indicator during data load ("CONNECTING TO DATALINK...")
+
+### Changed
+- All dashboard components (`AlertsTable`, `AssetTable`, `StatusDonut`, `TrendChart`, `VibrationBar`) rewritten to be stateless and accept `props` instead of hardcoded `mock-data` imports
+- Footer labels updated to reflect active API connection ("API CONNECTED · NODE.JS READY")
+
 ## [0.4.0] — 2026-04-11
 
 ### Added
@@ -85,7 +96,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mock data: ABB SmartSensor + RONDS SmartSensor asset set
 - Recharts and lucide-react dependencies
 
-[Unreleased]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.1.0...v0.2.0
