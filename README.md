@@ -13,11 +13,12 @@
 **PT PRIMA TEKINDO TIRTA SEJAHTERA**
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.x-black?style=flat-square&logo=next.js)](https://nextjs.org)
+[![NestJS](https://img.shields.io/badge/NestJS-10.x-E0234E?style=flat-square&logo=nestjs)](https://nestjs.com)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-336791?style=flat-square&logo=postgresql)](https://postgresql.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript)](https://typescriptlang.org)
-[![Vercel](https://img.shields.io/badge/Deploy-Vercel-black?style=flat-square&logo=vercel)](https://vercel.com)
 [![License](https://img.shields.io/badge/License-Private-red?style=flat-square)]()
 
-> **Sistem Monitoring Industrial berbasis Web** — menghubungkan data sensor ABB / RONDS secara real-time ke dashboard SCADA/HMI berbasis browser, tanpa ketergantungan pada perangkat lokal.
+> **Sistem Monitoring Industrial berbasis Web** — menghubungkan data sensor ABB / RONDS secara real-time ke dashboard SCADA/HMI berbasis browser, dengan backend NestJS dan database PostgreSQL.
 
 </div>
 
@@ -35,14 +36,19 @@
            │
            ▼
   ┌─────────────────────┐
-  │  Backend Worker API  │  ← NestJS / Express.js
-  │  (Validation + Agg)  │     + PostgreSQL / Supabase
+  │  NestJS Backend API  │  ← port 3001
+  │  5 Microservices     │     TypeORM + PostgreSQL
+  │  - Telemetry         │
+  │  - Config            │
+  │  - Reports           │
+  │  - Alarms            │
+  │  - Assets            │
   └────────┬────────────┘
            │  (REST / HTTP)
            ▼
   ┌─────────────────────┐
-  │  Frontend Dashboard  │  ← Next.js 16 (Vercel)
-  │  SCADA / HMI Layer   │     + Recharts + TypeScript
+  │  Next.js Dashboard   │  ← port 3000
+  │  SCADA / HMI Layer   │     Recharts + TypeScript
   └─────────────────────┘
            │
            ▼
@@ -51,6 +57,8 @@
 
 > **Cross-Domain Mapping:**
 > `Sensor` → `MQTT` → `NestJS (PLC)` → `PostgreSQL (Historian)` → `Next.js (HMI/SCADA)`
+
+**Backend Repository:** [dummJo/ptts-iot-backend](https://github.com/dummJo/ptts-iot-backend)
 
 ---
 
@@ -69,11 +77,16 @@
 
 ## 🚀 Quick Start
 
+Lihat [SETUP.md](./SETUP.md) untuk panduan lengkap setup backend + database.
+
 ```bash
-# 1. Install dependencies
+# 1. Jalankan backend terlebih dahulu (port 3001)
+cd ../ptts-iot-backend && npm run start:dev
+
+# 2. Install dependencies frontend
 npm install
 
-# 2. Jalankan development server
+# 3. Jalankan development server (port 3000)
 npm run dev
 ```
 
@@ -90,24 +103,24 @@ Buka [http://localhost:3000](http://localhost:3000). Sistem akan otomatis redire
 
 ## 🔌 Integrasi Backend
 
-Dashboard ini dirancang untuk **zero-frontend-change migration** — cukup arahkan satu variabel environment:
+Dashboard ini terhubung ke **NestJS backend** yang berjalan di `localhost:3001`. Semua API route Next.js berfungsi sebagai proxy ke backend dengan retry logic otomatis.
 
 ```env
 # .env.local
-NEXT_PUBLIC_API_BASE_URL="http://localhost:8080"
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
 ```
 
-Seluruh fetching dashboard, config, dan report generator akan otomatis menggunakan backend baru.
-
-### Endpoint yang diharapkan backend:
+### Endpoint Backend (NestJS):
 
 | Method | Endpoint | Deskripsi |
 |---|---|---|
-| `GET` | `/api/dashboard` | Telemetry data + system status |
-| `POST` | `/api/dashboard` | Push data dari sensor/worker |
+| `GET` | `/api/dashboard` | Telemetry aggregation + KPI + system status |
 | `GET` | `/api/config` | Baca API Key tersimpan |
 | `POST` | `/api/config` | Simpan API Key |
-| `GET` | `/api/reports?period=monthly` | Data agregat per periode |
+| `GET` | `/api/reports?period={period}` | Data agregat per periode |
+| `PATCH` | `/api/alarms/{id}/ack` | Acknowledge alarm |
+| `GET` | `/api/assets/{id}` | Detail aset |
+| `PUT` | `/api/assets/{id}` | Update data aset |
 
 > Period yang valid: `daily`, `weekly`, `monthly`, `3months`, `6months`, `12months`
 
@@ -119,17 +132,17 @@ Seluruh fetching dashboard, config, dan report generator akan otomatis menggunak
 /
 ├── src/                  ← Kode produksi
 │   ├── app/              ← Next.js App Router
-│   │   ├── api/          ← Backend proxy routes (mock DB)
+│   │   ├── api/          ← Proxy routes ke NestJS backend
+│   │   │   ├── dashboard/route.ts
+│   │   │   ├── config/route.ts
+│   │   │   └── reports/route.ts
 │   │   └── dashboard/    ← Halaman SCADA
 │   ├── components/       ← Komponen UI modular
 │   └── lib/
 │       ├── apiClient.ts  ← Centralized data service layer
 │       ├── types.ts      ← Semua TypeScript interfaces
-│       ├── mock-data.ts  ← Dummy data (diganti DB nanti)
 │       └── session.ts    ← JWT session handler
-├── draft/                ← Kode AI mentah (belum direview)
-├── analysis/             ← Catatan arsitektur & debugging
-├── tests/                ← Test suite
+├── SETUP.md              ← Panduan setup lengkap (DB, backend, frontend)
 ├── ARCHITECTURE.md       ← Spesifikasi arsitektur sistem
 └── CHANGELOG.md          ← Riwayat perubahan
 ```
@@ -142,10 +155,10 @@ Seluruh fetching dashboard, config, dan report generator akan otomatis menggunak
 |---|---|
 | **Frontend** | Next.js 16, TypeScript, Tailwind CSS |
 | **Chart** | Recharts (drill-down zoom support) |
-| **Auth** | JWT HS256, HTTPOnly Cookie, bcrypt-ready |
-| **Backend (Target)** | NestJS / Express.js |
-| **Database (Target)** | PostgreSQL / Supabase / MySQL |
-| **Broker (Target)** | MQTT Cloud Broker |
+| **Auth** | JWT HS256, HTTPOnly Cookie |
+| **Backend** | NestJS 10, TypeORM, class-validator |
+| **Database** | PostgreSQL 14+ |
+| **Broker (Planned)** | MQTT Cloud Broker |
 | **Deploy** | Vercel (Frontend), Railway / Render (Backend) |
 
 ---
@@ -156,7 +169,21 @@ Fitur laporan otomatis berstandar **PT Prima Tekindo Tirta Sejahtera**:
 
 - **Periode**: 1 hari, 7 hari, 30 hari, 3 bulan, 6 bulan, 12 bulan
 - **Isi Laporan**: AVG/MAX suhu & getaran per aset, uptime %, jumlah alarm
+- **Sumber Data**: Agregasi real-time dari PostgreSQL via NestJS
 - **Export**: PDF (via print) + CSV (UTF-8, Excel-compatible)
+
+---
+
+## 🗃️ Database Schema
+
+```sql
+assets       — Registri aset dengan status real-time
+telemetry    — Time-series data suhu & getaran
+alarm        — Log alarm dengan status acknowledged
+system_config — Konfigurasi API keys & pengaturan sistem
+```
+
+Detail lengkap di [SETUP.md](./SETUP.md#database-schema).
 
 ---
 
@@ -165,8 +192,9 @@ Fitur laporan otomatis berstandar **PT Prima Tekindo Tirta Sejahtera**:
 - Session JWT dengan expiry 60 menit
 - Cookie `httpOnly` — tidak dapat diakses JavaScript
 - SHA-256 password hashing (upgrade ke bcrypt untuk produksi)
-- SQL Injection pattern blocking pada input sanitizer
-- Semua data mengalir melalui API layer — **tidak ada akses DB dari Frontend**
+- SQL Injection protection via TypeORM parameterized queries
+- CORS dikonfigurasi eksplisit — hanya origin yang diizinkan
+- Semua data mengalir melalui API layer — **tidak ada akses DB langsung dari Frontend**
 
 ---
 
@@ -179,9 +207,9 @@ Fitur laporan otomatis berstandar **PT Prima Tekindo Tirta Sejahtera**:
 
 <div align="center">
 
-**PTTS SmartSensor IoT Platform · v0.6.0**
-*Lean architecture for demonstration — expandable toward production*
+**PTTS SmartSensor IoT Platform · v0.7.0**
+*Full-stack integration: NestJS + PostgreSQL + Next.js*
 
-`Sensor → MQTT → Backend → Database → Dashboard → User`
+`Sensor → MQTT → NestJS → PostgreSQL → Next.js → User`
 
 </div>
