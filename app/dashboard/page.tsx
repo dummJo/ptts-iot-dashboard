@@ -56,7 +56,7 @@ export default function DashboardPage() {
 
       <main className="flex-1 overflow-auto flex flex-col">
         {/* ── Top bar ── */}
-        <TopBar title="OVERVIEW" onRefresh={handleRefresh} refreshing={refreshing} />
+        <TopBar title="OVERVIEW" onRefresh={handleRefresh} refreshing={refreshing} connected={dashboardData?.system?.connected} />
 
         {/* ── Content ── */}
         <div className="flex-1 p-4 space-y-3">

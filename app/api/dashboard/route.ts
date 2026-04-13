@@ -6,6 +6,7 @@ import {
   topAssets,
   recentAlerts,
   vibrationBarData,
+  configDbState,
 } from '@/lib/mock-data';
 
 // In-memory data store using the mock data as the initial state
@@ -19,7 +20,15 @@ let dashboardState = {
 };
 
 export async function GET() {
-  return NextResponse.json(dashboardState);
+  const isConnected = configDbState.apiKeys && configDbState.apiKeys.length > 0;
+  
+  return NextResponse.json({
+    ...dashboardState,
+    system: {
+      connected: isConnected,
+      lastSync: isConnected ? new Date().toISOString() : "Not Connected"
+    }
+  });
 }
 
 export async function POST(req: Request) {
@@ -27,8 +36,21 @@ export async function POST(req: Request) {
     const data = await req.json();
     // Allow partial updates to the dashboard state
     dashboardState = { ...dashboardState, ...data };
-    return NextResponse.json({ success: true, state: dashboardState });
+    
+    const isConnected = configDbState.apiKeys && configDbState.apiKeys.length > 0;
+
+    return NextResponse.json({ 
+      success: true, 
+      state: {
+         ...dashboardState,
+         system: {
+           connected: isConnected,
+           lastSync: isConnected ? new Date().toISOString() : "Not Connected"
+         }
+      } 
+    });
   } catch (error) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 }
+

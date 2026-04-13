@@ -6,9 +6,10 @@ interface TopBarProps {
   title: string;
   onRefresh?: () => void;
   refreshing?: boolean;
+  connected?: boolean;
 }
 
-export default function TopBar({ title, onRefresh, refreshing }: TopBarProps) {
+export default function TopBar({ title, onRefresh, refreshing, connected = true }: TopBarProps) {
   const [dateStr, setDateStr] = useState("");
   const [timeStr, setTimeStr] = useState("");
 
@@ -40,10 +41,13 @@ export default function TopBar({ title, onRefresh, refreshing }: TopBarProps) {
       <div className="flex items-center gap-3 text-[9px] font-mono">
         <span style={{ color:"var(--text-faint)" }}>{dateStr.toUpperCase()}</span>
         <span className="tabular-nums" style={{ color:"var(--text-muted)" }}>{timeStr}</span>
-        <span className="flex items-center gap-1.5">
-          <span className="led led-online" style={{ width:6, height:6 }} />
-          <span style={{ color:"#00e676" }}>LIVE</span>
-        </span>
+        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm" 
+          style={{ background: connected ? "#00e67610" : "#CC000010", border: `1px solid ${connected ? "#00e67640" : "#CC000040"}` }}>
+          <span className={`led ${connected ? "led-online" : "led-fault"}`} style={{ width:6, height:6 }} />
+          <span style={{ color: connected ? "#00e676" : "#CC0000" }} className="tracking-widest font-bold">
+            {connected ? "LIVE" : "OFFLINE (RETAINED DATA)"}
+          </span>
+        </div>
       </div>
 
       {/* Right — controls */}

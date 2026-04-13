@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
 import TopBar from "@/components/TopBar";
 import { createUserAction, fetchUsersAction } from "@/app/actions/auth";
+import { apiClient } from "@/lib/apiClient";
 
 export default function SettingsPage() {
   const [apiKeys, setApiKeys] = useState({
@@ -10,6 +11,7 @@ export default function SettingsPage() {
     smartSensorRonds: "",
   });
   const [savedKeys, setSavedKeys] = useState<string[]>([]);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [tab, setTab] = useState<"swagger" | "api" | "users">("swagger");
   const [newUser, setNewUser] = useState({ username: "", password: "", role: "operator" });
   const [userCreated, setUserCreated] = useState<{ success: boolean; message: string } | null>(null);
@@ -18,16 +20,35 @@ export default function SettingsPage() {
   const [isFetchingUsers, setIsFetchingUsers] = useState(false);
   const [hoveredHash, setHoveredHash] = useState<string | null>(null);
 
+  useEffect(() => {
+    async function initConfig() {
+      try {
+        const cfg = await apiClient.getConfig();
+        if (cfg.apiKeys) setSavedKeys(cfg.apiKeys);
+      } catch (e) {
+        console.error("Config load error", e);
+      }
+    }
+    initConfig();
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setApiKeys(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSaveKey = (key: string) => {
+  const handleSaveKey = async (key: string) => {
     if (apiKeys[key as keyof typeof apiKeys]) {
-      setSavedKeys(prev =>
-        prev.includes(key) ? prev : [...prev, key]
-      );
+      setIsSyncing(true);
+      const newKeys = savedKeys.includes(key) ? savedKeys : [...savedKeys, key];
+      setSavedKeys(newKeys);
+      try {
+        await apiClient.saveConfig(newKeys);
+      } catch (e) {
+        console.error("Config save error", e);
+      } finally {
+        setIsSyncing(false);
+      }
     }
   };
 

@@ -45,5 +45,36 @@ export const apiClient = {
       console.error("API Client Error (pushTelemetryData):", error);
       throw error;
     }
+  },
+
+  /**
+   * Fetches the current API system configuration
+   */
+  async getConfig() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/config`, { cache: 'no-store' });
+      if (!res.ok) throw new Error("Failed to load config");
+      return await res.json();
+    } catch (error) {
+      console.error("API Client Error (getConfig):", error);
+      throw error;
+    }
+  },
+
+  /**
+   * Saves API Keys to the backend mock DB
+   */
+  async saveConfig(apiKeys: string[]) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/config`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apiKeys }),
+      });
+      return await res.json();
+    } catch (error) {
+      console.error("API Client Error (saveConfig):", error);
+      throw error;
+    }
   }
 };

@@ -45,7 +45,7 @@ export default function AlarmsPage() {
     <div className="flex min-h-screen" style={{ background:"var(--bg)" }}>
       <Sidebar />
       <main className="flex-1 overflow-auto flex flex-col">
-        <TopBar title="ALARMS" onRefresh={handleRefresh} refreshing={refreshing} />
+        <TopBar title="ALARMS" onRefresh={handleRefresh} refreshing={refreshing} connected={dashboardData?.system?.connected} />
         
         <div className="flex-1 p-4 space-y-3">
           <div className="flex gap-2">

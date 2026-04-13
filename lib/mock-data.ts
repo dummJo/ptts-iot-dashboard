@@ -105,3 +105,7 @@ export const vibrationBarData = [
   { name:"Fan Motor B",   value:2.4 },
   { name:"VSD Panel #3",  value:1.8 },
 ];
+
+export const configDbState = {
+  apiKeys: [] as string[]
+};

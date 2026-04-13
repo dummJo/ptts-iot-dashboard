@@ -46,7 +46,7 @@ export default function AssetsPage() {
     <div className="flex min-h-screen" style={{ background:"var(--bg)" }}>
       <Sidebar />
       <main className="flex-1 overflow-auto flex flex-col">
-        <TopBar title="ASSETS" onRefresh={handleRefresh} refreshing={refreshing} />
+        <TopBar title="ASSETS" onRefresh={handleRefresh} refreshing={refreshing} connected={dashboardData?.system?.connected} />
         
         <div className="flex-1 p-4 flex flex-col gap-3">
           <div className="grid grid-cols-4 gap-3">
