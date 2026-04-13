@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-04-13
+
+### Added
+- Configurable polling interval dropdown directly in the `TopBar` (5s, 1m, 5m, OFF)
+- Mock CRUD Database via `/api/config` route to permanently save and read API Key configurations
+- Architectural specification document (`ARCHITECTURE.md`) outlining Cloud backend integration
+- System state tracking showing "LIVE DEMO" during active loops or "OFFLINE (RETAINED DATA)" when backend is disconnected/no keys found
+
+### Changed
+- Dashboard `TopBar` completely unified across all sub-pages (`assets`, `reports`, `alerts`)
+- `Settings` page modernized into a true CRUD client sending JSON payloads to the database
+- Realigned text contrast and glowing typography on `Login` page to meet high-vibility SCADA requirements
 ## [0.5.0] — 2026-04-13
 
 ### Added
