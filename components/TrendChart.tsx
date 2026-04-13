@@ -1,8 +1,7 @@
 "use client";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, ReferenceLine } from "recharts";
-import { trendData } from "@/lib/mock-data";
 
-export default function TrendChart() {
+export default function TrendChart({ trendData = [] }: { trendData?: any[] }) {
   return (
     <div className="scada-card flex flex-col">
       <div className="scada-card-header">

@@ -1,12 +1,10 @@
-import { recentAlerts } from "@/lib/mock-data";
-
 const sev: Record<string, { led:string; color:string; bg:string }> = {
   critical: { led:"led-fault",   color:"#CC0000", bg:"#CC000012" },
   warning:  { led:"led-warning", color:"#FFD700", bg:"#FFD70010" },
   info:     { led:"led-online",  color:"#00e676", bg:"#00e67608" },
 };
 
-export default function AlertsTable() {
+export default function AlertsTable({ alerts = [] }: { alerts?: any[] }) {
   return (
     <div className="scada-card flex flex-col">
       <div className="scada-card-header">
@@ -19,7 +17,7 @@ export default function AlertsTable() {
         </div>
       </div>
       <div className="p-4 grid grid-cols-3 gap-3">
-        {recentAlerts.map((a) => {
+        {alerts.map((a) => {
           const s = sev[a.severity] ?? sev.info;
           return (
             <div key={a.id} className="rounded-sm p-3 flex flex-col gap-2"

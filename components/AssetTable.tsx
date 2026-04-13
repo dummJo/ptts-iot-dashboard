@@ -1,5 +1,4 @@
 "use client";
-import { topAssets } from "@/lib/mock-data";
 
 const statusMap: Record<string, { cls: string; label: string }> = {
   online:  { cls: "led-online",  label: "ONLINE"  },
@@ -8,7 +7,7 @@ const statusMap: Record<string, { cls: string; label: string }> = {
   offline: { cls: "led-offline", label: "OFFLINE" },
 };
 
-export default function AssetTable() {
+export default function AssetTable({ assets = [] }: { assets?: any[] }) {
   return (
     <div className="scada-card flex flex-col">
       <div className="scada-card-header">
@@ -30,7 +29,7 @@ export default function AssetTable() {
             </tr>
           </thead>
           <tbody>
-            {topAssets.map((a, idx) => {
+            {assets.map((a, idx) => {
               const st = statusMap[a.status];
               const tempColor = a.temp > 60 ? "#CC0000" : a.temp > 55 ? "#FFD700" : "var(--text)";
               const vibColor  = a.vib > 3.5 ? "#CC0000" : a.vib > 2.5 ? "#FFD700" : "#003DA5";
