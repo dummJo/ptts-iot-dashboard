@@ -34,19 +34,19 @@ const T: Record<Lang, {
   zh: { sub:"操作员登录",             uid:"操作员 ID",     uid_ph:"请输入操作员 ID",          pwd:"密码",       pwd_ph:"请输入密码",               remember:"保持登录",        btn:"登录",      pending:"验证中...", footer:"PT 普里马 特金多 蒂尔塔 塞贾特拉" },
 };
 
-/* ── colour tokens ─────────────────────────────────────────── */
+/* ── colour tokens — PTTS Blue ─────────────────────────────── */
 const C = {
-  bg:       "#0e0d0b",
-  bgPanel:  "#111009",
-  bgInput:  "#0a0908",
-  bgCard:   "#131210",
-  border:   "#2a2620",
-  borderHi: "#c9a96e",
-  cream:    "#e8e2d6",
-  muted:    "#7a7060",
-  faint:    "#3a3428",
-  gold:     "#c9a96e",
-  goldDim:  "#a07d4a",
+  bg:       "#080b10",
+  bgPanel:  "#0a0f18",
+  bgInput:  "#060911",
+  bgCard:   "#0d1220",
+  border:   "#182030",
+  borderHi: "#00A3B4",
+  cream:    "#d4e8f0",
+  muted:    "#5a8090",
+  faint:    "#1a2d3a",
+  gold:     "#00A3B4",
+  goldDim:  "#005F8E",
 };
 
 /* ── Subtle grid background ────────────────────────────────── */
