@@ -43,7 +43,7 @@ export default function AssetTable({ assets = [] }: { assets?: Asset[] }) {
                   <td className="px-3 py-3 font-mono text-[9px]" style={{ color: "var(--text-faint)" }}>{a.id}</td>
                   <td className="px-3 py-3 font-bold" style={{ color: "var(--text)" }}>{a.name}</td>
                   <td className="px-3 py-3 text-[9px] tracking-wide" style={{ color: "var(--text-muted)" }}>
-                    {a.type.replace("ABB ", "").replace("RONDS ", "").toUpperCase()}
+                    {a.type.replace("PTTS ", "").replace("RONDS ", "").toUpperCase()}
                   </td>
                   <td className="px-3 py-3 text-right font-mono font-bold tabular-nums"
                     style={{ color: tempColor }}>{formatTemp(a.temp)}</td>

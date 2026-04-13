@@ -7,7 +7,7 @@ import { apiClient } from "@/lib/apiClient";
 
 export default function SettingsPage() {
   const [apiKeys, setApiKeys] = useState({
-    smartSensorABB: "",
+    smartSensorPTTS: "",
     smartSensorRonds: "",
   });
   const [savedKeys, setSavedKeys] = useState<string[]>([]);
@@ -152,38 +152,40 @@ export default function SettingsPage() {
                 style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
                 <div>
                   <h2 className="text-sm font-bold tracking-widest mb-3"
-                    style={{ color: "#00A3B4" }}>ABB ABILITY™ CLOUD INTERFACE DOCUMENTATION</h2>
+                    style={{ color: "#00A3B4" }}>PTTS SMARTSENSOR — API DOCUMENTATION</h2>
 
                   <div className="space-y-3 text-[9px]" style={{ color: "var(--text-muted)" }}>
                     <div className="p-3 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
-                      <p className="font-bold mb-1">📖 Cloud Interface for Condition Monitoring</p>
+                      <p className="font-bold mb-1">📖 PTTS Backend REST API</p>
                       <p className="text-[8px] leading-relaxed mb-2">
-                        This SCADA dashboard is prepared to integrate directly with the ABB Ability™ Condition Monitoring for powertrains account. 
-                        The backend connects to ABB&#39;s infrastructure using the API Keys specified in the configuration tab.
+                        Dashboard ini terhubung ke backend NestJS PTTS yang berjalan di <span className="font-mono text-[#00A3B4]">localhost:3001</span>.
+                        Seluruh data telemetri, alarm, dan konfigurasi diproses melalui API layer ini sebelum ditampilkan di SCADA UI.
                       </p>
-                      <a href="https://api.conditionmonitoring.motion.abb.com/swagger/index.html?urls.primaryName=Cloud+Interface+for+ABB+Ability+Condition+Monitoring+for+powertrains+account#/Account/UpdateApiKey"
+                      <a href="http://localhost:3001/api/dashboard"
                          target="_blank" rel="noopener noreferrer"
                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-sm font-bold tracking-widest transition-all hover:opacity-80"
                          style={{ background: "#005F8E20", color: "#00A3B4", border: "1px solid #00A3B450" }}>
-                        ↗ OPEN ABB SWAGGER UI
+                        ↗ OPEN BACKEND API
                       </a>
                     </div>
 
                     <div className="p-3 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
-                      <p className="font-bold mb-1">🔌 Primary Endpoints Referenced</p>
+                      <p className="font-bold mb-1">🔌 Available Endpoints</p>
                       <div className="space-y-1 font-mono text-[8px]" style={{ color: "#00e676" }}>
-                        <div><span style={{ color: "var(--text-muted)" }}>PUT</span> /Account/UpdateApiKey</div>
-                        <div><span style={{ color: "var(--text-muted)" }}>GET</span> /Assets (ABB Powertrain endpoints)</div>
-                        <div><span style={{ color: "var(--text-muted)" }}>GET</span> /Measurements</div>
+                        <div><span style={{ color: "var(--text-muted)" }}>GET</span>   /api/dashboard</div>
+                        <div><span style={{ color: "var(--text-muted)" }}>GET</span>   /api/reports?period=monthly</div>
+                        <div><span style={{ color: "var(--text-muted)" }}>GET</span>   /api/config</div>
+                        <div><span style={{ color: "var(--text-muted)" }}>POST</span>  /api/config</div>
+                        <div><span style={{ color: "var(--text-muted)" }}>PATCH</span> /api/alarms/:id/ack</div>
+                        <div><span style={{ color: "var(--text-muted)" }}>GET</span>   /api/assets/:id</div>
                       </div>
                     </div>
 
                     <div className="p-3 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
                       <p className="font-bold mb-1">🔐 Authentication & Integration</p>
                       <p className="text-[8px] leading-relaxed">
-                        Data from ABB SmartSensors is pulled securely via API keys. 
-                        Ensure your backend utilizes standard HTTPS requests to <span className="font-mono text-[#00A3B4]">api.conditionmonitoring.motion.abb.com</span> 
-                        and proxies the aggregated real-time data back to <span className="font-mono text-[#00A3B4]">/api/dashboard</span> for this SCADA UI.
+                        Data SmartSensor PTTS & RONDS ditarik secara aman via API key dan diproses oleh backend NestJS.
+                        Backend memproxy data ke <span className="font-mono text-[#00A3B4]">/api/dashboard</span> untuk konsumsi SCADA UI ini.
                       </p>
                     </div>
                   </div>
@@ -200,16 +202,16 @@ export default function SettingsPage() {
                     style={{ color: "#00A3B4" }}>API KEY MANAGEMENT</h2>
 
                   <div className="space-y-4">
-                    {/* ABB API Key */}
+                    {/* PTTS API Key */}
                     <div className="p-4 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
-                      <label className="scada-label block mb-2">SmartSensor API Key — ABB</label>
+                      <label className="scada-label block mb-2">SmartSensor API Key — PTTS</label>
                       <div className="flex gap-2">
                         <input
-                          type={savedKeys.includes("smartSensorABB") ? "password" : "text"}
-                          name="smartSensorABB"
-                          value={apiKeys.smartSensorABB}
+                          type={savedKeys.includes("smartSensorPTTS") ? "password" : "text"}
+                          name="smartSensorPTTS"
+                          value={apiKeys.smartSensorPTTS}
                           onChange={handleInputChange}
-                          placeholder="Enter ABB SmartSensor API key"
+                          placeholder="Enter PTTS SmartSensor API key"
                           className="flex-1 px-3 py-2.5 text-sm rounded-sm outline-none transition-all"
                           style={{
                             background: "var(--bg)",
@@ -218,18 +220,18 @@ export default function SettingsPage() {
                           }}
                         />
                         <button
-                          onClick={() => handleSaveKey("smartSensorABB")}
+                          onClick={() => handleSaveKey("smartSensorPTTS")}
                           className="px-4 py-2.5 text-[9px] font-bold rounded-sm transition-all tracking-widest"
                           style={{
-                            background: savedKeys.includes("smartSensorABB") ? "#00A3B4" : "#005F8E",
+                            background: savedKeys.includes("smartSensorPTTS") ? "#00A3B4" : "#005F8E",
                             color: "#fff",
                             border: "1px solid var(--border)"
                           }}>
-                          {savedKeys.includes("smartSensorABB") ? "✓ SAVED" : "SAVE"}
+                          {savedKeys.includes("smartSensorPTTS") ? "✓ SAVED" : "SAVE"}
                         </button>
                       </div>
                       <p className="text-[8px] mt-2" style={{ color: "var(--text-faint)" }}>
-                        API key for ABB SmartSensor integration. Required for device communication.
+                        API key untuk integrasi PTTS SmartSensor. Diperlukan untuk komunikasi perangkat.
                       </p>
                     </div>
 

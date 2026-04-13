@@ -139,7 +139,7 @@ function PrintTemplate({ report }: { report: ReportSummary }) {
 
       {/* Notes */}
       <div style={{ fontSize:9, color:"#888", borderTop:"1px solid #ccc", paddingTop:10, marginTop:8 }}>
-        <b>Catatan:</b> Laporan ini dibuat secara otomatis oleh sistem PTTS SmartSensor. Batas suhu normal: &lt;60°C. Batas getaran normal (ISO 10816-3): &lt;3.5 mm/s RMS. Data bersumber dari unit ABB SmartSensor & RONDS SmartSensor.
+        <b>Catatan:</b> Laporan ini dibuat secara otomatis oleh sistem PTTS SmartSensor. Batas suhu normal: &lt;60°C. Batas getaran normal (ISO 10816-3): &lt;3.5 mm/s RMS. Data bersumber dari unit PTTS SmartSensor & RONDS SmartSensor.
       </div>
       <div style={{ fontSize:9, color:"#888", marginTop:8, display:"flex", justifyContent:"space-between" }}>
         <span>PTTS SmartSensor IoT Platform · v1.1.0 (LIVE DEMO)</span>
@@ -372,7 +372,7 @@ export default function TrendsPage() {
 
                   {/* Footer note */}
                   <div className="text-[9px] tracking-wide px-1" style={{ color:"var(--text-faint)" }}>
-                    * Laporan otomatis — batas suhu normal &lt;60°C · batas getaran ISO 10816-3 &lt;3.5 mm/s RMS. Data bersumber dari unit ABB & RONDS.
+                    * Laporan otomatis — batas suhu normal &lt;60°C · batas getaran ISO 10816-3 &lt;3.5 mm/s RMS. Data bersumber dari unit PTTS & RONDS SmartSensor.
                   </div>
                 </div>
               )}

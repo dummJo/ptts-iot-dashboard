@@ -63,10 +63,10 @@ export const statusData = [
 ];
 
 export const topAssets = [
-  { id:"ABB-001", name:"Pump Motor #1",   type:"ABB SmartSensor",   temp:58.2, vib:3.8, link:"online",  health:"warning" },
-  { id:"ABB-002", name:"Crane Drive A",   type:"ABB PowerTrain",    temp:61.5, vib:4.2, link:"online",  health:"fault"   },
+  { id:"PTS-001", name:"Pump Motor #1",   type:"PTTS SmartSensor",  temp:58.2, vib:3.8, link:"online",  health:"warning" },
+  { id:"PTS-002", name:"Crane Drive A",   type:"PTTS SmartSensor",  temp:61.5, vib:4.2, link:"online",  health:"fault"   },
   { id:"RND-003", name:"Compressor Unit", type:"RONDS SmartSensor", temp:55.1, vib:2.9, link:"online",  health:"warning" },
-  { id:"ABB-004", name:"VSD Panel #3",    type:"ABB SmartSensor",   temp:47.3, vib:1.8, link:"online",  health:"good"    },
+  { id:"PTS-004", name:"VSD Panel #3",    type:"PTTS SmartSensor",  temp:47.3, vib:1.8, link:"online",  health:"good"    },
   { id:"RND-005", name:"Fan Motor B",     type:"RONDS SmartSensor", temp:0,    vib:0,   link:"offline", health:"good"    },
 ];
 
