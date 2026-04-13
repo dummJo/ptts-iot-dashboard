@@ -36,30 +36,30 @@
   --sidebar-bg:  #030508;
 }
 
-/* Light mode — Sharp industrial High Contrast */
+/* Light mode — Warm industrial, high contrast */
 .light {
-  --bg:          #f0f4f8;
-  --surface:     #ffffff;
-  --surface-2:   #f8fafc;
-  --surface-3:   #ffffff;
-  --border:      #94a3b8;
-  --border-dim:  #cbd5e1;
-  --text:        #000000;
-  --text-muted:  #1e293b;
-  --text-faint:  #475569;
-  --text-bright: #000000;
-  --sidebar-bg:  #e2e8f0;
+  --bg:          #f5f0e8;
+  --surface:     #fdf9f3;
+  --surface-2:   #f0ebe0;
+  --surface-3:   #e8e0d0;
+  --border:      #b8a890;
+  --border-dim:  #d4c8b0;
+  --text:        #1a1208;
+  --text-muted:  #3d2e18;
+  --text-faint:  #6b5440;
+  --text-bright: #0d0800;
+  --sidebar-bg:  #e8e0d0;
 
-  /* Keep brand colors saturated */
-  --ptts:        #005F8E;
-  --ptts-teal:   #0d9488;
-  --ptts-glow:   #0d948830;
+  /* Brand colors — deepened for warm bg */
+  --ptts:        #004f78;
+  --ptts-teal:   #007a8a;
+  --ptts-glow:   #007a8a30;
 
-  /* Status (Deep contrast) */
-  --online:      #059669;
-  --warning:     #d97706;
-  --fault:       #dc2626;
-  --offline:     #475569;
+  /* Status — deepened for readability on warm bg */
+  --online:      #1a7a4a;
+  --warning:     #b85c00;
+  --fault:       #b81c1c;
+  --offline:     #6b5440;
 }
 
 body {
