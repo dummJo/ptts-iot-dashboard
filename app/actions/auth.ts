@@ -163,5 +163,5 @@ export async function getCurrentSessionAction(): Promise<
     return { success: false, error: "Invalid session." };
   }
 
-  return { success: true, username: session.username, role: session.role };
+  return { success: true, username: session.username as string, role: session.role as string };
 }

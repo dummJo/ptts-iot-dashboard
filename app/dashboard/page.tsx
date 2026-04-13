@@ -6,6 +6,7 @@ import TrendChart from "@/components/TrendChart";
 import StatusDonut from "@/components/StatusDonut";
 import VibrationBar from "@/components/VibrationBar";
 import AssetTable from "@/components/AssetTable";
+import AlertsTable from "@/components/AlertsTable";
 import ThemeToggle from "@/components/ThemeToggle";
 import TopBar from "@/components/TopBar";
 import { apiClient } from "@/lib/apiClient";
