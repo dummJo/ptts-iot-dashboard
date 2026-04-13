@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
-import ThemeToggle from "@/components/ThemeToggle";
+import TopBar from "@/components/TopBar";
 import { createUserAction, fetchUsersAction } from "@/app/actions/auth";
 
 export default function SettingsPage() {
@@ -86,20 +86,7 @@ export default function SettingsPage() {
 
       <main className="flex-1 overflow-auto flex flex-col">
         {/* Top bar */}
-        <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-2"
-          style={{ background: "var(--sidebar-bg)", borderBottom: "1px solid var(--border)", minHeight: 40 }}>
-          <div className="flex items-center gap-2 text-[9px] tracking-widest font-bold">
-            <span style={{ color: "var(--text-faint)" }}>PTTS</span>
-            <span style={{ color: "var(--border)" }}>›</span>
-            <span style={{ color: "var(--text-faint)" }}>SMARTSENSOR</span>
-            <span style={{ color: "var(--border)" }}>›</span>
-            <span style={{ color: "#00A3B4" }}>CONFIG</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-          </div>
-        </div>
+        <TopBar title="CONFIG" />
 
         {/* Content */}
         <div className="flex-1 p-4">
@@ -144,33 +131,38 @@ export default function SettingsPage() {
                 style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
                 <div>
                   <h2 className="text-sm font-bold tracking-widest mb-3"
-                    style={{ color: "#00A3B4" }}>SMARTSENSOR API DOCUMENTATION</h2>
+                    style={{ color: "#00A3B4" }}>ABB ABILITY™ CLOUD INTERFACE DOCUMENTATION</h2>
 
                   <div className="space-y-3 text-[9px]" style={{ color: "var(--text-muted)" }}>
                     <div className="p-3 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
-                      <p className="font-bold mb-1">📖 OpenAPI 3.0 Schema</p>
-                      <p className="text-[8px] leading-relaxed">
-                        SmartSensor IoT Platform exposes REST API endpoints for asset monitoring,
-                        sensor data retrieval, and real-time alerts. Full API documentation available
-                        at <span style={{ color: "#00A3B4" }}>/api/docs/swagger</span> (localhost development).
+                      <p className="font-bold mb-1">📖 Cloud Interface for Condition Monitoring</p>
+                      <p className="text-[8px] leading-relaxed mb-2">
+                        This SCADA dashboard is prepared to integrate directly with the ABB Ability™ Condition Monitoring for powertrains account. 
+                        The backend connects to ABB&#39;s infrastructure using the API Keys specified in the configuration tab.
                       </p>
+                      <a href="https://api.conditionmonitoring.motion.abb.com/swagger/index.html?urls.primaryName=Cloud+Interface+for+ABB+Ability+Condition+Monitoring+for+powertrains+account#/Account/UpdateApiKey"
+                         target="_blank" rel="noopener noreferrer"
+                         className="inline-flex items-center gap-1 px-3 py-1.5 rounded-sm font-bold tracking-widest transition-all hover:opacity-80"
+                         style={{ background: "#005F8E20", color: "#00A3B4", border: "1px solid #00A3B450" }}>
+                        ↗ OPEN ABB SWAGGER UI
+                      </a>
                     </div>
 
                     <div className="p-3 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
-                      <p className="font-bold mb-1">🔌 Core Endpoints</p>
+                      <p className="font-bold mb-1">🔌 Primary Endpoints Referenced</p>
                       <div className="space-y-1 font-mono text-[8px]" style={{ color: "#00e676" }}>
-                        <div><span style={{ color: "var(--text-muted)" }}>GET</span> /api/assets</div>
-                        <div><span style={{ color: "var(--text-muted)" }}>GET</span> /api/sensors/data</div>
-                        <div><span style={{ color: "var(--text-muted)" }}>GET</span> /api/alerts</div>
-                        <div><span style={{ color: "var(--text-muted)" }}>POST</span> /api/config/refresh</div>
+                        <div><span style={{ color: "var(--text-muted)" }}>PUT</span> /Account/UpdateApiKey</div>
+                        <div><span style={{ color: "var(--text-muted)" }}>GET</span> /Assets (ABB Powertrain endpoints)</div>
+                        <div><span style={{ color: "var(--text-muted)" }}>GET</span> /Measurements</div>
                       </div>
                     </div>
 
                     <div className="p-3 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
-                      <p className="font-bold mb-1">🔐 Authentication</p>
+                      <p className="font-bold mb-1">🔐 Authentication & Integration</p>
                       <p className="text-[8px] leading-relaxed">
-                        All requests require JWT Bearer token in Authorization header.
-                        Token obtained via POST /api/auth/login with operator credentials.
+                        Data from ABB SmartSensors is pulled securely via API keys. 
+                        Ensure your backend utilizes standard HTTPS requests to <span className="font-mono text-[#00A3B4]">api.conditionmonitoring.motion.abb.com</span> 
+                        and proxies the aggregated real-time data back to <span className="font-mono text-[#00A3B4]">/api/dashboard</span> for this SCADA UI.
                       </p>
                     </div>
                   </div>
