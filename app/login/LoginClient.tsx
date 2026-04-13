@@ -53,8 +53,8 @@ export default function LoginClient() {
       {/* top bar */}
       <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-6 py-2 border-b"
         style={{ borderColor: "#1a2235", background: "#060810" }}>
-        <span className="text-[9px] tracking-[.25em] text-[#2e4560]">PTTS · INDUSTRIAL IOT PLATFORM</span>
-        <span className="text-[9px] tracking-[.25em] text-[#2e4560] animate-blink">■ CONNECTING</span>
+        <span className="text-[9px] tracking-[.25em] text-[#a0c0d0] font-bold">PTTS · INDUSTRIAL IOT PLATFORM</span>
+        <span className="text-[9px] tracking-[.25em] text-[#00e676] font-bold animate-blink">■ CONNECTING</span>
       </div>
 
       <div className={`flex flex-col items-center transition-all duration-700
@@ -75,11 +75,11 @@ export default function LoginClient() {
         {/* Title */}
         <div className={`text-center mb-8 transition-all duration-500
           ${phase === "logo" ? "opacity-0" : "opacity-100 animate-fade-up"}`}>
-          <p className="text-[9px] tracking-[.4em] text-[#00A3B4] mb-1.5 animate-flicker">
+          <p className="text-[9px] tracking-[.4em] text-[#00A3B4] font-bold mb-1.5 animate-flicker">
             PT PRIMA TEKINDO TIRTA SEJAHTERA
           </p>
-          <h1 className="text-3xl font-bold tracking-[.18em] text-white mb-1">SMARTSENSOR</h1>
-          <p className="text-[10px] tracking-[.25em] text-[#3a5a70]">INDUSTRIAL IOT MONITORING SYSTEM</p>
+          <h1 className="text-3xl font-bold tracking-[.18em] text-white mb-1 shadow-[#00A3B4]/50 drop-shadow-md">SMARTSENSOR</h1>
+          <p className="text-[10px] tracking-[.25em] text-[#8aacc0] font-bold">INDUSTRIAL IOT MONITORING SYSTEM</p>
         </div>
 
         {/* Init lines */}
@@ -87,14 +87,14 @@ export default function LoginClient() {
           <div className="font-mono text-[11px] space-y-1.5 mb-6 w-96">
             {INIT_LINES.slice(0, visibleLines).map((ln, i) => (
               <div key={i} className="flex items-center gap-3 animate-fade-up">
-                <span className="text-[9px] px-1.5 py-0.5 rounded-sm font-bold text-[#005F8E]"
-                  style={{ background: "#005F8E15", border: "1px solid #005F8E30" }}>
+                <span className="text-[9px] px-1.5 py-0.5 rounded-sm font-bold text-[#00A3B4]"
+                  style={{ background: "#00A3B415", border: "1px solid #00A3B450" }}>
                   {ln.tag}
                 </span>
-                <span className="flex-1 text-[#3a5a70]">{ln.text}</span>
+                <span className="flex-1 text-[#c8d8e8] font-mono">{ln.text}</span>
                 {i < visibleLines - 1 || phase !== "init"
-                  ? <span className="text-[#00e676] text-[10px] font-bold">OK</span>
-                  : <span className="text-[#3a5a70] animate-blink">_</span>}
+                  ? <span className="text-[#00e676] text-[10px] font-bold shadow-[#00e676]/50 drop-shadow-md">OK</span>
+                  : <span className="text-white animate-blink">_</span>}
               </div>
             ))}
           </div>
@@ -108,10 +108,10 @@ export default function LoginClient() {
                 style={{ width: `${progress}%`, background: "linear-gradient(90deg,#005F8E,#00A3B4)" }} />
             </div>
             <div className="flex justify-between mt-1.5">
-              <span className="text-[9px] text-[#3a5a70] tracking-widest">
+              <span className="text-[9px] text-[#8aacc0] font-bold tracking-widest">
                 {phase === "ready" ? "SYSTEM READY" : "LOADING..."}
               </span>
-              <span className="text-[9px] text-[#00A3B4] font-bold">{progress}%</span>
+              <span className="text-[9px] text-[#00e676] font-bold shadow-[#00e676]/50 drop-shadow-md">{progress}%</span>
             </div>
           </div>
         )}
@@ -120,8 +120,8 @@ export default function LoginClient() {
       {/* bottom bar */}
       <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-6 py-2 border-t"
         style={{ borderColor: "#1a2235", background: "#060810" }}>
-        <span className="text-[9px] text-[#2e4560] tracking-widest">v0.2.0</span>
-        <span className="text-[9px] text-[#2e4560] tracking-widest">SESSION SECURED · JWT HS256</span>
+        <span className="text-[9px] text-[#6b8b9e] font-bold tracking-widest">v0.4.0</span>
+        <span className="text-[9px] text-[#6b8b9e] font-bold tracking-widest">SESSION SECURED · JWT HS256</span>
       </div>
     </div>
   );
@@ -144,13 +144,13 @@ export default function LoginClient() {
           <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-1" />
         </div>
         <p className="text-[9px] tracking-[.35em] text-white mb-0.5">PTTS</p>
-        <h1 className="text-lg font-bold tracking-[.12em] text-white mb-0.5">SMARTSENSOR</h1>
-        <p className="text-[9px] tracking-widest text-[#7ab8cc] mb-8">OPERATOR SIGN IN</p>
+        <h1 className="text-lg font-bold tracking-[.12em] text-white mb-0.5 drop-shadow-[0_0_10px_rgba(0,163,180,0.8)]">SMARTSENSOR</h1>
+        <p className="text-[9px] font-bold tracking-widest text-[#00A3B4] mb-8">OPERATOR SIGN IN</p>
 
         {/* Card */}
         <form id="login-form" action={formAction}
-          className="w-full rounded-sm p-6 space-y-4"
-          style={{ background: "#111520", border: "1px solid #242d3f", borderTop: "2px solid #005F8E" }}>
+          className="w-full rounded-sm p-6 space-y-4 shadow-[0_0_20px_rgba(0,163,180,0.15)]"
+          style={{ background: "#111520", border: "1px solid #242d3f", borderTop: "2px solid #00A3B4" }}>
 
           {state?.error && (
             <div className="flex items-center gap-2 text-[10px] px-3 py-2 rounded-sm animate-fade-up"
@@ -161,55 +161,55 @@ export default function LoginClient() {
           )}
 
           <div>
-            <label className="scada-label block mb-1.5">Operator ID</label>
+            <label className="scada-label block mb-1.5 font-bold text-[#c8d8e8]">OPERATOR ID</label>
             <input type="text" name="username" autoComplete="username"
               required maxLength={64} placeholder="Enter operator ID"
-              className="w-full px-3 py-2.5 text-sm rounded-sm outline-none transition-all"
+              className="w-full px-3 py-2.5 text-sm rounded-sm outline-none transition-all font-mono"
               style={{
                 background: "#080b10", border: "1px solid #242d3f",
-                color: "#c8d8e8", fontFamily: "inherit",
+                color: "white",
               }}
-              onFocus={e => e.target.style.borderColor = "#005F8E"}
+              onFocus={e => e.target.style.borderColor = "#00A3B4"}
               onBlur={e => e.target.style.borderColor = "#242d3f"}
             />
           </div>
 
           <div>
-            <label className="scada-label block mb-1.5">Password</label>
+            <label className="scada-label block mb-1.5 font-bold text-[#c8d8e8]">PASSWORD</label>
             <div className="relative">
               <input type={showPass ? "text" : "password"} name="password"
                 autoComplete="current-password" required maxLength={64}
                 placeholder="••••••••"
-                className="w-full px-3 py-2.5 text-sm rounded-sm outline-none transition-all pr-14"
+                className="w-full px-3 py-2.5 text-sm rounded-sm outline-none transition-all pr-14 font-mono tracking-widest"
                 style={{
                   background: "#080b10", border: "1px solid #242d3f",
-                  color: "#c8d8e8", fontFamily: "inherit",
+                  color: "white",
                 }}
-                onFocus={e => e.target.style.borderColor = "#005F8E"}
+                onFocus={e => e.target.style.borderColor = "#00A3B4"}
                 onBlur={e => e.target.style.borderColor = "#242d3f"}
               />
               <button type="button" onClick={() => setShowPass(!showPass)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-2 text-[9px] tracking-widest transition-colors rounded-sm"
-                style={{ color: "#3a5a70" }}>
+                className="absolute right-2 top-1/2 -translate-y-1/2 px-2 py-2 text-[9px] font-bold tracking-widest transition-colors rounded-sm hover:text-[#00e676]"
+                style={{ color: "#00A3B4" }}>
                 {showPass ? "HIDE" : "SHOW"}
               </button>
             </div>
           </div>
 
           <button type="submit" disabled={isPending}
-            className="w-full py-2.5 text-sm font-bold tracking-[.15em] rounded-sm transition-all disabled:opacity-50"
-            style={{ background: isPending ? "#003F5C" : "#005F8E", color: "#fff" }}>
+            className="w-full py-2.5 text-sm font-bold tracking-[.15em] rounded-sm transition-all disabled:opacity-50 hover:bg-[#00A3B4]"
+            style={{ background: isPending ? "#003F5C" : "#005F8E", color: "#fff", border: "1px solid #00A3B4" }}>
             {isPending ? "AUTHENTICATING..." : "SIGN IN"}
           </button>
         </form>
 
         <div className="flex items-center gap-2 mt-4">
           <span className="led led-online" style={{ width: 6, height: 6 }} />
-          <span className="text-[9px] tracking-widest text-[#2e4560]">SECURED · JWT HS256 · 60 MIN SESSION</span>
+          <span className="text-[9px] font-bold tracking-widest text-[#8aacc0]">SECURED · JWT HS256 · 60 MIN SESSION</span>
         </div>
       </div>
 
-      <div className="absolute bottom-4 text-[9px] tracking-widest text-[#4a7a96]">
+      <div className="absolute bottom-4 text-[9px] font-bold tracking-widest text-[#00A3B4]">
         PT PRIMA TEKINDO TIRTA SEJAHTERA · v0.4.0
       </div>
     </div>
