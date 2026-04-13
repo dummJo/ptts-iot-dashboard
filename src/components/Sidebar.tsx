@@ -15,6 +15,8 @@ const nav = [
   { href: "/dashboard/settings", label: "CONFIG",    icon: "⚙" },
 ];
 
+const VERSION = "v0.8.0-industrial";
+
 export default function Sidebar() {
   const pathname = usePathname();
   const [uptime, setUptime] = useState("00:00:00");
@@ -139,6 +141,13 @@ export default function Sidebar() {
         <div className="flex gap-1.5">
           <LogoutButton />
         </div>
+      </div>
+
+      {/* Footer / Version */}
+      <div className="px-4 py-2 mt-auto" style={{ borderTop: "1px solid var(--border-dim)" }}>
+        <p className="text-[8px] font-bold tracking-[.3em]" style={{ color: "var(--text-faint)" }}>
+          {VERSION}
+        </p>
       </div>
 
       {/* Switch Account Modal */}
