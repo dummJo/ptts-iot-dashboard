@@ -44,6 +44,11 @@ export interface Asset {
   vib: number;       // mm/s
   link: LinkStatus;  // Connectivity status
   health: HealthStatus; // Machine condition health
+  // ISO 10816 parameters
+  powerKW?: number;
+  foundation?: 'rigid' | 'flexible';
+  // Manual overrides
+  vibrationThresholds?: { warning: number; fault: number };
 }
 
 // ── Alarm / Alert ─────────────────────────────────────────────────────

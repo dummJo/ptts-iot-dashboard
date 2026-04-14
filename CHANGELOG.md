@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.9.0] — 2026-04-14
+
+### Added
+- **ISO 10816 Vibration Standardization** — Automatic calculation of `warning` and `fault` limits based on individual motor power (kW rating) and foundation type (rigid vs flexible).
+- **Role-Based Threshold Configuration** — Introduced a new modal (`ThresholdModal.tsx`) allowing users with `Admin` or `Engineer` roles to securely override ISO baseline thresholds per asset. Operators are restricted to a read-only view of thresholds.
+- **Dynamic LED Sync** — System-wide asset health states are strictly synchronized with the newly calculated vibration limits, ensuring the dashboard TopBar, Sidebar, and Status Donut correctly match the table LEDs at all times.
+
+### Changed
+- **Trend Chart Enhancements** — Transformed the chart timeframe selector into a highly compact dropdown menu, expanding options to allow filtering by `1 min`, `5 min`, `30 min`, `hourly`, `daily`, `weekly`, `monthly`, and `yearly` intervals.
+- The default UI mock implementation now locally processes session-stored threshold overrides in the absence of a live database.
+
 ## [0.8.0] — 2026-04-13
 
 ### Added

@@ -66,6 +66,12 @@ export async function logoutAction() {
   redirect("/login");
 }
 
+export async function autoLogoutAction() {
+  const jar = await cookies();
+  jar.delete("ptts-session");
+  redirect("/login?reason=inactivity");
+}
+
 export async function createUserAction(
   formData: FormData
 ): Promise<{ success: boolean; error?: string }> {

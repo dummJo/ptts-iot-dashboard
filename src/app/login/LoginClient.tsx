@@ -84,6 +84,8 @@ export default function LoginClient() {
   const dropRef = useRef<HTMLDivElement>(null);
   const t = T[lang];
 
+  const [showInactivityToast, setShowInactivityToast] = useState(false);
+
   /* splash timing */
   useEffect(() => {
     const ids: ReturnType<typeof setTimeout>[] = [];
@@ -107,6 +109,18 @@ export default function LoginClient() {
     const h = (e: MouseEvent) => { if (dropRef.current && !dropRef.current.contains(e.target as Node)) setOpen(false); };
     document.addEventListener("mousedown", h);
     return () => document.removeEventListener("mousedown", h);
+  }, []);
+
+  /* Check for inactivity parameter */
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("reason") === "inactivity") {
+        setShowInactivityToast(true);
+        window.history.replaceState({}, document.title, window.location.pathname);
+        setTimeout(() => setShowInactivityToast(false), 8000);
+      }
+    }
   }, []);
 
   /* ── SPLASH ──────────────────────────────────────────────── */
@@ -456,6 +470,23 @@ export default function LoginClient() {
           </div>
         </div>
       </div>
+
+      {/* Auto Logout Toast */}
+      {showInactivityToast && (
+        <div className="fixed top-6 right-6 z-50 animate-slide-in flex shadow-2xl" 
+          style={{ background: "#2a4af5", color: "white", padding: "16px 20px 16px 24px", borderRadius: "1px", minWidth: "320px", maxWidth: "400px" }}>
+          <div className="flex-1 mr-6">
+            <p className="text-base font-semibold" style={{ fontFamily: "ui-sans-serif, system-ui, sans-serif" }}>You have been logged out</p>
+            <p className="text-sm mt-1" style={{ fontFamily: "ui-sans-serif, system-ui, sans-serif" }}>(inactivity or invalid token detected)</p>
+          </div>
+          <button onClick={() => setShowInactivityToast(false)} className="self-start text-white opacity-80 hover:opacity-100 transition-opacity">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 }

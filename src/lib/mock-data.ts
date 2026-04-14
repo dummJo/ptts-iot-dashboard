@@ -62,12 +62,14 @@ export const statusData = [
   { name: "FAULT",   value:  2, color: "var(--fault)"   },
 ];
 
-export const topAssets = [
-  { id:"PTS-001", name:"Pump Motor #1",   type:"PTTS SmartSensor",  temp:58.2, vib:3.8, link:"online",  health:"warning" },
-  { id:"PTS-002", name:"Crane Drive A",   type:"PTTS SmartSensor",  temp:61.5, vib:4.2, link:"online",  health:"fault"   },
-  { id:"RND-003", name:"Compressor Unit", type:"RONDS SmartSensor", temp:55.1, vib:2.9, link:"online",  health:"warning" },
-  { id:"PTS-004", name:"VSD Panel #3",    type:"PTTS SmartSensor",  temp:47.3, vib:1.8, link:"online",  health:"good"    },
-  { id:"RND-005", name:"Fan Motor B",     type:"RONDS SmartSensor", temp:0,    vib:0,   link:"offline", health:"good"    },
+import type { Asset } from './types';
+
+export const topAssets: Asset[] = [
+  { id:"PTS-001", name:"Pump Motor #1",   type:"PTTS SmartSensor",  temp:58.2, vib:3.8, link:"online",  health:"warning", powerKW: 22, foundation: "rigid" },
+  { id:"PTS-002", name:"Crane Drive A",   type:"PTTS SmartSensor",  temp:61.5, vib:4.2, link:"online",  health:"fault", powerKW: 90, foundation: "flexible"   },
+  { id:"RND-003", name:"Compressor Unit", type:"RONDS SmartSensor", temp:55.1, vib:2.9, link:"online",  health:"warning", powerKW: 55, foundation: "rigid" },
+  { id:"PTS-004", name:"VSD Panel #3",    type:"PTTS SmartSensor",  temp:47.3, vib:1.8, link:"online",  health:"good", powerKW: 11, foundation: "rigid"    },
+  { id:"RND-005", name:"Fan Motor B",     type:"RONDS SmartSensor", temp:0,    vib:0,   link:"offline", health:"good", powerKW: 160, foundation: "flexible"    },
 ];
 
 export const recentAlerts = [
@@ -111,12 +113,12 @@ export const configDbState = {
 };
 
 // Dynamic summary calculators
-export const getLinkSummary = (assets: any[]) => ({
+export const getLinkSummary = (assets: Asset[]) => ({
   online: assets.filter(a => a.link === 'online').length,
   offline: assets.filter(a => a.link === 'offline').length,
 });
 
-export const getHealthSummary = (assets: any[]) => ({
+export const getHealthSummary = (assets: Asset[]) => ({
   good: assets.filter(a => a.health === 'good').length,
   warning: assets.filter(a => a.health === 'warning').length,
   fault: assets.filter(a => a.health === 'fault').length,

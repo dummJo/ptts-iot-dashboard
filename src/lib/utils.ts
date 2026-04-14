@@ -68,3 +68,40 @@ export function getHealthColor(health: string): string {
 export function getLinkColor(link: string): string {
   return link?.toLowerCase() === 'online' ? 'var(--online)' : 'var(--offline)';
 }
+
+/**
+ * ISO 10816 Vibration Threshold Calculator
+ * Determines mm/s RMS limits based on motor power (kW) and foundation type.
+ */
+export function getISO10816Thresholds(powerKW?: number, foundation: 'rigid' | 'flexible' = 'rigid') {
+  // Default to Class I if no power rating
+  if (!powerKW || powerKW < 15) {
+    // Class I (up to 15 kW)
+    return { warning: 1.8, fault: 4.5 };
+  } else if (powerKW >= 15 && powerKW <= 75) {
+    // Class II (15 kW - 75 kW)
+    return { warning: 2.8, fault: 7.1 };
+  } else if (powerKW > 75 && foundation === 'rigid') {
+    // Class III (large rigid)
+    return { warning: 4.5, fault: 11.2 };
+  } else {
+    // Class IV (large flexible)
+    return { warning: 7.1, fault: 18.0 };
+  }
+}
+
+/**
+ * Evaluates machine health dynamically based on ISO thresholds or manual overrides.
+ */
+export function calculateMachineHealth(
+  vib: number,
+  powerKW?: number,
+  foundation: 'rigid' | 'flexible' = 'rigid',
+  overrides?: { warning: number; fault: number }
+): 'good' | 'warning' | 'fault' {
+  const limits = overrides || getISO10816Thresholds(powerKW, foundation);
+  
+  if (vib >= limits.fault) return 'fault';
+  if (vib >= limits.warning) return 'warning';
+  return 'good';
+}

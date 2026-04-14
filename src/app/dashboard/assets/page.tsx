@@ -5,13 +5,27 @@ import TopBar from "@/components/TopBar";
 import AssetTable from "@/components/AssetTable";
 import StatusDonut from "@/components/StatusDonut";
 import { apiClient } from "@/lib/apiClient";
-import type { DashboardData } from "@/lib/types";
+import { apiClient } from "@/lib/apiClient";
+import type { DashboardData, Asset } from "@/lib/types";
 import { EMPTY_DASHBOARD } from "@/lib/types";
+import { calculateMachineHealth } from "@/lib/utils";
 
 export default function AssetsPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [dashboardData, setDashboardData] = useState<DashboardData>(EMPTY_DASHBOARD);
   const [pollInterval, setPollInterval] = useState(60000);
+  const [overrides, setOverrides] = useState<Record<string, {warning: number, fault: number}>>({});
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem('ptts-thresholds');
+    if (saved) setOverrides(JSON.parse(saved));
+  }, []);
+
+  const handleOverridesChange = (id: string, newOverrides: {warning: number, fault: number}) => {
+    const updated = { ...overrides, [id]: newOverrides };
+    setOverrides(updated);
+    sessionStorage.setItem('ptts-thresholds', JSON.stringify(updated));
+  };
 
   const fetchDashboardData = async () => {
     try {
@@ -36,6 +50,18 @@ export default function AssetsPage() {
     setRefreshing(false);
   };
 
+  // Apply overrides and recalculate health based on ISO 10816 standards
+  const dynamicAssets = dashboardData.topAssets?.map((a: Asset) => {
+    const customThresholds = overrides[a.id] || a.vibrationThresholds;
+    const newHealth = calculateMachineHealth(a.vib, a.powerKW, a.foundation, customThresholds);
+    return { ...a, health: newHealth, vibrationThresholds: customThresholds };
+  }) || [];
+
+  const dynamicHealthSummary = {
+    good: dynamicAssets.filter(a => a.health === 'good').length,
+    warning: dynamicAssets.filter(a => a.health === 'warning').length,
+    fault: dynamicAssets.filter(a => a.health === 'fault').length,
+  };
 
   return (
     <div className="flex min-h-screen" style={{ background:"var(--bg)" }}>
@@ -45,8 +71,8 @@ export default function AssetsPage() {
         
         <div className="flex-1 p-4 flex flex-col gap-3">
           <div className="grid grid-cols-4 gap-3">
-            <div className="col-span-1"><StatusDonut linkSummary={dashboardData.linkSummary} healthSummary={dashboardData.healthSummary} /></div>
-            <div className="col-span-3 flex"><AssetTable assets={dashboardData.topAssets} /></div>
+            <div className="col-span-1"><StatusDonut linkSummary={dashboardData.linkSummary} healthSummary={dynamicHealthSummary} /></div>
+            <div className="col-span-3 flex"><AssetTable assets={dynamicAssets} onOverridesChange={handleOverridesChange} /></div>
           </div>
           <div className="scada-card p-4 flex flex-col flex-1 min-h-[200px]">
              <span className="scada-label mb-4">ASSET TOPOGRAPHY MAP (PLACEHOLDER)</span>

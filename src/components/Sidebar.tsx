@@ -3,7 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useActionState } from "react";
 import LogoutButton from "./LogoutButton";
-import { loginAction, getCurrentSessionAction } from "@/app/actions/auth";
+import { loginAction, getCurrentSessionAction, autoLogoutAction } from "@/app/actions/auth";
 
 const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png";
 
@@ -54,7 +54,25 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
 
     updateUptime();
     const iv = setInterval(updateUptime, 1000);
-    return () => clearInterval(iv);
+
+    // Auto Logout Setup (60 minutes inactivity)
+    let inactivityTimer: NodeJS.Timeout;
+    const resetInactivity = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        autoLogoutAction();
+      }, 60 * 60 * 1000); // 60 minutes
+    };
+
+    resetInactivity(); // Init
+    const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'];
+    events.forEach(e => window.addEventListener(e, resetInactivity));
+
+    return () => {
+      clearInterval(iv);
+      clearTimeout(inactivityTimer);
+      events.forEach(e => window.removeEventListener(e, resetInactivity));
+    };
   }, []);
 
   return (
