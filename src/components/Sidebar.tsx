@@ -65,7 +65,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
       <div className="px-4 py-4" style={{ borderBottom: "1px solid var(--border-dim)" }}>
         <div className="flex items-center gap-3 mb-3">
           <div className="w-9 h-9 rounded-full overflow-hidden shrink-0"
-            style={{ border: "1.5px solid #005F8E50", background: "#0d1628" }}>
+            style={{ border: "1.5px solid var(--border)", background: "var(--surface-2)" }}>
             <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-0.5" />
           </div>
           <div>
@@ -164,7 +164,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         >
           <div
             className="w-72 rounded-sm p-4 space-y-3"
-            style={{ background: "#0d1628", border: "1px solid #005F8E60", borderTop: "2px solid #00A3B4" }}
+            style={{ background: "var(--surface)", border: "1px solid var(--border)", borderTop: "2px solid #00A3B4" }}
           >
             <div className="flex items-center justify-between">
               <p className="text-[9px] font-bold tracking-[.2em]" style={{ color: "#00A3B4" }}>SWITCH ACCOUNT</p>
