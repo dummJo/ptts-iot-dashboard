@@ -1,16 +1,19 @@
 import { PrismaClient } from '@prisma/client'
+import { neon } from '@neondatabase/serverless'
+import { PrismaNeon } from '@prisma/adapter-neon'
 
 const prismaClientSingleton = () => {
-  const client = new PrismaClient({
-    log: ['error', 'warn'],
-  });
+  // Use Neon's HTTP adapter for cloud stability (Vercel)
+  if (process.env.DATABASE_URL?.includes('neon')) {
+    const sql = neon(process.env.DATABASE_URL!)
+    const adapter = new PrismaNeon(sql)
+    return new PrismaClient({ adapter, log: ['error', 'warn'] })
+  }
   
-  // Optional: Add a simple connect test
-  client.$connect()
-    .then(() => console.log('✅ Prisma connected to Neon PostgreSQL'))
-    .catch((err) => console.error('❌ Prisma connection failed:', err.message));
-
-  return client;
+  // Fallback to standard driver for local development
+  return new PrismaClient({
+    log: ['error', 'warn'],
+  })
 }
 
 declare global {
