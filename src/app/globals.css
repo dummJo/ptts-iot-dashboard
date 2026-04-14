@@ -51,45 +51,45 @@
   --sidebar-bg:  #030508;
 }
 
-/* Light mode — High contrast adjustments */
+/* Light mode — "Creamy Blue" Professional Palette */
 .light {
-  --bg:          #f8f5f0;  /* cleaner off-white */
-  --surface:     #ffffff;
-  --surface-2:   #f1f5f9;
-  --surface-3:   #e2e8f0;
-  --border:      #94a3b8;
+  --bg:          #f4f7f9;  /* soft creamy blue base */
+  --surface:     #ffffff;  /* pure white for cards */
+  --surface-2:   #e9f0f5;  /* slightly darker blue-cream */
+  --surface-3:   #dee6ed;
+  --border:      #cbd5e1;  /* slate blue border */
   --border-dim:  #e2e8f0;
-  --text:        #0f172a;
-  --text-muted:  #334155;
-  --text-faint:  #475569;
-  --text-bright: #000000;
-  --sidebar-bg:  #f1f5f9;
+  --text:        #1e293b;  /* deep slate/navy for readability */
+  --text-muted:  #475569;
+  --text-faint:  #64748b;
+  --text-bright: #0f172a;
+  --sidebar-bg:  #ecf1f6;  /* harmonious cool sidebar */
 
-  /* Brand colors — Shifted to darker variants for white background integrity */
-  --ptts:        #0369a1;  /* deepened for light mode contrast */
-  --ptts-teal:   #0e7490;  /* deepened for light mode contrast */
-  --ptts-glow:   rgba(14, 116, 144, 0.2);
+  /* Brand colors — Shifted to deeper professional tones */
+  --ptts:        #005F8E;  
+  --ptts-teal:   #0d9488;  
+  --ptts-glow:   rgba(13, 148, 136, 0.1);
 
-  /* Status — Deepened to pass 4.5:1 on white/gray surfaces */
-  --online:      #166534;
-  --warning:     #92400e;
-  --fault:       #991b1b;
-  --offline:     #475569;
+  /* Status — Deepened to exceed 4.5:1 on light surfaces */
+  --online:      #15803d;  
+  --warning:     #b45309;  
+  --fault:       #b91c1c;  
+  --offline:     #64748b;
 
-  /* Metric Channels — Deepened for light mode */
+  /* Metric Channels — Professional palette */
   --metric-vib:      #0369a1;
-  --metric-temp:     #b45309;
+  --metric-temp:     #9a3412;
   --metric-rms:      #c2410c;
-  --metric-power:    #7e22ce;
+  --metric-power:    #6b21a8;
   --metric-freq:     #0369a1;
   --metric-velocity: #ea580c;
-  --metric-current:  #15803d;
+  --metric-current:  #166534;
 
   /* Badge Backgrounds (Light Mode) */
-  --badge-online-bg:  rgba(22, 101, 52, 0.1);
-  --badge-warning-bg: rgba(146, 64, 14, 0.1);
-  --badge-fault-bg:   rgba(153, 27, 27, 0.1);
-  --badge-ptts-bg:    rgba(3, 105, 161, 0.1);
+  --badge-online-bg:  rgba(21, 128, 61, 0.08);
+  --badge-warning-bg: rgba(180, 83, 9, 0.08);
+  --badge-fault-bg:   rgba(185, 28, 28, 0.08);
+  --badge-ptts-bg:    rgba(0, 95, 142, 0.08);
 }
 
 body {
