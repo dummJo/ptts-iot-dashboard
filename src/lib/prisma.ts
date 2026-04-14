@@ -5,12 +5,6 @@ const prismaClientSingleton = () => {
     log: ['error', 'warn']
   })
 }
-  
-  // Fallback to standard driver for local development
-  return new PrismaClient({
-    log: ['error', 'warn'],
-  })
-}
 
 declare global {
   var prisma: undefined | ReturnType<typeof prismaClientSingleton>
