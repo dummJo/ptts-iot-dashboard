@@ -45,10 +45,10 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
       <div className="flex items-center gap-3 text-[9px] font-mono">
         <span style={{ color:"var(--text-faint)" }}>{dateStr.toUpperCase()}</span>
         <span className="tabular-nums" style={{ color:"var(--text-muted)" }}>{timeStr}</span>
-        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm" 
-          style={{ background: connected ? "#00e67610" : "#CC000010", border: `1px solid ${connected ? "#00e67640" : "#CC000040"}` }}>
+        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm"
+          style={{ background: connected ? "#004d2a" : "#3d0000", border: `1px solid ${connected ? "#00c45a" : "#cc3333"}` }}>
           <span className={`led ${connected ? "led-online" : "led-fault"}`} style={{ width:6, height:6 }} />
-          <span style={{ color: connected ? "#00e676" : "#CC0000" }} className="tracking-widest font-bold">
+          <span style={{ color: connected ? "#6effb0" : "#ff8080" }} className="tracking-widest font-bold">
             {connected ? "LIVE DEMO" : "OFFLINE (RETAINED DATA)"}
           </span>
         </div>
@@ -66,14 +66,17 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
         </button>
         <ThemeToggle />
         {onPollChange && (
-          <select value={pollInterval} onChange={(e) => onPollChange(Number(e.target.value))}
-            className="text-[9px] px-2 py-1.5 rounded-sm font-bold tracking-widest transition-all outline-none"
-            style={{ border:"1px solid var(--border)", color:"var(--text-muted)", background:"var(--surface)" }}>
-            <option value={5000}>POLL: 5s</option>
-            <option value={60000}>POLL: 1m</option>
-            <option value={300000}>POLL: 5m</option>
-            <option value={0}>POLL: OFF</option>
-          </select>
+          <>
+            <label htmlFor="poll-interval" className="sr-only">Polling Interval</label>
+            <select id="poll-interval" aria-label="Polling Interval" value={pollInterval} onChange={(e) => onPollChange(Number(e.target.value))}
+              className="text-[9px] px-2 py-1.5 rounded-sm font-bold tracking-widest transition-all outline-none"
+              style={{ border:"1px solid var(--border)", color:"var(--text)", background:"var(--surface)" }}>
+              <option value={5000}>POLL: 5s</option>
+              <option value={60000}>POLL: 1m</option>
+              <option value={300000}>POLL: 5m</option>
+              <option value={0}>POLL: OFF</option>
+            </select>
+          </>
         )}
         {onRefresh && (
           <button onClick={onRefresh} disabled={refreshing}

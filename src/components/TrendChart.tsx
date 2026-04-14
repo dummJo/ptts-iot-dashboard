@@ -59,13 +59,16 @@ export default function TrendChart({ trendData = [] }: { trendData?: TrendPoint[
       <div className="scada-card-header">
         <span className="scada-label">TREND · TEMPERATURE &amp; VIBRATION</span>
         <div className="flex items-center gap-2">
-          <select 
-            value={gran} 
+          <label htmlFor="trend-granularity" className="sr-only">Time Granularity</label>
+          <select
+            id="trend-granularity"
+            aria-label="Time Granularity"
+            value={gran}
             onChange={(e) => setGran(e.target.value as GranKey)}
-            className="text-[9px] px-2 py-1 rounded-sm font-bold tracking-widest outline-none cursor-pointer transition-all appearance-none"
-            style={{ 
-              background: "var(--surface-2)", 
-              color: "var(--text)", 
+            className="text-[9px] px-2 py-1 rounded-sm font-bold tracking-widest outline-none cursor-pointer transition-all"
+            style={{
+              background: "var(--surface-2)",
+              color: "var(--text)",
               border: "1px solid var(--border)",
             }}
           >
