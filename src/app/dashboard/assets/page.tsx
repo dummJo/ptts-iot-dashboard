@@ -5,7 +5,6 @@ import TopBar from "@/components/TopBar";
 import AssetTable from "@/components/AssetTable";
 import StatusDonut from "@/components/StatusDonut";
 import { apiClient } from "@/lib/apiClient";
-import { apiClient } from "@/lib/apiClient";
 import type { DashboardData, Asset } from "@/lib/types";
 import { EMPTY_DASHBOARD } from "@/lib/types";
 import { calculateMachineHealth } from "@/lib/utils";
