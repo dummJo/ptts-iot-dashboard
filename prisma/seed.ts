@@ -35,10 +35,36 @@ async function main() {
   for (const asset of assets) {
     const created = await prisma.asset.upsert({
       where: { tagId: asset.tagId },
-      update: {},
+      update: {
+        name: asset.name,
+        type: asset.type,
+        location: asset.location,
+        powerKw: asset.powerKw,
+      },
       create: asset,
     })
     console.log(`✅ Asset created: ${created.tagId} (${created.name})`)
+
+    // 2.1 Generate 24 hours of dummy telemetry
+    const points = [];
+    const now = new Date();
+    for (let h = 24; h >= 0; h--) {
+      const ts = new Date(now.getTime() - h * 60 * 60 * 1000);
+      points.push({
+        assetId: created.id,
+        timestamp: ts,
+        temp: 45 + Math.random() * 15,
+        vibOverall: 0.8 + Math.random() * 2.5,
+        vibVelocity: 1.2 + Math.random() * 1.5,
+        motorCurrent: created.tagId.startsWith('MTR') ? 20 + Math.random() * 10 : null,
+        motorKw: created.tagId.startsWith('MTR') ? 15 + Math.random() * 5 : null,
+      });
+    }
+
+    await prisma.telemetry.createMany({
+      data: points
+    });
+    console.log(`   📊 Generated 24h telemetry for ${created.tagId}`)
   }
 
   // 3. Initial System Config
