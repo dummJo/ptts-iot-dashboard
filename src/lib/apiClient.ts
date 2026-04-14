@@ -231,4 +231,20 @@ export const apiClient = {
     const { createUserAction } = await import('@/app/actions/auth');
     return createUserAction(formData);
   },
+
+  // ── Integration Testing ───────────────────────────────────────────────────
+
+  /**
+   * Tests connectivity for a specific sensor provider and API key.
+   * Path: /api/integration/test
+   */
+  async testIntegration(provider: string, apiKey: string): Promise<{ success: boolean; message: string; deviceCount?: number }> {
+    return apiFetch(
+      '/api/integration/test',
+      { 
+        method: 'POST', 
+        body: JSON.stringify({ provider, apiKey }) 
+      }
+    );
+  },
 };

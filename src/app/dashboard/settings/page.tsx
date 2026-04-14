@@ -17,9 +17,9 @@ export default function SettingsPage() {
   const [newUser, setNewUser] = useState({ username: "", password: "", role: "operator" });
   const [userCreated, setUserCreated] = useState<{ success: boolean; message: string } | null>(null);
   const [isCreatingUser, setIsCreatingUser] = useState(false);
-  const [isFetchingUsers, setIsFetchingUsers] = useState(false);
-  const [hoveredHash, setHoveredHash] = useState<string | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string>("operator");
+  const [testStatus, setTestStatus] = useState<"idle" | "testing" | "success" | "error">("idle");
+  const [testMessage, setTestMessage] = useState<string>("");
 
   useEffect(() => {
     async function checkAuth() {
@@ -98,7 +98,7 @@ export default function SettingsPage() {
   const fetchUsers = async () => {
     setIsFetchingUsers(true);
     try {
-      const result = await fetchUsersAction();
+      const result = await apiClient.fetchUsers();
       if (result?.success && result.users) {
         setUsers(result.users);
       }
@@ -106,6 +106,27 @@ export default function SettingsPage() {
       console.error("Failed to fetch users:", error);
     } finally {
       setIsFetchingUsers(false);
+    }
+  };
+
+  const handleTestConnection = async () => {
+    const key = apiKeys[activeKeyTab];
+    if (!key) return;
+
+    setTestStatus("testing");
+    setTestMessage("");
+    try {
+      const result = await apiClient.testIntegration(activeKeyTab, key);
+      if (result.success) {
+        setTestStatus("success");
+        setTestMessage(result.message);
+      } else {
+        setTestStatus("error");
+        setTestMessage(result.message);
+      }
+    } catch (e) {
+      setTestStatus("error");
+      setTestMessage("FAILED — SYSTEM ERROR DURING TEST");
     }
   };
 
@@ -264,6 +285,17 @@ export default function SettingsPage() {
                           }}
                         />
                         <button
+                          onClick={handleTestConnection}
+                          disabled={testStatus === "testing" || !apiKeys[activeKeyTab]}
+                          className="px-4 py-2.5 text-[8px] font-bold rounded-sm transition-all tracking-widest disabled:opacity-50"
+                          style={{
+                            background: "var(--bg)",
+                            color: "var(--ptts-teal)",
+                            border: "1px solid var(--ptts-teal)"
+                          }}>
+                          {testStatus === "testing" ? "TESTING..." : "TEST CONNECTION"}
+                        </button>
+                        <button
                           onClick={() => handleSaveKey(activeKeyTab)}
                           className="px-5 py-2.5 text-[9px] font-bold rounded-sm transition-all tracking-widest"
                           style={{
@@ -274,6 +306,22 @@ export default function SettingsPage() {
                           {savedKeys.includes(activeKeyTab) ? "✓ SAVED" : "SAVE KEY"}
                         </button>
                       </div>
+
+                      {testStatus !== "idle" && (
+                        <div className="mt-2 p-2 rounded-sm flex items-center gap-2"
+                             style={{ 
+                               background: testStatus === "success" ? "#00e67608" : testStatus === "error" ? "#ff525208" : "#00A3B408",
+                               border: `1px solid ${testStatus === "success" ? "#00e67630" : testStatus === "error" ? "#ff525230" : "#00A3B430"}`
+                             }}>
+                          <span className={`led ${testStatus === "success" ? "led-online" : testStatus === "error" ? "led-critical" : "led-warning"}`} 
+                                style={{ width: 6, height: 6 }} />
+                          <span className="text-[8px] font-bold tracking-widest"
+                                style={{ color: testStatus === "success" ? "#00e676" : testStatus === "error" ? "#ff5252" : "#00A3B4" }}>
+                            {testMessage || "PREPARING CONNECTION TEST..."}
+                          </span>
+                        </div>
+                      )}
+
                       <p className="text-[8px] mt-2 italic" style={{ color: "var(--text-faint)" }}>
                         {activeKeyTab === "smartSensorPTTS" 
                           ? "Required for communication with ABB Ability™ Condition Monitoring cloud." 
