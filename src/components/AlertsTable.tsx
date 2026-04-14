@@ -4,9 +4,9 @@ import type { Alarm } from "@/lib/types";
 import { truncate } from "@/lib/utils";
 
 const SEV: Record<string, { led: string; color: string; bg: string; label: string }> = {
-  critical: { led: "led-fault",   color: "#ff6666", bg: "#3a000008", label: "CRITICAL" },
-  warning:  { led: "led-warning", color: "#ffdd00", bg: "#3d2e0008", label: "WARNING"  },
-  info:     { led: "led-online",  color: "#5dffb0", bg: "#00331008", label: "INFO"     },
+  critical: { led: "led-fault",   color: "var(--fault)",   bg: "var(--badge-fault-bg)",   label: "CRITICAL" },
+  warning:  { led: "led-warning", color: "var(--warning)", bg: "var(--badge-warning-bg)", label: "WARNING"  },
+  info:     { led: "led-online",  color: "var(--online)",  bg: "var(--badge-online-bg)",  label: "INFO"     },
 };
 
 export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
@@ -39,7 +39,7 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
           <span className="led led-fault" style={{ width: 6, height: 6 }} />
           <button
             className="text-[9px] font-bold tracking-widest transition-all"
-            style={{ color: "#00c8e0" }}
+            style={{ color: "var(--ptts-teal)" }}
             onClick={() => setAcknowledged(new Set(alerts.map((a) => a.id)))}
           >
             ACKNOWLEDGE ALL
@@ -98,9 +98,9 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
                   disabled={isAcked}
                   className="text-[9px] px-2.5 py-1 rounded-sm font-bold tracking-widest transition-all disabled:opacity-40 disabled:cursor-default"
                   style={{
-                    border: `1px solid ${isAcked ? "var(--border)" : s.color + "60"}`,
+                    border: `1px solid ${isAcked ? "var(--border)" : s.color}`,
                     color: isAcked ? "var(--text-faint)" : s.color,
-                    background: isAcked ? "transparent" : s.color + "18",
+                    background: isAcked ? "transparent" : "var(--bg)",
                   }}
                 >
                   {isAcked ? "ACKNOWLEDGED" : "ACKNOWLEDGE"}

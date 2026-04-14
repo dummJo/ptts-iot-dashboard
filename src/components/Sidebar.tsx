@@ -87,18 +87,18 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
             <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-0.5" />
           </div>
           <div>
-            <p className="text-[9px] font-bold tracking-[.25em] text-[#00A3B4]">PTTS</p>
+            <p className="text-[9px] font-bold tracking-[.25em] text-ptts-teal" style={{ color: "var(--ptts-teal)" }}>PTTS</p>
             <p className="text-[8px] tracking-widest" style={{ color: "var(--text-faint)" }}>IoT PLATFORM</p>
           </div>
         </div>
         {/* Live status */}
         <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm transition-all"
           style={{
-            background: pollInterval === 0 ? "var(--surface-2)" : "#003d20",
-            border: pollInterval === 0 ? "1px solid var(--border)" : "1px solid #00e67660",
+            background: pollInterval === 0 ? "var(--surface-2)" : "var(--badge-online-bg)",
+            border: pollInterval === 0 ? "1px solid var(--border)" : "1px solid var(--online)",
           }}>
           <span className={`led ${pollInterval === 0 ? "led-offline" : "led-online"}`} style={{ width: 5, height: 5 }} />
-          <span className="text-[9px] tracking-widest font-black" style={{ color: pollInterval === 0 ? "var(--text-muted)" : "#5dffb0" }}>
+          <span className="text-[9px] tracking-widest font-black" style={{ color: pollInterval === 0 ? "var(--text-muted)" : "var(--online)" }}>
             {pollInterval === 0 ? "POLL: OFF" : `LIVE · ${pollInterval >= 60000 ? pollInterval / 60000 + "M" : pollInterval / 1000 + "S"}`}
           </span>
         </div>
@@ -118,7 +118,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
               <span className="flex-1">{item.label}</span>
               {item.badge && (
                 <span className="text-[9px] px-1.5 py-0.5 rounded-sm font-bold"
-                  style={{ background: "#5a0000", color: "#ffaaaa", border: "1px solid #CC000060" }}>
+                  style={{ background: "var(--badge-fault-bg)", color: "var(--fault)", border: "1px solid var(--fault)" }}>
                   {item.badge}
                 </span>
               )}
@@ -145,20 +145,20 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
       </div>
 
       {/* User */}
-      <div className="px-3 py-3 mx-2 mb-2 rounded-sm" style={{ background: "#005F8E15", border: "1px solid #005F8E30", borderTop: "2px solid #00a868" }}>
+      <div className="px-3 py-3 mx-2 mb-2 rounded-sm" style={{ background: "var(--badge-ptts-bg)", border: "1px solid var(--border)", borderTop: "2px solid var(--online)" }}>
         <div
           className="flex items-center gap-2 px-2 mb-2 rounded-sm cursor-pointer transition-all"
           style={{ background: "transparent" }}
           onClick={() => setShowSwitch(true)}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "#00a86825"; }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "var(--badge-online-bg)"; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}>
           <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold"
-            style={{ background: "#005F8E40", color: "#00a868", border: "1.5px solid #00a868" }}>
-            AM
+            style={{ background: "var(--surface-2)", color: "var(--online)", border: "1.5px solid var(--online)" }}>
+            {currentUser?.username?.substring(0,2).toUpperCase() || "..."}
           </div>
           <div>
-            <p className="text-[10px] font-bold" style={{ color: "#fff" }}>{currentUser?.username || "..."}</p>
-            <p className="text-[8px] tracking-widest" style={{ color: "#00a868" }}>{currentUser?.role?.toUpperCase() || "..."}</p>
+            <p className="text-[10px] font-bold" style={{ color: "var(--text-bright)" }}>{currentUser?.username || "..."}</p>
+            <p className="text-[8px] tracking-widest" style={{ color: "var(--online)" }}>{currentUser?.role?.toUpperCase() || "..."}</p>
           </div>
         </div>
         <div className="flex gap-1.5">
@@ -211,13 +211,13 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
                 style={{ background: "#0b0e13", border: "1px solid #242d3f", color: "#d4e4f4" }}
               />
               {switchState?.error && (
-                <p className="text-[9px] tracking-widest" style={{ color: "#CC0000" }}>{switchState.error}</p>
+                <p className="text-[9px] tracking-widest" style={{ color: "var(--fault)" }}>{switchState.error}</p>
               )}
               <button
                 type="submit"
                 disabled={switchPending}
                 className="w-full py-2 text-[9px] font-bold tracking-widest rounded-sm transition-all disabled:opacity-50"
-                style={{ background: "#005F8E", color: "#fff", border: "1px solid #00A3B440" }}
+                style={{ background: "var(--ptts)", color: "var(--text-bright)", border: "1px solid var(--border)" }}
               >
                 {switchPending ? "AUTHENTICATING..." : "SWITCH →"}
               </button>

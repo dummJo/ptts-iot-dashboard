@@ -30,13 +30,13 @@ const METRICS: {
   color: string;
   yAxisId: string;
 }[] = [
-  { key: "vib",      label: "Vibration",  unit: "mm/s", color: "#00e5ff", yAxisId: "left"  },
-  { key: "temp",     label: "Temperature",unit: "°C",   color: "#ffdd00", yAxisId: "right" },
-  { key: "rms",      label: "RMS",        unit: "mm/s", color: "#ff8c00", yAxisId: "left"  },
-  { key: "powerKW",  label: "Motor kW",   unit: "kW",   color: "#a855f7", yAxisId: "right" },
-  { key: "freq",     label: "Frequency",  unit: "Hz",   color: "#38bdf8", yAxisId: "right" },
-  { key: "velocity", label: "Velocity",   unit: "mm/s", color: "#fb923c", yAxisId: "left"  },
-  { key: "current",  label: "Current",    unit: "A",    color: "#4ade80", yAxisId: "right" },
+  { key: "vib",      label: "Vibration",  unit: "mm/s", color: "var(--metric-vib)",      yAxisId: "left"  },
+  { key: "temp",     label: "Temperature",unit: "°C",   color: "var(--metric-temp)",     yAxisId: "right" },
+  { key: "rms",      label: "RMS",        unit: "mm/s", color: "var(--metric-rms)",      yAxisId: "left"  },
+  { key: "powerKW",  label: "Motor kW",   unit: "kW",   color: "var(--metric-power)",    yAxisId: "right" },
+  { key: "freq",     label: "Frequency",  unit: "Hz",   color: "var(--metric-freq)",     yAxisId: "right" },
+  { key: "velocity", label: "Velocity",   unit: "mm/s", color: "var(--metric-velocity)", yAxisId: "left"  },
+  { key: "current",  label: "Current",    unit: "A",    color: "var(--metric-current)",  yAxisId: "right" },
 ];
 
 // ── Data densification ───────────────────────────────────────────────
@@ -129,7 +129,7 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
             value={assetId}
             onChange={(e) => setAssetId(e.target.value)}
             className="text-[9px] px-2 py-1 rounded-sm font-bold tracking-widest outline-none cursor-pointer transition-all max-w-[180px]"
-            style={{ background: "var(--surface-2)", color: "#00c8e0", border: "1px solid #00c8e040" }}
+            style={{ background: "var(--surface-2)", color: "var(--ptts-teal)", border: "1px solid var(--border)" }}
           >
             {assetOptions.map((a) => (
               <option key={a.id} value={a.id}>{a.name}</option>
@@ -163,8 +163,8 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
               onClick={() => toggleMetric(m.key)}
               className="flex items-center gap-1.5 px-2 py-1 rounded-sm text-[9px] font-bold tracking-widest transition-all"
               style={{
-                background: on ? m.color + "20" : "var(--surface-2)",
-                border: `1px solid ${on ? m.color + "70" : "var(--border)"}`,
+                background: on ? "var(--bg)" : "var(--surface-2)",
+                border: `1px solid ${on ? m.color : "var(--border)"}`,
                 color: on ? m.color : "var(--text-faint)",
               }}
             >
@@ -173,7 +173,7 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
                 style={{ background: on ? m.color : "var(--border)" }}
               />
               {m.label}
-              <span style={{ color: on ? m.color + "aa" : "var(--border)" }}>{m.unit}</span>
+              <span style={{ opacity: on ? 0.7 : 0.4 }}>{m.unit}</span>
             </button>
           );
         })}

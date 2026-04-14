@@ -40,13 +40,13 @@ const C = {
   bgPanel:  "#0b1018",
   bgInput:  "#080c14",
   bgCard:   "#0f1624",
-  border:   "#1e3048",
-  borderHi: "#00c8e0",
-  cream:    "#eaf4fc",      // was #d4e8f0 — brighter white-blue for headings
-  muted:    "#8fb8d0",      // was #5a8090 — significantly lifted for readability
-  faint:    "#4a7090",      // was #1a2d3a — was near-invisible, now readable
-  gold:     "#00c8e0",      // was #00A3B4 — brighter teal
-  goldDim:  "#007aaa",      // was #005F8E — lifted
+  border:   "#25354d",      // was #1e3048 — lifted
+  borderHi: "#00e5ff",      // was #00c8e0 — brightened
+  cream:    "#f8fafc",      // was #eaf4fc — pure white-ish
+  muted:    "#94b8d0",      // was #8fb8d0 — lifted
+  faint:    "#6488a4",      // was #4a7090 — lifted to pass 4.5:1 on dark bg
+  gold:     "#00e5ff",      // was #00c8e0 — brighter
+  goldDim:  "#0088cc",      // was #007aaa — lifted
 };
 
 /* ── Subtle grid background ────────────────────────────────── */

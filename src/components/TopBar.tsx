@@ -38,7 +38,7 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
         <span style={{ color:"var(--text-faint)" }}>›</span>
         <span style={{ color:"var(--text-muted)" }}>SMARTSENSOR</span>
         <span style={{ color:"var(--text-faint)" }}>›</span>
-        <span style={{ color:"#00c8e0" }}>{title.toUpperCase()}</span>
+        <span style={{ color:"var(--ptts-teal)" }}>{title.toUpperCase()}</span>
       </div>
 
       {/* Center — timestamp */}
@@ -46,9 +46,12 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
         <span style={{ color:"var(--text-faint)" }}>{dateStr.toUpperCase()}</span>
         <span className="tabular-nums" style={{ color:"var(--text-muted)" }}>{timeStr}</span>
         <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm"
-          style={{ background: connected ? "#004d2a" : "#3d0000", border: `1px solid ${connected ? "#00c45a" : "#cc3333"}` }}>
+          style={{ 
+            background: connected ? "var(--badge-online-bg)" : "var(--badge-fault-bg)", 
+            border: `1px solid ${connected ? "var(--online)" : "var(--fault)"}` 
+          }}>
           <span className={`led ${connected ? "led-online" : "led-fault"}`} style={{ width:6, height:6 }} />
-          <span style={{ color: connected ? "#6effb0" : "#ff8080" }} className="tracking-widest font-bold">
+          <span style={{ color: connected ? "var(--online)" : "var(--fault)" }} className="tracking-widest font-bold">
             {connected ? "LIVE DEMO" : "OFFLINE (RETAINED DATA)"}
           </span>
         </div>

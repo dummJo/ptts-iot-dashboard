@@ -18,48 +18,78 @@
   --border:      #25354d;
   --border-dim:  #182436;
   --text:        #ffffff;
-  --text-muted:  #b8c8dc;  /* was #a0aec0 — lifted for WCAG AA on dark surfaces */
-  --text-faint:  #8fa3bb;  /* was #718096 — lifted for WCAG AA at 9-10px */
+  --text-muted:  #cbd5e1;  /* lifted for dark mode contrast */
+  --text-faint:  #94a3b8;  /* lifted to pass 4.5:1 on almost all dark surfaces */
   --text-bright: #ffffff;
 
-  /* PTTS brand (punchy) */
-  --ptts:        #007dbd;
+  /* PTTS brand */
+  --ptts:        #0088cc;  /* was #007dbd — brightened */
   --ptts-teal:   #00e5ff;
   --ptts-glow:   #00e5ff80;
 
-  /* Status (Vibrant) */
-  --online:      #00ff88;
-  --warning:     #ffdd00;
-  --fault:       #ff3333;
-  --offline:     #778899;  /* was #556677 — lifted for WCAG AA */
+  /* Status */
+  --online:      #10b981;
+  --warning:     #fbbf24;
+  --fault:       #ef4444;
+  --offline:     #94a3b8;
+
+  /* Metric Channels (Chart Colors) */
+  --metric-vib:      #00e5ff;
+  --metric-temp:     #fbbf24;
+  --metric-rms:      #f97316;
+  --metric-power:    #a855f7;
+  --metric-freq:     #38bdf8;
+  --metric-velocity: #fb923c;
+  --metric-current:  #4ade80;
+
+  /* Badge Backgrounds (Dark Mode) */
+  --badge-online-bg:  rgba(16, 185, 129, 0.15);
+  --badge-warning-bg: rgba(251, 191, 36, 0.15);
+  --badge-fault-bg:   rgba(239, 68, 68, 0.15);
+  --badge-ptts-bg:    rgba(0, 136, 204, 0.15);
 
   --sidebar-bg:  #030508;
 }
 
-/* Light mode — Warm industrial, high contrast */
+/* Light mode — High contrast adjustments */
 .light {
-  --bg:          #f5f0e8;
-  --surface:     #fdf9f3;
-  --surface-2:   #f0ebe0;
-  --surface-3:   #e8e0d0;
-  --border:      #b8a890;
-  --border-dim:  #d4c8b0;
-  --text:        #1a1208;
-  --text-muted:  #2d1e0a;  /* darkened for light mode WCAG AA */
-  --text-faint:  #4a3520;  /* darkened for light mode WCAG AA */
-  --text-bright: #0d0800;
-  --sidebar-bg:  #e8e0d0;
+  --bg:          #f8f5f0;  /* cleaner off-white */
+  --surface:     #ffffff;
+  --surface-2:   #f1f5f9;
+  --surface-3:   #e2e8f0;
+  --border:      #94a3b8;
+  --border-dim:  #e2e8f0;
+  --text:        #0f172a;
+  --text-muted:  #334155;
+  --text-faint:  #475569;
+  --text-bright: #000000;
+  --sidebar-bg:  #f1f5f9;
 
-  /* Brand colors — deepened for warm bg */
-  --ptts:        #004f78;
-  --ptts-teal:   #007a8a;
-  --ptts-glow:   #007a8a30;
+  /* Brand colors — Shifted to darker variants for white background integrity */
+  --ptts:        #0369a1;  /* deepened for light mode contrast */
+  --ptts-teal:   #0e7490;  /* deepened for light mode contrast */
+  --ptts-glow:   rgba(14, 116, 144, 0.2);
 
-  /* Status — deepened for readability on warm bg */
-  --online:      #1a7a4a;
-  --warning:     #b85c00;
-  --fault:       #b81c1c;
-  --offline:     #5a4030;
+  /* Status — Deepened to pass 4.5:1 on white/gray surfaces */
+  --online:      #166534;
+  --warning:     #92400e;
+  --fault:       #991b1b;
+  --offline:     #475569;
+
+  /* Metric Channels — Deepened for light mode */
+  --metric-vib:      #0369a1;
+  --metric-temp:     #b45309;
+  --metric-rms:      #c2410c;
+  --metric-power:    #7e22ce;
+  --metric-freq:     #0369a1;
+  --metric-velocity: #ea580c;
+  --metric-current:  #15803d;
+
+  /* Badge Backgrounds (Light Mode) */
+  --badge-online-bg:  rgba(22, 101, 52, 0.1);
+  --badge-warning-bg: rgba(146, 64, 14, 0.1);
+  --badge-fault-bg:   rgba(153, 27, 27, 0.1);
+  --badge-ptts-bg:    rgba(3, 105, 161, 0.1);
 }
 
 body {
