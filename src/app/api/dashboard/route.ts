@@ -32,12 +32,14 @@ export async function GET() {
       let severity: 'critical' | 'warning' | null = null;
       let msg = '';
       
-      if (latest.vibOverall >= limits.fault) {
+      const vib = latest.vibOverall ?? 0;
+      
+      if (vib >= limits.fault) {
         severity = 'critical';
-        msg = `Vibration Fault: ${latest.vibOverall.toFixed(2)}mm/s exceeded limit ${limits.fault}mm/s`;
-      } else if (latest.vibOverall >= limits.warning) {
+        msg = `Vibration Fault: ${vib.toFixed(2)}mm/s exceeded limit ${limits.fault}mm/s`;
+      } else if (vib >= limits.warning) {
         severity = 'warning';
-        msg = `Vibration Warning: ${latest.vibOverall.toFixed(2)}mm/s exceeded limit ${limits.warning}mm/s`;
+        msg = `Vibration Warning: ${vib.toFixed(2)}mm/s exceeded limit ${limits.warning}mm/s`;
       }
 
       if (severity) {
