@@ -155,7 +155,7 @@ export default function LoginClient() {
       <div className="absolute top-0 inset-x-0 flex items-center justify-between px-8 py-2.5 z-10"
         style={{ borderBottom: `1px solid ${C.border}`, background: "var(--surface)" }}>
         <span className="text-[9px] tracking-[.3em] font-bold" style={{ color: C.muted }}>
-          PTTS · INDUSTRIAL IOT PLATFORM
+          PTTS · IOT DASHBOARD MONITORING
         </span>
         <div className="flex items-center gap-3">
           <ThemeToggle />
@@ -185,10 +185,10 @@ export default function LoginClient() {
             PT PRIMA TEKINDO TIRTA SEJAHTERA
           </p>
           <h1 className="text-3xl font-bold tracking-[.2em] mb-1" style={{ color: C.cream }}>
-            SMARTSENSOR
+            IOT MONITORING
           </h1>
           <p className="text-[9px] tracking-[.3em] font-bold" style={{ color: C.muted }}>
-            INDUSTRIAL IOT MONITORING SYSTEM
+            DASHBOARD MONITORING PLATFORM
           </p>
         </div>
 
@@ -263,12 +263,12 @@ export default function LoginClient() {
           <div className="w-8 h-px mb-8" style={{ background: C.gold }} />
 
           <h1 className="text-[2.6rem] font-bold leading-[1.1] tracking-tight mb-5" style={{ color: C.cream }}>
-            SmartSensor™<br />
+            IoT Dashboard™<br />
             <span style={{ color: C.gold }}>Industrial</span><br />
-            IoT Platform
+            Monitoring
           </h1>
           <p className="text-sm leading-relaxed max-w-xs" style={{ color: C.muted }}>
-            Real-time condition monitoring for rotating assets — motor, pump, and compressor health at a glance.
+            Advanced visualization for industrial assets — motor, pump, and sensor data integration at a glance.
           </p>
 
           {/* Subtle stat row */}
@@ -307,7 +307,7 @@ export default function LoginClient() {
               style={{ background: C.bgPanel, border: `1px solid ${C.border}` }}>
               <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-1" />
             </div>
-            <span className="text-[9px] tracking-widest font-bold" style={{ color: C.muted }}>PTTS SMARTSENSOR</span>
+            <span className="text-[9px] tracking-widest font-bold" style={{ color: C.muted }}>PTTS IOT MONITORING</span>
           </div>
 
           {/* Language & Theme Toggle */}
@@ -366,7 +366,7 @@ export default function LoginClient() {
             <div className="mb-9">
               <div className="w-6 h-px mb-6" style={{ background: C.gold }} />
               <h2 className="text-3xl font-bold tracking-tight mb-2" style={{ color: C.cream }}>
-                SmartSensor™
+                IoT Monitoring
               </h2>
               <p className="text-base font-medium" style={{ color: C.muted }}>{t.sub}</p>
             </div>
