@@ -214,51 +214,14 @@ Body: { "temp": 54.2, "vib": 3.1, "link": "online", "health": "good" }
 
 ## Database Schema
 
-The backend auto-creates these tables:
+The backend must implement the formal schema defined in:
+👉 [**DATABASE_SCHEMA_POSTGRES.md**](./docs/DATABASE_SCHEMA_POSTGRES.md)
 
-```sql
--- Asset registry
-CREATE TABLE assets (
-  id UUID PRIMARY KEY,
-  name VARCHAR NOT NULL,
-  type VARCHAR NOT NULL,
-  temp FLOAT8,
-  vib FLOAT8,
-  link ENUM('online', 'offline'),
-  health ENUM('good', 'warning', 'fault'),
-  lastUpdate TIMESTAMP
-);
-
--- Time-series telemetry data
-CREATE TABLE telemetry (
-  id UUID PRIMARY KEY,
-  assetId UUID REFERENCES assets(id),
-  temp FLOAT8,
-  vib FLOAT8,
-  timestamp TIMESTAMP
-);
-CREATE INDEX idx_telemetry_asset_ts ON telemetry(assetId, timestamp DESC);
-
--- Alarm events
-CREATE TABLE alarm (
-  id UUID PRIMARY KEY,
-  assetId UUID REFERENCES assets(id),
-  type VARCHAR,
-  severity ENUM('critical', 'warning', 'info'),
-  message TEXT,
-  timestamp TIMESTAMP,
-  acknowledgedAt TIMESTAMP,
-  acknowledgedBy VARCHAR
-);
-
--- System configuration
-CREATE TABLE system_config (
-  id INTEGER PRIMARY KEY DEFAULT 1,
-  apiKeys TEXT[] DEFAULT '{}',
-  settings JSONB DEFAULT '{}',
-  updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
+### Core Integration Points:
+- **`ptts_users`**: Admin/Operator registry.
+- **`ptts_assets`**: Industrial device inventory.
+- **`ptts_telemetry`**: High-frequency time-series sensor data.
+- **`ptts_alarms`**: Severity-based monitoring events.
 
 ## Data Flow
 
