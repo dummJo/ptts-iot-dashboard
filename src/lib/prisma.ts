@@ -1,12 +1,12 @@
 import { PrismaClient } from '@prisma/client'
-import { neon } from '@neondatabase/serverless'
+import { Pool } from '@neondatabase/serverless'
 import { PrismaNeon } from '@prisma/adapter-neon'
 
 const prismaClientSingleton = () => {
   // Use Neon's HTTP adapter for cloud stability (Vercel)
   if (process.env.DATABASE_URL?.includes('neon')) {
-    const sql = neon(process.env.DATABASE_URL!)
-    const adapter = new PrismaNeon(sql)
+    const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+    const adapter = new PrismaNeon(pool)
     return new PrismaClient({ adapter, log: ['error', 'warn'] })
   }
   
