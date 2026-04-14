@@ -16,6 +16,21 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
     setAcknowledged((prev) => new Set([...prev, id]));
   };
 
+  // Light formatter to strip markdown-like symbols and apply better styling
+  const formatMessage = (msg: string) => {
+    // Strip headers (###)
+    let cleaned = msg.replace(/###\s?/g, "");
+    // Extract bold bits (**text**)
+    const parts = cleaned.split(/(\*\*.*?\*\*)/g);
+    
+    return parts.map((part, i) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return <strong key={i} className="font-black text-text-bright">{part.slice(2, -2)}</strong>;
+      }
+      return <span key={i}>{part}</span>;
+    });
+  };
+
   return (
     <div className="scada-card flex flex-col">
       <div className="scada-card-header">
@@ -70,7 +85,7 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
 
               {/* Message — normal weight, readable */}
               <p className="text-[10px] leading-relaxed" style={{ color: "var(--text-muted)" }}>
-                {truncate(a.message, 90)}
+                {formatMessage(truncate(a.message, 120))}
               </p>
 
               {/* Footer row — alarm ID + ACK button */}

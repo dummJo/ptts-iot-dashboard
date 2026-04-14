@@ -45,6 +45,74 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
     }
   };
 
+  // Custom parser for "game patch" look
+  const renderFormattedContent = (raw: string) => {
+    const lines = raw.split("\n");
+    return lines.map((line, i) => {
+      const trimmed = line.trim();
+      if (!trimmed) return <div key={i} className="h-2" />;
+
+      // Version Header: ## [0.9.0] — 2026-04-14
+      if (trimmed.startsWith("## ")) {
+        return (
+          <div key={i} className="mt-8 mb-4 border-b border-ptts/20 pb-2">
+            <h3 className="text-[13px] font-black text-ptts-teal tracking-[.25em] uppercase">
+              {trimmed.replace("## ", "")}
+            </h3>
+          </div>
+        );
+      }
+
+      // Category Header: ### Added
+      if (trimmed.startsWith("### ")) {
+        return (
+          <h4 key={i} className="mt-5 mb-2 text-[10px] font-black tracking-widest text-text-bright uppercase flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-ptts-teal/60 rounded-full" />
+            {trimmed.replace("### ", "")}
+          </h4>
+        );
+      }
+
+      // Main Changelog Header: # Changelog (Ignore or style)
+      if (trimmed.startsWith("# ")) return null;
+
+      // List Items: - **Bold** — Text  OR - Text
+      if (trimmed.startsWith("- ")) {
+        let text = trimmed.replace("- ", "");
+        
+        // Handle **Bold**
+        const boldMatch = text.match(/\*\*(.*?)\*\*/);
+        if (boldMatch) {
+          const [full, boldPart] = boldMatch;
+          const remaining = text.replace(full, "");
+          return (
+            <div key={i} className="flex gap-3 mb-1.5 pl-2 group">
+              <span className="text-ptts-teal/50 font-bold group-hover:text-ptts-teal transition-colors">»</span>
+              <p className="text-[11px] leading-relaxed text-text-muted">
+                <span className="font-bold text-text-bright">{boldPart}</span>
+                {remaining}
+              </p>
+            </div>
+          );
+        }
+
+        return (
+          <div key={i} className="flex gap-3 mb-1.5 pl-2 group">
+            <span className="text-ptts-teal/50 font-bold group-hover:text-ptts-teal transition-colors">»</span>
+            <p className="text-[11px] leading-relaxed text-text-muted">{text}</p>
+          </div>
+        );
+      }
+
+      // Normal text
+      return (
+        <p key={i} className="text-[11px] leading-relaxed text-text-muted mb-2 px-1">
+          {trimmed}
+        </p>
+      );
+    });
+  };
+
   const show = manualOpen || isOpen;
 
   if (!show) return null;
@@ -70,16 +138,16 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto p-8 bg-surface text-text">
+        <div className="flex-1 overflow-y-auto p-10 bg-surface/95 scrollbar-thin scrollbar-thumb-ptts/20">
           {loading ? (
             <div className="flex items-center justify-center h-full gap-4">
               <div className="animate-spin-cw text-ptts-teal">◯</div>
               <span className="scada-label animate-blink">DECRYPTING LOGS...</span>
             </div>
           ) : (
-            <pre className="whitespace-pre-wrap font-mono text-[11px] leading-relaxed text-text-muted selection:bg-ptts/30">
-              {content}
-            </pre>
+            <div className="max-w-3xl mx-auto selection:bg-ptts/30">
+              {renderFormattedContent(content)}
+            </div>
           )}
         </div>
 

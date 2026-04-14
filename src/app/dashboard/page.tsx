@@ -114,7 +114,7 @@ export default function DashboardPage() {
 
           {/* Trend + Donut */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2"><TrendChart trendData={trendData} /></div>
+            <div className="col-span-2"><TrendChart trendData={trendData} assets={topAssets} /></div>
             <div><StatusDonut linkSummary={linkSummary} healthSummary={dynamicHealthSummary} /></div>
           </div>
 

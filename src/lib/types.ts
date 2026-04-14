@@ -20,9 +20,14 @@ export interface KPIItem {
 
 // ── Trend Chart ───────────────────────────────────────────────────────
 export interface TrendPoint {
-  time: string;   // HH:MM
-  temp: number;   // °C
-  vib: number;    // mm/s RMS
+  time: string;         // HH:MM
+  temp: number;         // °C  — Bearing/ambient temperature
+  vib: number;          // mm/s RMS — Overall vibration
+  rms?: number;         // mm/s — Vibration RMS (detailed)
+  powerKW?: number;     // kW  — Motor load
+  freq?: number;        // Hz  — Dominant vibration frequency
+  velocity?: number;    // mm/s peak — Velocity (envelope)
+  current?: number;     // A   — Motor current draw
 }
 
 // ── Status Donut ──────────────────────────────────────────────────────
@@ -91,6 +96,7 @@ export interface DashboardData {
   recentAlerts: Alarm[];
   vibrationBarData: VibrationEntry[];
   system: SystemState;
+  assetTrends?: Record<string, TrendPoint[]>; // per-asset trend history
 }
 
 // ── Empty fallback for initial state ─────────────────────────────────

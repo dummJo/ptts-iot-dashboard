@@ -256,7 +256,7 @@ export default function TrendsPage() {
 
             {/* Live trends row */}
             <div className="grid grid-cols-4 gap-3">
-              <div className="col-span-3 flex"><TrendChart trendData={dashboardData.trendData} /></div>
+              <div className="col-span-3 flex"><TrendChart trendData={dashboardData.trendData} assets={dashboardData.topAssets} /></div>
               <div className="col-span-1 flex"><VibrationBar vibrationData={dashboardData.vibrationBarData} /></div>
             </div>
 

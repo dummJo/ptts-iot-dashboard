@@ -1,11 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
   Legend, ResponsiveContainer, ReferenceLine, Brush,
 } from "recharts";
-import type { TrendPoint } from "@/lib/types";
+import type { TrendPoint, Asset } from "@/lib/types";
+import { assetTrends } from "@/lib/mock-data";
 
+// ── Granularity options ───────────────────────────────────────────────
 const GRANULARITY = [
   { label: "1 MIN",   key: "1min"    },
   { label: "5 MIN",   key: "5min"    },
@@ -18,6 +20,26 @@ const GRANULARITY = [
 ] as const;
 type GranKey = typeof GRANULARITY[number]["key"];
 
+// ── Available metric channels ─────────────────────────────────────────
+type MetricKey = "vib" | "temp" | "rms" | "powerKW" | "freq" | "velocity" | "current";
+
+const METRICS: {
+  key: MetricKey;
+  label: string;
+  unit: string;
+  color: string;
+  yAxisId: string;
+}[] = [
+  { key: "vib",      label: "Vibration",  unit: "mm/s", color: "#00e5ff", yAxisId: "left"  },
+  { key: "temp",     label: "Temperature",unit: "°C",   color: "#ffdd00", yAxisId: "right" },
+  { key: "rms",      label: "RMS",        unit: "mm/s", color: "#ff8c00", yAxisId: "left"  },
+  { key: "powerKW",  label: "Motor kW",   unit: "kW",   color: "#a855f7", yAxisId: "right" },
+  { key: "freq",     label: "Frequency",  unit: "Hz",   color: "#38bdf8", yAxisId: "right" },
+  { key: "velocity", label: "Velocity",   unit: "mm/s", color: "#fb923c", yAxisId: "left"  },
+  { key: "current",  label: "Current",    unit: "A",    color: "#4ade80", yAxisId: "right" },
+];
+
+// ── Data densification ───────────────────────────────────────────────
 function mockDensify(data: TrendPoint[], targetKey: GranKey): TrendPoint[] {
   if (!data.length) return data;
   let multi = 1;
@@ -35,29 +57,86 @@ function mockDensify(data: TrendPoint[], targetKey: GranKey): TrendPoint[] {
   if (multi >= 1) {
     return data.flatMap((d) =>
       Array.from({ length: multi }, (_, j) => ({
-        time: `${d.time}:${String(Math.floor(j * (60 / multi))).padStart(2, "0")}`,
-        temp: +(d.temp + (Math.random() - 0.5) * 1.5).toFixed(1),
-        vib:  +(d.vib  + (Math.random() - 0.5) * 0.3).toFixed(2),
+        ...d,
+        time:     `${d.time}:${String(Math.floor(j * (60 / multi))).padStart(2, "0")}`,
+        temp:     +(d.temp     + (Math.random() - 0.5) * 1.5).toFixed(1),
+        vib:      +(d.vib      + (Math.random() - 0.5) * 0.3).toFixed(2),
+        rms:      +(( d.rms      ?? d.vib * 0.92) + (Math.random() - 0.5) * 0.2).toFixed(2),
+        powerKW:  +(( d.powerKW  ?? 30)  + (Math.random() - 0.5) * 3).toFixed(1),
+        freq:     +(( d.freq     ?? 50)  + (Math.random() - 0.5) * 1).toFixed(1),
+        velocity: +(( d.velocity ?? d.vib * 1.3) + (Math.random() - 0.5) * 0.2).toFixed(2),
+        current:  +(( d.current  ?? 80)  + (Math.random() - 0.5) * 5).toFixed(1),
       }))
     );
   } else {
-    return data.filter((_, i) => i % (Math.ceil(1 / multi)) === 0);
+    return data.filter((_, i) => i % Math.ceil(1 / multi) === 0);
   }
 }
 
-export default function TrendChart({ trendData = [] }: { trendData?: TrendPoint[] }) {
-  const [gran, setGran]           = useState<GranKey>("1hour");
+// ── Component ────────────────────────────────────────────────────────
+interface TrendChartProps {
+  trendData?: TrendPoint[];
+  assets?: Asset[];
+}
+
+export default function TrendChart({ trendData = [], assets = [] }: TrendChartProps) {
+  const [gran,      setGran]      = useState<GranKey>("1hour");
   const [tempLimit, setTempLimit] = useState(60);
   const [vibLimit,  setVibLimit]  = useState(3.5);
   const [editTemp,  setEditTemp]  = useState(false);
   const [editVib,   setEditVib]   = useState(false);
-  const displayData = mockDensify(trendData, gran);
+  const [assetId,   setAssetId]   = useState<string>("ALL");
+  const [activeMetrics, setActiveMetrics] = useState<Set<MetricKey>>(new Set(["vib", "temp"]));
+
+  const toggleMetric = (key: MetricKey) => {
+    setActiveMetrics((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) { if (next.size > 1) next.delete(key); } // keep at least one
+      else next.add(key);
+      return next;
+    });
+  };
+
+  // Resolve trend source: per-asset if available, else global
+  const rawData = useMemo(() => {
+    if (assetId === "ALL") return trendData;
+    return assetTrends[assetId] ?? trendData;
+  }, [assetId, trendData]);
+
+  const displayData = useMemo(() => mockDensify(rawData, gran), [rawData, gran]);
+
+  // Build asset list for selector
+  const assetOptions = [
+    { id: "ALL", name: "All Assets (Fleet Average)" },
+    ...assets.map((a) => ({ id: a.id, name: `${a.id} · ${a.name}` })),
+  ];
+
+  const activeMetricDefs = METRICS.filter((m) => activeMetrics.has(m.key));
 
   return (
     <div className="scada-card flex flex-col w-full">
       <div className="scada-card-header">
-        <span className="scada-label">TREND · TEMPERATURE &amp; VIBRATION</span>
-        <div className="flex items-center gap-2">
+        <span className="scada-label">TREND · SENSOR DATA</span>
+
+        {/* Controls row */}
+        <div className="flex items-center gap-2 flex-wrap">
+
+          {/* Asset selector */}
+          <label htmlFor="asset-select" className="sr-only">Select Asset</label>
+          <select
+            id="asset-select"
+            aria-label="Select Asset"
+            value={assetId}
+            onChange={(e) => setAssetId(e.target.value)}
+            className="text-[9px] px-2 py-1 rounded-sm font-bold tracking-widest outline-none cursor-pointer transition-all max-w-[180px]"
+            style={{ background: "var(--surface-2)", color: "#00c8e0", border: "1px solid #00c8e040" }}
+          >
+            {assetOptions.map((a) => (
+              <option key={a.id} value={a.id}>{a.name}</option>
+            ))}
+          </select>
+
+          {/* Granularity selector */}
           <label htmlFor="trend-granularity" className="sr-only">Time Granularity</label>
           <select
             id="trend-granularity"
@@ -74,30 +153,72 @@ export default function TrendChart({ trendData = [] }: { trendData?: TrendPoint[
         </div>
       </div>
 
-      <div className="p-4">
-        <ResponsiveContainer width="100%" height={210}>
-          <LineChart data={displayData} margin={{ top: 4, right: 8, left: -18, bottom: 0 }}>
+      {/* Metric toggle chips */}
+      <div className="flex flex-wrap gap-1.5 px-4 pt-3 pb-1">
+        {METRICS.map((m) => {
+          const on = activeMetrics.has(m.key);
+          return (
+            <button
+              key={m.key}
+              onClick={() => toggleMetric(m.key)}
+              className="flex items-center gap-1.5 px-2 py-1 rounded-sm text-[9px] font-bold tracking-widest transition-all"
+              style={{
+                background: on ? m.color + "20" : "var(--surface-2)",
+                border: `1px solid ${on ? m.color + "70" : "var(--border)"}`,
+                color: on ? m.color : "var(--text-faint)",
+              }}
+            >
+              <span
+                className="w-2 h-2 rounded-full inline-block"
+                style={{ background: on ? m.color : "var(--border)" }}
+              />
+              {m.label}
+              <span style={{ color: on ? m.color + "aa" : "var(--border)" }}>{m.unit}</span>
+            </button>
+          );
+        })}
+        <span className="text-[8px] self-center ml-1" style={{ color: "var(--text-faint)" }}>
+          Click to toggle metrics
+        </span>
+      </div>
+
+      <div className="p-4 pt-2">
+        <ResponsiveContainer width="100%" height={220}>
+          <LineChart data={displayData} margin={{ top: 4, right: 12, left: -18, bottom: 0 }}>
             <CartesianGrid strokeDasharray="2 4" stroke="var(--border-dim)" />
             <XAxis dataKey="time" tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
               tickLine={false} axisLine={false} interval="preserveStartEnd" />
-            <YAxis yAxisId="temp" tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
-              tickLine={false} axisLine={false} unit="°" />
-            <YAxis yAxisId="vib" orientation="right" tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
-              tickLine={false} axisLine={false} unit="↕" />
-            <ReferenceLine yAxisId="temp" y={tempLimit} stroke="var(--fault)"   strokeDasharray="4 4" strokeOpacity={0.6}
-              label={{ value: `${tempLimit}°`, position: "insideTopLeft",  fontSize: 8, fill: "var(--fault)"   }} />
-            <ReferenceLine yAxisId="vib"  y={vibLimit}  stroke="var(--warning)" strokeDasharray="4 4" strokeOpacity={0.6}
-              label={{ value: `${vibLimit}`,   position: "insideTopRight", fontSize: 8, fill: "var(--warning)" }} />
+            <YAxis yAxisId="left" tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
+              tickLine={false} axisLine={false} />
+            <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
+              tickLine={false} axisLine={false} />
+            {activeMetrics.has("temp") && (
+              <ReferenceLine yAxisId="right" y={tempLimit} stroke="var(--fault)" strokeDasharray="4 4" strokeOpacity={0.6}
+                label={{ value: `${tempLimit}°`, position: "insideTopLeft", fontSize: 8, fill: "var(--fault)" }} />
+            )}
+            {activeMetrics.has("vib") && (
+              <ReferenceLine yAxisId="left" y={vibLimit} stroke="var(--warning)" strokeDasharray="4 4" strokeOpacity={0.6}
+                label={{ value: `${vibLimit}`, position: "insideTopRight", fontSize: 8, fill: "var(--warning)" }} />
+            )}
             <Tooltip
               contentStyle={{ background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: 2, fontSize: 11, fontFamily: "inherit" }}
               labelStyle={{ color: "var(--text-muted)", fontWeight: 700 }}
               itemStyle={{ color: "var(--text)" }}
             />
             <Legend wrapperStyle={{ fontSize: 9, paddingTop: 8, fontFamily: "inherit", letterSpacing: "0.1em" }} />
-            <Line yAxisId="temp" type="monotone" dataKey="temp" stroke="var(--warning)" strokeWidth={1.5}
-              dot={false} name="TEMP °C" activeDot={{ r: 3 }} />
-            <Line yAxisId="vib" type="monotone" dataKey="vib" stroke="var(--ptts-teal)" strokeWidth={1.5}
-              dot={false} name="VIB mm/s" activeDot={{ r: 3 }} />
+            {activeMetricDefs.map((m) => (
+              <Line
+                key={m.key}
+                yAxisId={m.yAxisId}
+                type="monotone"
+                dataKey={m.key}
+                stroke={m.color}
+                strokeWidth={1.5}
+                dot={false}
+                name={`${m.label} (${m.unit})`}
+                activeDot={{ r: 3 }}
+              />
+            ))}
             <Brush
               dataKey="time" height={18} travellerWidth={6}
               stroke="var(--ptts)" fill="var(--surface-2)"
@@ -116,14 +237,11 @@ export default function TrendChart({ trendData = [] }: { trendData?: TrendPoint[
 
         {/* Editable limit legend */}
         <div className="flex gap-5 mt-2 px-1 items-center flex-wrap">
-
-          {/* TEMP limit — click to edit */}
           <span className="flex items-center gap-1.5 text-[9px] tracking-widest" style={{ color: "var(--fault)" }}>
             <span className="opacity-70">— —</span>
             <span>TEMP LIMIT:</span>
             {editTemp ? (
-              <input
-                type="number" step={1} value={tempLimit} autoFocus
+              <input type="number" step={1} value={tempLimit} autoFocus
                 onChange={(e) => setTempLimit(parseFloat(e.target.value) || 0)}
                 onBlur={() => setEditTemp(false)}
                 onKeyDown={(e) => e.key === "Enter" && setEditTemp(false)}
@@ -131,24 +249,18 @@ export default function TrendChart({ trendData = [] }: { trendData?: TrendPoint[
                 style={{ background: "var(--surface-2)", border: "1px solid var(--fault)", color: "var(--fault)" }}
               />
             ) : (
-              <button
-                onClick={() => setEditTemp(true)}
-                title="Click to adjust temperature limit"
+              <button onClick={() => setEditTemp(true)} title="Click to adjust"
                 className="font-black underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70"
-                style={{ color: "var(--fault)", background: "none", border: "none", padding: 0 }}
-              >
+                style={{ color: "var(--fault)", background: "none", border: "none", padding: 0 }}>
                 {tempLimit}°C ✎
               </button>
             )}
           </span>
-
-          {/* VIB limit — click to edit */}
           <span className="flex items-center gap-1.5 text-[9px] tracking-widest" style={{ color: "var(--warning)" }}>
             <span className="opacity-70">— —</span>
             <span>VIB LIMIT:</span>
             {editVib ? (
-              <input
-                type="number" step={0.1} value={vibLimit} autoFocus
+              <input type="number" step={0.1} value={vibLimit} autoFocus
                 onChange={(e) => setVibLimit(parseFloat(e.target.value) || 0)}
                 onBlur={() => setEditVib(false)}
                 onKeyDown={(e) => e.key === "Enter" && setEditVib(false)}
@@ -156,18 +268,16 @@ export default function TrendChart({ trendData = [] }: { trendData?: TrendPoint[
                 style={{ background: "var(--surface-2)", border: "1px solid var(--warning)", color: "var(--warning)" }}
               />
             ) : (
-              <button
-                onClick={() => setEditVib(true)}
-                title="Click to adjust vibration limit"
+              <button onClick={() => setEditVib(true)} title="Click to adjust"
                 className="font-black underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70"
-                style={{ color: "var(--warning)", background: "none", border: "none", padding: 0 }}
-              >
+                style={{ color: "var(--warning)", background: "none", border: "none", padding: 0 }}>
                 {vibLimit} mm/s ✎
               </button>
             )}
           </span>
-
-          <span className="text-[9px] tracking-widest ml-auto" style={{ color: "var(--ptts-teal)" }}>↔ DRAG BRUSH TO ZOOM</span>
+          <span className="text-[9px] tracking-widest ml-auto" style={{ color: "var(--ptts-teal)" }}>
+            ↔ DRAG BRUSH TO ZOOM
+          </span>
         </div>
       </div>
     </div>
