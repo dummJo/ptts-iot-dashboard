@@ -10,15 +10,30 @@ export default function SettingsPage() {
     smartSensorPTTS: "",
     smartSensorRonds: "",
   });
+  const [activeKeyTab, setActiveKeyTab] = useState<"smartSensorPTTS" | "smartSensorRonds">("smartSensorPTTS");
   const [savedKeys, setSavedKeys] = useState<string[]>([]);
   const [isSyncing, setIsSyncing] = useState(false);
   const [tab, setTab] = useState<"swagger" | "api" | "users">("swagger");
   const [newUser, setNewUser] = useState({ username: "", password: "", role: "operator" });
   const [userCreated, setUserCreated] = useState<{ success: boolean; message: string } | null>(null);
   const [isCreatingUser, setIsCreatingUser] = useState(false);
-  const [users, setUsers] = useState<Array<{ username: string; hash: string; role: string }>>([]);
   const [isFetchingUsers, setIsFetchingUsers] = useState(false);
   const [hoveredHash, setHoveredHash] = useState<string | null>(null);
+  const [currentUserRole, setCurrentUserRole] = useState<string>("operator");
+
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const session = await apiClient.getCurrentSession();
+        if (session?.role) {
+          setCurrentUserRole(session.role.toLowerCase());
+        }
+      } catch (e) {
+        console.error("Auth check failed", e);
+      }
+    }
+    checkAuth();
+  }, []);
 
   useEffect(() => {
     async function initConfig() {
@@ -134,16 +149,19 @@ export default function SettingsPage() {
                 }}>
                 API CONFIGURATION
               </button>
-              <button
-                onClick={() => setTab("users")}
-                className="px-4 py-2 text-[9px] font-bold tracking-widest rounded-sm transition-all"
-                style={{
-                  background: tab === "users" ? "#005F8E" : "var(--surface)",
-                  color: tab === "users" ? "#fff" : "var(--text-muted)",
-                  border: "1px solid var(--border)"
-                }}>
-                USER MANAGEMENT
-              </button>
+              
+              {currentUserRole === "admin" && (
+                <button
+                  onClick={() => setTab("users")}
+                  className="px-4 py-2 text-[9px] font-bold tracking-widest rounded-sm transition-all"
+                  style={{
+                    background: tab === "users" ? "#1e3048" : "var(--surface)",
+                    color: tab === "users" ? "#00c8e0" : "var(--text-muted)",
+                    border: tab === "users" ? "1px solid #00c8e050" : "1px solid var(--border)"
+                  }}>
+                  USER MANAGEMENT
+                </button>
+              )}
             </div>
 
             {/* Swagger Tab */}
@@ -198,73 +216,68 @@ export default function SettingsPage() {
               <div className="rounded-sm p-6 space-y-4"
                 style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
                 <div>
-                  <h2 className="text-sm font-bold tracking-widest mb-4"
-                    style={{ color: "#00A3B4" }}>API KEY MANAGEMENT</h2>
+                  <h2 className="text-sm font-bold tracking-widest mb-4 uppercase"
+                    style={{ color: "var(--ptts-teal)" }}>SmartSensor API Configuration</h2>
 
                   <div className="space-y-4">
-                    {/* PTTS API Key */}
+                    {/* Unified API Key Group */}
                     <div className="p-4 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
-                      <label className="scada-label block mb-2">SmartSensor API Key — PTTS</label>
-                      <div className="flex gap-2">
-                        <input
-                          type={savedKeys.includes("smartSensorPTTS") ? "password" : "text"}
-                          name="smartSensorPTTS"
-                          value={apiKeys.smartSensorPTTS}
-                          onChange={handleInputChange}
-                          placeholder="Enter PTTS SmartSensor API key"
-                          className="flex-1 px-3 py-2.5 text-sm rounded-sm outline-none transition-all"
-                          style={{
-                            background: "var(--bg)",
-                            border: "1px solid var(--border)",
-                            color: "#c8d8e8"
-                          }}
-                        />
+                      
+                      {/* Provider Selector Tabs */}
+                      <div className="flex gap-1 mb-4 p-1 rounded-sm w-fit" style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}>
                         <button
-                          onClick={() => handleSaveKey("smartSensorPTTS")}
-                          className="px-4 py-2.5 text-[9px] font-bold rounded-sm transition-all tracking-widest"
+                          onClick={() => setActiveKeyTab("smartSensorPTTS")}
+                          className="px-4 py-1.5 text-[8px] font-bold tracking-widest rounded-sm transition-all"
                           style={{
-                            background: savedKeys.includes("smartSensorPTTS") ? "#00A3B4" : "#005F8E",
-                            color: "#fff",
-                            border: "1px solid var(--border)"
+                            background: activeKeyTab === "smartSensorPTTS" ? "var(--ptts-teal)" : "transparent",
+                            color: activeKeyTab === "smartSensorPTTS" ? "#fff" : "var(--text-muted)",
                           }}>
-                          {savedKeys.includes("smartSensorPTTS") ? "✓ SAVED" : "SAVE"}
+                          PTTS / ABB
+                        </button>
+                        <button
+                          onClick={() => setActiveKeyTab("smartSensorRonds")}
+                          className="px-4 py-1.5 text-[8px] font-bold tracking-widest rounded-sm transition-all"
+                          style={{
+                            background: activeKeyTab === "smartSensorRonds" ? "var(--ptts-teal)" : "transparent",
+                            color: activeKeyTab === "smartSensorRonds" ? "#fff" : "var(--text-muted)",
+                          }}>
+                          RONDS
                         </button>
                       </div>
-                      <p className="text-[8px] mt-2" style={{ color: "var(--text-faint)" }}>
-                        API key untuk integrasi PTTS SmartSensor. Diperlukan untuk komunikasi perangkat.
-                      </p>
-                    </div>
 
-                    {/* Ronds API Key */}
-                    <div className="p-4 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
-                      <label className="scada-label block mb-2">SmartSensor API Key — Ronds</label>
+                      <label className="scada-label block mb-2 uppercase text-[9px]">
+                        {activeKeyTab === "smartSensorPTTS" ? "ABB Ability™" : "RONDS Monitoring"} API Key
+                      </label>
+                      
                       <div className="flex gap-2">
                         <input
-                          type={savedKeys.includes("smartSensorRonds") ? "password" : "text"}
-                          name="smartSensorRonds"
-                          value={apiKeys.smartSensorRonds}
+                          type={savedKeys.includes(activeKeyTab) ? "password" : "text"}
+                          name={activeKeyTab}
+                          value={apiKeys[activeKeyTab]}
                           onChange={handleInputChange}
-                          placeholder="Enter Ronds SmartSensor API key"
-                          className="flex-1 px-3 py-2.5 text-sm rounded-sm outline-none transition-all"
+                          placeholder={`Enter ${activeKeyTab === "smartSensorPTTS" ? "ABB" : "Ronds"} API key`}
+                          className="flex-1 px-3 py-2.5 text-[11px] rounded-sm outline-none transition-all"
                           style={{
                             background: "var(--bg)",
                             border: "1px solid var(--border)",
-                            color: "#c8d8e8"
+                            color: "var(--text)"
                           }}
                         />
                         <button
-                          onClick={() => handleSaveKey("smartSensorRonds")}
-                          className="px-4 py-2.5 text-[9px] font-bold rounded-sm transition-all tracking-widest"
+                          onClick={() => handleSaveKey(activeKeyTab)}
+                          className="px-5 py-2.5 text-[9px] font-bold rounded-sm transition-all tracking-widest"
                           style={{
-                            background: savedKeys.includes("smartSensorRonds") ? "#00A3B4" : "#005F8E",
+                            background: savedKeys.includes(activeKeyTab) ? "var(--online)" : "var(--ptts-teal)",
                             color: "#fff",
                             border: "1px solid var(--border)"
                           }}>
-                          {savedKeys.includes("smartSensorRonds") ? "✓ SAVED" : "SAVE"}
+                          {savedKeys.includes(activeKeyTab) ? "✓ SAVED" : "SAVE KEY"}
                         </button>
                       </div>
-                      <p className="text-[8px] mt-2" style={{ color: "var(--text-faint)" }}>
-                        API key for Ronds SmartSensor integration. Required for device communication.
+                      <p className="text-[8px] mt-2 italic" style={{ color: "var(--text-faint)" }}>
+                        {activeKeyTab === "smartSensorPTTS" 
+                          ? "Required for communication with ABB Ability™ Condition Monitoring cloud." 
+                          : "Required for integration with RONDS wireless sensor datalink."}
                       </p>
                     </div>
                   </div>
@@ -283,8 +296,7 @@ export default function SettingsPage() {
               </div>
             )}
 
-            {/* User Management Tab */}
-            {tab === "users" && (
+            {tab === "users" && currentUserRole === "admin" && (
               <div className="rounded-sm p-6 space-y-4"
                 style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
                 <div>

@@ -199,4 +199,36 @@ export const apiClient = {
       { method: 'PUT', body: JSON.stringify(data) }
     );
   },
+
+  // ── Auth & User Service ───────────────────────────────────────────────────
+
+  /**
+   * Retrieves the current user session data from the server.
+   * Backend contract: GET /api/auth/session → { success, username, role }
+   */
+  async getCurrentSession(): Promise<{ success: boolean; username?: string; role?: string }> {
+    // In this Next.js prototype, we use a server action as the internal API:
+    const { getCurrentSessionAction } = await import('@/app/actions/auth');
+    return getCurrentSessionAction();
+  },
+
+  /**
+   * Fetches the list of all system users.
+   * Backend contract: GET /api/users → { success, users: [] }
+   * Auth: Admin only.
+   */
+  async fetchUsers(): Promise<{ success: boolean; users?: any[] }> {
+    const { fetchUsersAction } = await import('@/app/actions/auth');
+    return fetchUsersAction();
+  },
+
+  /**
+   * Registers a new user account in the database.
+   * Backend contract: POST /api/users → { success }
+   * Auth: Admin only.
+   */
+  async createUser(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const { createUserAction } = await import('@/app/actions/auth');
+    return createUserAction(formData);
+  },
 };

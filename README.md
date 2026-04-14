@@ -7,7 +7,7 @@
 ██╔═══╝    ██║      ██║   ╚════██║
 ██║        ██║      ██║   ███████║
 ╚═╝        ╚═╝      ╚═╝   ╚══════╝
-  SmartSensor · Industrial IoT Platform
+  SmartSensor · Industrial IoT Platform v1.1.0
 ```
 
 **PT PRIMA TEKINDO TIRTA SEJAHTERA**
@@ -60,18 +60,21 @@
 
 **Backend Repository:** [dummJo/ptts-iot-backend](https://github.com/dummJo/ptts-iot-backend)
 
+### 📄 Standardized Documentation
+- [**API Service Contract**](./docs/API_CONTRACT.md) — Specs for NestJS Developers
+- [**PostgreSQL Schema**](./docs/DATABASE_SCHEMA_POSTGRES.md) — Formal DB Structure
+- [**ABB Integration Guide**](./docs/ABB_INTEGRATION_GUIDE.md) — Backend Driver Implementation
+
 ---
 
 ## 🖥️ Halaman & Fitur
 
-| Halaman | Route | Deskripsi |
-|---|---|---|
-| **Overview** | `/dashboard` | KPI cards, trend 24H, status donut, asset tag list |
-| **Assets** | `/dashboard/assets` | Inventori aset lengkap + SCADA map placeholder |
+| **Overview** | `/dashboard` | KPI cards, Multi-metric trend chart with selector, Machine health logic |
+| **Assets** | `/dashboard/assets` | Inventori aset lengkap + ISO 10816 threshold calculator |
 | **Alarms** | `/dashboard/alerts` | Log alarm aktif + riwayat, ACK & export |
 | **Reports** | `/dashboard/reports` | Generator laporan periodik (harian s/d tahunan) dengan export PDF & CSV |
-| **Config** | `/dashboard/settings` | Konfigurasi API Key, Swagger docs ABB, manajemen pengguna |
-| **Login** | `/login` | Splash screen industrial + autentikasi JWT |
+| **Config** | `/dashboard/settings` | Admin-only User Management, API Key configuration, API docs |
+| **Login** | `/login` | High-contrast industrial splash screen + JWT Auth |
 
 ---
 
@@ -205,9 +208,11 @@ Detail lengkap di [SETUP.md](./SETUP.md#database-schema).
 
 ---
 
+---
+
 <div align="center">
 
-**PTTS SmartSensor IoT Platform · v0.7.0**
+**PTTS SmartSensor IoT Platform · v1.1.0**
 *Full-stack integration: NestJS + PostgreSQL + Next.js*
 
 `Sensor → MQTT → NestJS → PostgreSQL → Next.js → User`

@@ -3,13 +3,7 @@ import crypto from "crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSession, verifySession } from "@/lib/session";
-
-// SHA-256 hashes — replace with DB lookup + bcrypt in production
-const USERS: Record<string, { hash: string; role: string }> = {
-  admin:    { hash: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918", role: "admin" },
-  operator: { hash: "06e55b633481f7bb072957eabcf110c972e86691c3cfedabe088024bffe42f23", role: "operator" },
-  engineer: { hash: "7826b958b79c70626801b880405eb5111557dadceb2fee2b1ed69a18eed0c6dc", role: "engineer" },
-};
+import { readUsers, writeUsers } from "@/lib/db";
 
 // Block common injection patterns
 const INJECTION_PATTERN = /(['";\\]|--|\/\*|\bOR\b|\bAND\b|\bUNION\b|\bSELECT\b|\bDROP\b|\bINSERT\b)/i;
@@ -30,7 +24,8 @@ export async function loginAction(
     return { error: "Invalid input detected." };
   }
 
-  const user = USERS[username];
+  const users = readUsers();
+  const user = users[username];
   if (!user) return { error: "Invalid credentials." };
 
   const inputHash = crypto.createHash("sha256").update(password).digest("hex");
@@ -115,15 +110,17 @@ export async function createUserAction(
   }
 
   // Check if user already exists
-  if (USERS[username]) {
+  const users = readUsers();
+  if (users[username]) {
     return { success: false, error: "Username already exists." };
   }
 
   // Create password hash
   const hash = crypto.createHash("sha256").update(password).digest("hex");
 
-  // Add user to USERS object
-  USERS[username] = { hash, role };
+  // Add user to persistent store
+  users[username] = { hash, role };
+  writeUsers(users);
 
   return { success: true };
 }
@@ -144,8 +141,9 @@ export async function fetchUsersAction(): Promise<
     return { success: false, error: "Admin access required." };
   }
 
+  const usersMap = readUsers();
   // Return all users
-  const users = Object.entries(USERS).map(([username, data]) => ({
+  const users = Object.entries(usersMap).map(([username, data]) => ({
     username,
     hash: data.hash,
     role: data.role,
