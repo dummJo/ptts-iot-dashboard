@@ -200,6 +200,19 @@ export const apiClient = {
     );
   },
 
+  /**
+   * Updates vibration thresholds for an asset in PostgreSQL.
+   */
+  async updateAssetThresholds(tagId: string, warning: number, fault: number): Promise<{ success: boolean }> {
+    return apiFetch(
+      `${serviceUrl('assets')}/api/assets`,
+      { 
+        method: 'PATCH', 
+        body: JSON.stringify({ tagId, vibLimitWarning: warning, vibLimitFault: fault }) 
+      }
+    );
+  },
+
   // ── Auth & User Service ───────────────────────────────────────────────────
 
   /**

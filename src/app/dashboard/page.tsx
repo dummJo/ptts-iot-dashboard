@@ -20,16 +20,20 @@ export default function DashboardPage() {
   const [pollInterval, setPollInterval] = useState(60000);
   const [overrides, setOverrides] = useState<Record<string, {warning: number, fault: number}>>({});
 
-  useEffect(() => {
-    // Load overrides from session storage on mount
-    const saved = sessionStorage.getItem('ptts-thresholds');
-    if (saved) setOverrides(JSON.parse(saved));
-  }, []);
-
-  const handleOverridesChange = (id: string, newOverrides: {warning: number, fault: number}) => {
-    const updated = { ...overrides, [id]: newOverrides };
-    setOverrides(updated);
-    sessionStorage.setItem('ptts-thresholds', JSON.stringify(updated));
+  const handleOverridesChange = async (id: string, newOverrides: {warning: number, fault: number}) => {
+    try {
+      // 1. Update local state for immediate UI feedback
+      const updated = { ...overrides, [id]: newOverrides };
+      setOverrides(updated);
+      
+      // 2. Persist to PostgreSQL
+      await apiClient.updateAssetThresholds(id, newOverrides.warning, newOverrides.fault);
+      
+      // 3. Trigger a background refresh to ensure all derived logic (alarms, etc) is updated
+      fetchDashboardData();
+    } catch (err) {
+      console.error("Failed to persist thresholds:", err);
+    }
   };
 
   const fetchDashboardData = async () => {
