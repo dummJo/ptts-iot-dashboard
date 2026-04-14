@@ -88,6 +88,19 @@ export interface DashboardData {
   system: SystemState;
 }
 
+// ── Empty fallback for initial state ─────────────────────────────────
+export const EMPTY_DASHBOARD: DashboardData = {
+  kpiData: [],
+  trendData: [],
+  statusData: [],
+  linkSummary: { online: 0, offline: 0 },
+  healthSummary: { good: 0, warning: 0, fault: 0 },
+  topAssets: [],
+  recentAlerts: [],
+  vibrationBarData: [],
+  system: { connected: false, lastSync: new Date().toISOString() },
+};
+
 // ── Report ─────────────────────────────────────────────────────────────
 export type ReportPeriod = 'daily' | 'weekly' | 'monthly' | '3months' | '6months' | '12months';
 

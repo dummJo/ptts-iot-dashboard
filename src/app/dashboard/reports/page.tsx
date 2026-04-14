@@ -6,6 +6,7 @@ import TrendChart from "@/components/TrendChart";
 import VibrationBar from "@/components/VibrationBar";
 import { apiClient } from "@/lib/apiClient";
 import type { DashboardData, ReportPeriod, ReportSummary, AssetReportRow } from "@/lib/types";
+import { EMPTY_DASHBOARD } from "@/lib/types";
 import { getHealthColor, getLinkColor } from "@/lib/utils";
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
@@ -18,6 +19,28 @@ const PERIOD_LABELS: Record<ReportPeriod, string> = {
   "6months": "6 BULAN",
   "12months":"12 BULAN / TAHUNAN",
 };
+
+const PERIOD_OPTIONS: { key: ReportPeriod; label: string; sub: string; days: number }[] = [
+  { key: "daily",    label: "Harian",   sub: "1 hari terakhir",   days: 1   },
+  { key: "weekly",   label: "Mingguan", sub: "7 hari terakhir",   days: 7   },
+  { key: "monthly",  label: "Bulanan",  sub: "30 hari terakhir",  days: 30  },
+  { key: "3months",  label: "3 Bulan",  sub: "90 hari terakhir",  days: 90  },
+  { key: "6months",  label: "6 Bulan",  sub: "180 hari terakhir", days: 180 },
+  { key: "12months", label: "Tahunan",  sub: "365 hari terakhir", days: 365 },
+];
+
+function dateDiffDays(from: string, to: string): number {
+  return Math.round((new Date(to).getTime() - new Date(from).getTime()) / 86400000);
+}
+
+function mapDaysToPeriod(days: number): ReportPeriod {
+  if (days <= 1)   return "daily";
+  if (days <= 7)   return "weekly";
+  if (days <= 30)  return "monthly";
+  if (days <= 90)  return "3months";
+  if (days <= 180) return "6months";
+  return "12months";
+}
 
 function csvExport(report: ReportSummary) {
   const rows = [
@@ -153,13 +176,19 @@ function PrintTemplate({ report }: { report: ReportSummary }) {
 
 export default function TrendsPage() {
   const [refreshing, setRefreshing] = useState(false);
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData>(EMPTY_DASHBOARD);
   const [pollInterval, setPollInterval] = useState(60000);
 
   const [period, setPeriod] = useState<ReportPeriod>("monthly");
   const [report, setReport] = useState<ReportSummary | null>(null);
   const [loadingReport, setLoadingReport] = useState(false);
   const [reportError, setReportError] = useState<string | null>(null);
+  const [mode, setMode] = useState<"preset" | "custom">("preset");
+  const today = new Date().toISOString().slice(0, 10);
+  const [customFrom, setCustomFrom] = useState(() => {
+    const d = new Date(); d.setDate(d.getDate() - 30); return d.toISOString().slice(0, 10);
+  });
+  const [customTo, setCustomTo] = useState(today);
 
   const fetchDashboardData = useCallback(async () => {
     try {
@@ -188,7 +217,10 @@ export default function TrendsPage() {
     setLoadingReport(true);
     setReportError(null);
     try {
-      const data = await apiClient.getReport(period);
+      const activePeriod = mode === "custom"
+        ? mapDaysToPeriod(dateDiffDays(customFrom, customTo))
+        : period;
+      const data = await apiClient.getReport(activePeriod);
       setReport(data);
     } catch (e) {
       setReportError("Gagal mengambil data laporan. Periksa koneksi API.");
@@ -198,18 +230,6 @@ export default function TrendsPage() {
   };
 
   const handlePrint = () => window.print();
-
-  if (!dashboardData) {
-    return (
-      <div className="flex min-h-screen items-center justify-center flex-col gap-4"
-        style={{ background: "var(--bg)", color: "var(--text-bright)" }}>
-        <div className="text-[11px] font-mono tracking-[0.2em] flex items-center gap-3">
-          <span className="led led-warning shadow-[0_0_8px_#FFD700]" style={{ width: 8, height: 8 }} />
-          CONNECTING TO DATALINK...
-        </div>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -240,47 +260,144 @@ export default function TrendsPage() {
                 </div>
               </div>
 
-              {/* Controls */}
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex flex-col gap-1">
-                  <span className="text-[9px] font-bold tracking-widest" style={{ color:"var(--text-faint)" }}>PILIH PERIODE</span>
-                  <div className="flex gap-2 flex-wrap">
-                    {(Object.keys(PERIOD_LABELS) as ReportPeriod[]).map((p) => (
-                      <button key={p} onClick={() => setPeriod(p)}
-                        className="text-[9px] px-3 py-1.5 rounded-sm font-bold tracking-widest transition-all"
-                        style={{
-                          background: period === p ? "#005F8E" : "var(--surface-2)",
-                          color: period === p ? "#fff" : "var(--text-muted)",
-                          border: period === p ? "1px solid #00A3B4" : "1px solid var(--border)",
-                        }}>
-                        {PERIOD_LABELS[p].split(" ")[0]}
-                      </button>
-                    ))}
+              {/* ── Mode toggle ── */}
+              <div className="flex gap-0 rounded-sm overflow-hidden w-fit" style={{ border:"1px solid var(--border)" }}>
+                {(["preset","custom"] as const).map((m) => (
+                  <button key={m} onClick={() => setMode(m)}
+                    className="text-[9px] px-4 py-1.5 font-bold tracking-widest transition-all"
+                    style={{
+                      background: mode === m ? "#005F8E" : "var(--surface-2)",
+                      color: mode === m ? "#fff" : "var(--text-muted)",
+                      borderRight: m === "preset" ? "1px solid var(--border)" : "none",
+                    }}>
+                    {m === "preset" ? "PERIODE STANDAR" : "RENTANG TANGGAL"}
+                  </button>
+                ))}
+              </div>
+
+              {/* ── Period selector table ── */}
+              {mode === "preset" && (
+                <div className="overflow-hidden rounded-sm" style={{ border:"1px solid var(--border)" }}>
+                  <table className="w-full">
+                    <thead>
+                      <tr style={{ background:"var(--surface-2)", borderBottom:"1px solid var(--border)" }}>
+                        {["", "PERIODE", "RENTANG", "HARI", "STATUS"].map((h) => (
+                          <th key={h} className="px-4 py-2 text-left text-[9px] font-bold tracking-widest"
+                            style={{ color:"var(--text-faint)" }}>{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {PERIOD_OPTIONS.map((opt, i) => {
+                        const active = period === opt.key;
+                        return (
+                          <tr key={opt.key}
+                            onClick={() => setPeriod(opt.key)}
+                            className="cursor-pointer transition-all"
+                            style={{
+                              background: active ? "#005F8E18" : i % 2 === 0 ? "transparent" : "var(--surface-2)",
+                              borderBottom: "1px solid var(--border-dim)",
+                              borderLeft: active ? "2px solid #00A3B4" : "2px solid transparent",
+                            }}>
+                            {/* Radio */}
+                            <td className="px-4 py-2.5 w-8">
+                              <div className="w-3.5 h-3.5 rounded-full flex items-center justify-center transition-all"
+                                style={{
+                                  border: `1.5px solid ${active ? "#00A3B4" : "var(--border)"}`,
+                                  background: active ? "#00A3B4" : "transparent",
+                                }}>
+                                {active && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                              </div>
+                            </td>
+                            {/* Label */}
+                            <td className="px-4 py-2.5">
+                              <span className="text-sm font-bold" style={{ color: active ? "#00A3B4" : "var(--text)" }}>
+                                {opt.label}
+                              </span>
+                            </td>
+                            {/* Sub */}
+                            <td className="px-4 py-2.5 text-[10px]" style={{ color:"var(--text-muted)" }}>
+                              {opt.sub}
+                            </td>
+                            {/* Days badge */}
+                            <td className="px-4 py-2.5">
+                              <span className="font-mono text-[10px] px-2 py-0.5 rounded-sm font-bold"
+                                style={{
+                                  background: active ? "#00A3B415" : "var(--surface-3)",
+                                  color: active ? "#00A3B4" : "var(--text-faint)",
+                                  border: `1px solid ${active ? "#00A3B430" : "var(--border-dim)"}`,
+                                }}>
+                                {opt.days}d
+                              </span>
+                            </td>
+                            {/* Status */}
+                            <td className="px-4 py-2.5">
+                              {active
+                                ? <span className="text-[9px] font-bold tracking-widest" style={{ color:"#00A3B4" }}>● DIPILIH</span>
+                                : <span className="text-[9px]" style={{ color:"var(--text-faint)" }}>○ Pilih</span>}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* ── Custom date range ── */}
+              {mode === "custom" && (
+                <div className="rounded-sm p-4 flex flex-col gap-3" style={{ border:"1px solid var(--border)", background:"var(--surface-2)" }}>
+                  <span className="text-[9px] font-bold tracking-widest" style={{ color:"var(--text-faint)" }}>PILIH RENTANG TANGGAL</span>
+                  <div className="flex items-center gap-4 flex-wrap">
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[9px] font-bold tracking-widest" style={{ color:"var(--text-faint)" }}>DARI</label>
+                      <input type="date" value={customFrom} max={customTo}
+                        onChange={e => setCustomFrom(e.target.value)}
+                        className="px-3 py-2 text-sm rounded-sm outline-none font-mono"
+                        style={{ background:"var(--bg)", border:"1px solid var(--border)", color:"var(--text)" }} />
+                    </div>
+                    <div className="flex flex-col gap-1.5">
+                      <label className="text-[9px] font-bold tracking-widest" style={{ color:"var(--text-faint)" }}>SAMPAI</label>
+                      <input type="date" value={customTo} min={customFrom} max={today}
+                        onChange={e => setCustomTo(e.target.value)}
+                        className="px-3 py-2 text-sm rounded-sm outline-none font-mono"
+                        style={{ background:"var(--bg)", border:"1px solid var(--border)", color:"var(--text)" }} />
+                    </div>
+                    <div className="flex flex-col gap-1.5 mt-5">
+                      <span className="text-[10px] font-mono px-3 py-2 rounded-sm"
+                        style={{ background:"var(--surface-3)", border:"1px solid var(--border)", color:"var(--text-muted)" }}>
+                        {dateDiffDays(customFrom, customTo)} hari
+                        {" · "}
+                        <span style={{ color:"#00A3B4" }}>
+                          {PERIOD_LABELS[mapDaysToPeriod(dateDiffDays(customFrom, customTo))].split(" ")[0]}
+                        </span>
+                      </span>
+                    </div>
                   </div>
                 </div>
+              )}
 
-                <div className="ml-auto flex gap-2">
-                  <button onClick={handleGenerateReport} disabled={loadingReport}
-                    className="text-[9px] px-4 py-2 rounded-sm font-bold tracking-widest transition-all disabled:opacity-50"
-                    style={{ background:"#005F8E", color:"#fff", border:"1px solid #00A3B4" }}>
-                    {loadingReport ? "◯ FETCHING..." : "⬇ GENERATE REPORT"}
-                  </button>
-
-                  {report && (
-                    <>
-                      <button onClick={handlePrint}
-                        className="text-[9px] px-4 py-2 rounded-sm font-bold tracking-widest transition-all"
-                        style={{ background:"#003DA5", color:"#fff", border:"1px solid #2563eb" }}>
-                        ✦ EXPORT PDF
-                      </button>
-                      <button onClick={() => csvExport(report)}
-                        className="text-[9px] px-4 py-2 rounded-sm font-bold tracking-widest transition-all"
-                        style={{ background:"#065F46", color:"#fff", border:"1px solid #00e676" }}>
-                        ↓ EXPORT CSV
-                      </button>
-                    </>
-                  )}
-                </div>
+              {/* ── Action buttons ── */}
+              <div className="flex gap-2 flex-wrap">
+                <button onClick={handleGenerateReport} disabled={loadingReport}
+                  className="text-[9px] px-5 py-2.5 rounded-sm font-bold tracking-widest transition-all disabled:opacity-50"
+                  style={{ background:"#005F8E", color:"#fff", border:"1px solid #00A3B4" }}>
+                  {loadingReport ? "◯ MEMUAT..." : "⬇ GENERATE REPORT"}
+                </button>
+                {report && (
+                  <>
+                    <button onClick={handlePrint}
+                      className="text-[9px] px-4 py-2.5 rounded-sm font-bold tracking-widest transition-all"
+                      style={{ background:"#003DA5", color:"#fff", border:"1px solid #2563eb" }}>
+                      ✦ EXPORT PDF
+                    </button>
+                    <button onClick={() => csvExport(report)}
+                      className="text-[9px] px-4 py-2.5 rounded-sm font-bold tracking-widest transition-all"
+                      style={{ background:"#065F46", color:"#fff", border:"1px solid #00e676" }}>
+                      ↓ EXPORT CSV
+                    </button>
+                  </>
+                )}
               </div>
 
               {reportError && (
