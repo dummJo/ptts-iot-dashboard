@@ -183,12 +183,22 @@ export default function TrendsPage() {
   const [report, setReport] = useState<ReportSummary | null>(null);
   const [loadingReport, setLoadingReport] = useState(false);
   const [reportError, setReportError] = useState<string | null>(null);
+  const [popoutOpen, setPopoutOpen] = useState(false);
   const [mode, setMode] = useState<"preset" | "custom">("preset");
   const today = new Date().toISOString().slice(0, 10);
   const [customFrom, setCustomFrom] = useState(() => {
     const d = new Date(); d.setDate(d.getDate() - 30); return d.toISOString().slice(0, 10);
   });
   const [customTo, setCustomTo] = useState(today);
+  const popoutRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const h = (e: MouseEvent) => {
+      if (popoutRef.current && !popoutRef.current.contains(e.target as Node)) setPopoutOpen(false);
+    };
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
+  }, []);
 
   const fetchDashboardData = useCallback(async () => {
     try {
@@ -260,141 +270,157 @@ export default function TrendsPage() {
                 </div>
               </div>
 
-              {/* ── Mode toggle ── */}
-              <div className="flex gap-0 rounded-sm overflow-hidden w-fit" style={{ border:"1px solid var(--border)" }}>
-                {(["preset","custom"] as const).map((m) => (
-                  <button key={m} onClick={() => setMode(m)}
-                    className="text-[9px] px-4 py-1.5 font-bold tracking-widest transition-all"
+              {/* ── Compact controls bar ── */}
+              <div className="flex items-center gap-3 flex-wrap">
+
+                {/* Period popout trigger */}
+                <div className="relative" ref={popoutRef}>
+                  <button onClick={() => setPopoutOpen(!popoutOpen)}
+                    className="flex items-center gap-2.5 px-4 py-2 text-[10px] font-bold tracking-widest transition-all rounded-sm"
                     style={{
-                      background: mode === m ? "#005F8E" : "var(--surface-2)",
-                      color: mode === m ? "#fff" : "var(--text-muted)",
-                      borderRight: m === "preset" ? "1px solid var(--border)" : "none",
+                      background: popoutOpen ? "#005F8E" : "var(--surface-2)",
+                      color: popoutOpen ? "#fff" : "var(--text-muted)",
+                      border: `1px solid ${popoutOpen ? "#00A3B4" : "var(--border)"}`,
                     }}>
-                    {m === "preset" ? "PERIODE STANDAR" : "RENTANG TANGGAL"}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24"
+                      fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    {mode === "custom"
+                      ? `${customFrom} – ${customTo}`
+                      : PERIOD_OPTIONS.find(o => o.key === period)?.label ?? period}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24"
+                      fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                      style={{ transform: popoutOpen ? "rotate(180deg)" : "none", transition: "transform .2s" }}>
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
                   </button>
-                ))}
-              </div>
 
-              {/* ── Period selector table ── */}
-              {mode === "preset" && (
-                <div className="overflow-hidden rounded-sm" style={{ border:"1px solid var(--border)" }}>
-                  <table className="w-full">
-                    <thead>
-                      <tr style={{ background:"var(--surface-2)", borderBottom:"1px solid var(--border)" }}>
-                        {["", "PERIODE", "RENTANG", "HARI", "STATUS"].map((h) => (
-                          <th key={h} className="px-4 py-2 text-left text-[9px] font-bold tracking-widest"
-                            style={{ color:"var(--text-faint)" }}>{h}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {PERIOD_OPTIONS.map((opt, i) => {
-                        const active = period === opt.key;
-                        return (
-                          <tr key={opt.key}
-                            onClick={() => setPeriod(opt.key)}
-                            className="cursor-pointer transition-all"
+                  {/* Popout dropdown */}
+                  {popoutOpen && (
+                    <div className="absolute left-0 top-full mt-1 z-50 animate-fade-up rounded-sm shadow-xl"
+                      style={{
+                        width: 320,
+                        background: "var(--surface)",
+                        border: "1px solid var(--border)",
+                        borderTop: "2px solid #00A3B4",
+                      }}>
+
+                      {/* Mode tabs */}
+                      <div className="flex" style={{ borderBottom: "1px solid var(--border)" }}>
+                        {(["preset","custom"] as const).map(m => (
+                          <button key={m} onClick={() => setMode(m)}
+                            className="flex-1 py-2 text-[9px] font-bold tracking-widest transition-all"
                             style={{
-                              background: active ? "#005F8E18" : i % 2 === 0 ? "transparent" : "var(--surface-2)",
-                              borderBottom: "1px solid var(--border-dim)",
-                              borderLeft: active ? "2px solid #00A3B4" : "2px solid transparent",
+                              background: mode === m ? "#00A3B415" : "transparent",
+                              color: mode === m ? "#00A3B4" : "var(--text-faint)",
+                              borderBottom: mode === m ? "2px solid #00A3B4" : "2px solid transparent",
                             }}>
-                            {/* Radio */}
-                            <td className="px-4 py-2.5 w-8">
-                              <div className="w-3.5 h-3.5 rounded-full flex items-center justify-center transition-all"
-                                style={{
-                                  border: `1.5px solid ${active ? "#00A3B4" : "var(--border)"}`,
-                                  background: active ? "#00A3B4" : "transparent",
-                                }}>
-                                {active && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                              </div>
-                            </td>
-                            {/* Label */}
-                            <td className="px-4 py-2.5">
-                              <span className="text-sm font-bold" style={{ color: active ? "#00A3B4" : "var(--text)" }}>
-                                {opt.label}
-                              </span>
-                            </td>
-                            {/* Sub */}
-                            <td className="px-4 py-2.5 text-[10px]" style={{ color:"var(--text-muted)" }}>
-                              {opt.sub}
-                            </td>
-                            {/* Days badge */}
-                            <td className="px-4 py-2.5">
-                              <span className="font-mono text-[10px] px-2 py-0.5 rounded-sm font-bold"
-                                style={{
-                                  background: active ? "#00A3B415" : "var(--surface-3)",
-                                  color: active ? "#00A3B4" : "var(--text-faint)",
-                                  border: `1px solid ${active ? "#00A3B430" : "var(--border-dim)"}`,
-                                }}>
-                                {opt.days}d
-                              </span>
-                            </td>
-                            {/* Status */}
-                            <td className="px-4 py-2.5">
-                              {active
-                                ? <span className="text-[9px] font-bold tracking-widest" style={{ color:"#00A3B4" }}>● DIPILIH</span>
-                                : <span className="text-[9px]" style={{ color:"var(--text-faint)" }}>○ Pilih</span>}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+                            {m === "preset" ? "PERIODE STANDAR" : "RENTANG TANGGAL"}
+                          </button>
+                        ))}
+                      </div>
 
-              {/* ── Custom date range ── */}
-              {mode === "custom" && (
-                <div className="rounded-sm p-4 flex flex-col gap-3" style={{ border:"1px solid var(--border)", background:"var(--surface-2)" }}>
-                  <span className="text-[9px] font-bold tracking-widest" style={{ color:"var(--text-faint)" }}>PILIH RENTANG TANGGAL</span>
-                  <div className="flex items-center gap-4 flex-wrap">
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[9px] font-bold tracking-widest" style={{ color:"var(--text-faint)" }}>DARI</label>
-                      <input type="date" value={customFrom} max={customTo}
-                        onChange={e => setCustomFrom(e.target.value)}
-                        className="px-3 py-2 text-sm rounded-sm outline-none font-mono"
-                        style={{ background:"var(--bg)", border:"1px solid var(--border)", color:"var(--text)" }} />
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[9px] font-bold tracking-widest" style={{ color:"var(--text-faint)" }}>SAMPAI</label>
-                      <input type="date" value={customTo} min={customFrom} max={today}
-                        onChange={e => setCustomTo(e.target.value)}
-                        className="px-3 py-2 text-sm rounded-sm outline-none font-mono"
-                        style={{ background:"var(--bg)", border:"1px solid var(--border)", color:"var(--text)" }} />
-                    </div>
-                    <div className="flex flex-col gap-1.5 mt-5">
-                      <span className="text-[10px] font-mono px-3 py-2 rounded-sm"
-                        style={{ background:"var(--surface-3)", border:"1px solid var(--border)", color:"var(--text-muted)" }}>
-                        {dateDiffDays(customFrom, customTo)} hari
-                        {" · "}
-                        <span style={{ color:"#00A3B4" }}>
-                          {PERIOD_LABELS[mapDaysToPeriod(dateDiffDays(customFrom, customTo))].split(" ")[0]}
-                        </span>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
+                      {/* Preset list */}
+                      {mode === "preset" && (
+                        <div className="py-1">
+                          {PERIOD_OPTIONS.map(opt => {
+                            const active = period === opt.key;
+                            return (
+                              <button key={opt.key}
+                                onClick={() => { setPeriod(opt.key); setPopoutOpen(false); }}
+                                className="flex items-center w-full px-4 py-2.5 gap-3 transition-all text-left"
+                                style={{
+                                  background: active ? "#00A3B412" : "transparent",
+                                  borderLeft: active ? "3px solid #00A3B4" : "3px solid transparent",
+                                }}>
+                                <div className="w-3 h-3 rounded-full flex-shrink-0 flex items-center justify-center"
+                                  style={{
+                                    border: `1.5px solid ${active ? "#00A3B4" : "var(--border)"}`,
+                                    background: active ? "#00A3B4" : "transparent",
+                                  }}>
+                                  {active && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                                </div>
+                                <div className="flex-1">
+                                  <span className="text-[11px] font-bold" style={{ color: active ? "#00A3B4" : "var(--text)" }}>
+                                    {opt.label}
+                                  </span>
+                                  <span className="text-[9px] ml-2" style={{ color: "var(--text-faint)" }}>
+                                    {opt.sub}
+                                  </span>
+                                </div>
+                                <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm"
+                                  style={{
+                                    background: active ? "#00A3B415" : "var(--surface-2)",
+                                    color: active ? "#00A3B4" : "var(--text-faint)",
+                                    border: `1px solid ${active ? "#00A3B430" : "var(--border-dim)"}`,
+                                  }}>
+                                  {opt.days}d
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      )}
 
-              {/* ── Action buttons ── */}
-              <div className="flex gap-2 flex-wrap">
+                      {/* Custom date range */}
+                      {mode === "custom" && (
+                        <div className="p-4 flex flex-col gap-3">
+                          <div className="flex gap-3">
+                            <div className="flex-1 flex flex-col gap-1">
+                              <label className="text-[9px] font-bold tracking-widest" style={{ color: "var(--text-faint)" }}>DARI</label>
+                              <input type="date" value={customFrom} max={customTo}
+                                onChange={e => setCustomFrom(e.target.value)}
+                                className="w-full px-2 py-1.5 text-[11px] rounded-sm outline-none font-mono"
+                                style={{ background: "var(--bg)", border: "1px solid var(--border)", color: "var(--text)" }} />
+                            </div>
+                            <div className="flex-1 flex flex-col gap-1">
+                              <label className="text-[9px] font-bold tracking-widest" style={{ color: "var(--text-faint)" }}>SAMPAI</label>
+                              <input type="date" value={customTo} min={customFrom} max={today}
+                                onChange={e => setCustomTo(e.target.value)}
+                                className="w-full px-2 py-1.5 text-[11px] rounded-sm outline-none font-mono"
+                                style={{ background: "var(--bg)", border: "1px solid var(--border)", color: "var(--text)" }} />
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-[9px] font-mono" style={{ color: "var(--text-faint)" }}>
+                              {dateDiffDays(customFrom, customTo)} hari ·{" "}
+                              <span style={{ color: "#00A3B4" }}>
+                                {PERIOD_OPTIONS.find(o => o.key === mapDaysToPeriod(dateDiffDays(customFrom, customTo)))?.label}
+                              </span>
+                            </span>
+                            <button onClick={() => setPopoutOpen(false)}
+                              className="text-[9px] px-3 py-1 font-bold tracking-widest rounded-sm"
+                              style={{ background: "#00A3B4", color: "#fff" }}>
+                              TERAPKAN
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Generate button */}
                 <button onClick={handleGenerateReport} disabled={loadingReport}
-                  className="text-[9px] px-5 py-2.5 rounded-sm font-bold tracking-widest transition-all disabled:opacity-50"
+                  className="text-[9px] px-5 py-2 rounded-sm font-bold tracking-widest transition-all disabled:opacity-50"
                   style={{ background:"#005F8E", color:"#fff", border:"1px solid #00A3B4" }}>
-                  {loadingReport ? "◯ MEMUAT..." : "⬇ GENERATE REPORT"}
+                  {loadingReport ? "◯ MEMUAT..." : "⬇ GENERATE"}
                 </button>
+
+                {/* Export buttons — only when report exists */}
                 {report && (
                   <>
                     <button onClick={handlePrint}
-                      className="text-[9px] px-4 py-2.5 rounded-sm font-bold tracking-widest transition-all"
+                      className="text-[9px] px-4 py-2 rounded-sm font-bold tracking-widest transition-all"
                       style={{ background:"#003DA5", color:"#fff", border:"1px solid #2563eb" }}>
-                      ✦ EXPORT PDF
+                      ✦ PDF
                     </button>
                     <button onClick={() => csvExport(report)}
-                      className="text-[9px] px-4 py-2.5 rounded-sm font-bold tracking-widest transition-all"
+                      className="text-[9px] px-4 py-2 rounded-sm font-bold tracking-widest transition-all"
                       style={{ background:"#065F46", color:"#fff", border:"1px solid #00e676" }}>
-                      ↓ EXPORT CSV
+                      ↓ CSV
                     </button>
                   </>
                 )}
