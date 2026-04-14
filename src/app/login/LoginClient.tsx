@@ -34,41 +34,58 @@ const T: Record<Lang, {
   zh: { sub:"操作员登录",             uid:"操作员 ID",     uid_ph:"请输入操作员 ID",          pwd:"密码",       pwd_ph:"请输入密码",               remember:"保持登录",        btn:"登录",      pending:"验证中...", footer:"PT 普里马 特金多 蒂尔塔 塞贾特拉" },
 };
 
-/* ── colour tokens — PTTS Blue (High Contrast) ─────────────── */
+/* ── colour tokens — Theme Aware Layout ─────────────── */
 const C = {
-  bg:       "#07090f",
-  bgPanel:  "#0b1018",
-  bgInput:  "#080c14",
-  bgCard:   "#0f1624",
-  border:   "#25354d",      // was #1e3048 — lifted
-  borderHi: "#00e5ff",      // was #00c8e0 — brightened
-  cream:    "#f8fafc",      // was #eaf4fc — pure white-ish
-  muted:    "#94b8d0",      // was #8fb8d0 — lifted
-  faint:    "#6488a4",      // was #4a7090 — lifted to pass 4.5:1 on dark bg
-  gold:     "#00e5ff",      // was #00c8e0 — brighter
-  goldDim:  "#0088cc",      // was #007aaa — lifted
+  bg:       "var(--bg)",
+  bgPanel:  "var(--surface)",
+  bgInput:  "var(--surface-2)",
+  bgCard:   "var(--surface-3)",
+  border:   "var(--border)",      
+  borderHi: "var(--ptts-teal)",     
+  cream:    "var(--text-bright)",      
+  muted:    "var(--text-muted)",      
+  faint:    "var(--text-faint)",      
+  gold:     "var(--ptts-teal)",      
+  goldDim:  "var(--ptts)",      
 };
 
-/* ── Subtle grid background ────────────────────────────────── */
-function Grid() {
+/* ── Digitalization Background Animation ────────────────────── */
+function DigitalBackground() {
   return (
-    <svg className="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-      {Array.from({ length: 18 }).map((_, i) => (
-        <line key={`h${i}`} x1="0" y1={`${i * 5.88}%`} x2="100%" y2={`${i * 5.88}%`}
-          stroke={C.gold} strokeOpacity="0.025" strokeWidth="1" />
-      ))}
-      {Array.from({ length: 24 }).map((_, i) => (
-        <line key={`v${i}`} x1={`${i * 4.17}%`} y1="0" x2={`${i * 4.17}%`} y2="100%"
-          stroke={C.gold} strokeOpacity="0.025" strokeWidth="1" />
-      ))}
-      <defs>
-        <radialGradient id="glow" cx="35%" cy="50%" r="55%">
-          <stop offset="0%"   stopColor={C.gold} stopOpacity="0.06" />
-          <stop offset="100%" stopColor={C.bg}   stopOpacity="0" />
-        </radialGradient>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#glow)" />
-    </svg>
+    <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
+      {/* Drifting Grid */}
+      <div className="absolute inset-0 opacity-20"
+        style={{ 
+          backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
+          backgroundSize: '40px 40px',
+          animation: 'grid-drift 20s linear infinite'
+        }} />
+      
+      {/* Animated Data Bits */}
+      <svg className="w-full h-full">
+        <defs>
+          <filter id="glow-digital">
+            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        {Array.from({ length: 15 }).map((_, i) => (
+          <circle key={i} r={Math.random() * 2 + 1} fill="var(--ptts-teal)" filter="url(#glow-digital)">
+            <animate attributeName="cx" from={`${Math.random() * 100}%`} to={`${Math.random() * 100}%`} dur={`${10 + Math.random() * 20}s`} repeatCount="indefinite" />
+            <animate attributeName="cy" from={`${Math.random() * 100}%`} to={`${Math.random() * 100}%`} dur={`${15 + Math.random() * 15}s`} repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;0.6;0" dur={`${3 + Math.random() * 5}s`} repeatCount="indefinite" />
+          </circle>
+        ))}
+      </svg>
+
+      {/* Center Glow */}
+      <div className="absolute inset-0"
+        style={{ 
+          background: 'radial-gradient(circle at 50% 50%, var(--ptts-glow) 0%, transparent 70%)'
+        }} />
+    </div>
   );
 }
 
@@ -127,11 +144,11 @@ export default function LoginClient() {
   if (phase !== "login") return (
     <div className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden"
       style={{ background: C.bg }}>
-      <Grid />
+      <DigitalBackground />
 
       {/* scanline */}
       <div className="pointer-events-none absolute inset-0"
-        style={{ backgroundImage: `repeating-linear-gradient(0deg,${C.gold}08 0,${C.gold}08 1px,transparent 1px,transparent 5px)` }} />
+        style={{ backgroundImage: `repeating-linear-gradient(0deg, var(--border) 0.05, var(--border) 1px, transparent 1px, transparent 8px)` }} />
 
       {/* top bar */}
       <div className="absolute top-0 inset-x-0 flex items-center justify-between px-8 py-2.5 z-10"
@@ -221,7 +238,7 @@ export default function LoginClient() {
       {/* ── LEFT — branding ── */}
       <div className="hidden lg:flex flex-col justify-between w-[52%] relative overflow-hidden p-12"
         style={{ background: C.bgPanel, borderRight: `1px solid ${C.border}` }}>
-        <Grid />
+        <DigitalBackground />
 
         {/* Logo + company */}
         <div className="relative z-10 flex items-start gap-4">

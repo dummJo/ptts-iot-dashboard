@@ -110,6 +110,8 @@ body {
 @keyframes led-on     { 0%,100%{ opacity:1; } 50%{ opacity:.6; } }
 @keyframes scan       { from{ transform:translateY(-100%); } to{ transform:translateY(100vh); } }
 @keyframes flicker    { 0%,100%{ opacity:1; } 92%{ opacity:.95; } 94%{ opacity:.85; } 96%{ opacity:.98; } }
+@keyframes grid-drift { from { background-position: 0 0; } to { background-position: 40px 40px; } }
+@keyframes data-pulse { 0%, 100% { opacity: 0.2; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.5); } }
 
 .animate-fade-in    { animation: fade-in  .55s ease forwards; }
 .animate-fade-up    { animation: fade-up  .4s  ease forwards; }
