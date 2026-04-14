@@ -17,6 +17,9 @@ export default function SettingsPage() {
   const [newUser, setNewUser] = useState({ username: "", password: "", role: "operator" });
   const [userCreated, setUserCreated] = useState<{ success: boolean; message: string } | null>(null);
   const [isCreatingUser, setIsCreatingUser] = useState(false);
+  const [users, setUsers] = useState<Array<{ username: string; hash: string; role: string }>>([]);
+  const [isFetchingUsers, setIsFetchingUsers] = useState(false);
+  const [hoveredHash, setHoveredHash] = useState<string | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string>("operator");
   const [testStatus, setTestStatus] = useState<"idle" | "testing" | "success" | "error">("idle");
   const [testMessage, setTestMessage] = useState<string>("");
