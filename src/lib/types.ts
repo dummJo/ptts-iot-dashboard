@@ -83,6 +83,13 @@ export interface SystemState {
 // ── Config / DB ───────────────────────────────────────────────────────
 export interface ConfigState {
   apiKeys: string[];
+  notifications: {
+    telegramToken: string;
+    telegramChatId: string;
+    whatsappApiUrl: string;
+    whatsappToken: string;
+    isNotifyEnabled: boolean;
+  };
 }
 
 // ── Full Dashboard API Response ───────────────────────────────────────

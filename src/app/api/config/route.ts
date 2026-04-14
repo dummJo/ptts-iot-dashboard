@@ -15,6 +15,13 @@ export async function GET() {
     if (!config) {
       return NextResponse.json({
         apiKeys: [],
+        notifications: {
+          telegramToken: "",
+          telegramChatId: "",
+          whatsappApiUrl: "",
+          whatsappToken: "",
+          isNotifyEnabled: true
+        },
         settings: { theme: 'dark', refreshRate: 30000 }
       });
     }
@@ -29,6 +36,13 @@ export async function GET() {
 
     return NextResponse.json({
       apiKeys,
+      notifications: {
+        telegramToken: config.telegramToken || "",
+        telegramChatId: config.telegramChatId || "",
+        whatsappApiUrl: config.whatsappApiUrl || "",
+        whatsappToken: config.whatsappToken || "",
+        isNotifyEnabled: config.isNotifyEnabled
+      },
       settings: config.settings
     });
 
@@ -44,7 +58,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { apiKeys, settings } = body;
+    const { apiKeys, notifications, settings } = body;
 
     // Convert array back to map for storage
     const keysMap: Record<string, any> = {};
@@ -58,11 +72,21 @@ export async function POST(req: Request) {
       where: { id: 1 },
       update: {
         getKeys: keysMap,
+        telegramToken: notifications?.telegramToken,
+        telegramChatId: notifications?.telegramChatId,
+        whatsappApiUrl: notifications?.whatsappApiUrl,
+        whatsappToken: notifications?.whatsappToken,
+        isNotifyEnabled: notifications?.isNotifyEnabled ?? true,
         settings: settings || {},
       },
       create: {
         id: 1,
         getKeys: keysMap,
+        telegramToken: notifications?.telegramToken,
+        telegramChatId: notifications?.telegramChatId,
+        whatsappApiUrl: notifications?.whatsappApiUrl,
+        whatsappToken: notifications?.whatsappToken,
+        isNotifyEnabled: notifications?.isNotifyEnabled ?? true,
         settings: settings || {},
       }
     });

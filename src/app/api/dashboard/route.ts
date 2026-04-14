@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { NotificationService } from '@/lib/notifications';
 import type { DashboardData, TrendPoint, Asset, Alarm } from '@/lib/types';
 
 /**
@@ -62,6 +63,10 @@ export async function GET() {
               timestamp: new Date()
             }
           });
+          
+          // ⚡ EXTERNAL NOTIFICATION TRIGGER (WhatsApp / Telegram)
+          await NotificationService.sendAlert(msg);
+          
           console.log(`🚨 Alarm Triggered: ${asset.tagId} - ${msg}`);
         }
       }

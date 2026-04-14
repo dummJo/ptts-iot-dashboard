@@ -13,7 +13,15 @@ export default function SettingsPage() {
   const [activeKeyTab, setActiveKeyTab] = useState<"smartSensorPTTS" | "smartSensorRonds">("smartSensorPTTS");
   const [savedKeys, setSavedKeys] = useState<string[]>([]);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [tab, setTab] = useState<"swagger" | "api" | "users">("swagger");
+  const [tab, setTab] = useState<"swagger" | "api" | "users" | "notifications">("swagger");
+  const [notifications, setNotifications] = useState({
+    telegramToken: "",
+    telegramChatId: "",
+    whatsappApiUrl: "",
+    whatsappToken: "",
+    isNotifyEnabled: true
+  });
+  const [isSavingNotify, setIsSavingNotify] = useState(false);
   const [newUser, setNewUser] = useState({ username: "", password: "", role: "operator" });
   const [userCreated, setUserCreated] = useState<{ success: boolean; message: string } | null>(null);
   const [isCreatingUser, setIsCreatingUser] = useState(false);
@@ -43,12 +51,57 @@ export default function SettingsPage() {
       try {
         const cfg = await apiClient.getConfig();
         if (cfg.apiKeys) setSavedKeys(cfg.apiKeys);
+        if (cfg.notifications) setNotifications(cfg.notifications);
       } catch (e) {
         console.error("Config load error", e);
       }
     }
     initConfig();
   }, []);
+
+  const handleNotifyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setNotifications(prev => ({ 
+      ...prev, 
+      [name]: type === 'checkbox' ? checked : value 
+    }));
+  };
+
+  const handleSaveNotifications = async () => {
+    setIsSavingNotify(true);
+    try {
+      await apiClient.saveConfig(savedKeys, notifications);
+      setTestStatus("success");
+      setTestMessage("NOTIFICATION CONFIG SAVED & SYNCED");
+      setTimeout(() => setTestStatus("idle"), 3000);
+    } catch (e) {
+      console.error("Notify save error", e);
+    } finally {
+      setIsSavingNotify(false);
+    }
+  };
+
+  const handleTestNotify = async (channel: 'telegram' | 'whatsapp') => {
+    setTestStatus("testing");
+    setTestMessage("");
+    try {
+      const data = channel === 'telegram' 
+        ? { token: notifications.telegramToken, chatId: notifications.telegramChatId }
+        : { apiUrl: notifications.whatsappApiUrl, token: notifications.whatsappToken };
+
+      const result = await apiClient.testNotification(channel, data);
+      if (result.success) {
+        setTestStatus("success");
+        setTestMessage(result.message);
+      } else {
+        setTestStatus("error");
+        setTestMessage(result.message);
+      }
+    } catch (e) {
+      setTestStatus("error");
+      setTestMessage("TEST FAILED — NETWORK ERROR");
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -186,7 +239,128 @@ export default function SettingsPage() {
                   USER MANAGEMENT
                 </button>
               )}
+
+              <button
+                onClick={() => setTab("notifications")}
+                className="px-4 py-2 text-[9px] font-bold tracking-widest rounded-sm transition-all"
+                style={{
+                  background: tab === "notifications" ? "#1e3048" : "var(--surface)",
+                  color: tab === "notifications" ? "#ff8c00" : "var(--text-muted)",
+                  border: tab === "notifications" ? "1px solid #ff8c0050" : "1px solid var(--border)"
+                }}>
+                NOTIFICATIONS (WA/TG)
+              </button>
             </div>
+
+            {/* Notification Tab Content */}
+            {tab === "notifications" && (
+              <div className="rounded-sm p-6 space-y-6"
+                   style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+                <div>
+                  <h2 className="text-sm font-bold tracking-widest mb-1" style={{ color: "#ff8c00" }}>NOTIFICATION ENGINE</h2>
+                  <p className="text-[9px] text-muted-foreground mb-4">Centralized alert delivery for industrial equipment violations.</p>
+                  
+                  <div className="flex items-center gap-3 p-4 rounded-sm mb-6" style={{ background: "rgba(255,140,0,0.05)", border: "1px dashed rgba(255,140,0,0.3)" }}>
+                    <input 
+                      type="checkbox" 
+                      id="isNotifyEnabled"
+                      name="isNotifyEnabled"
+                      checked={notifications.isNotifyEnabled}
+                      onChange={handleNotifyChange}
+                      className="w-4 h-4 cursor-pointer"
+                    />
+                    <label htmlFor="isNotifyEnabled" className="text-[10px] font-bold tracking-widest cursor-pointer">
+                      ENABLE AUTOMATIC EXTERNAL ALERTS
+                    </label>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-8">
+                    {/* Telegram Section */}
+                    <div className="space-y-4">
+                      <h3 className="text-[10px] font-bold tracking-widest border-b border-border pb-2 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#0088cc]"></span> TELEGRAM BOT CONFIG
+                      </h3>
+                      <div className="space-y-3">
+                        <div className="space-y-1">
+                          <label className="text-[8px] text-muted-foreground uppercase">Bot Token (from @BotFather)</label>
+                          <input
+                            type="text"
+                            name="telegramToken"
+                            value={notifications.telegramToken}
+                            onChange={handleNotifyChange}
+                            className="w-full bg-bg border border-border p-3 text-[10px] focus:border-[#0088cc] outline-none transition-all font-mono"
+                            placeholder="0000000000:AAxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[8px] text-muted-foreground uppercase">Chat ID / Group ID</label>
+                          <input
+                            type="text"
+                            name="telegramChatId"
+                            value={notifications.telegramChatId}
+                            onChange={handleNotifyChange}
+                            className="w-full bg-bg border border-border p-3 text-[10px] focus:border-[#0088cc] outline-none transition-all font-mono"
+                            placeholder="-100xxxxxxxxxx"
+                          />
+                        </div>
+                        <button
+                          onClick={() => handleTestNotify('telegram')}
+                          disabled={testStatus === "testing"}
+                          className="w-full py-2 bg-[#0088cc20] border border-[#0088cc50] text-[#0088cc] text-[8px] font-bold tracking-widest hover:bg-[#0088cc] hover:text-white transition-all rounded-sm uppercase">
+                          {testStatus === "testing" ? "Testing..." : "Send Test Telegram"}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* WhatsApp Section */}
+                    <div className="space-y-4">
+                      <h3 className="text-[10px] font-bold tracking-widest border-b border-border pb-2 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#25D366]"></span> WHATSAPP GATEWAY (FONNTE)
+                      </h3>
+                      <div className="space-y-3">
+                        <div className="space-y-1">
+                          <label className="text-[8px] text-muted-foreground uppercase">API Endpoint URL</label>
+                          <input
+                            type="text"
+                            name="whatsappApiUrl"
+                            value={notifications.whatsappApiUrl}
+                            onChange={handleNotifyChange}
+                            className="w-full bg-bg border border-border p-3 text-[10px] focus:border-[#25D366] outline-none transition-all font-mono"
+                            placeholder="https://api.fonnte.com/send"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[8px] text-muted-foreground uppercase">API Token / Secret</label>
+                          <input
+                            type="password"
+                            name="whatsappToken"
+                            value={notifications.whatsappToken}
+                            onChange={handleNotifyChange}
+                            className="w-full bg-bg border border-border p-3 text-[10px] focus:border-[#25D366] outline-none transition-all font-mono"
+                            placeholder="••••••••••••••••"
+                          />
+                        </div>
+                        <button
+                          onClick={() => handleTestNotify('whatsapp')}
+                          disabled={testStatus === "testing"}
+                          className="w-full py-2 bg-[#25D36620] border border-[#25D36650] text-[#25D366] text-[8px] font-bold tracking-widest hover:bg-[#25D366] hover:text-white transition-all rounded-sm uppercase">
+                          {testStatus === "testing" ? "Testing..." : "Send Test WhatsApp"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 pt-4 border-t border-border flex justify-end">
+                    <button
+                      onClick={handleSaveNotifications}
+                      disabled={isSavingNotify}
+                      className="px-8 py-3 bg-[#ff8c00] text-white text-[9px] font-bold tracking-[.2em] rounded-sm hover:brightness-110 active:scale-[.98] transition-all disabled:opacity-50">
+                      {isSavingNotify ? "SYNCING..." : "SAVE NOTIFICATION CONFIG"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Swagger Tab */}
             {tab === "swagger" && (

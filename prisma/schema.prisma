@@ -74,10 +74,15 @@ model Alarm {
 }
 
 model SystemConfig {
-  id        Int      @id @default(1)
-  getKeys   Json     @default("{}") @map("api_keys")
-  settings  Json     @default("{}")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id              Int      @id @default(1)
+  getKeys         Json     @default("{}") @map("api_keys")
+  telegramToken   String?  @map("telegram_token")
+  telegramChatId  String?  @map("telegram_chat_id")
+  whatsappApiUrl  String?  @map("whatsapp_api_url")
+  whatsappToken   String?  @map("whatsapp_token")
+  isNotifyEnabled Boolean  @default(true) @map("is_notify_enabled")
+  settings        Json     @default("{}")
+  updatedAt       DateTime @updatedAt @map("updated_at")
 
   @@map("ptts_system_config")
 }

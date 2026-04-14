@@ -132,11 +132,12 @@ export const apiClient = {
    * DB: UPDATE system_config SET api_keys = $1 WHERE id = 1
    */
   async saveConfig(
-    apiKeys: string[]
+    apiKeys: string[],
+    notifications?: ConfigState['notifications']
   ): Promise<{ success: boolean; config: ConfigState }> {
     return apiFetch(
       `${serviceUrl('config')}/api/config`,
-      { method: 'POST', body: JSON.stringify({ apiKeys }) }
+      { method: 'POST', body: JSON.stringify({ apiKeys, notifications }) }
     );
   },
 
@@ -257,6 +258,19 @@ export const apiClient = {
       { 
         method: 'POST', 
         body: JSON.stringify({ provider, apiKey }) 
+      }
+    );
+  },
+
+  /**
+   * Tests notification connectivity for TG/WA.
+   */
+  async testNotification(channel: 'telegram' | 'whatsapp', data: any): Promise<{ success: boolean; message: string }> {
+    return apiFetch(
+      '/api/integration/notify-test',
+      { 
+        method: 'POST', 
+        body: JSON.stringify({ channel, ...data }) 
       }
     );
   },
