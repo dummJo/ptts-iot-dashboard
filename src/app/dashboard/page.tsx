@@ -136,7 +136,6 @@ export default function DashboardPage() {
             </div>
             <div className="flex gap-4">
               <span>SESSION: 60 MIN · JWT HS256</span>
-              <span className="font-bold" style={{ color: "var(--ptts-teal)" }}>design by @dummjo — 1437yb</span>
             </div>
           </div>
         </div>

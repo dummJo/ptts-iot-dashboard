@@ -165,11 +165,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         </div>
       </div>
 
-      <div className="px-4 py-2 mt-auto" style={{ borderTop: "1px solid var(--border-dim)" }}>
-        <p className="text-[8px] font-bold tracking-[.1em] opacity-40 text-center" style={{ color: "var(--text-faint)" }}>
-          design by @dummjo — 1437yb
-        </p>
-      </div>
+
 
       {/* Switch Account Modal */}
       {showSwitch && (

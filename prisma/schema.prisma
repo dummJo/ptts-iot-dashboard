@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String    @id @default(uuid())
+  username     String    @unique
+  passwordHash String    @map("password_hash")
+  role         String    @default("operator") // admin, operator, engineer
+  isActive     Boolean   @default(true) @map("is_active")
+  lastLogin    DateTime? @map("last_login")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  @@map("ptts_users")
+}
+
+model Asset {
+  id                String      @id @default(uuid())
+  tagId             String      @unique @map("tag_id")
+  name              String
+  type              String
+  location          String?
+  powerKw           Float?      @default(0) @map("power_kw")
+  foundationType    String?     @default("rigid") @map("foundation_type")
+  vibLimitWarning   Float?      @map("vib_limit_warning")
+  vibLimitFault     Float?      @map("vib_limit_fault")
+  createdAt         DateTime    @default(now()) @map("created_at")
+  updatedAt         DateTime    @updatedAt @map("updated_at")
+  telemetries       Telemetry[]
+  alarms            Alarm[]
+
+  @@map("ptts_assets")
+}
+
+model Telemetry {
+  id           BigInt   @id @default(autoincrement())
+  assetId      String   @map("asset_id")
+  timestamp    DateTime @default(now())
+  temp         Float?
+  vibOverall   Float?   @map("vib_overall")
+  vibRms       Float?   @map("vib_rms")
+  vibVelocity  Float?   @map("vib_velocity")
+  vibFreq      Float?   @map("vib_freq")
+  motorKw      Float?   @map("motor_kw")
+  motorCurrent Float?   @map("motor_current")
+  rawPayload   Json?    @map("raw_payload")
+  asset        Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@index([assetId, timestamp(sort: Desc)])
+  @@map("ptts_telemetry")
+}
+
+model Alarm {
+  id             String    @id @default(uuid())
+  assetId        String    @map("asset_id")
+  severity       String    // critical, warning, info
+  alarmType      String    @map("alarm_type")
+  message        String
+  timestamp      DateTime  @default(now())
+  acknowledgedAt DateTime? @map("acknowledged_at")
+  acknowledgedBy String?   @map("acknowledged_by")
+  ackComment     String?   @map("ack_comment")
+  asset          Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+
+  @@index([acknowledgedAt])
+  @@index([assetId])
+  @@map("ptts_alarms")
+}
+
+model SystemConfig {
+  id        Int      @id @default(1)
+  getKeys   Json     @default("{}") @map("api_keys")
+  settings  Json     @default("{}")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("ptts_system_config")
+}

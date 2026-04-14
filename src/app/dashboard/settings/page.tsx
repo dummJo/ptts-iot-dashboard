@@ -519,7 +519,6 @@ export default function SettingsPage() {
             </div>
             <div className="flex gap-4">
               <span>SECURITY: JWT HS256 + PERMANENT STORAGE</span>
-              <span className="font-bold" style={{ color: "var(--ptts-teal)" }}>design by @dummjo — 1437yb</span>
             </div>
           </div>
         </div>
