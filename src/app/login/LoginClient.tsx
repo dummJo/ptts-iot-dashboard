@@ -34,19 +34,19 @@ const T: Record<Lang, {
   zh: { sub:"操作员登录",             uid:"操作员 ID",     uid_ph:"请输入操作员 ID",          pwd:"密码",       pwd_ph:"请输入密码",               remember:"保持登录",        btn:"登录",      pending:"验证中...", footer:"PT 普里马 特金多 蒂尔塔 塞贾特拉" },
 };
 
-/* ── colour tokens — PTTS Blue ─────────────────────────────── */
+/* ── colour tokens — PTTS Blue (High Contrast) ─────────────── */
 const C = {
-  bg:       "#080b10",
-  bgPanel:  "#0a0f18",
-  bgInput:  "#060911",
-  bgCard:   "#0d1220",
-  border:   "#182030",
-  borderHi: "#00A3B4",
-  cream:    "#d4e8f0",
-  muted:    "#5a8090",
-  faint:    "#1a2d3a",
-  gold:     "#00A3B4",
-  goldDim:  "#005F8E",
+  bg:       "#07090f",
+  bgPanel:  "#0b1018",
+  bgInput:  "#080c14",
+  bgCard:   "#0f1624",
+  border:   "#1e3048",
+  borderHi: "#00c8e0",
+  cream:    "#eaf4fc",      // was #d4e8f0 — brighter white-blue for headings
+  muted:    "#8fb8d0",      // was #5a8090 — significantly lifted for readability
+  faint:    "#4a7090",      // was #1a2d3a — was near-invisible, now readable
+  gold:     "#00c8e0",      // was #00A3B4 — brighter teal
+  goldDim:  "#007aaa",      // was #005F8E — lifted
 };
 
 /* ── Subtle grid background ────────────────────────────────── */
@@ -339,10 +339,10 @@ export default function LoginClient() {
             {/* Heading */}
             <div className="mb-9">
               <div className="w-6 h-px mb-6" style={{ background: C.gold }} />
-              <h2 className="text-2xl font-bold tracking-tight mb-1.5" style={{ color: C.cream }}>
+              <h2 className="text-3xl font-bold tracking-tight mb-2" style={{ color: C.cream }}>
                 SmartSensor™
               </h2>
-              <p className="text-sm" style={{ color: C.muted }}>{t.sub}</p>
+              <p className="text-base font-medium" style={{ color: C.muted }}>{t.sub}</p>
             </div>
 
             {/* Error */}
@@ -361,25 +361,26 @@ export default function LoginClient() {
 
               {/* Username */}
               <div>
-                <label className="block text-[10px] font-bold tracking-widest mb-2" style={{ color: C.muted }}>
+                <label className="block text-[12px] font-bold tracking-widest mb-2" style={{ color: C.muted }}>
                   {t.uid.toUpperCase()}
                 </label>
                 <div className="relative">
                   <input type="text" name="username" autoComplete="username"
                     required maxLength={64} placeholder={t.uid_ph}
-                    className="w-full px-4 py-3 text-sm outline-none transition-all"
+                    className="w-full px-4 py-3 text-base outline-none transition-all"
                     style={{
                       background: C.bgInput,
                       border: `1px solid ${C.border}`,
                       color: C.cream,
-                      fontFamily: "inherit",
+                      fontFamily: "ui-sans-serif, system-ui, sans-serif",
                       borderRadius: 2,
+                      fontSize: 15,
                     }}
-                    onFocus={e => { e.target.style.borderColor = C.borderHi; e.target.style.boxShadow = `0 0 0 2px ${C.gold}15`; }}
+                    onFocus={e => { e.target.style.borderColor = C.borderHi; e.target.style.boxShadow = `0 0 0 2px ${C.gold}20`; }}
                     onBlur={e  => { e.target.style.borderColor = C.border;   e.target.style.boxShadow = "none"; }}
                   />
-                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2" style={{ color: C.faint }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24"
+                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2" style={{ color: C.muted }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
                       fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
                     </svg>
@@ -389,26 +390,27 @@ export default function LoginClient() {
 
               {/* Password */}
               <div>
-                <label className="block text-[10px] font-bold tracking-widest mb-2" style={{ color: C.muted }}>
+                <label className="block text-[12px] font-bold tracking-widest mb-2" style={{ color: C.muted }}>
                   {t.pwd.toUpperCase()}
                 </label>
                 <div className="relative">
                   <input type={showPw ? "text" : "password"} name="password"
                     autoComplete="current-password" required maxLength={64}
                     placeholder={t.pwd_ph}
-                    className="w-full px-4 py-3 text-sm outline-none transition-all pr-16"
+                    className="w-full px-4 py-3 outline-none transition-all pr-16"
                     style={{
                       background: C.bgInput,
                       border: `1px solid ${C.border}`,
                       color: C.cream,
-                      fontFamily: "inherit",
+                      fontFamily: "ui-sans-serif, system-ui, sans-serif",
                       borderRadius: 2,
+                      fontSize: 15,
                     }}
-                    onFocus={e => { e.target.style.borderColor = C.borderHi; e.target.style.boxShadow = `0 0 0 2px ${C.gold}15`; }}
+                    onFocus={e => { e.target.style.borderColor = C.borderHi; e.target.style.boxShadow = `0 0 0 2px ${C.gold}20`; }}
                     onBlur={e  => { e.target.style.borderColor = C.border;   e.target.style.boxShadow = "none"; }}
                   />
                   <button type="button" onClick={() => setShowPw(!showPw)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[9px] font-bold tracking-widest transition-colors"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[11px] font-bold tracking-widest transition-colors"
                     style={{ color: C.muted }}
                     onMouseEnter={e => (e.currentTarget.style.color = C.gold)}
                     onMouseLeave={e => (e.currentTarget.style.color = C.muted)}>
@@ -418,22 +420,22 @@ export default function LoginClient() {
               </div>
 
               {/* Remember me */}
-              <div className="flex items-center gap-2.5">
+              <div className="flex items-center gap-3">
                 <button type="button" onClick={() => setRem(!remember)}
-                  className="w-3.5 h-3.5 flex-shrink-0 flex items-center justify-center transition-all"
+                  className="w-4 h-4 flex-shrink-0 flex items-center justify-center transition-all"
                   style={{
                     background: remember ? C.gold : "transparent",
                     border: `1px solid ${remember ? C.gold : C.border}`,
-                    borderRadius: 2,
+                    borderRadius: 3,
                   }}>
                   {remember && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24"
+                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24"
                       fill="none" stroke={C.bg} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="20 6 9 17 4 12"/>
                     </svg>
                   )}
                 </button>
-                <span className="text-xs" style={{ color: C.muted }}>{t.remember}</span>
+                <span className="text-sm" style={{ color: C.muted }}>{t.remember}</span>
               </div>
 
               {/* Submit */}
