@@ -74,12 +74,12 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
           </div>
         </div>
         {/* Live status */}
-        <div className="flex items-center gap-2 px-2 py-1.5 rounded-sm transition-all"
-          style={{ 
-            background: pollInterval === 0 ? "var(--surface)" : "#00e67608", 
-            border: pollInterval === 0 ? "1px solid var(--border-dim)" : "1px solid #00e67620" 
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm transition-all"
+          style={{
+            background: pollInterval === 0 ? "var(--surface-2)" : "#00e67614",
+            border: pollInterval === 0 ? "1px solid var(--border)" : "1px solid #00e67635",
           }}>
-          <span className={`led ${pollInterval === 0 ? "led-offline" : "led-online"}`} style={{ width: 6, height: 6 }} />
+          <span className={`led ${pollInterval === 0 ? "led-offline" : "led-online"}`} style={{ width: 5, height: 5 }} />
           <span className="text-[9px] tracking-widest font-black" style={{ color: pollInterval === 0 ? "var(--text-faint)" : "#00e676" }}>
             {pollInterval === 0 ? "POLL: OFF" : `LIVE · ${pollInterval >= 60000 ? pollInterval / 60000 + "M" : pollInterval / 1000 + "S"}`}
           </span>
