@@ -144,12 +144,12 @@ export default function LoginClient() {
   /* ── SPLASH ──────────────────────────────────────────────── */
   if (phase !== "login") return (
     <div className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden"
-      style={{ background: C.bg }}>
+      style={{ background: "#000" }}>
       <DigitalBackground />
 
       {/* scanline */}
       <div className="pointer-events-none absolute inset-0"
-        style={{ backgroundImage: `repeating-linear-gradient(0deg, var(--border) 0.05, var(--border) 1px, transparent 1px, transparent 8px)` }} />
+        style={{ backgroundImage: `repeating-linear-gradient(0deg, var(--ptts-teal) 0.12, var(--ptts-teal) 1px, transparent 1px, transparent 6px)`, opacity: 0.15 }} />
 
       {/* top bar */}
       <div className="absolute top-0 inset-x-0 flex items-center justify-between px-8 py-2.5 z-10"
@@ -198,13 +198,13 @@ export default function LoginClient() {
             {INIT_LINES.slice(0, lines).map((ln, i) => (
               <div key={i} className="flex items-center gap-3 animate-fade-up">
                 <span className="text-[9px] px-1.5 py-0.5 font-bold w-10 text-center"
-                  style={{ background: C.faint, border: `1px solid ${C.border}`, color: C.gold }}>
+                   style={{ background: "var(--surface-3)", border: `1px solid var(--border)`, color: "var(--ptts-teal)" }}>
                   {ln.tag}
                 </span>
-                <span className="flex-1" style={{ color: C.cream }}>{ln.text}</span>
+                <span className="flex-1 font-bold" style={{ color: "var(--text-bright)" }}>{ln.text}</span>
                 {i < lines - 1 || phase !== "init"
-                  ? <span className="text-[10px] font-bold" style={{ color: C.gold }}>OK</span>
-                  : <span style={{ color: C.cream }} className="animate-blink">_</span>}
+                  ? <span className="text-[10px] font-bold" style={{ color: "var(--ptts-teal)" }}>OK</span>
+                  : <span style={{ color: "var(--ptts-teal)" }} className="animate-blink">_</span>}
               </div>
             ))}
           </div>
