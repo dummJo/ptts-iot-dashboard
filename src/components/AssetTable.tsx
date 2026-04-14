@@ -38,7 +38,7 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
               {["TAG ID", "ASSET", "TYPE", "TEMP", "VIBRATION", "LINK", "HEALTH", "CONFIG"].map((h, i) => (
                 <th key={h} className={`px-3 py-2 font-bold tracking-[.12em] text-[9px]
                   ${i >= 3 && i <= 4 ? "text-right" : i === 7 ? "text-center" : "text-left"}`}
-                  style={{ color: "var(--text-faint)" }}>
+                  style={{ color: "var(--text-muted)" }}>
                   {h}
                 </th>
               ))}
@@ -65,7 +65,7 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
                   }}
                   onClick={() => setSelectedAsset(a)}
                 >
-                  <td className="px-3 py-3 font-mono text-[9px]" style={{ color: "var(--text-faint)" }}>{a.id}</td>
+                  <td className="px-3 py-3 font-mono text-[9px]" style={{ color: "var(--text-muted)" }}>{a.id}</td>
                   <td className="px-3 py-3 font-bold" style={{ color: "var(--text)" }}>{a.name}</td>
                   <td className="px-3 py-3 text-[9px] tracking-wide" style={{ color: "var(--text-muted)" }}>
                     {a.type.replace("PTTS ", "").replace("RONDS ", "").toUpperCase()}
@@ -79,7 +79,7 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
                   <td className="px-3 py-3">
                     <span className="flex items-center gap-1.5">
                       <span className="led" style={{ width: 6, height: 6, background: lColor, boxShadow: a.link === 'online' ? `0 0 6px ${lColor}` : 'none' }} />
-                      <span className="text-[9px] font-black tracking-widest" style={{ color: lColor }}>
+                      <span className="text-[9px] font-black tracking-widest" style={{ color: lColor, textShadow: '0 0 8px currentColor' }}>
                         {a.link.toUpperCase()}
                       </span>
                     </span>
@@ -88,9 +88,9 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
                   {/* HEALTH STATUS (Condition) */}
                   <td className="px-3 py-3">
                     <div className="inline-flex items-center px-2 py-0.5 rounded-sm border"
-                      style={{ 
-                        background: `${hColor}15`, 
-                        borderColor: `${hColor}40`,
+                      style={{
+                        background: currentHealth === 'fault' ? '#4a0000' : currentHealth === 'warning' ? '#3d2e00' : '#003320',
+                        borderColor: `${hColor}60`,
                         color: hColor
                       }}>
                       <span className="text-[9px] font-black tracking-[0.15em]">{hp}</span>
@@ -99,10 +99,11 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
                   
                   {/* CONFIG BUTTON */}
                   <td className="px-3 py-3 text-center">
-                    <button 
+                    <button
                       onClick={(e) => { e.stopPropagation(); setSelectedAsset(a); }}
-                      className="text-[14px] leading-none opacity-50 hover:opacity-100 transition-opacity"
-                      style={{ color: canEdit ? "var(--ptts-teal)" : "var(--text-faint)" }}
+                      aria-label={canEdit ? "Configure Thresholds" : "View Thresholds"}
+                      className="text-[14px] leading-none transition-opacity hover:opacity-100"
+                      style={{ color: canEdit ? "var(--ptts-teal)" : "var(--text-muted)", opacity: canEdit ? 0.85 : 0.6 }}
                       title={canEdit ? "Configure Thresholds" : "View Thresholds"}
                     >
                       ⚙

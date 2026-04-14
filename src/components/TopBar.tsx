@@ -34,11 +34,11 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
       style={{ background:"var(--sidebar-bg)", borderBottom:"1px solid var(--border)", minHeight:40 }}>
       {/* Left — breadcrumb */}
       <div className="flex items-center gap-2 text-[9px] tracking-widest font-bold">
-        <span style={{ color:"var(--text-faint)" }}>PTTS</span>
-        <span style={{ color:"var(--border)" }}>›</span>
-        <span style={{ color:"var(--text-faint)" }}>SMARTSENSOR</span>
-        <span style={{ color:"var(--border)" }}>›</span>
-        <span style={{ color:"#00A3B4" }}>{title.toUpperCase()}</span>
+        <span style={{ color:"var(--text-muted)" }}>PTTS</span>
+        <span style={{ color:"var(--text-faint)" }}>›</span>
+        <span style={{ color:"var(--text-muted)" }}>SMARTSENSOR</span>
+        <span style={{ color:"var(--text-faint)" }}>›</span>
+        <span style={{ color:"#00c8e0" }}>{title.toUpperCase()}</span>
       </div>
 
       {/* Center — timestamp */}

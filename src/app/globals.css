@@ -18,8 +18,8 @@
   --border:      #25354d;
   --border-dim:  #182436;
   --text:        #ffffff;
-  --text-muted:  #a0aec0;
-  --text-faint:  #718096;
+  --text-muted:  #b8c8dc;  /* was #a0aec0 — lifted for WCAG AA on dark surfaces */
+  --text-faint:  #8fa3bb;  /* was #718096 — lifted for WCAG AA at 9-10px */
   --text-bright: #ffffff;
 
   /* PTTS brand (punchy) */
@@ -31,7 +31,7 @@
   --online:      #00ff88;
   --warning:     #ffdd00;
   --fault:       #ff3333;
-  --offline:     #556677;
+  --offline:     #778899;  /* was #556677 — lifted for WCAG AA */
 
   --sidebar-bg:  #030508;
 }
@@ -45,8 +45,8 @@
   --border:      #b8a890;
   --border-dim:  #d4c8b0;
   --text:        #1a1208;
-  --text-muted:  #3d2e18;
-  --text-faint:  #6b5440;
+  --text-muted:  #2d1e0a;  /* darkened for light mode WCAG AA */
+  --text-faint:  #4a3520;  /* darkened for light mode WCAG AA */
   --text-bright: #0d0800;
   --sidebar-bg:  #e8e0d0;
 
@@ -59,7 +59,7 @@
   --online:      #1a7a4a;
   --warning:     #b85c00;
   --fault:       #b81c1c;
-  --offline:     #6b5440;
+  --offline:     #5a4030;
 }
 
 body {
@@ -110,7 +110,7 @@ body {
 
 .scada-label {
   font-size: 9px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-muted);
