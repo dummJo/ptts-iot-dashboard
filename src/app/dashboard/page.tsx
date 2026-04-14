@@ -128,11 +128,16 @@ export default function DashboardPage() {
           <AlertsTable alerts={recentAlerts} />
 
           {/* Footer bar */}
-          <div className="flex items-center justify-between px-2 py-1 text-[9px] tracking-widest"
+          <div className="flex items-center justify-between px-2 py-1 text-[8px] tracking-[.15em] border-t border-border-dim mt-2"
             style={{ color:"var(--text-faint)" }}>
-            <span>PTTS SMARTSENSOR IoT PLATFORM · v1.1.0</span>
-            <span>LIVE DEMO · SIMULATED DATALINK</span>
-            <span>SESSION: 60 MIN · JWT HS256</span>
+            <div className="flex gap-4">
+              <span>PTTS SMARTSENSOR IoT PLATFORM · v1.1.0</span>
+              <span>LIVE DEMO · SIMULATED DATALINK</span>
+            </div>
+            <div className="flex gap-4">
+              <span>SESSION: 60 MIN · JWT HS256</span>
+              <span className="font-bold" style={{ color: "var(--ptts-teal)" }}>design by @dummjo — 1437yb</span>
+            </div>
           </div>
         </div>
       </main>

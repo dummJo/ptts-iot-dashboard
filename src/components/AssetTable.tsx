@@ -35,8 +35,8 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
         <table className="w-full text-[11px]">
           <thead>
             <tr style={{ borderBottom: "1px solid var(--border-dim)", background: "var(--surface-2)" }}>
-              {["TAG ID", "ASSET", "TYPE", "TEMP", "VIBRATION", "LINK", "HEALTH", "CONFIG"].map((h, i) => (
-                <th key={h} className={`px-3 py-2 font-bold tracking-[.12em] text-[9px]
+              {["TAG ID", "ASSET NAME", "TYPE", "TEMP", "VIBRATION", "LINK", "HEALTH", "CFG"].map((h, i) => (
+                <th key={h} className={`px-3 py-2.5 font-black tracking-[.2em] text-[8px]
                   ${i >= 3 && i <= 4 ? "text-right" : i === 7 ? "text-center" : "text-left"}`}
                   style={{ color: "var(--text-muted)" }}>
                   {h}
@@ -65,14 +65,16 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
                   }}
                   onClick={() => setSelectedAsset(a)}
                 >
-                  <td className="px-3 py-3 font-mono text-[9px]" style={{ color: "var(--text-muted)" }}>{a.id}</td>
-                  <td className="px-3 py-3 font-bold" style={{ color: "var(--text)" }}>{a.name}</td>
-                  <td className="px-3 py-3 text-[9px] tracking-wide" style={{ color: "var(--text-muted)" }}>
+                  <td className="px-3 py-3.5 font-mono text-[9px] tracking-tighter" style={{ color: "var(--text-faint)" }}>
+                    <span style={{ color: "var(--ptts-teal)", opacity: 0.6 }}>TAG-</span>{a.id.substring(0, 8)}
+                  </td>
+                  <td className="px-3 py-3.5 font-black text-[11px]" style={{ color: "var(--text-bright)" }}>{a.name.toUpperCase()}</td>
+                  <td className="px-3 py-3.5 text-[8px] font-bold tracking-widest" style={{ color: "var(--text-muted)" }}>
                     {a.type.replace("PTTS ", "").replace("RONDS ", "").toUpperCase()}
                   </td>
-                  <td className="px-3 py-3 text-right font-mono font-bold tabular-nums"
+                  <td className="px-3 py-3.5 text-right font-mono font-black text-[11px] tabular-nums"
                     style={{ color: tempColor }}>{formatTemp(a.temp)}</td>
-                  <td className="px-3 py-3 text-right font-mono font-bold tabular-nums"
+                  <td className="px-3 py-3.5 text-right font-mono font-black text-[11px] tabular-nums"
                     style={{ color: vibColor }}>{formatVib(a.vib)}</td>
                   
                   {/* LINK STATUS (Connectivity) */}

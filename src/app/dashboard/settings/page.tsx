@@ -507,6 +507,18 @@ export default function SettingsPage() {
               </div>
             )}
           </div>
+          
+          <div className="mt-8 flex items-center justify-between px-2 py-1 text-[8px] tracking-[.15em] border-t border-border-dim"
+            style={{ color:"var(--text-faint)" }}>
+            <div className="flex gap-4">
+              <span>PTTS SMARTSENSOR IoT PLATFORM · v1.1.0</span>
+              <span>ADMIN CONFIGURATION MODULE</span>
+            </div>
+            <div className="flex gap-4">
+              <span>SECURITY: JWT HS256 + PERMANENT STORAGE</span>
+              <span className="font-bold" style={{ color: "var(--ptts-teal)" }}>design by @dummjo — 1437yb</span>
+            </div>
+          </div>
         </div>
       </main>
     </div>
