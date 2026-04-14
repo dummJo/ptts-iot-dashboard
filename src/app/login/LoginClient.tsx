@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useActionState, useRef } from "react";
 import { loginAction } from "@/app/actions/auth";
+import ThemeToggle from "@/components/ThemeToggle";
 
 type Phase = "logo" | "text" | "init" | "bar" | "ready" | "login";
 type Lang  = "en" | "id" | "ja" | "ko" | "zh";
@@ -152,13 +153,16 @@ export default function LoginClient() {
 
       {/* top bar */}
       <div className="absolute top-0 inset-x-0 flex items-center justify-between px-8 py-2.5 z-10"
-        style={{ borderBottom: `1px solid ${C.border}`, background: C.bgPanel + "ee" }}>
+        style={{ borderBottom: `1px solid ${C.border}`, background: "var(--surface)" }}>
         <span className="text-[9px] tracking-[.3em] font-bold" style={{ color: C.muted }}>
           PTTS · INDUSTRIAL IOT PLATFORM
         </span>
-        <span className="text-[9px] tracking-[.25em] font-bold animate-blink" style={{ color: C.gold }}>
-          ■ CONNECTING
-        </span>
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          <span className="text-[9px] tracking-[.25em] font-bold animate-blink" style={{ color: C.gold }}>
+            ■ CONNECTING
+          </span>
+        </div>
       </div>
 
       <div className="relative z-10 flex flex-col items-center">
@@ -306,8 +310,12 @@ export default function LoginClient() {
             <span className="text-[9px] tracking-widest font-bold" style={{ color: C.muted }}>PTTS SMARTSENSOR</span>
           </div>
 
-          {/* Language dropdown */}
-          <div className="relative" ref={dropRef}>
+          {/* Language & Theme Toggle */}
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            
+            {/* Language dropdown */}
+            <div className="relative" ref={dropRef}>
             <button onClick={() => setOpen(!open)}
               className="flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold tracking-widest transition-colors"
               style={{
