@@ -1,60 +1,58 @@
 import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
 
 /**
- * Dashboard endpoint - proxies to NestJS backend.
- * Implements retry logic for transient failures.
+ * Dashboard endpoint - pulls real data from PostgreSQL.
+ * Provides assets and their latest telemetry status.
  */
-async function fetchWithRetry(url: string, maxRetries = 2): Promise<Response> {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        cache: 'no-store',
-      });
-
-      if (response.ok || response.status < 500) {
-        return response;
-      }
-
-      // Retry on 5xx errors
-      if (attempt < maxRetries) {
-        await new Promise(resolve => setTimeout(resolve, 800 * (attempt + 1)));
-        continue;
-      }
-
-      return response;
-    } catch (error) {
-      if (attempt < maxRetries) {
-        await new Promise(resolve => setTimeout(resolve, 800 * (attempt + 1)));
-        continue;
-      }
-      throw error;
-    }
-  }
-
-  throw new Error('Failed after retries');
-}
-
 export async function GET() {
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
-    const response = await fetchWithRetry(`${backendUrl}/api/dashboard`);
+    // 1. Fetch all assets
+    const assetsData = await prisma.asset.findMany({
+      include: {
+        telemetries: {
+          orderBy: { timestamp: 'desc' },
+          take: 1
+        }
+      }
+    });
 
-    if (!response.ok) {
-      return NextResponse.json(
-        { error: 'Backend unavailable', details: response.statusText },
-        { status: response.status }
-      );
-    }
+    // 2. Format data for the dashboard overview
+    // If telemetry is missing, we provide a safe fallback object
+    const assets = assetsData.map(asset => {
+      const latest = asset.telemetries[0] || {};
+      return {
+        id: asset.tagId,
+        name: asset.name,
+        type: asset.type,
+        location: asset.location,
+        status: asset.telemetries.length > 0 ? 'online' : 'offline',
+        metrics: {
+          temp: latest.temp ?? 0,
+          vibration: latest.vibOverall ?? 0,
+          velocity: latest.vibVelocity ?? 0,
+          current: latest.motorCurrent ?? 0,
+          load: latest.motorKw ?? 0,
+        },
+        lastUpdate: latest.timestamp ? latest.timestamp.toISOString() : new Date().toISOString()
+      };
+    });
 
-    const data = await response.json();
-    return NextResponse.json(data);
+    return NextResponse.json({
+      success: true,
+      timestamp: new Date().toISOString(),
+      summary: {
+        totalAssets: assets.length,
+        criticalAlarms: 0, // Placeholder for future alarm count
+      },
+      assets
+    });
+
   } catch (error) {
-    console.error('[Dashboard API] Backend error:', error);
+    console.error('[Dashboard API] Database error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch dashboard data', details: String(error) },
-      { status: 503 }
+      { error: 'Internal Server Error', details: String(error) },
+      { status: 500 }
     );
   }
 }

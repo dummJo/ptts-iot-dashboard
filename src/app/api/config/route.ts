@@ -1,94 +1,79 @@
 import { NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
 
 /**
- * Config endpoint - proxies to NestJS backend.
- * Manages API keys and system configuration.
+ * System Configuration API - Powered by PostgreSQL
+ * Manages API keys (ABB/RONDS) and platform settings.
  */
-async function fetchWithRetry(url: string, options: RequestInit = {}, maxRetries = 2): Promise<Response> {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      const response = await fetch(url, {
-        headers: { 'Content-Type': 'application/json' },
-        ...options,
-        cache: 'no-store',
-      });
-
-      if (response.ok || response.status < 500) {
-        return response;
-      }
-
-      if (attempt < maxRetries) {
-        await new Promise(resolve => setTimeout(resolve, 800 * (attempt + 1)));
-        continue;
-      }
-
-      return response;
-    } catch (error) {
-      if (attempt < maxRetries) {
-        await new Promise(resolve => setTimeout(resolve, 800 * (attempt + 1)));
-        continue;
-      }
-      throw error;
-    }
-  }
-
-  throw new Error('Failed after retries');
-}
 
 export async function GET() {
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
-    const response = await fetchWithRetry(`${backendUrl}/api/config`);
+    const config = await prisma.systemConfig.findUnique({
+      where: { id: 1 }
+    });
 
-    if (!response.ok) {
-      return NextResponse.json(
-        { error: 'Backend unavailable' },
-        { status: response.status }
-      );
+    if (!config) {
+      return NextResponse.json({
+        apiKeys: [],
+        settings: { theme: 'dark', refreshRate: 30000 }
+      });
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
+    // Format for the frontend (convert Json to Array of objects if needed)
+    const keysMap = (config.getKeys as any) || {};
+    const apiKeys = Object.entries(keysMap).map(([vendor, key]) => ({
+      vendor,
+      key,
+      status: 'active'
+    }));
+
+    return NextResponse.json({
+      apiKeys,
+      settings: config.settings
+    });
+
   } catch (error) {
-    console.error('[Config API] Backend error:', error);
+    console.error('[Config API] Database error:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch config', details: String(error) },
-      { status: 503 }
+      { error: 'Failed to fetch config' },
+      { status: 500 }
     );
   }
 }
 
 export async function POST(req: Request) {
   try {
-    const data = await req.json();
+    const body = await req.json();
+    const { apiKeys, settings } = body;
 
-    if (!data.apiKeys || !Array.isArray(data.apiKeys)) {
-      return NextResponse.json(
-        { error: 'apiKeys must be an array' },
-        { status: 400 }
-      );
+    // Convert array back to map for storage
+    const keysMap: Record<string, any> = {};
+    if (Array.isArray(apiKeys)) {
+      apiKeys.forEach((k: any) => {
+        keysMap[k.vendor] = k.key;
+      });
     }
 
-    const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001';
-    const response = await fetchWithRetry(`${backendUrl}/api/config`, {
-      method: 'POST',
-      body: JSON.stringify(data),
+    const updated = await prisma.systemConfig.upsert({
+      where: { id: 1 },
+      update: {
+        getKeys: keysMap,
+        settings: settings || {},
+      },
+      create: {
+        id: 1,
+        getKeys: keysMap,
+        settings: settings || {},
+      }
     });
 
-    if (!response.ok) {
-      return NextResponse.json(
-        { error: 'Backend error' },
-        { status: response.status }
-      );
-    }
+    return NextResponse.json({ success: true, timestamp: updated.updatedAt });
 
-    const result = await response.json();
-    return NextResponse.json({ success: true, config: result });
   } catch (error) {
-    console.error('[Config API] Backend error:', error);
+    console.error('[Config API] Save error:', error);
     return NextResponse.json(
-      { error: 'Failed to save config', details: String(error) },
-      { status: 503 }
+      { error: 'Failed to save configuration' },
+      { status: 500 }
     );
   }
 }
