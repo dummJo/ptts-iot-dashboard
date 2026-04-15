@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-04-15
+
+### Added
+- **PostgreSQL Production Migration** — Fully transitioned from local JSON storage to **Neon PostgreSQL**, enabling scalable and persistent industrial data management.
+- **24-Hour Telemetry History** — Implemented an enriched data seeding layer providing 24 hours of back-dated historical telemetry for Motor, Pump, and Compressor assets.
+- **Persistent Threshold Management** — Manual vibration limit overrides on the Overview page are now synchronized directly with PostgreSQL, persisting across user sessions and devices.
+- **Industrial Alarm Engine** — Real-time server-side logic that automatically evaluates live telemetry against user-defined limits and persists unacknowledged alarm records.
+- **Multi-Channel Notifications (WA & TG)** — Integrated a centralized notification engine with a new dedicated **NOTIFICATIONS** configuration tab, supporting real-time alerts via **Telegram Bot API** and **WhatsApp Gateways** (e.g., Fonnte).
+- **Notification Verification UI** — Added "Send Test" functionality for both Telegram and WhatsApp to verify credential connectivity instantly from the dashboard.
+
+### Fixed
+- Resolved Prisma/Neon compatibility issues in serverless environments by optimizing connection pooling and adapter initialization.
+- Fixed dashboard empty states by ensuring the API returns full `DashboardData` structures derived from literal database values.
+
 ## [0.9.0] — 2026-04-14
 
 ### Added
