@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Scrypt Key Derivation (KDF)** — Encryption keys are now derived using Scrypt with industrial-grade cost parameters, ensuring high resistance to hardware-accelerated attacks.
 - **SCRYPT-JWT Architecture** — Migrated the session layer from standard HS256 to a custom SCRYPT-derived key architecture, significantly increasing the complexity required for token forgery attacks.
 - **Security Visibility Update** — Refreshed all UI security labels across Login, Dashboard, and Settings modules to reflect the new **SCRYPT · JWT** industrial standard.
+- **Edge Runtime Optimization** — Resolved a critical authentication lock-out by migrating JWT verification to a cross-platform architecture compatible with Next.js Middleware (Edge Runtime).
 
 ### Changed
 - **Encrypted Data Flow** — Refactored the `Configuration API` and `Notification Service` to handle just-in-time decryption, ensuring secrets never reside in plaintext within the persistent layer.
