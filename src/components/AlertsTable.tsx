@@ -38,8 +38,12 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
         <div className="flex items-center gap-2">
           <span className="led led-fault" style={{ width: 6, height: 6 }} />
           <button
-            className="text-[9px] font-bold tracking-widest transition-all"
-            style={{ color: "var(--ptts-teal)" }}
+            className="text-[9px] font-bold tracking-widest transition-all px-3 py-1.5 rounded-sm shadow-sm"
+            style={{ 
+              color: "var(--bg)", 
+              background: "var(--ptts-teal)",
+              border: "1px solid var(--ptts-teal)"
+            }}
             onClick={() => setAcknowledged(new Set(alerts.map((a) => a.id)))}
           >
             ACKNOWLEDGE ALL
