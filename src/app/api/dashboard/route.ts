@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { runAlarmEngine } from '@/lib/alarmEngine';
+import { NotificationService } from '@/lib/notifications';
 import type { DashboardData, TrendPoint, Asset, Alarm } from '@/lib/types';
 
 /**
@@ -160,7 +161,11 @@ export async function GET() {
     };
 
     return NextResponse.json(data);
-
+  } catch (error) {
+    console.error('[Dashboard API] Error:', error);
+    return NextResponse.json({ error: 'Failed to fetch dashboard data' }, { status: 500 });
+  }
+}
 
 /**
  * MQTT Data Ingestion - Receives batch data from MQTT bridge
