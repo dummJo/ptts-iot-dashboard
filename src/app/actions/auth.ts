@@ -35,16 +35,7 @@ export async function loginAction(
   const salt = "ptts-salt-2024";
   const scryptHash = crypto.scryptSync(password, salt, 64).toString("hex");
 
-  // Compatibility Layer: Check Scrypt (new) or SHA256 (old)
-  const sha256Hash = crypto.createHash("sha256").update(password).digest("hex");
-  const oldAdminHash = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918";
-
-  const isValid = 
-    user.passwordHash === scryptHash || 
-    user.passwordHash === sha256Hash ||
-    (username === 'admin' && user.passwordHash === oldAdminHash);
-
-  if (!isValid) {
+  if (user.passwordHash !== scryptHash) {
     return { error: "Invalid credentials." };
   }
 
