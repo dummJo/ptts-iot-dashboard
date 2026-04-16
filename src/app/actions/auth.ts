@@ -31,25 +31,14 @@ export async function loginAction(
 
   if (!user) return { error: "Invalid credentials." };
 
-  // Note: For production use bcrypt. This mock uses sha256 to maintain compatibility with the demo hash.
-  const inputHash = crypto.createHash("sha256").update(password).digest("hex");
+  // ⚡ QA FIX: Upgraded hashing from SHA256 to Scrypt for industrial security
+  // We use a fixed salt for the demo to maintain consistency with the seed data.
+  const salt = "ptts-salt-2024";
+  const inputHash = crypto.scryptSync(password, salt, 64).toString("hex");
 
-  // In seed script we used "admin_ptts_2024_hashed" for 'admin'
-  // Let's handle special case for initial seed if needed, or stick to standard hash verification
-  let valid = false;
-  try {
-    valid = crypto.timingSafeEqual(
-      Buffer.from(user.passwordHash, "hex"),
-      Buffer.from(inputHash, "hex")
-    );
-  } catch {
-    // Fallback for raw text comparison if seed used text (only for initial dev)
-    if (user.passwordHash === password + "_hashed" || user.passwordHash === password) {
-      valid = true;
-    }
+  if (user.passwordHash !== inputHash) {
+    return { error: "Invalid credentials." };
   }
-
-  if (!valid) return { error: "Invalid credentials." };
 
   const token = await createSession(username, user.role);
   const jar = await cookies();
@@ -102,7 +91,8 @@ export async function createUserAction(
   }
 
   try {
-    const hash = crypto.createHash("sha256").update(password).digest("hex");
+    const salt = "ptts-salt-2024";
+    const hash = crypto.scryptSync(password, salt, 64).toString("hex");
     await prisma.user.create({
       data: { username, passwordHash: hash, role }
     });

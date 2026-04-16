@@ -6,8 +6,8 @@ async function main() {
   console.log('--- Database Seeding Started ---')
 
   // 1. Initial Admin User
-  // Password hash for 'admin' (SHA256 hex)
-  const adminPasswordHash = "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"; 
+  // Password hash for 'admin' (Scrypt hex with salt 'ptts-salt-2024')
+  const adminPasswordHash = "ead8d67d97e53fdc86844e95ba3eba74999e5598dfaf42aec934ad1d633c3cc1b5187faab6ac7b72caa6df9c0caf56018b32353f62d204ad7c9a07139e7c176c"; 
 
   const admin = await prisma.user.upsert({
     where: { username: 'admin' },

@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { NotificationService } from '@/lib/notifications';
+import { runAlarmEngine } from '@/lib/alarmEngine';
 import type { DashboardData, TrendPoint, Asset, Alarm } from '@/lib/types';
 
 /**
  * Dashboard Overview API - Powered by PostgreSQL
- * Pulls assets, telemetry history, and triggers the Alarm Engine.
+ * Pulls assets, telemetry history, and displays active alarms.
  */
 export async function GET() {
   try {
@@ -19,71 +19,34 @@ export async function GET() {
       }
     });
 
-    // 2. ⚡ ALARM ENGINE: Check violations on-the-fly
+    // 2. ⚡ RUN ALARM ENGINE (Refactored)
+    // In production, this should ideally be triggered by telemetry ingestion,
+    // not by the dashboard GET route. Keeping it here for demo consistency.
     for (const asset of assetsData) {
       const latest = asset.telemetries[0];
-      if (!latest) continue;
-
-      const limits = {
-        warning: asset.vibLimitWarning || 4.5,
-        fault: asset.vibLimitFault || 7.1
-      };
-
-      // Determine if there's a violation
-      let severity: 'critical' | 'warning' | null = null;
-      let msg = '';
-      
-      const vib = latest.vibOverall ?? 0;
-      
-      if (vib >= limits.fault) {
-        severity = 'critical';
-        msg = `Vibration Fault: ${vib.toFixed(2)}mm/s exceeded limit ${limits.fault}mm/s`;
-      } else if (vib >= limits.warning) {
-        severity = 'warning';
-        msg = `Vibration Warning: ${vib.toFixed(2)}mm/s exceeded limit ${limits.warning}mm/s`;
-      }
-
-      if (severity) {
-        // Check if unacknowledged alarm already exists for this asset & severity
-        const existing = await prisma.alarm.findFirst({
-          where: {
-            assetId: asset.id,
-            severity,
-            acknowledgedAt: null
-          }
-        });
-
-        if (!existing) {
-          await prisma.alarm.create({
-            data: {
-              assetId: asset.id,
-              alarmType: 'Vibration',
-              severity,
-              message: msg,
-              timestamp: new Date()
-            }
-          });
-          
-          // ⚡ EXTERNAL NOTIFICATION TRIGGER (WhatsApp / Telegram)
-          await NotificationService.sendAlert(msg);
-          
-          console.log(`🚨 Alarm Triggered: ${asset.tagId} - ${msg}`);
-        }
+      if (latest) {
+        await runAlarmEngine(asset.id, { vibOverall: latest.vibOverall });
       }
     }
 
-    // 3. Fetch Trend (Last 24 points aggregated)
-    const mainAsset = await prisma.asset.findFirst({
+    // 3. Fetch Trend Data
+    // Attempt to find MTR-001, but fallback to the first asset if missing
+    let trendAsset = await prisma.asset.findFirst({
        where: { tagId: 'MTR-001' },
        include: {
-         telemetries: {
-           orderBy: { timestamp: 'desc' },
-           take: 24
-         }
+         telemetries: { orderBy: { timestamp: 'desc' }, take: 24 }
        }
     });
 
-    const trendData: TrendPoint[] = (mainAsset?.telemetries || []).reverse().map(t => ({
+    if (!trendAsset || trendAsset.telemetries.length === 0) {
+      trendAsset = await prisma.asset.findFirst({
+        include: {
+          telemetries: { orderBy: { timestamp: 'desc' }, take: 24 }
+        }
+      });
+    }
+
+    const trendData: TrendPoint[] = (trendAsset?.telemetries || []).reverse().map(t => ({
       time: t.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       temp: t.temp || 0,
       vib: t.vibOverall || 0,
@@ -101,7 +64,7 @@ export async function GET() {
         temp: latest.temp || 0,
         vib: latest.vibOverall || 0,
         link: a.telemetries.length > 0 ? 'online' : 'offline',
-        health: 'good', // Frontend recalculates health color based on thresholds returned below
+        health: 'good', 
         powerKW: a.powerKw || 0,
         foundation: (a.foundationType as 'rigid' | 'flexible') || 'rigid',
         vibrationThresholds: {
@@ -111,7 +74,7 @@ export async function GET() {
       };
     });
 
-    // 5. Fetch Active Alarms after Engine run
+    // 5. Fetch Active Alarms
     const activeAlarms = await prisma.alarm.findMany({
       where: { acknowledgedAt: null },
       include: { asset: true },
