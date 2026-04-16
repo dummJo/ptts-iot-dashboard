@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AppWrapper from "@/components/AppWrapper";
 
 export const metadata: Metadata = {
   title: "PTTS SmartSensor Dashboard",
@@ -28,7 +29,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <AppWrapper>
+          {children}
+        </AppWrapper>
+      </body>
     </html>
   );
 }

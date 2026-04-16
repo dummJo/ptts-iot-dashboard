@@ -135,11 +135,11 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between px-2 py-1 text-[8px] tracking-[.15em] border-t border-border-dim mt-2"
             style={{ color:"var(--text-faint)" }}>
             <div className="flex gap-4">
-              <span>PTTS SMARTSENSOR IoT PLATFORM · v1.1.0</span>
-              <span>LIVE DEMO · SIMULATED DATALINK</span>
+              <span>PTTS SMARTSENSOR IoT PLATFORM · v1.2.0</span>
+              <span>LIVE CLOUD · MQTT LINK ACTIVE</span>
             </div>
             <div className="flex gap-4">
-              <span>SESSION: 60 MIN · JWT HS256</span>
+              <span>SESSION: 60 MIN · SCRYPT · JWT</span>
             </div>
           </div>
         </div>

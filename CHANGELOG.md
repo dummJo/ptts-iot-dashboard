@@ -5,6 +5,19 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] — 2026-04-17
+
+### Added
+- **Industrial Security Reinforcement** — Introduced a dedicated security utility (`src/lib/security.ts`) providing standard-compliant Scrypt hashing and AES-256-GCM encryption.
+- **Transparent Field Encryption** — All sensitive data, including ABB/RONDS API keys and Telegram/WhatsApp notification tokens, are now automatically encrypted at rest in PostgreSQL.
+- **Scrypt Key Derivation (KDF)** — Encryption keys are now derived using Scrypt with industrial-grade cost parameters, ensuring high resistance to hardware-accelerated attacks.
+- **SCRYPT-JWT Architecture** — Migrated the session layer from standard HS256 to a custom SCRYPT-derived key architecture, significantly increasing the complexity required for token forgery attacks.
+- **Security Visibility Update** — Refreshed all UI security labels across Login, Dashboard, and Settings modules to reflect the new **SCRYPT · JWT** industrial standard.
+
+### Changed
+- **Encrypted Data Flow** — Refactored the `Configuration API` and `Notification Service` to handle just-in-time decryption, ensuring secrets never reside in plaintext within the persistent layer.
+- **Synchronized Security Seeding** — Updated `prisma/seed.ts` to utilize the production-grade security library, aligning initial system states with global encryption standards.
+
 ## [1.2.0] — 2026-04-17
 
 ### Added
