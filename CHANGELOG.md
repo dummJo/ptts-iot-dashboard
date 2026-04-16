@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **SCRYPT-JWT Architecture** — Migrated the session layer from standard HS256 to a custom SCRYPT-derived key architecture, significantly increasing the complexity required for token forgery attacks.
 - **Security Visibility Update** — Refreshed all UI security labels across Login, Dashboard, and Settings modules to reflect the new **SCRYPT · JWT** industrial standard.
 - **Edge Runtime Optimization** — Resolved a critical authentication lock-out by migrating JWT verification to a cross-platform architecture compatible with Next.js Middleware (Edge Runtime).
+- **Alarm Export functionality** — Fully functional cross-platform CSV Export button embedded directly inside the `AlertsTable` component for seamless alarm trace logging.
+- **Global Acknowledge** — Connected the "Acknowledge All" button from within the table to hit the API loop instead of maintaining a faux local state.
+
+### Changed
+- **Visual Gimmick Reduction** — Removed the hyper-animated CSS panning grid and replaced it with a much softer, static dotted mesh to reduce cognitive overload in industrial environments.
+- **Changelog Interactions** — Manually clicking the Changelog view no longer forcefully traps operators into typing an "ACK" confirmation code.
+- **Glassmorphism Aesthetic** — Refined `scada-card`, `Sidebar`, and `TopBar` primitives to feature dark frosted glass backdrop filters, dropping massive opaque cards for an elevated cyberpunk holographic standard.
 
 ### Changed
 - **Encrypted Data Flow** — Refactored the `Configuration API` and `Notification Service` to handle just-in-time decryption, ensuring secrets never reside in plaintext within the persistent layer.
