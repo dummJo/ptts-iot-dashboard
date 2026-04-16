@@ -3,6 +3,8 @@ import { useState } from "react";
 import type { Alarm } from "@/lib/types";
 import { truncate } from "@/lib/utils";
 
+import { apiClient } from "@/lib/apiClient";
+
 const SEV: Record<string, { led: string; color: string; bg: string; label: string }> = {
   critical: { led: "led-fault",   color: "var(--fault)",   bg: "var(--badge-fault-bg)",   label: "CRITICAL" },
   warning:  { led: "led-warning", color: "var(--warning)", bg: "var(--badge-warning-bg)", label: "WARNING"  },
@@ -11,9 +13,19 @@ const SEV: Record<string, { led: string; color: string; bg: string; label: strin
 
 export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
   const [acknowledged, setAcknowledged] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(false);
 
-  const handleAck = (id: string) => {
+  const handleAck = async (id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
     setAcknowledged((prev) => new Set([...prev, id]));
+    await apiClient.acknowledgeAlarm(id).catch(console.error);
+  };
+
+  const handleAckAll = async () => {
+    setLoading(true);
+    setAcknowledged(new Set(alerts.map((a) => a.id)));
+    await Promise.all(alerts.map(a => apiClient.acknowledgeAlarm(a.id))).catch(console.error);
+    setLoading(false);
   };
 
   // Light formatter to strip markdown-like symbols and apply better styling
@@ -38,15 +50,16 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
         <div className="flex items-center gap-2">
           <span className="led led-fault" style={{ width: 6, height: 6 }} />
           <button
-            className="text-[9px] font-bold tracking-widest transition-all px-3 py-1.5 rounded-sm shadow-sm"
+            className="text-[9px] font-bold tracking-widest transition-all px-3 py-1.5 rounded-sm shadow-sm disabled:opacity-40"
             style={{ 
               color: "var(--bg)", 
               background: "var(--ptts-teal)",
               border: "1px solid var(--ptts-teal)"
             }}
-            onClick={() => setAcknowledged(new Set(alerts.map((a) => a.id)))}
+            disabled={loading || alerts.length === 0}
+            onClick={handleAckAll}
           >
-            ACKNOWLEDGE ALL
+            {loading ? "PROCESSING..." : "ACKNOWLEDGE ALL"}
           </button>
         </div>
       </div>
