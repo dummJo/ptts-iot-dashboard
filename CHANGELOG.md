@@ -5,8 +5,17 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.2.0] — 2026-04-17
 
+### Added
+- **Foundational API Testing** — Introduced an integration test suite (`tests/dashboard.test.ts`) covering core dashboard and reporting endpoints.
+- **Dedicated Alarm Engine** — Refactored industrial violation logic into a standalone utility (`src/lib/alarmEngine.ts`) for better modularity and future background worker support.
+- **Real-time Sidebar Observations** — The sidebar alarm badge is no longer hardcoded; it now dynamically polls and reflects the live count of active alarms from the database.
+
+### Changed
+- **Security Hardening (Scrypt)** — Upgraded password hashing from SHA-256 to **Scrypt** with secure salting, providing industrial-grade protection for user credentials.
+- **Zero-Trust Login** — Removed insecure plaintext password fallbacks and improved input sanitization in authentication server actions.
+- **Trend Data Resilience** — Enhanced the dashboard trend logic with a fallback mechanism that automatically selects the first available asset if the primary tag (`MTR-001`) is missing, preventing UI breaks.
 ## [1.1.0] — 2026-04-15
 
 ### Added
