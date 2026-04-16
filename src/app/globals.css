@@ -129,20 +129,11 @@ body {
   border: 1px solid var(--border);
   border-top: 2px solid var(--ptts-teal);
   border-radius: 6px;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Toned down shadow */
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   position: relative;
   overflow: hidden;
-}
-
-.scada-card::before {
-  content: "";
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--ptts-teal), transparent);
-  opacity: 0.5;
 }
 
 .scada-card-header {

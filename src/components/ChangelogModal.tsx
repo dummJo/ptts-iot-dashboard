@@ -153,31 +153,41 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
 
         {/* Footer / ACK Box */}
         <div className="p-6 bg-surface-2 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex-1">
-            <p className="text-[10px] font-bold text-text-muted mb-2 tracking-widest uppercase">
-              Type <span className="text-ptts-teal">ACK</span> to confirm you have read the updates
-            </p>
-            <input
-              type="text"
-              value={ackText}
-              onChange={(e) => setAckText(e.target.value)}
-              placeholder="ENTER ACK..."
-              className="w-full md:w-48 px-4 py-2 bg-bg border border-border rounded-sm text-[11px] font-mono tracking-widest text-text-bright outline-none focus:border-ptts/60 transition-all uppercase"
-            />
-          </div>
+          {!manualOpen ? (
+            <>
+              <div className="flex-1">
+                <p className="text-[10px] font-bold text-text-muted mb-2 tracking-widest uppercase">
+                  Type <span className="text-ptts-teal">ACK</span> to confirm you have read the updates
+                </p>
+                <input
+                  type="text"
+                  value={ackText}
+                  onChange={(e) => setAckText(e.target.value)}
+                  placeholder="ENTER ACK..."
+                  className="w-full md:w-48 px-4 py-2 bg-bg border border-border rounded-sm text-[11px] font-mono tracking-widest text-text-bright outline-none focus:border-ptts/60 transition-all uppercase"
+                />
+              </div>
 
-          <button
-            onClick={handleAcknowledge}
-            disabled={ackText.toUpperCase() !== "ACK"}
-            className="w-full md:w-auto px-8 py-3 rounded-sm font-black text-[12px] tracking-[.2em] transition-all disabled:opacity-30 disabled:grayscale"
-            style={{ 
-              background: "var(--ptts)", 
-              color: "#fff", 
-              boxShadow: ackText.toUpperCase() === "ACK" ? "0 0 15px var(--ptts-glow)" : "none"
-            }}
-          >
-            {ackText.toUpperCase() === "ACK" ? "ACKNOWLEDGE & PROCEED →" : "WAITING FOR INPUT..."}
-          </button>
+              <button
+                onClick={handleAcknowledge}
+                disabled={ackText.toUpperCase() !== "ACK"}
+                className="w-full md:w-auto px-8 py-3 rounded-sm font-black text-[12px] tracking-[.2em] transition-all disabled:opacity-30 disabled:grayscale"
+                style={{ 
+                  background: "var(--ptts)", 
+                  color: "#fff", 
+                  boxShadow: ackText.toUpperCase() === "ACK" ? "0 0 15px var(--ptts-glow)" : "none"
+                }}
+              >
+                {ackText.toUpperCase() === "ACK" ? "ACKNOWLEDGE & PROCEED →" : "WAITING FOR INPUT..."}
+              </button>
+            </>
+          ) : (
+             <div className="flex-1 flex justify-end">
+               <button onClick={onClose} className="px-8 py-2.5 rounded-sm font-bold text-[11px] tracking-widest transition-all" style={{ background: "var(--surface-3)", border: "1px solid var(--border)", color: "var(--text-bright)" }}>
+                 CLOSE
+               </button>
+             </div>
+          )}
         </div>
       </div>
     </div>

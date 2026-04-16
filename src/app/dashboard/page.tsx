@@ -102,16 +102,14 @@ export default function DashboardPage() {
 
   return (
     <div className="flex min-h-screen relative overflow-hidden" style={{ background:"var(--bg)" }}>
-      {/* ── World-Class Cyberpunk Dashboard Background ── */}
+      {/* ── Dashboard Subtle Background ── */}
       <div className="absolute inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 opacity-[0.03]"
+        <div className="absolute inset-0 opacity-[0.02]"
              style={{ 
-               backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
-               backgroundSize: '48px 48px',
-               animation: 'grid-pan 60s linear infinite'
+               backgroundImage: `radial-gradient(circle at 2px 2px, var(--ptts-teal) 1px, transparent 0)`,
+               backgroundSize: '24px 24px'
              }} />
-        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full blur-3xl opacity-20"
-             style={{ background: 'radial-gradient(circle, var(--ptts-teal) 0%, transparent 70%)' }} />
+        <div className="absolute -top-40 -left-20 w-[600px] h-[600px] rounded-full blur-[100px] opacity-[0.03] bg-[var(--ptts-teal)]" />
       </div>
 
       <Sidebar pollInterval={pollInterval} />
@@ -122,6 +120,7 @@ export default function DashboardPage() {
 
         {/* ── Content ── */}
         <div className="flex-1 p-6 space-y-4">
+
 
           {/* KPI row */}
           <div className="grid grid-cols-4 gap-3">
