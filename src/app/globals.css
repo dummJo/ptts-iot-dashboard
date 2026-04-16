@@ -127,18 +127,34 @@ body {
 .scada-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-top: 2px solid var(--ptts);
-  border-radius: 4px;
+  border-top: 2px solid var(--ptts-teal);
+  border-radius: 6px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+}
+
+.scada-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ptts-teal), transparent);
+  opacity: 0.5;
 }
 
 .scada-card-header {
-  background: var(--surface-2);
-  border-bottom: 1px solid var(--border);
-  padding: 6px 12px;
+  background: rgba(var(--surface-2-rgb, 18, 24, 34), 0.4);
+  backdrop-filter: blur(4px);
+  border-bottom: 1px solid var(--border-dim);
+  padding: 8px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+
 
 .scada-label {
   font-size: 9px;

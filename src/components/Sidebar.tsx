@@ -96,8 +96,8 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
   }, []);
 
   return (
-    <aside className="flex flex-col w-52 min-h-screen shrink-0"
-      style={{ background: "var(--sidebar-bg)", borderRight: "1px solid var(--border)" }}>
+    <aside className="relative flex flex-col w-52 min-h-screen shrink-0 z-40"
+      style={{ background: "rgba(3, 5, 8, 0.8)", borderRight: "1px solid var(--border-dim)", backdropFilter: "blur(20px)", boxShadow: "5px 0 20px rgba(0,0,0,0.2)" }}>
 
       {/* Header */}
       <div className="px-4 py-4" style={{ borderBottom: "1px solid var(--border-dim)" }}>
