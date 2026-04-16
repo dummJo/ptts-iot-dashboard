@@ -7,10 +7,10 @@ import { loginAction, getCurrentSessionAction, autoLogoutAction } from "@/app/ac
 
 const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png";
 
-const nav = [
+const navItems = [
   { href: "/dashboard",          label: "OVERVIEW",  icon: "▣" },
   { href: "/dashboard/assets",   label: "ASSETS",    icon: "◈" },
-  { href: "/dashboard/alerts",   label: "ALARMS",    icon: "◬", badge: 3 },
+  { href: "/dashboard/alerts",   label: "ALARMS",    icon: "◬", isAlarm: true },
   { href: "/dashboard/reports",  label: "TRENDS",    icon: "∿" },
   { href: "/dashboard/settings", label: "CONFIG",    icon: "⚙" },
 ];
@@ -22,6 +22,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
   const [showSwitch, setShowSwitch] = useState(false);
   const [switchState, switchAction, switchPending] = useActionState(loginAction, null);
   const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null);
+  const [alarmCount, setAlarmCount] = useState(0);
 
   useEffect(() => {
     // Fetch current session on mount
@@ -31,7 +32,24 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         setCurrentUser({ username: session.username, role: session.role });
       }
     };
+    const fetchAlarmsCount = async () => {
+      try {
+        const res = await fetch("/api/dashboard");
+        if (res.ok) {
+          const data = await res.json();
+          setAlarmCount(data.recentAlerts?.length || 0);
+        }
+      } catch (e) {}
+    };
+
     fetchSession();
+    fetchAlarmsCount();
+    
+    // Refresh count periodically if not off
+    let alarmIv: NodeJS.Timeout;
+    if (pollInterval > 0) {
+      alarmIv = setInterval(fetchAlarmsCount, pollInterval);
+    }
 
     // Get server startup time from sessionStorage or initialize
     const storageKey = "db-startup-time";
@@ -69,6 +87,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
 
     return () => {
       clearInterval(iv);
+      if (alarmIv) clearInterval(alarmIv);
       clearTimeout(inactivityTimer);
       events.forEach(e => window.removeEventListener(e, resetInactivity));
     };
@@ -105,8 +124,9 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
 
       {/* Nav */}
       <nav className="flex-1 px-2 py-3 space-y-0.5">
-        {nav.map((item) => {
+        {navItems.map((item) => {
           const active = pathname === item.href;
+          const badge = item.isAlarm ? alarmCount : null;
           return (
             <Link key={item.href} href={item.href}
               className="flex items-center gap-2.5 px-3 py-2 rounded-sm text-[11px] font-bold tracking-[.1em] transition-all"
@@ -115,12 +135,12 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
                 : { color: "var(--text-muted)" }}>
               <span className="w-4 text-center text-sm">{item.icon}</span>
               <span className="flex-1">{item.label}</span>
-              {item.badge && (
+              {badge && badge > 0 ? (
                 <span className="text-[9px] px-1.5 py-0.5 rounded-sm font-bold"
                   style={{ background: "var(--badge-fault-bg)", color: "var(--fault)", border: "1px solid var(--fault)" }}>
-                  {item.badge}
+                  {badge}
                 </span>
-              )}
+              ) : null}
             </Link>
           );
         })}
