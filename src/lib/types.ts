@@ -148,6 +148,8 @@ export interface ReportSummary {
   avgTemp: number;
   avgVib: number;
   assets: AssetReportRow[];
+}
+
 // ── MQTT Inbound Data Contract ────────────────────────────────────────
 /**
  * Shape of the data received from an MQTT-to-HTTP bridge.
