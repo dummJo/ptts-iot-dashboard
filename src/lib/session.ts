@@ -1,10 +1,9 @@
 import { SignJWT, jwtVerify } from "jose";
-import crypto from "crypto";
 
-// ⚡ INDUSTRIAL UPGRADE: Signing key is derived using Scrypt for maximum resistance
+// ⚡ INDUSTRIAL UPGRADE: Signing key is based on AUTH_SECRET.
+// We use TextEncoder to ensure cross-platform compatibility (Node.js & Edge Runtime).
 const AUTH_SECRET = process.env.AUTH_SECRET ?? "ptts-iot-secure-default-2026";
-const SALT = process.env.AUTH_SALT || "ptts-salt-2024";
-const SECRET = crypto.scryptSync(AUTH_SECRET, SALT, 32);
+const SECRET = new TextEncoder().encode(AUTH_SECRET);
 
 export async function createSession(username: string, role: string): Promise<string> {
   return new SignJWT({ username, role })
