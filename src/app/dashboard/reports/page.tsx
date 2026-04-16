@@ -165,7 +165,7 @@ function PrintTemplate({ report }: { report: ReportSummary }) {
         <b>Catatan:</b> Laporan ini dibuat secara otomatis oleh sistem PTTS SmartSensor. Batas suhu normal: &lt;60°C. Batas getaran normal (ISO 10816-3): &lt;3.5 mm/s RMS. Data bersumber dari unit PTTS SmartSensor & RONDS SmartSensor.
       </div>
       <div style={{ fontSize:9, color:"#888", marginTop:8, display:"flex", justifyContent:"space-between" }}>
-        <span>PTTS SmartSensor IoT Platform · v1.1.0 (LIVE DEMO)</span>
+        <span>PTTS SmartSensor IoT Platform · v1.3.0 (LIVE DEMO)</span>
         <span>Dokumen ini adalah data simulasi — bukan pengganti inspeksi manual</span>
       </div>
     </div>
