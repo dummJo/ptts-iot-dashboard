@@ -143,52 +143,58 @@ export default function LoginClient() {
 
   /* ── SPLASH ──────────────────────────────────────────────── */
   if (phase !== "login") return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden"
-      style={{ background: "#000" }}>
-      <DigitalBackground />
-
-      {/* scanline */}
-      <div className="pointer-events-none absolute inset-0"
-        style={{ backgroundImage: `repeating-linear-gradient(0deg, var(--ptts-teal) 0.12, var(--ptts-teal) 1px, transparent 1px, transparent 6px)`, opacity: 0.15 }} />
-
-      {/* top bar */}
-      <div className="absolute top-0 inset-x-0 flex items-center justify-between px-8 py-2.5 z-10"
-        style={{ borderBottom: `1px solid ${C.border}`, background: "var(--surface)" }}>
-        <span className="text-[9px] tracking-[.3em] font-bold" style={{ color: C.muted }}>
-          PTTS · IOT DASHBOARD MONITORING
-        </span>
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
-          <span className="text-[9px] tracking-[.25em] font-bold animate-blink" style={{ color: C.gold }}>
-            ■ CONNECTING
-          </span>
-        </div>
+    <div className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden select-none"
+      style={{ background: "#03060a" }}>
+      
+      {/* ── Ambient Radial Glow ── */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-[800px] h-[800px] rounded-full" 
+          style={{ 
+            background: "radial-gradient(circle, rgba(0,163,180,0.06) 0%, rgba(0,0,0,0) 70%)",
+            transform: `scale(${phase === "ready" ? 1.2 : 0.8})`,
+            transition: "transform 2s cubic-bezier(0.16, 1, 0.3, 1)"
+          }} 
+        />
       </div>
 
+      {/* ── Subtitle Grid Overlay ── */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+           style={{ 
+             backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
+             backgroundSize: '48px 48px',
+             backgroundPosition: 'center center',
+             animation: 'grid-pan 30s linear infinite'
+           }} />
+
+      {/* ── Vertical & Horizontal Precision Crosshairs ── */}
+      <div className="absolute top-1/2 left-0 w-full h-px bg-[var(--ptts-teal)] opacity-20 -translate-y-1/2 scale-x-0 animate-[scaleX_1.5s_cubic-bezier(0.8,0,0.2,1)_forwards_0.5s]" />
+      <div className="absolute left-1/2 top-0 w-px h-full bg-[var(--ptts-teal)] opacity-20 -translate-x-1/2 scale-y-0 animate-[scaleY_1.5s_cubic-bezier(0.8,0,0.2,1)_forwards_0.8s]" />
+
       <div className="relative z-10 flex flex-col items-center">
-        {/* Logo rings */}
-        <div className="relative w-28 h-28 mb-8">
-          <div className="absolute inset-0 rounded-full animate-spin-cw"
-            style={{ border: `1px solid ${C.gold}25` }} />
-          <div className="absolute inset-2 rounded-full border-dashed animate-spin-ccw"
-            style={{ border: `1px dashed ${C.gold}18` }} />
-          <div className="absolute inset-5 rounded-full overflow-hidden flex items-center justify-center"
-            style={{ background: C.bgPanel }}>
-            <img src={LOGO} alt="PTTS"
-              className={`w-full h-full object-contain p-1.5 transition-opacity duration-700 ${phase === "logo" ? "opacity-0" : "opacity-100"}`} />
-          </div>
+        
+        {/* ── 3D Geometry / Abstract Brand Architecture ── */}
+        <div className={`relative w-36 h-36 flex items-center justify-center mb-10 transition-all duration-1000 ${phase === "logo" ? "opacity-0 scale-90" : "opacity-100 scale-100"}`}>
+           <div className="absolute inset-0 border border-[var(--ptts-teal)] opacity-10 rounded-full animate-[spin_10s_linear_infinite]" />
+           <div className="absolute inset-2 border-[0.5px] border-dashed border-[var(--ptts-teal)] opacity-30 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
+           
+           <div className="relative w-16 h-16 bg-[#001018] border border-[var(--ptts-teal)] rotate-45 shadow-[0_0_20px_rgba(0,163,180,0.1)] flex items-center justify-center overflow-hidden transition-all duration-1000"
+                style={{ boxShadow: phase === "ready" ? '0 0 50px rgba(0,163,180,0.5)' : '0 0 20px rgba(0,163,180,0.1)' }}>
+             <div className="absolute inset-x-0 top-0 h-[1px] bg-[var(--ptts-teal)] shadow-[0_0_10px_var(--ptts-teal)] animate-[scan_2s_ease-in-out_infinite]" />
+             
+             <div className="-rotate-45 flex flex-col items-center justify-center">
+                <span className="text-[var(--text-bright)] text-[8px] font-bold tracking-[0.3em] opacity-50 mb-1">PTTS</span>
+                <div className="w-3 h-px bg-[var(--ptts-teal)]" />
+             </div>
+           </div>
         </div>
 
-        {/* Title */}
-        <div className={`text-center mb-8 transition-all duration-500 ${phase === "logo" ? "opacity-0" : "opacity-100"}`}>
-          <p className="text-[8px] tracking-[.45em] font-bold mb-1.5" style={{ color: C.goldDim }}>
-            PT PRIMA TEKINDO TIRTA SEJAHTERA
-          </p>
-          <h1 className="text-3xl font-bold tracking-[.2em] mb-1" style={{ color: C.cream }}>
-            IOT MONITORING
+        {/* Typography Section */}
+        <div className={`text-center space-y-2 mb-10 transition-all duration-700 delay-100 ${phase === "logo" ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}>
+          <h1 className="text-2xl md:text-4xl font-black tracking-[0.25em] text-[var(--text-bright)]">
+            SMART<span className="text-[var(--ptts-teal)]">SENSOR</span>
           </h1>
-          <p className="text-[9px] tracking-[.3em] font-bold" style={{ color: C.muted }}>
-            DASHBOARD MONITORING PLATFORM
+          <p className="text-[9px] tracking-[0.4em] text-[var(--ptts-teal)] uppercase">
+            Industrial IoT Platform <span className="opacity-50">v1.3.0</span>
           </p>
         </div>
 
@@ -210,28 +216,57 @@ export default function LoginClient() {
           </div>
         )}
 
-        {/* Progress bar */}
+        {/* Progress bar (Glassmorphism standard) */}
         {["bar","ready"].includes(phase) && (
-          <div className="w-80 animate-fade-up">
-            <div className="h-px overflow-hidden" style={{ background: C.border }}>
-              <div className="h-full transition-all duration-75" style={{ width: `${pct}%`, background: C.gold }} />
+          <div className="w-80 mt-6 animate-[fade-in_0.5s_ease-out_forwards]">
+            <div className="h-[3px] w-full bg-[#0d1620] overflow-hidden rounded-full border border-[rgba(0,163,180,0.2)]">
+              <div 
+                className="h-full bg-gradient-to-r from-[var(--ptts)] to-[var(--ptts-teal)] relative transition-all duration-75"
+                style={{ width: `${pct}%` }}>
+                <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white opacity-50" />
+              </div>
             </div>
-            <div className="flex justify-between mt-2">
-              <span className="text-[9px] font-bold tracking-widest" style={{ color: C.muted }}>
-                {phase === "ready" ? "SYSTEM READY" : "LOADING"}
+            <div className="flex justify-between mt-2 tracking-widest uppercase">
+              <span className="text-[8px] font-bold" style={{ color: C.muted }}>
+                {phase === "ready" ? "SYSTEM READY. ENGAGING INTERFACE." : "CALIBRATING ASSET TELEMETRY..."}
               </span>
-              <span className="text-[9px] font-bold" style={{ color: C.gold }}>{pct}%</span>
+              <span className="text-[8px] font-mono text-[var(--text-bright)]">{pct}%</span>
             </div>
           </div>
         )}
       </div>
 
-      {/* bottom bar */}
-      <div className="absolute bottom-0 inset-x-0 flex items-center justify-between px-8 py-2.5 z-10"
-        style={{ borderTop: `1px solid ${C.border}`, background: C.bgPanel + "ee" }}>
-        <span className="text-[9px] font-bold tracking-widest" style={{ color: C.faint }}>v1.3.0</span>
-        <span className="text-[9px] font-bold tracking-widest" style={{ color: C.faint }}>SCRYPT · JWT</span>
+      {/* Technical Diagnostics Overlay */}
+      <div className="absolute top-6 left-8 text-[8px] tracking-widest text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_1s]">
+        <p>SYS.UID: 0x8F9A</p>
+        <p>MEM.ALLOC: 1024MB</p>
+        <p>ENV: PRODUCTION</p>
       </div>
+
+      <div className="absolute top-6 right-8 text-right text-[8px] tracking-widest text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_1s]">
+        <p>SEC: SCRYPT-AES</p>
+        <p>ENG: WEBSOCKET [A]</p>
+        <p>LAT: 12ms</p>
+      </div>
+
+      {/* Frame Corners */}
+      <div className="absolute top-8 left-8 border-t border-l border-[var(--border-dim)] w-8 h-8 opacity-50" />
+      <div className="absolute top-8 right-8 border-t border-r border-[var(--border-dim)] w-8 h-8 opacity-50" />
+      <div className="absolute bottom-8 left-8 border-b border-l border-[var(--border-dim)] w-8 h-8 opacity-50" />
+      <div className="absolute bottom-8 right-8 border-b border-r border-[var(--border-dim)] w-8 h-8 opacity-50" />
+
+      {/* Footer Branding */}
+      <div className="absolute bottom-5 text-[7px] text-[var(--text-faint)] tracking-[0.6em] opacity-40 uppercase">
+        © 2026 PT Prima Tekindo Tirta Sejahtera
+      </div>
+
+      {/* Inject Keyframes */}
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes scaleX { to { transform: translate(-50%, -50%) scaleX(1); } }
+        @keyframes scaleY { to { transform: translate(-50%, -50%) scaleY(1); } }
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes grid-pan { from { background-position: 0 0; } to { background-position: -48px 48px; } }
+      `}} />
     </div>
   );
 
