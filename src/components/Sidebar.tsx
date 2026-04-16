@@ -37,7 +37,9 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         const res = await fetch("/api/dashboard");
         if (res.ok) {
           const data = await res.json();
-          setAlarmCount(data.recentAlerts?.length || 0);
+          const warnings = data.healthSummary?.warning || 0;
+          const faults = data.healthSummary?.fault || 0;
+          setAlarmCount(warnings + faults);
         }
       } catch (e) {}
     };
