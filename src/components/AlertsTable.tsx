@@ -43,6 +43,25 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
     });
   };
 
+  const handleExportLog = () => {
+    if (!alerts || alerts.length === 0) {
+      alert("No active alarms to export.");
+      return;
+    }
+    const headers = ["ID", "Asset", "Severity", "Message", "Time"];
+    const rows = alerts.map(a => 
+      [a.id, a.asset, a.severity, `"${a.message.replace(/"/g, '""')}"`, a.time].join(",")
+    );
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `ptts_ptw_active_alarms_${new Date().getTime()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="scada-card flex flex-col">
       <div className="scada-card-header">
@@ -50,14 +69,26 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
         <div className="flex items-center gap-2">
           <span className="led led-fault" style={{ width: 6, height: 6 }} />
           <button
+            onClick={handleExportLog}
+            disabled={alerts.length === 0}
+            className="text-[9px] font-bold tracking-widest transition-all px-3 py-1.5 rounded-sm shadow-sm disabled:opacity-40"
+            style={{ 
+              color: "var(--text-muted)", 
+              background: "var(--surface-2)",
+              border: "1px solid var(--border)"
+            }}
+          >
+            EXPORT LOG
+          </button>
+          <button
+            onClick={handleAckAll}
+            disabled={loading || alerts.length === 0}
             className="text-[9px] font-bold tracking-widest transition-all px-3 py-1.5 rounded-sm shadow-sm disabled:opacity-40"
             style={{ 
               color: "var(--bg)", 
               background: "var(--ptts-teal)",
               border: "1px solid var(--ptts-teal)"
             }}
-            disabled={loading || alerts.length === 0}
-            onClick={handleAckAll}
           >
             {loading ? "PROCESSING..." : "ACKNOWLEDGE ALL"}
           </button>
