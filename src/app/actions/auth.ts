@@ -1,9 +1,9 @@
 "use server";
-import crypto from "crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSession, verifySession } from "@/lib/session";
 import prisma from "@/lib/prisma";
+import { hashPassword, verifyPassword } from "@/lib/security";
 
 // Block common injection patterns
 const INJECTION_PATTERN = /(['";\\]|--|\/\*|\bOR\b|\bAND\b|\bUNION\b|\bSELECT\b|\bDROP\b|\bINSERT\b)/i;
@@ -31,11 +31,8 @@ export async function loginAction(
 
   if (!user) return { error: "Invalid credentials." };
 
-  // ⚡ QA FIX: Upgraded hashing from SHA256 to Scrypt for industrial security
-  const salt = "ptts-salt-2024";
-  const scryptHash = crypto.scryptSync(password, salt, 64).toString("hex");
-
-  if (user.passwordHash !== scryptHash) {
+  // ⚡ INDUSTRIAL UPGRADE: Using specialized security utility with Scrypt
+  if (!verifyPassword(password, user.passwordHash)) {
     return { error: "Invalid credentials." };
   }
 
@@ -90,8 +87,7 @@ export async function createUserAction(
   }
 
   try {
-    const salt = "ptts-salt-2024";
-    const hash = crypto.scryptSync(password, salt, 64).toString("hex");
+    const hash = hashPassword(password);
     await prisma.user.create({
       data: { username, passwordHash: hash, role }
     });

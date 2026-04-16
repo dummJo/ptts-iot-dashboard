@@ -6,11 +6,12 @@ export async function proxy(req: NextRequest) {
   const token = req.cookies.get("ptts-session")?.value;
 
   // Paths that exist in our app
+  const isRootPath = pathname === "/";
   const isDashboardRoute = pathname.startsWith("/dashboard");
   const isLoginRoute = pathname === "/login";
 
-  // If navigating to an unknown path (e.g. /, /random), redirect to dashboard
-  if (!isDashboardRoute && !isLoginRoute) {
+  // If navigating to an unknown path (excluding root), redirect to dashboard
+  if (!isRootPath && !isDashboardRoute && !isLoginRoute) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 

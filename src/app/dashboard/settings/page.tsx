@@ -692,7 +692,7 @@ export default function SettingsPage() {
               <span>ADMIN CONFIGURATION MODULE</span>
             </div>
             <div className="flex gap-4">
-              <span>SECURITY: JWT HS256 + PERMANENT STORAGE</span>
+              <span>SECURITY: SCRYPT · JWT + PERMANENT STORAGE</span>
             </div>
           </div>
         </div>

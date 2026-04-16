@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client'
+import { hashPassword, encryptData } from '../src/lib/security'
 
 const prisma = new PrismaClient()
 
@@ -7,7 +8,7 @@ async function main() {
 
   // 1. Initial Admin User
   // Password hash for 'admin' (Scrypt hex with salt 'ptts-salt-2024')
-  const adminPasswordHash = "ead8d67d97e53fdc86844e95ba3eba74999e5598dfaf42aec934ad1d633c3cc1b5187faab6ac7b72caa6df9c0caf56018b32353f62d204ad7c9a07139e7c176c"; 
+  const adminPasswordHash = hashPassword("admin"); 
 
   const admin = await prisma.user.upsert({
     where: { username: 'admin' },
@@ -74,8 +75,8 @@ async function main() {
     create: {
       id: 1,
       getKeys: {
-        abb: "abb_default_key_placeholder",
-        ronds: "ronds_default_key_placeholder"
+        abb: encryptData("abb_default_key_placeholder"),
+        ronds: encryptData("ronds_default_key_placeholder")
       },
       settings: {
         theme: "dark",

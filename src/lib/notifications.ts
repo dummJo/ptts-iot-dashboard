@@ -1,8 +1,9 @@
+import { decryptData } from './security';
 import prisma from './prisma';
 
 /**
  * Industrial Notification Service
- * Handles Telegram & WhatsApp alert delivery.
+ * Handles Telegram & WhatsApp alert delivery with secure token management.
  */
 export class NotificationService {
   
@@ -16,14 +17,20 @@ export class NotificationService {
 
       const promises = [];
 
-      // 1. Telegram Branch
+      // 1. Telegram Branch (Decrypt on demand)
       if (config.telegramToken && config.telegramChatId) {
-        promises.push(this.sendTelegram(config.telegramToken, config.telegramChatId, message));
+        const token = decryptData(config.telegramToken);
+        if (token) {
+          promises.push(this.sendTelegram(token, config.telegramChatId, message));
+        }
       }
 
-      // 2. WhatsApp Branch
+      // 2. WhatsApp Branch (Decrypt on demand)
       if (config.whatsappApiUrl && config.whatsappToken) {
-        promises.push(this.sendWhatsApp(config.whatsappApiUrl, config.whatsappToken, message));
+        const token = decryptData(config.whatsappToken);
+        if (token) {
+          promises.push(this.sendWhatsApp(config.whatsappApiUrl, token, message));
+        }
       }
 
       await Promise.allSettled(promises);

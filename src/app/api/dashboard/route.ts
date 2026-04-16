@@ -150,18 +150,114 @@ export async function GET() {
       recentAlerts,
       vibrationBarData: topAssets.map(a => ({ name: a.id, value: a.vib })),
       system: {
-        connected: true,
-        lastSync: new Date().toISOString()
+        connected: assetsData.length > 0,
+        lastSync: assetsData.reduce((latest, a) => {
+          const t = a.telemetries[0]?.timestamp;
+          if (!t) return latest;
+          return t > latest ? t : latest;
+        }, new Date(0)).toISOString()
       }
     };
 
     return NextResponse.json(data);
 
+
+/**
+ * MQTT Data Ingestion - Receives batch data from MQTT bridge
+ * Backend contract: POST /api/dashboard → { success, count }
+ */
+export async function POST(req: Request) {
+  try {
+    const payload = await req.json();
+    
+    // Basic validation
+    if (!payload.data || !Array.isArray(payload.data)) {
+      return NextResponse.json({ error: 'Invalid payload format' }, { status: 400 });
+    }
+
+    const { data: entries } = payload;
+    let processedCount = 0;
+
+    for (const entry of entries) {
+      const { tagId, timestamp, temp, vibOverall, vibVelocity, motorCurrent } = entry;
+      
+      if (!tagId) continue;
+
+      // 1. Upsert Asset (Ensures MTR-XXX exists)
+      const asset = await prisma.asset.upsert({
+        where: { tagId },
+        update: { updatedAt: new Date() }, // Just update timestamp if exists
+        create: {
+          tagId,
+          name: `Motor ${tagId}`,
+          type: 'Motor',
+          location: 'Main Plant',
+          vibLimitWarning: 4.5,
+          vibLimitFault: 7.1
+        }
+      });
+
+      // 2. Save Telemetry
+      const telemetry = await prisma.telemetry.create({
+        data: {
+          assetId: asset.id,
+          timestamp: new Date(timestamp),
+          temp: temp || 0,
+          vibOverall: vibOverall || 0,
+          vibVelocity: vibVelocity || 0,
+          motorCurrent: motorCurrent || 0,
+          rawPayload: entry
+        }
+      });
+
+      // 3. ⚡ Immediate Alarm Engine Logic (Duplicated from GET for real-time trigger)
+      const limits = {
+        warning: asset.vibLimitWarning || 4.5,
+        fault: asset.vibLimitFault || 7.1
+      };
+
+      let severity: 'critical' | 'warning' | null = null;
+      let msg = '';
+      
+      if (vibOverall >= limits.fault) {
+        severity = 'critical';
+        msg = `Vibration Fault: ${vibOverall.toFixed(2)}mm/s exceeded limit ${limits.fault}mm/s`;
+      } else if (vibOverall >= limits.warning) {
+        severity = 'warning';
+        msg = `Vibration Warning: ${vibOverall.toFixed(2)}mm/s exceeded limit ${limits.warning}mm/s`;
+      }
+
+      if (severity) {
+        const existing = await prisma.alarm.findFirst({
+          where: { assetId: asset.id, severity, acknowledgedAt: null }
+        });
+
+        if (!existing) {
+          await prisma.alarm.create({
+            data: {
+              assetId: asset.id,
+              alarmType: 'Vibration',
+              severity,
+              message: msg,
+              timestamp: new Date()
+            }
+          });
+          
+          await NotificationService.sendAlert(`${tagId}: ${msg}`);
+        }
+      }
+
+      processedCount++;
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      processed: processedCount,
+      timestamp: new Date().toISOString()
+    });
+
   } catch (error) {
-    console.error('[Dashboard API] Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch industrial data' },
-      { status: 500 }
-    );
+    console.error('[Dashboard Ingestion] Error:', error);
+    return NextResponse.json({ error: 'Ingestion failed' }, { status: 500 });
   }
 }

@@ -1,8 +1,10 @@
 import { SignJWT, jwtVerify } from "jose";
+import crypto from "crypto";
 
-const SECRET = new TextEncoder().encode(
-  process.env.AUTH_SECRET ?? "ptts-iot-secure-default-change-in-production-2026"
-);
+// ⚡ INDUSTRIAL UPGRADE: Signing key is derived using Scrypt for maximum resistance
+const AUTH_SECRET = process.env.AUTH_SECRET ?? "ptts-iot-secure-default-2026";
+const SALT = process.env.AUTH_SALT || "ptts-salt-2024";
+const SECRET = crypto.scryptSync(AUTH_SECRET, SALT, 32);
 
 export async function createSession(username: string, role: string): Promise<string> {
   return new SignJWT({ username, role })
