@@ -64,7 +64,7 @@ export default function SplashScreen() {
 
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-bold tracking-[0.2em] text-[var(--text-bright)]">
-            SMARTSENSOR <span className="text-[var(--ptts-teal)]">v1.2.0</span>
+            SMARTSENSOR <span className="text-[var(--ptts-teal)]">v1.3.0</span>
           </h1>
           <p className="text-[9px] tracking-[0.4em] text-[var(--text-faint)] uppercase">
             PT Prima Tekindo Tirta Sejahtera

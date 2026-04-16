@@ -229,7 +229,7 @@ export default function LoginClient() {
       {/* bottom bar */}
       <div className="absolute bottom-0 inset-x-0 flex items-center justify-between px-8 py-2.5 z-10"
         style={{ borderTop: `1px solid ${C.border}`, background: C.bgPanel + "ee" }}>
-        <span className="text-[9px] font-bold tracking-widest" style={{ color: C.faint }}>v1.1.0</span>
+        <span className="text-[9px] font-bold tracking-widest" style={{ color: C.faint }}>v1.3.0</span>
         <span className="text-[9px] font-bold tracking-widest" style={{ color: C.faint }}>SCRYPT · JWT</span>
       </div>
     </div>
@@ -289,7 +289,7 @@ export default function LoginClient() {
             <span className="text-[9px] font-bold tracking-widest" style={{ color: C.muted }}>SYSTEM ONLINE</span>
           </div>
           <p className="text-[9px] font-bold tracking-widest mt-1" style={{ color: C.faint }}>
-            v1.1.0 · SCRYPT · JWT
+            v1.3.0 · SCRYPT · JWT
           </p>
         </div>
       </div>
@@ -496,7 +496,7 @@ export default function LoginClient() {
         {/* Status bar */}
         <div className="flex items-center justify-between px-10 py-3"
           style={{ borderTop: `1px solid ${C.border}` }}>
-          <span className="text-[9px] font-bold tracking-widest" style={{ color: C.faint }}>v1.1.0</span>
+          <span className="text-[9px] font-bold tracking-widest" style={{ color: C.faint }}>v1.3.0</span>
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full" style={{ background: C.gold }} />
             <span className="text-[9px] font-bold tracking-widest" style={{ color: C.faint }}>SECURED · SCRYPT · JWT</span>
