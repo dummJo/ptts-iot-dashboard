@@ -30,8 +30,8 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
   }, []);
 
   return (
-    <div className="sticky top-0 z-50 flex items-center justify-between px-5 py-2 backdrop-blur-xl"
-      style={{ background: "rgba(5, 7, 10, 0.65)", borderBottom: "1px solid var(--border-dim)", minHeight: 44, boxShadow: "0 4px 30px rgba(0,0,0,0.2)" }}>
+    <div className="sticky top-0 z-50 flex items-center justify-between px-5 py-2 backdrop-blur-xl transition-colors duration-250"
+      style={{ background: "var(--topbar-glass)", borderBottom: "1px solid var(--border-dim)", minHeight: 44, boxShadow: "0 4px 30px rgba(0,0,0,0.05)" }}>
       {/* Left — breadcrumb */}
       <div className="flex items-center gap-2 text-xs tracking-widest font-bold">
         <span style={{ color:"var(--text-muted)" }}>PTTS</span>

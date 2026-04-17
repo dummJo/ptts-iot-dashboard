@@ -48,7 +48,9 @@
   --badge-fault-bg:   rgba(239, 68, 68, 0.15);
   --badge-ptts-bg:    rgba(14, 165, 233, 0.15);
 
-  --sidebar-bg:  #030508;
+  --sidebar-bg:       #030508;
+  --sidebar-glass:    rgba(3, 5, 8, 0.8);
+  --topbar-glass:     rgba(5, 7, 10, 0.65);
 }
 
 /* Light mode — "Creamy Blue" Professional Palette */
@@ -64,6 +66,8 @@
   --text-faint:  #334155;
   --text-bright: #000000;
   --sidebar-bg:  #ecf1f6;
+  --sidebar-glass: rgba(236, 241, 246, 0.85); /* Bright frosted glass */
+  --topbar-glass:  rgba(255, 255, 255, 0.7);
 
   /* Brand colors */
   --ptts:        #0284c7;  
