@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 const CURRENT_VERSION = "1.1.0";
 
@@ -8,6 +9,11 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
   const [content, setContent] = useState("");
   const [ackText, setAckText] = useState("");
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Auto-pop logic: Show if NOT acknowledged for this version AND hasn't been shown in this session
   useEffect(() => {
@@ -115,10 +121,10 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
 
   const show = manualOpen || isOpen;
 
-  if (!show) return null;
+  if (!show || !mounted) return null;
 
-  return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-fade-in">
+  return createPortal(
+    <div className="fixed top-0 left-0 right-0 bottom-0 z-[99999] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md animate-fade-in" style={{ height: "100vh", width: "100vw" }}>
       <div className="w-full max-w-4xl max-h-[90vh] flex flex-col scada-card overflow-hidden shadow-2xl border-2 border-ptts/40">
         
         {/* Header */}
@@ -190,6 +196,7 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
