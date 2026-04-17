@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import AppWrapper from "@/components/AppWrapper";
+
+const inter = Inter({ subsets: ["latin"], display: 'swap' });
 
 export const metadata: Metadata = {
   title: "PTTS SmartSensor Dashboard",
@@ -29,7 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body suppressHydrationWarning>
+      <body className={inter.className} suppressHydrationWarning>
         <AppWrapper>
           {children}
         </AppWrapper>

@@ -28,15 +28,15 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
     <div className="scada-card flex flex-col">
       <div className="scada-card-header">
         <span className="scada-label">ASSET TAG LIST · LIVE READINGS</span>
-        <button className="text-[9px] font-bold tracking-widest transition-all"
+        <button className="text-xs font-bold tracking-widest transition-all"
           style={{ color: "var(--ptts-teal)" }}>ALL →</button>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-[11px]">
+        <table className="w-full text-sm">
           <thead>
             <tr style={{ borderBottom: "1px solid var(--border-dim)", background: "var(--surface-2)" }}>
               {["TAG ID", "ASSET NAME", "TYPE", "TEMP", "VIBRATION", "LINK", "HEALTH", "CFG"].map((h, i) => (
-                <th key={h} className={`px-3 py-2.5 font-black tracking-[.2em] text-[8px]
+                <th key={h} className={`px-3 py-2.5 font-black tracking-[.2em] text-sm
                   ${i >= 3 && i <= 4 ? "text-right" : i === 7 ? "text-center" : "text-left"}`}
                   style={{ color: "var(--text-muted)" }}>
                   {h}
@@ -65,23 +65,23 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
                   }}
                   onClick={() => setSelectedAsset(a)}
                 >
-                  <td className="px-3 py-3.5 font-mono text-[9px] tracking-tighter" style={{ color: "var(--text-faint)" }}>
+                  <td className="px-3 py-3.5 font-mono text-xs tracking-tighter" style={{ color: "var(--text-faint)" }}>
                     <span style={{ color: "var(--ptts-teal)", opacity: 0.6 }}>TAG-</span>{a.id.substring(0, 8)}
                   </td>
-                  <td className="px-3 py-3.5 font-black text-[11px]" style={{ color: "var(--text-bright)" }}>{a.name.toUpperCase()}</td>
-                  <td className="px-3 py-3.5 text-[8px] font-bold tracking-widest" style={{ color: "var(--text-muted)" }}>
+                  <td className="px-3 py-3.5 font-black text-sm" style={{ color: "var(--text-bright)" }}>{a.name.toUpperCase()}</td>
+                  <td className="px-3 py-3.5 text-sm font-bold tracking-widest" style={{ color: "var(--text-muted)" }}>
                     {a.type.replace("PTTS ", "").replace("RONDS ", "").toUpperCase()}
                   </td>
-                  <td className="px-3 py-3.5 text-right font-mono font-black text-[11px] tabular-nums"
+                  <td className="px-3 py-3.5 text-right font-mono font-black text-sm tabular-nums"
                     style={{ color: tempColor }}>{formatTemp(a.temp)}</td>
-                  <td className="px-3 py-3.5 text-right font-mono font-black text-[11px] tabular-nums"
+                  <td className="px-3 py-3.5 text-right font-mono font-black text-sm tabular-nums"
                     style={{ color: vibColor }}>{formatVib(a.vib)}</td>
                   
                   {/* LINK STATUS (Connectivity) */}
                   <td className="px-3 py-3">
                     <span className="flex items-center gap-1.5">
                       <span className="led" style={{ width: 6, height: 6, background: lColor, boxShadow: a.link === 'online' ? `0 0 6px ${lColor}` : 'none' }} />
-                      <span className="text-[9px] font-black tracking-widest" style={{ color: lColor, textShadow: '0 0 8px currentColor' }}>
+                      <span className="text-xs font-black tracking-widest" style={{ color: lColor, textShadow: '0 0 8px currentColor' }}>
                         {a.link.toUpperCase()}
                       </span>
                     </span>
@@ -95,7 +95,7 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
                         borderColor: `var(--${currentHealth === 'fault' ? 'fault' : currentHealth === 'warning' ? 'warning' : 'online'})`,
                         color: hColor
                       }}>
-                      <span className="text-[9px] font-black tracking-[0.15em]">{hp}</span>
+                      <span className="text-xs font-black tracking-[0.15em]">{hp}</span>
                     </div>
                   </td>
                   

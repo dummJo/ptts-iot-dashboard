@@ -107,8 +107,8 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
             <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-0.5" />
           </div>
           <div>
-            <p className="text-[9px] font-bold tracking-[.25em] text-ptts-teal" style={{ color: "var(--ptts-teal)" }}>PTTS</p>
-            <p className="text-[8px] tracking-widest" style={{ color: "var(--text-faint)" }}>IoT PLATFORM</p>
+            <p className="text-xs font-bold tracking-[.25em] text-ptts-teal" style={{ color: "var(--ptts-teal)" }}>PTTS</p>
+            <p className="text-sm tracking-widest" style={{ color: "var(--text-faint)" }}>IoT PLATFORM</p>
           </div>
         </div>
         {/* Live status */}
@@ -118,7 +118,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
             border: pollInterval === 0 ? "1px solid var(--border)" : "1px solid var(--online)",
           }}>
           <span className={`led ${pollInterval === 0 ? "led-offline" : "led-online"}`} style={{ width: 5, height: 5 }} />
-          <span className="text-[9px] tracking-widest font-black" style={{ color: pollInterval === 0 ? "var(--text-muted)" : "var(--online)" }}>
+          <span className="text-xs tracking-widest font-black" style={{ color: pollInterval === 0 ? "var(--text-muted)" : "var(--online)" }}>
             {pollInterval === 0 ? "POLL: OFF" : `LIVE · ${pollInterval >= 60000 ? pollInterval / 60000 + "M" : pollInterval / 1000 + "S"}`}
           </span>
         </div>
@@ -131,14 +131,14 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
           const badge = item.isAlarm ? alarmCount : null;
           return (
             <Link key={item.href} href={item.href}
-              className="flex items-center gap-2.5 px-3 py-2 rounded-sm text-[11px] font-bold tracking-[.1em] transition-all"
+              className="flex items-center gap-2.5 px-3 py-2 rounded-sm text-sm font-bold tracking-[.1em] transition-all"
               style={active
                 ? { background: "#005F8E20", color: "#00c8e0", borderLeft: "2px solid #00A3B4" }
                 : { color: "var(--text-muted)" }}>
               <span className="w-4 text-center text-sm">{item.icon}</span>
               <span className="flex-1">{item.label}</span>
               {badge && badge > 0 ? (
-                <span className="text-[9px] px-1.5 py-0.5 rounded-sm font-bold"
+                <span className="text-xs px-1.5 py-0.5 rounded-sm font-bold"
                   style={{ background: "var(--badge-fault-bg)", color: "var(--fault)", border: "1px solid var(--fault)" }}>
                   {badge}
                 </span>
@@ -149,7 +149,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
       </nav>
 
       {/* System info */}
-      <div className="px-3 py-2 mx-2 mb-2 rounded-sm text-[9px] space-y-1"
+      <div className="px-3 py-2 mx-2 mb-2 rounded-sm text-xs space-y-1"
         style={{ background: "var(--surface)", border: "1px solid var(--border-dim)" }}>
         <div className="flex justify-between">
           <span style={{ color: "var(--text-faint)" }}>UPTIME</span>
@@ -173,13 +173,13 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
           onClick={() => setShowSwitch(true)}
           onMouseEnter={(e) => { e.currentTarget.style.background = "var(--badge-online-bg)"; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}>
-          <div className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold"
+          <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
             style={{ background: "var(--surface-2)", color: "var(--online)", border: "1.5px solid var(--online)" }}>
             {currentUser?.username?.substring(0,2).toUpperCase() || "..."}
           </div>
           <div>
-            <p className="text-[10px] font-bold" style={{ color: "var(--text-bright)" }}>{currentUser?.username || "..."}</p>
-            <p className="text-[8px] tracking-widest" style={{ color: "var(--online)" }}>{currentUser?.role?.toUpperCase() || "..."}</p>
+            <p className="text-base font-bold" style={{ color: "var(--text-bright)" }}>{currentUser?.username || "..."}</p>
+            <p className="text-sm tracking-widest" style={{ color: "var(--online)" }}>{currentUser?.role?.toUpperCase() || "..."}</p>
           </div>
         </div>
         <div className="flex gap-1.5">
@@ -201,10 +201,10 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
             style={{ background: "var(--surface)", border: "1px solid var(--border)", borderTop: "2px solid #00A3B4" }}
           >
             <div className="flex items-center justify-between">
-              <p className="text-[9px] font-bold tracking-[.2em]" style={{ color: "#00A3B4" }}>SWITCH ACCOUNT</p>
+              <p className="text-xs font-bold tracking-[.2em]" style={{ color: "#00A3B4" }}>SWITCH ACCOUNT</p>
               <button
                 onClick={() => setShowSwitch(false)}
-                className="text-[11px] leading-none"
+                className="text-sm leading-none"
                 style={{ color: "#4a6a8a" }}
               >✕</button>
             </div>
@@ -215,7 +215,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
                 type="text"
                 placeholder="USERNAME"
                 autoComplete="username"
-                className="w-full px-2.5 py-2 text-[10px] rounded-sm outline-none tracking-widest"
+                className="w-full px-2.5 py-2 text-base rounded-sm outline-none tracking-widest"
                 style={{ background: "#0b0e13", border: "1px solid #242d3f", color: "#d4e4f4" }}
               />
               <input
@@ -223,16 +223,16 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
                 type="password"
                 placeholder="PASSWORD"
                 autoComplete="current-password"
-                className="w-full px-2.5 py-2 text-[10px] rounded-sm outline-none tracking-widest"
+                className="w-full px-2.5 py-2 text-base rounded-sm outline-none tracking-widest"
                 style={{ background: "#0b0e13", border: "1px solid #242d3f", color: "#d4e4f4" }}
               />
               {switchState?.error && (
-                <p className="text-[9px] tracking-widest" style={{ color: "var(--fault)" }}>{switchState.error}</p>
+                <p className="text-xs tracking-widest" style={{ color: "var(--fault)" }}>{switchState.error}</p>
               )}
               <button
                 type="submit"
                 disabled={switchPending}
-                className="w-full py-2 text-[9px] font-bold tracking-widest rounded-sm transition-all disabled:opacity-50"
+                className="w-full py-2 text-xs font-bold tracking-widest rounded-sm transition-all disabled:opacity-50"
                 style={{ background: "var(--ptts)", color: "var(--text-bright)", border: "1px solid var(--border)" }}
               >
                 {switchPending ? "AUTHENTICATING..." : "SWITCH →"}

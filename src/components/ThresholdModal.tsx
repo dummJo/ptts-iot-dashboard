@@ -83,18 +83,18 @@ export default function ThresholdModal({
         {/* Header */}
         <div className="flex items-start justify-between px-5 py-4" style={{ borderBottom: "1px solid var(--border-dim)" }}>
           <div>
-            <p className="text-[9px] font-bold tracking-[.25em]" style={{ color: "var(--ptts-teal)" }}>
+            <p className="text-xs font-bold tracking-[.25em]" style={{ color: "var(--ptts-teal)" }}>
               VIBRATION THRESHOLD CONFIGURATION
             </p>
             <p className="text-[15px] font-black text-white mt-1">{asset.name}</p>
-            <p className="text-[9px] tracking-widest mt-0.5" style={{ color: "var(--text-muted)" }}>
+            <p className="text-xs tracking-widest mt-0.5" style={{ color: "var(--text-muted)" }}>
               {asset.id}
             </p>
           </div>
           <button
             onClick={onClose}
             aria-label="Close"
-            className="text-[13px] leading-none mt-1 transition-colors"
+            className="text-base leading-none mt-1 transition-colors"
             style={{ color: "var(--text-faint)" }}
             onMouseEnter={(e) => (e.currentTarget.style.color = "var(--text)")}
             onMouseLeave={(e) => (e.currentTarget.style.color = "var(--text-faint)")}
@@ -113,18 +113,18 @@ export default function ThresholdModal({
               { label: "ISO Class", value: getISOClass(asset.powerKW) },
             ].map(({ label, value }) => (
               <div key={label} className="rounded-sm px-3 py-2" style={{ background: "var(--surface-2)", border: "1px solid var(--border-dim)" }}>
-                <p className="text-[8px] tracking-widest font-bold" style={{ color: "var(--text-faint)" }}>{label.toUpperCase()}</p>
-                <p className="text-[10px] font-bold mt-0.5" style={{ color: "var(--text)" }}>{value}</p>
+                <p className="text-sm tracking-widest font-bold" style={{ color: "var(--text-faint)" }}>{label.toUpperCase()}</p>
+                <p className="text-base font-bold mt-0.5" style={{ color: "var(--text)" }}>{value}</p>
               </div>
             ))}
           </div>
 
           {/* ISO Baseline */}
           <div className="rounded-sm px-4 py-3 space-y-2" style={{ background: "var(--surface-2)", border: "1px solid var(--border-dim)" }}>
-            <p className="text-[9px] font-bold tracking-widest" style={{ color: "var(--text-faint)" }}>
+            <p className="text-xs font-bold tracking-widest" style={{ color: "var(--text-faint)" }}>
               ISO 10816 BASELINE  —  Read only
             </p>
-            <div className="flex gap-6 text-[10px]">
+            <div className="flex gap-6 text-base">
               <span>Warning: <strong className="font-black" style={{ color: "#ffdd00" }}>{isoDefaults.warning} mm/s</strong></span>
               <span>Fault: <strong className="font-black" style={{ color: "#ff6666" }}>{isoDefaults.fault} mm/s</strong></span>
             </div>
@@ -132,16 +132,16 @@ export default function ThresholdModal({
 
           {/* Visual range bar */}
           <div>
-            <p className="text-[9px] font-bold tracking-widest mb-2" style={{ color: "var(--text-muted)" }}>
+            <p className="text-xs font-bold tracking-widest mb-2" style={{ color: "var(--text-muted)" }}>
               CURRENT LIVE READING
             </p>
-            <div className="flex justify-between text-[9px] mb-1.5" style={{ color: "var(--text-faint)" }}>
+            <div className="flex justify-between text-xs mb-1.5" style={{ color: "var(--text-faint)" }}>
               <span>0</span>
               <span className="font-black" style={{ color: "#fff" }}>{asset.vib.toFixed(2)} mm/s</span>
               <span>{sliderMax.toFixed(0)}</span>
             </div>
             <RangeBar value={asset.vib} warning={warning} fault={fault} max={sliderMax} />
-            <div className="flex justify-between mt-1.5 text-[8px]" style={{ color: "var(--text-faint)" }}>
+            <div className="flex justify-between mt-1.5 text-sm" style={{ color: "var(--text-faint)" }}>
               <span style={{ color: "#5dffb0" }}>GOOD</span>
               <span style={{ color: "#ffdd00" }}>WARNING</span>
               <span style={{ color: "#ff6666" }}>FAULT</span>
@@ -150,17 +150,17 @@ export default function ThresholdModal({
 
           {/* Sliders */}
           <div className="space-y-4">
-            <p className="text-[9px] font-bold tracking-widest" style={{ color: "var(--text-muted)" }}>
+            <p className="text-xs font-bold tracking-widest" style={{ color: "var(--text-muted)" }}>
               MANUAL OVERRIDE {readOnly ? "— Restricted (Admin / Engineer only)" : "— Adjust per motor"}
             </p>
 
             {/* Warning slider */}
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
-                <label className="text-[9px] font-bold tracking-widest" style={{ color: "#ffdd00" }}>
+                <label className="text-xs font-bold tracking-widest" style={{ color: "#ffdd00" }}>
                   Warning Threshold
                 </label>
-                <span className="text-[11px] font-black font-mono tabular-nums" style={{ color: "#ffdd00" }}>
+                <span className="text-sm font-black font-mono tabular-nums" style={{ color: "#ffdd00" }}>
                   {warning.toFixed(1)} mm/s
                 </span>
               </div>
@@ -184,7 +184,7 @@ export default function ThresholdModal({
                     key={preset}
                     disabled={readOnly}
                     onClick={() => handleWarning(parseFloat(preset.toFixed(1)))}
-                    className="text-[8px] px-2 py-0.5 rounded-sm font-bold tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    className="text-sm px-2 py-0.5 rounded-sm font-bold tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                     style={{ border: "1px solid #ffdd0040", color: "#ffdd00", background: "transparent" }}
                     onMouseEnter={(e) => { if (!readOnly) e.currentTarget.style.background = "#ffdd0015"; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
@@ -192,17 +192,17 @@ export default function ThresholdModal({
                     {preset.toFixed(1)}
                   </button>
                 ))}
-                <span className="text-[8px] self-center ml-1" style={{ color: "var(--text-faint)" }}>Presets</span>
+                <span className="text-sm self-center ml-1" style={{ color: "var(--text-faint)" }}>Presets</span>
               </div>
             </div>
 
             {/* Fault slider */}
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
-                <label className="text-[9px] font-bold tracking-widest" style={{ color: "#ff6666" }}>
+                <label className="text-xs font-bold tracking-widest" style={{ color: "#ff6666" }}>
                   Fault Threshold
                 </label>
-                <span className="text-[11px] font-black font-mono tabular-nums" style={{ color: "#ff6666" }}>
+                <span className="text-sm font-black font-mono tabular-nums" style={{ color: "#ff6666" }}>
                   {fault.toFixed(1)} mm/s
                 </span>
               </div>
@@ -226,7 +226,7 @@ export default function ThresholdModal({
                     key={preset}
                     disabled={readOnly}
                     onClick={() => handleFault(parseFloat(preset.toFixed(1)))}
-                    className="text-[8px] px-2 py-0.5 rounded-sm font-bold tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                    className="text-sm px-2 py-0.5 rounded-sm font-bold tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                     style={{ border: "1px solid #ff666640", color: "#ff6666", background: "transparent" }}
                     onMouseEnter={(e) => { if (!readOnly) e.currentTarget.style.background = "#ff666615"; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
@@ -234,7 +234,7 @@ export default function ThresholdModal({
                     {preset.toFixed(1)}
                   </button>
                 ))}
-                <span className="text-[8px] self-center ml-1" style={{ color: "var(--text-faint)" }}>Presets</span>
+                <span className="text-sm self-center ml-1" style={{ color: "var(--text-faint)" }}>Presets</span>
               </div>
             </div>
           </div>
@@ -246,7 +246,7 @@ export default function ThresholdModal({
           <button
             onClick={handleReset}
             disabled={readOnly || !hasChange}
-            className="text-[9px] font-bold tracking-widest transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            className="text-xs font-bold tracking-widest transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
             style={{ color: "var(--text-muted)" }}
           >
             Reset to ISO defaults
@@ -254,7 +254,7 @@ export default function ThresholdModal({
           <div className="flex gap-2">
             <button
               onClick={onClose}
-              className="px-3 py-1.5 text-[9px] font-bold tracking-widest rounded-sm transition-colors"
+              className="px-3 py-1.5 text-xs font-bold tracking-widest rounded-sm transition-colors"
               style={{ color: "var(--text-muted)", border: "1px solid var(--border)" }}
               onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
             >
@@ -263,7 +263,7 @@ export default function ThresholdModal({
             <button
               onClick={() => { if (!readOnly) { onSave(asset.id, { warning, fault }); onClose(); } }}
               disabled={readOnly || !hasChange}
-              className="px-4 py-1.5 text-[9px] font-black tracking-widest rounded-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              className="px-4 py-1.5 text-xs font-black tracking-widest rounded-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed"
               style={{ background: "var(--ptts-teal)", color: "#000" }}
             >
               {readOnly ? "Restricted" : "Save Changes"}

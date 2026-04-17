@@ -20,7 +20,7 @@ export default function ThemeToggle() {
 
   return (
     <button onClick={toggle}
-      className="flex items-center gap-1.5 text-[9px] px-2.5 py-1.5 rounded-sm font-bold tracking-widest transition-all"
+      className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-sm font-bold tracking-widest transition-all"
       style={{ border: "1px solid var(--border)", color: "var(--text-muted)", background: "var(--surface)" }}>
       <span>{dark ? "☀" : "☾"}</span>
       <span>{dark ? "LIGHT" : "DARK"}</span>

@@ -93,14 +93,14 @@ export default function AlarmsPage() {
             <button 
               onClick={handleAcknowledgeAll}
               disabled={refreshing || dashboardData.recentAlerts.length === 0}
-              className="text-[9px] px-3 py-1.5 rounded-sm font-bold tracking-widest transition-all shadow-sm active:scale-95 disabled:opacity-40" 
+              className="text-xs px-3 py-1.5 rounded-sm font-bold tracking-widest transition-all shadow-sm active:scale-95 disabled:opacity-40" 
               style={{ background:"rgba(0, 230, 118, 0.1)", color:"#00e676", border:"1px solid #00e67640" }}>
               {refreshing ? "PROCESSING..." : "✓ ACKNOWLEDGE ALL"}
             </button>
             <button 
               onClick={handleExportLog}
               disabled={dashboardData.recentAlerts.length === 0}
-              className="text-[9px] px-3 py-1.5 rounded-sm font-bold tracking-widest transition-all shadow-sm active:scale-95 disabled:opacity-40 hover:bg-surface-3" 
+              className="text-xs px-3 py-1.5 rounded-sm font-bold tracking-widest transition-all shadow-sm active:scale-95 disabled:opacity-40 hover:bg-surface-3" 
               style={{ background:"var(--surface-2)", color:"var(--text-muted)", border:"1px solid var(--border)" }}>
               ↓ EXPORT LOG
             </button>
@@ -110,7 +110,7 @@ export default function AlarmsPage() {
           <div className="scada-card p-4 min-h-[300px]">
              <span className="scada-label mb-4">HISTORICAL ALARM LOGS</span>
              <div className="flex items-center justify-center p-8 bg-black/20 border border-dashed rounded-sm mt-4" style={{ borderColor:"var(--border-dim)" }}>
-               <span className="text-[9px] tracking-widest" style={{ color:"var(--text-faint)" }}>NO HISTORICAL ALARMS IN CURRENT SHIFT</span>
+               <span className="text-xs tracking-widest" style={{ color:"var(--text-faint)" }}>NO HISTORICAL ALARMS IN CURRENT SHIFT</span>
              </div>
           </div>
         </div>

@@ -143,7 +143,7 @@ export default function DashboardPage() {
           <AlertsTable alerts={recentAlerts} />
 
           {/* Footer bar */}
-          <div className="flex items-center justify-between px-2 py-1 text-[8px] tracking-[.15em] border-t border-border-dim mt-2"
+          <div className="flex items-center justify-between px-2 py-1 text-sm tracking-[.15em] border-t border-border-dim mt-2"
             style={{ color:"var(--text-faint)" }}>
             <div className="flex gap-4">
               <span>PTTS SMARTSENSOR IoT PLATFORM · v1.3.0</span>
