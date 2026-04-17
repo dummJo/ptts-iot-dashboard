@@ -208,7 +208,7 @@ export default function SettingsPage() {
             <div className="flex gap-2">
               <button
                 onClick={() => setTab("swagger")}
-                className="px-4 py-2 text-[9px] font-bold tracking-widest rounded-sm transition-all"
+                className="px-4 py-2 text-xs font-bold tracking-widest rounded-sm transition-all"
                 style={{
                   background: tab === "swagger" ? "#005F8E" : "var(--surface)",
                   color: tab === "swagger" ? "#fff" : "var(--text-muted)",
@@ -218,7 +218,7 @@ export default function SettingsPage() {
               </button>
               <button
                 onClick={() => setTab("api")}
-                className="px-4 py-2 text-[9px] font-bold tracking-widest rounded-sm transition-all"
+                className="px-4 py-2 text-xs font-bold tracking-widest rounded-sm transition-all"
                 style={{
                   background: tab === "api" ? "#005F8E" : "var(--surface)",
                   color: tab === "api" ? "#fff" : "var(--text-muted)",
@@ -230,7 +230,7 @@ export default function SettingsPage() {
               {currentUserRole === "admin" && (
                 <button
                   onClick={() => setTab("users")}
-                  className="px-4 py-2 text-[9px] font-bold tracking-widest rounded-sm transition-all"
+                  className="px-4 py-2 text-xs font-bold tracking-widest rounded-sm transition-all"
                   style={{
                     background: tab === "users" ? "#1e3048" : "var(--surface)",
                     color: tab === "users" ? "#00c8e0" : "var(--text-muted)",
@@ -242,7 +242,7 @@ export default function SettingsPage() {
 
               <button
                 onClick={() => setTab("notifications")}
-                className="px-4 py-2 text-[9px] font-bold tracking-widest rounded-sm transition-all"
+                className="px-4 py-2 text-xs font-bold tracking-widest rounded-sm transition-all"
                 style={{
                   background: tab === "notifications" ? "#1e3048" : "var(--surface)",
                   color: tab === "notifications" ? "#ff8c00" : "var(--text-muted)",
@@ -258,7 +258,7 @@ export default function SettingsPage() {
                    style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
                 <div>
                   <h2 className="text-sm font-bold tracking-widest mb-1" style={{ color: "#ff8c00" }}>NOTIFICATION ENGINE</h2>
-                  <p className="text-[9px] text-muted-foreground mb-4">Centralized alert delivery for industrial equipment violations.</p>
+                  <p className="text-xs text-muted-foreground mb-4">Centralized alert delivery for industrial equipment violations.</p>
                   
                   <div className="flex items-center gap-3 p-4 rounded-sm mb-6" style={{ background: "rgba(255,140,0,0.05)", border: "1px dashed rgba(255,140,0,0.3)" }}>
                     <input 
@@ -269,7 +269,7 @@ export default function SettingsPage() {
                       onChange={handleNotifyChange}
                       className="w-4 h-4 cursor-pointer"
                     />
-                    <label htmlFor="isNotifyEnabled" className="text-[10px] font-bold tracking-widest cursor-pointer">
+                    <label htmlFor="isNotifyEnabled" className="text-base font-bold tracking-widest cursor-pointer">
                       ENABLE AUTOMATIC EXTERNAL ALERTS
                     </label>
                   </div>
@@ -277,36 +277,36 @@ export default function SettingsPage() {
                   <div className="grid grid-cols-2 gap-8">
                     {/* Telegram Section */}
                     <div className="space-y-4">
-                      <h3 className="text-[10px] font-bold tracking-widest border-b border-border pb-2 flex items-center gap-2">
+                      <h3 className="text-base font-bold tracking-widest border-b border-border pb-2 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-[#0088cc]"></span> TELEGRAM BOT CONFIG
                       </h3>
                       <div className="space-y-3">
                         <div className="space-y-1">
-                          <label className="text-[8px] text-muted-foreground uppercase">Bot Token (from @BotFather)</label>
+                          <label className="text-sm text-muted-foreground uppercase">Bot Token (from @BotFather)</label>
                           <input
                             type="text"
                             name="telegramToken"
                             value={notifications.telegramToken}
                             onChange={handleNotifyChange}
-                            className="w-full bg-bg border border-border p-3 text-[10px] focus:border-[#0088cc] outline-none transition-all font-mono"
+                            className="w-full bg-bg border border-border p-3 text-base focus:border-[#0088cc] outline-none transition-all font-mono"
                             placeholder="0000000000:AAxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[8px] text-muted-foreground uppercase">Chat ID / Group ID</label>
+                          <label className="text-sm text-muted-foreground uppercase">Chat ID / Group ID</label>
                           <input
                             type="text"
                             name="telegramChatId"
                             value={notifications.telegramChatId}
                             onChange={handleNotifyChange}
-                            className="w-full bg-bg border border-border p-3 text-[10px] focus:border-[#0088cc] outline-none transition-all font-mono"
+                            className="w-full bg-bg border border-border p-3 text-base focus:border-[#0088cc] outline-none transition-all font-mono"
                             placeholder="-100xxxxxxxxxx"
                           />
                         </div>
                         <button
                           onClick={() => handleTestNotify('telegram')}
                           disabled={testStatus === "testing"}
-                          className="w-full py-2 bg-[#0088cc20] border border-[#0088cc50] text-[#0088cc] text-[8px] font-bold tracking-widest hover:bg-[#0088cc] hover:text-white transition-all rounded-sm uppercase">
+                          className="w-full py-2 bg-[#0088cc20] border border-[#0088cc50] text-[#0088cc] text-sm font-bold tracking-widest hover:bg-[#0088cc] hover:text-white transition-all rounded-sm uppercase">
                           {testStatus === "testing" ? "Testing..." : "Send Test Telegram"}
                         </button>
                       </div>
@@ -314,36 +314,36 @@ export default function SettingsPage() {
 
                     {/* WhatsApp Section */}
                     <div className="space-y-4">
-                      <h3 className="text-[10px] font-bold tracking-widest border-b border-border pb-2 flex items-center gap-2">
+                      <h3 className="text-base font-bold tracking-widest border-b border-border pb-2 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-[#25D366]"></span> WHATSAPP GATEWAY (FONNTE)
                       </h3>
                       <div className="space-y-3">
                         <div className="space-y-1">
-                          <label className="text-[8px] text-muted-foreground uppercase">API Endpoint URL</label>
+                          <label className="text-sm text-muted-foreground uppercase">API Endpoint URL</label>
                           <input
                             type="text"
                             name="whatsappApiUrl"
                             value={notifications.whatsappApiUrl}
                             onChange={handleNotifyChange}
-                            className="w-full bg-bg border border-border p-3 text-[10px] focus:border-[#25D366] outline-none transition-all font-mono"
+                            className="w-full bg-bg border border-border p-3 text-base focus:border-[#25D366] outline-none transition-all font-mono"
                             placeholder="https://api.fonnte.com/send"
                           />
                         </div>
                         <div className="space-y-1">
-                          <label className="text-[8px] text-muted-foreground uppercase">API Token / Secret</label>
+                          <label className="text-sm text-muted-foreground uppercase">API Token / Secret</label>
                           <input
                             type="password"
                             name="whatsappToken"
                             value={notifications.whatsappToken}
                             onChange={handleNotifyChange}
-                            className="w-full bg-bg border border-border p-3 text-[10px] focus:border-[#25D366] outline-none transition-all font-mono"
+                            className="w-full bg-bg border border-border p-3 text-base focus:border-[#25D366] outline-none transition-all font-mono"
                             placeholder="••••••••••••••••"
                           />
                         </div>
                         <button
                           onClick={() => handleTestNotify('whatsapp')}
                           disabled={testStatus === "testing"}
-                          className="w-full py-2 bg-[#25D36620] border border-[#25D36650] text-[#25D366] text-[8px] font-bold tracking-widest hover:bg-[#25D366] hover:text-white transition-all rounded-sm uppercase">
+                          className="w-full py-2 bg-[#25D36620] border border-[#25D36650] text-[#25D366] text-sm font-bold tracking-widest hover:bg-[#25D366] hover:text-white transition-all rounded-sm uppercase">
                           {testStatus === "testing" ? "Testing..." : "Send Test WhatsApp"}
                         </button>
                       </div>
@@ -354,7 +354,7 @@ export default function SettingsPage() {
                     <button
                       onClick={handleSaveNotifications}
                       disabled={isSavingNotify}
-                      className="px-8 py-3 bg-[#ff8c00] text-white text-[9px] font-bold tracking-[.2em] rounded-sm hover:brightness-110 active:scale-[.98] transition-all disabled:opacity-50">
+                      className="px-8 py-3 bg-[#ff8c00] text-white text-xs font-bold tracking-[.2em] rounded-sm hover:brightness-110 active:scale-[.98] transition-all disabled:opacity-50">
                       {isSavingNotify ? "SYNCING..." : "SAVE NOTIFICATION CONFIG"}
                     </button>
                   </div>
@@ -370,10 +370,10 @@ export default function SettingsPage() {
                   <h2 className="text-sm font-bold tracking-widest mb-3"
                     style={{ color: "#00A3B4" }}>PTTS SMARTSENSOR — API DOCUMENTATION</h2>
 
-                  <div className="space-y-3 text-[9px]" style={{ color: "var(--text-muted)" }}>
+                  <div className="space-y-3 text-xs" style={{ color: "var(--text-muted)" }}>
                     <div className="p-3 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
                       <p className="font-bold mb-1">📖 PTTS Backend REST API</p>
-                      <p className="text-[8px] leading-relaxed mb-2">
+                      <p className="text-sm leading-relaxed mb-2">
                         Dashboard ini terhubung ke backend NestJS PTTS yang berjalan di <span className="font-mono text-[#00A3B4]">localhost:3001</span>.
                         Seluruh data telemetri, alarm, dan konfigurasi diproses melalui API layer ini sebelum ditampilkan di SCADA UI.
                       </p>
@@ -387,7 +387,7 @@ export default function SettingsPage() {
 
                     <div className="p-3 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
                       <p className="font-bold mb-1">🔌 Available Endpoints</p>
-                      <div className="space-y-1 font-mono text-[8px]" style={{ color: "#00e676" }}>
+                      <div className="space-y-1 font-mono text-sm" style={{ color: "#00e676" }}>
                         <div><span style={{ color: "var(--text-muted)" }}>GET</span>   /api/dashboard</div>
                         <div><span style={{ color: "var(--text-muted)" }}>GET</span>   /api/reports?period=monthly</div>
                         <div><span style={{ color: "var(--text-muted)" }}>GET</span>   /api/config</div>
@@ -399,7 +399,7 @@ export default function SettingsPage() {
 
                     <div className="p-3 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
                       <p className="font-bold mb-1">🔐 Authentication & Integration</p>
-                      <p className="text-[8px] leading-relaxed">
+                      <p className="text-sm leading-relaxed">
                         Data SmartSensor PTTS & RONDS ditarik secara aman via API key dan diproses oleh backend NestJS.
                         Backend memproxy data ke <span className="font-mono text-[#00A3B4]">/api/dashboard</span> untuk konsumsi SCADA UI ini.
                       </p>
@@ -425,7 +425,7 @@ export default function SettingsPage() {
                       <div className="flex gap-1 mb-4 p-1 rounded-sm w-fit" style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}>
                         <button
                           onClick={() => setActiveKeyTab("smartSensorPTTS")}
-                          className="px-4 py-1.5 text-[8px] font-bold tracking-widest rounded-sm transition-all"
+                          className="px-4 py-1.5 text-sm font-bold tracking-widest rounded-sm transition-all"
                           style={{
                             background: activeKeyTab === "smartSensorPTTS" ? "var(--ptts-teal)" : "transparent",
                             color: activeKeyTab === "smartSensorPTTS" ? "#fff" : "var(--text-muted)",
@@ -434,7 +434,7 @@ export default function SettingsPage() {
                         </button>
                         <button
                           onClick={() => setActiveKeyTab("smartSensorRonds")}
-                          className="px-4 py-1.5 text-[8px] font-bold tracking-widest rounded-sm transition-all"
+                          className="px-4 py-1.5 text-sm font-bold tracking-widest rounded-sm transition-all"
                           style={{
                             background: activeKeyTab === "smartSensorRonds" ? "var(--ptts-teal)" : "transparent",
                             color: activeKeyTab === "smartSensorRonds" ? "#fff" : "var(--text-muted)",
@@ -443,7 +443,7 @@ export default function SettingsPage() {
                         </button>
                       </div>
 
-                      <label className="scada-label block mb-2 uppercase text-[9px]">
+                      <label className="scada-label block mb-2 uppercase text-xs">
                         {activeKeyTab === "smartSensorPTTS" ? "ABB Ability™" : "RONDS Monitoring"} API Key
                       </label>
                       
@@ -454,7 +454,7 @@ export default function SettingsPage() {
                           value={apiKeys[activeKeyTab]}
                           onChange={handleInputChange}
                           placeholder={`Enter ${activeKeyTab === "smartSensorPTTS" ? "ABB" : "Ronds"} API key`}
-                          className="flex-1 px-3 py-2.5 text-[11px] rounded-sm outline-none transition-all"
+                          className="flex-1 px-3 py-2.5 text-sm rounded-sm outline-none transition-all"
                           style={{
                             background: "var(--bg)",
                             border: "1px solid var(--border)",
@@ -464,7 +464,7 @@ export default function SettingsPage() {
                         <button
                           onClick={handleTestConnection}
                           disabled={testStatus === "testing" || !apiKeys[activeKeyTab]}
-                          className="px-4 py-2.5 text-[8px] font-bold rounded-sm transition-all tracking-widest disabled:opacity-50"
+                          className="px-4 py-2.5 text-sm font-bold rounded-sm transition-all tracking-widest disabled:opacity-50"
                           style={{
                             background: "var(--bg)",
                             color: "var(--ptts-teal)",
@@ -474,7 +474,7 @@ export default function SettingsPage() {
                         </button>
                         <button
                           onClick={() => handleSaveKey(activeKeyTab)}
-                          className="px-5 py-2.5 text-[9px] font-bold rounded-sm transition-all tracking-widest"
+                          className="px-5 py-2.5 text-xs font-bold rounded-sm transition-all tracking-widest"
                           style={{
                             background: savedKeys.includes(activeKeyTab) ? "var(--online)" : "var(--ptts-teal)",
                             color: "#fff",
@@ -492,14 +492,14 @@ export default function SettingsPage() {
                              }}>
                           <span className={`led ${testStatus === "success" ? "led-online" : testStatus === "error" ? "led-critical" : "led-warning"}`} 
                                 style={{ width: 6, height: 6 }} />
-                          <span className="text-[8px] font-bold tracking-widest"
+                          <span className="text-sm font-bold tracking-widest"
                                 style={{ color: testStatus === "success" ? "#00e676" : testStatus === "error" ? "#ff5252" : "#00A3B4" }}>
                             {testMessage || "PREPARING CONNECTION TEST..."}
                           </span>
                         </div>
                       )}
 
-                      <p className="text-[8px] mt-2 italic" style={{ color: "var(--text-faint)" }}>
+                      <p className="text-sm mt-2 italic" style={{ color: "var(--text-faint)" }}>
                         {activeKeyTab === "smartSensorPTTS" 
                           ? "Required for communication with ABB Ability™ Condition Monitoring cloud." 
                           : "Required for integration with RONDS wireless sensor datalink."}
@@ -512,7 +512,7 @@ export default function SettingsPage() {
                 <div className="p-3 rounded-sm flex items-center gap-2"
                   style={{ background: "#00e67608", border: "1px solid #00e67620" }}>
                   <span className="led led-online" style={{ width: 6, height: 6 }} />
-                  <span className="text-[9px] tracking-widest text-[#00e676]">
+                  <span className="text-xs tracking-widest text-[#00e676]">
                     {savedKeys.length === 0
                       ? "NO KEYS CONFIGURED"
                       : `${savedKeys.length} API KEY${savedKeys.length !== 1 ? "S" : ""} ACTIVE`}
@@ -539,7 +539,7 @@ export default function SettingsPage() {
                             value={newUser.username}
                             onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
                             placeholder="Enter username"
-                            className="w-full px-3 py-2.5 text-[10px] rounded-sm outline-none transition-all"
+                            className="w-full px-3 py-2.5 text-base rounded-sm outline-none transition-all"
                             style={{
                               background: "#0b0e13",
                               border: "1px solid #242d3f",
@@ -555,7 +555,7 @@ export default function SettingsPage() {
                             value={newUser.password}
                             onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
                             placeholder="Enter password"
-                            className="w-full px-3 py-2.5 text-[10px] rounded-sm outline-none transition-all"
+                            className="w-full px-3 py-2.5 text-base rounded-sm outline-none transition-all"
                             style={{
                               background: "#0b0e13",
                               border: "1px solid #242d3f",
@@ -569,7 +569,7 @@ export default function SettingsPage() {
                           <select
                             value={newUser.role}
                             onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-                            className="w-full px-3 py-2.5 text-[10px] rounded-sm outline-none transition-all"
+                            className="w-full px-3 py-2.5 text-base rounded-sm outline-none transition-all"
                             style={{
                               background: "#0b0e13",
                               border: "1px solid #242d3f",
@@ -582,7 +582,7 @@ export default function SettingsPage() {
                         </div>
 
                         {userCreated && (
-                          <div className="p-2 rounded-sm text-[9px] tracking-widest"
+                          <div className="p-2 rounded-sm text-xs tracking-widest"
                             style={{
                               background: userCreated.success ? "#00e67608" : "#CC000015",
                               border: `1px solid ${userCreated.success ? "#00e67620" : "#CC000030"}`,
@@ -595,7 +595,7 @@ export default function SettingsPage() {
                         <button
                           type="submit"
                           disabled={isCreatingUser || !newUser.username || !newUser.password}
-                          className="w-full py-2.5 text-[9px] font-bold rounded-sm transition-all tracking-widest disabled:opacity-50"
+                          className="w-full py-2.5 text-xs font-bold rounded-sm transition-all tracking-widest disabled:opacity-50"
                           style={{
                             background: "#005F8E",
                             color: "#fff",
@@ -606,7 +606,7 @@ export default function SettingsPage() {
                       </div>
                     </form>
 
-                    <p className="text-[8px]" style={{ color: "var(--text-faint)" }}>
+                    <p className="text-sm" style={{ color: "var(--text-faint)" }}>
                       Create new user accounts with username, password, and role assignment. Users must have unique usernames and minimum 6 characters for passwords.
                     </p>
                   </div>
@@ -618,15 +618,15 @@ export default function SettingsPage() {
                     </h3>
                     {isFetchingUsers ? (
                       <div className="p-4 rounded-sm text-center" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
-                        <p className="text-[9px] tracking-widest" style={{ color: "var(--text-faint)" }}>LOADING...</p>
+                        <p className="text-xs tracking-widest" style={{ color: "var(--text-faint)" }}>LOADING...</p>
                       </div>
                     ) : users.length === 0 ? (
                       <div className="p-4 rounded-sm text-center" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
-                        <p className="text-[9px] tracking-widest" style={{ color: "var(--text-faint)" }}>NO USERS REGISTERED</p>
+                        <p className="text-xs tracking-widest" style={{ color: "var(--text-faint)" }}>NO USERS REGISTERED</p>
                       </div>
                     ) : (
                       <div className="overflow-x-auto rounded-sm" style={{ border: "1px solid var(--border-dim)" }}>
-                        <table className="w-full text-[8px]" style={{ background: "var(--bg)" }}>
+                        <table className="w-full text-sm" style={{ background: "var(--bg)" }}>
                           <thead>
                             <tr style={{ borderBottom: "1px solid var(--border-dim)" }}>
                               <th className="px-3 py-2 text-left font-bold tracking-widest" style={{ color: "#00A3B4" }}>USERNAME</th>
@@ -646,7 +646,7 @@ export default function SettingsPage() {
                                     {user.hash.substring(0, 16)}...
                                     {hoveredHash === user.hash && (
                                       <div
-                                        className="absolute px-3 py-2 rounded-sm text-[8px] font-bold tracking-widest whitespace-nowrap"
+                                        className="absolute px-3 py-2 rounded-sm text-sm font-bold tracking-widest whitespace-nowrap"
                                         style={{
                                           background: "#0b0e13",
                                           border: "2px solid #00A3B4",
@@ -664,7 +664,7 @@ export default function SettingsPage() {
                                 </td>
                                 <td className="px-3 py-2">
                                   <span
-                                    className="px-2 py-1 rounded-sm text-[7px] font-bold tracking-widest"
+                                    className="px-2 py-1 rounded-sm text-base font-bold tracking-widest"
                                     style={{
                                       background: user.role === "admin" ? "#CC000025" : user.role === "operator" ? "#00A3B425" : "#005F8E25",
                                       color: user.role === "admin" ? "#CC0000" : user.role === "operator" ? "#00A3B4" : "#005F8E",
@@ -685,7 +685,7 @@ export default function SettingsPage() {
             )}
           </div>
           
-          <div className="mt-8 flex items-center justify-between px-2 py-1 text-[8px] tracking-[.15em] border-t border-border-dim"
+          <div className="mt-8 flex items-center justify-between px-2 py-1 text-sm tracking-[.15em] border-t border-border-dim"
             style={{ color:"var(--text-faint)" }}>
             <div className="flex gap-4">
               <span>PTTS SMARTSENSOR IoT PLATFORM · v1.3.0</span>

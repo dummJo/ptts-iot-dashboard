@@ -71,7 +71,7 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
           <button
             onClick={handleExportLog}
             disabled={alerts.length === 0}
-            className="text-[9px] font-bold tracking-widest transition-all px-3 py-1.5 rounded-sm shadow-sm disabled:opacity-40"
+            className="text-xs font-bold tracking-widest transition-all px-3 py-1.5 rounded-sm shadow-sm disabled:opacity-40"
             style={{ 
               color: "var(--text-muted)", 
               background: "var(--surface-2)",
@@ -83,7 +83,7 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
           <button
             onClick={handleAckAll}
             disabled={loading || alerts.length === 0}
-            className="text-[9px] font-bold tracking-widest transition-all px-3 py-1.5 rounded-sm shadow-sm disabled:opacity-40"
+            className="text-xs font-bold tracking-widest transition-all px-3 py-1.5 rounded-sm shadow-sm disabled:opacity-40"
             style={{ 
               color: "var(--bg)", 
               background: "var(--ptts-teal)",
@@ -115,36 +115,36 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
                 <div className="flex items-center gap-1.5">
                   <span className={`led ${isAcked ? "led-offline" : s.led}`} style={{ width: 7, height: 7 }} />
                   <span
-                    className="text-[9px] font-bold tracking-[.15em]"
+                    className="text-xs font-bold tracking-[.15em]"
                     style={{ color: isAcked ? "var(--text-faint)" : s.color }}
                   >
                     {s.label}
                   </span>
                 </div>
-                <span className="text-[9px] font-mono" style={{ color: "var(--text-faint)" }}>
+                <span className="text-xs font-mono" style={{ color: "var(--text-faint)" }}>
                   {a.time}
                 </span>
               </div>
 
               {/* Asset name — bold */}
-              <p className="text-[11px] font-bold leading-snug" style={{ color: "var(--text-bright)" }}>
+              <p className="text-sm font-bold leading-snug" style={{ color: "var(--text-bright)" }}>
                 {truncate(a.asset, 28)}
               </p>
 
               {/* Message — normal weight, readable */}
-              <p className="text-[10px] leading-relaxed" style={{ color: "var(--text-muted)" }}>
+              <p className="text-base leading-relaxed" style={{ color: "var(--text-muted)" }}>
                 {formatMessage(truncate(a.message, 120))}
               </p>
 
               {/* Footer row — alarm ID + ACK button */}
               <div className="flex items-center justify-between mt-1">
-                <span className="text-[9px] font-mono italic" style={{ color: "var(--text-faint)" }}>
+                <span className="text-xs font-mono italic" style={{ color: "var(--text-faint)" }}>
                   {a.id}
                 </span>
                 <button
                   onClick={() => handleAck(a.id)}
                   disabled={isAcked}
-                  className="text-[9px] px-2.5 py-1 rounded-sm font-bold tracking-widest transition-all disabled:opacity-40 disabled:cursor-default"
+                  className="text-xs px-2.5 py-1 rounded-sm font-bold tracking-widest transition-all disabled:opacity-40 disabled:cursor-default"
                   style={{
                     border: `1px solid ${isAcked ? "var(--border)" : s.color}`,
                     color: isAcked ? "var(--text-faint)" : s.color,

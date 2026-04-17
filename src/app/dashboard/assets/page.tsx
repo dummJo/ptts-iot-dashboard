@@ -76,7 +76,7 @@ export default function AssetsPage() {
           <div className="scada-card p-4 flex flex-col flex-1 min-h-[200px]">
              <span className="scada-label mb-4">ASSET TOPOGRAPHY MAP (PLACEHOLDER)</span>
              <div className="flex-1 border border-dashed rounded-sm flex items-center justify-center" style={{ borderColor:"var(--border-dim)", background:"var(--surface-2)" }}>
-               <span className="text-[10px] tracking-widest" style={{ color:"var(--text-faint)" }}>SCADA HMI GRAPHIC VIEW NOT CONFIGURED</span>
+               <span className="text-base tracking-widest" style={{ color:"var(--text-faint)" }}>SCADA HMI GRAPHIC VIEW NOT CONFIGURED</span>
              </div>
           </div>
         </div>

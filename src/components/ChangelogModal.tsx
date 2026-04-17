@@ -56,7 +56,7 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
       if (trimmed.startsWith("## ")) {
         return (
           <div key={i} className="mt-8 mb-4 border-b border-ptts/20 pb-2">
-            <h3 className="text-[13px] font-black text-ptts-teal tracking-[.25em] uppercase">
+            <h3 className="text-base font-black text-ptts-teal tracking-[.25em] uppercase">
               {trimmed.replace("## ", "")}
             </h3>
           </div>
@@ -66,7 +66,7 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
       // Category Header: ### Added
       if (trimmed.startsWith("### ")) {
         return (
-          <h4 key={i} className="mt-5 mb-2 text-[10px] font-black tracking-widest text-text-bright uppercase flex items-center gap-2">
+          <h4 key={i} className="mt-5 mb-2 text-base font-black tracking-widest text-text-bright uppercase flex items-center gap-2">
             <span className="w-1.5 h-1.5 bg-ptts-teal/60 rounded-full" />
             {trimmed.replace("### ", "")}
           </h4>
@@ -88,7 +88,7 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
           return (
             <div key={i} className="flex gap-3 mb-1.5 pl-2 group">
               <span className="text-ptts-teal/50 font-bold group-hover:text-ptts-teal transition-colors">»</span>
-              <p className="text-[11px] leading-relaxed text-text-muted">
+              <p className="text-sm leading-relaxed text-text-muted">
                 <span className="font-bold text-text-bright">{boldPart}</span>
                 {remaining}
               </p>
@@ -99,14 +99,14 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
         return (
           <div key={i} className="flex gap-3 mb-1.5 pl-2 group">
             <span className="text-ptts-teal/50 font-bold group-hover:text-ptts-teal transition-colors">»</span>
-            <p className="text-[11px] leading-relaxed text-text-muted">{text}</p>
+            <p className="text-sm leading-relaxed text-text-muted">{text}</p>
           </div>
         );
       }
 
       // Normal text
       return (
-        <p key={i} className="text-[11px] leading-relaxed text-text-muted mb-2 px-1">
+        <p key={i} className="text-sm leading-relaxed text-text-muted mb-2 px-1">
           {trimmed}
         </p>
       );
@@ -125,12 +125,12 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
         <div className="scada-card-header !bg-surface-3 py-3 border-b-2 border-ptts/30">
           <div className="flex items-center gap-3">
              <span className="led led-online" style={{ width: 8, height: 8 }} />
-             <span className="scada-label !text-[11px] !text-text-bright font-black tracking-widest">
+             <span className="scada-label !text-sm !text-text-bright font-black tracking-widest">
                SYSTEM UPDATE LOG · {CURRENT_VERSION}
              </span>
           </div>
           {!manualOpen && (
-             <span className="text-[9px] font-bold text-ptts-teal animate-led">REQUIRED ACKNOWLEDGMENT</span>
+             <span className="text-xs font-bold text-ptts-teal animate-led">REQUIRED ACKNOWLEDGMENT</span>
           )}
           {manualOpen && (
              <button onClick={onClose} className="text-text-muted hover:text-text-bright transition-colors text-lg">✕</button>
@@ -156,7 +156,7 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
           {!manualOpen ? (
             <>
               <div className="flex-1">
-                <p className="text-[10px] font-bold text-text-muted mb-2 tracking-widest uppercase">
+                <p className="text-base font-bold text-text-muted mb-2 tracking-widest uppercase">
                   Type <span className="text-ptts-teal">ACK</span> to confirm you have read the updates
                 </p>
                 <input
@@ -164,14 +164,14 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
                   value={ackText}
                   onChange={(e) => setAckText(e.target.value)}
                   placeholder="ENTER ACK..."
-                  className="w-full md:w-48 px-4 py-2 bg-bg border border-border rounded-sm text-[11px] font-mono tracking-widest text-text-bright outline-none focus:border-ptts/60 transition-all uppercase"
+                  className="w-full md:w-48 px-4 py-2 bg-bg border border-border rounded-sm text-sm font-mono tracking-widest text-text-bright outline-none focus:border-ptts/60 transition-all uppercase"
                 />
               </div>
 
               <button
                 onClick={handleAcknowledge}
                 disabled={ackText.toUpperCase() !== "ACK"}
-                className="w-full md:w-auto px-8 py-3 rounded-sm font-black text-[12px] tracking-[.2em] transition-all disabled:opacity-30 disabled:grayscale"
+                className="w-full md:w-auto px-8 py-3 rounded-sm font-black text-[15px] tracking-[.2em] transition-all disabled:opacity-30 disabled:grayscale"
                 style={{ 
                   background: "var(--ptts)", 
                   color: "#fff", 
@@ -183,7 +183,7 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
             </>
           ) : (
              <div className="flex-1 flex justify-end">
-               <button onClick={onClose} className="px-8 py-2.5 rounded-sm font-bold text-[11px] tracking-widest transition-all" style={{ background: "var(--surface-3)", border: "1px solid var(--border)", color: "var(--text-bright)" }}>
+               <button onClick={onClose} className="px-8 py-2.5 rounded-sm font-bold text-sm tracking-widest transition-all" style={{ background: "var(--surface-3)", border: "1px solid var(--border)", color: "var(--text-bright)" }}>
                  CLOSE
                </button>
              </div>

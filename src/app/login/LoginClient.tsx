@@ -182,7 +182,7 @@ export default function LoginClient() {
              <div className="absolute inset-x-0 top-0 h-[1px] bg-[var(--ptts-teal)] shadow-[0_0_10px_var(--ptts-teal)] animate-[scan_2s_ease-in-out_infinite]" />
              
              <div className="-rotate-45 flex flex-col items-center justify-center">
-                <span className="text-[var(--text-bright)] text-[8px] font-bold tracking-[0.3em] opacity-50 mb-1">PTTS</span>
+                <span className="text-[var(--text-bright)] text-sm font-bold tracking-[0.3em] opacity-50 mb-1">PTTS</span>
                 <div className="w-3 h-px bg-[var(--ptts-teal)]" />
              </div>
            </div>
@@ -193,23 +193,23 @@ export default function LoginClient() {
           <h1 className="text-2xl md:text-4xl font-black tracking-[0.25em] text-[var(--text-bright)]">
             SMART<span className="text-[var(--ptts-teal)]">SENSOR</span>
           </h1>
-          <p className="text-[9px] tracking-[0.4em] text-[var(--ptts-teal)] uppercase">
+          <p className="text-xs tracking-[0.4em] text-[var(--ptts-teal)] uppercase">
             Industrial IoT Platform <span className="opacity-50">v1.3.0</span>
           </p>
         </div>
 
         {/* Init lines */}
         {["init","bar","ready"].includes(phase) && (
-          <div className="font-mono text-[11px] space-y-2 mb-6 w-80">
+          <div className="font-mono text-sm space-y-2 mb-6 w-80">
             {INIT_LINES.slice(0, lines).map((ln, i) => (
               <div key={i} className="flex items-center gap-3 animate-fade-up">
-                <span className="text-[9px] px-1.5 py-0.5 font-bold w-10 text-center"
+                <span className="text-xs px-1.5 py-0.5 font-bold w-10 text-center"
                    style={{ background: "var(--surface-3)", border: `1px solid var(--border)`, color: "var(--ptts-teal)" }}>
                   {ln.tag}
                 </span>
                 <span className="flex-1 font-bold" style={{ color: "var(--text-bright)" }}>{ln.text}</span>
                 {i < lines - 1 || phase !== "init"
-                  ? <span className="text-[10px] font-bold" style={{ color: "var(--ptts-teal)" }}>OK</span>
+                  ? <span className="text-base font-bold" style={{ color: "var(--ptts-teal)" }}>OK</span>
                   : <span style={{ color: "var(--ptts-teal)" }} className="animate-blink">_</span>}
               </div>
             ))}
@@ -227,23 +227,23 @@ export default function LoginClient() {
               </div>
             </div>
             <div className="flex justify-between mt-2 tracking-widest uppercase">
-              <span className="text-[8px] font-bold" style={{ color: C.muted }}>
+              <span className="text-sm font-bold" style={{ color: C.muted }}>
                 {phase === "ready" ? "SYSTEM READY. ENGAGING INTERFACE." : "CALIBRATING ASSET TELEMETRY..."}
               </span>
-              <span className="text-[8px] font-mono text-[var(--text-bright)]">{pct}%</span>
+              <span className="text-sm font-mono text-[var(--text-bright)]">{pct}%</span>
             </div>
           </div>
         )}
       </div>
 
       {/* Technical Diagnostics Overlay */}
-      <div className="absolute top-6 left-8 text-[8px] tracking-widest text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_1s]">
+      <div className="absolute top-6 left-8 text-sm tracking-widest text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_1s]">
         <p>SYS.UID: 0x8F9A</p>
         <p>MEM.ALLOC: 1024MB</p>
         <p>ENV: PRODUCTION</p>
       </div>
 
-      <div className="absolute top-6 right-8 text-right text-[8px] tracking-widest text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_1s]">
+      <div className="absolute top-6 right-8 text-right text-sm tracking-widest text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_1s]">
         <p>SEC: SCRYPT-AES</p>
         <p>ENG: WEBSOCKET [A]</p>
         <p>LAT: 12ms</p>
@@ -256,7 +256,7 @@ export default function LoginClient() {
       <div className="absolute bottom-8 right-8 border-b border-r border-[var(--border-dim)] w-8 h-8 opacity-50" />
 
       {/* Footer Branding */}
-      <div className="absolute bottom-5 text-[7px] text-[var(--text-faint)] tracking-[0.6em] opacity-40 uppercase">
+      <div className="absolute bottom-5 text-base text-[var(--text-faint)] tracking-[0.6em] opacity-40 uppercase">
         © 2026 PT Prima Tekindo Tirta Sejahtera
       </div>
 
@@ -286,7 +286,7 @@ export default function LoginClient() {
             <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-1.5" />
           </div>
           <div>
-            <p className="text-[9px] tracking-[.3em] font-bold leading-relaxed" style={{ color: C.muted }}>
+            <p className="text-xs tracking-[.3em] font-bold leading-relaxed" style={{ color: C.muted }}>
               PT PRIMA TEKINDO<br />TIRTA SEJAHTERA
             </p>
           </div>
@@ -311,7 +311,7 @@ export default function LoginClient() {
             {[["MQTT", "Realtime"], ["JWT", "Secured"], ["PostgreSQL", "Persistent"]].map(([label, sub]) => (
               <div key={label}>
                 <p className="text-xs font-bold tracking-wider" style={{ color: C.gold }}>{label}</p>
-                <p className="text-[10px] mt-0.5" style={{ color: C.muted }}>{sub}</p>
+                <p className="text-base mt-0.5" style={{ color: C.muted }}>{sub}</p>
               </div>
             ))}
           </div>
@@ -321,9 +321,9 @@ export default function LoginClient() {
         <div className="relative z-10">
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full" style={{ background: C.gold }} />
-            <span className="text-[9px] font-bold tracking-widest" style={{ color: C.muted }}>SYSTEM ONLINE</span>
+            <span className="text-xs font-bold tracking-widest" style={{ color: C.muted }}>SYSTEM ONLINE</span>
           </div>
-          <p className="text-[9px] font-bold tracking-widest mt-1" style={{ color: C.faint }}>
+          <p className="text-xs font-bold tracking-widest mt-1" style={{ color: C.faint }}>
             v1.3.0 · SCRYPT · JWT
           </p>
         </div>
@@ -342,7 +342,7 @@ export default function LoginClient() {
               style={{ background: C.bgPanel, border: `1px solid ${C.border}` }}>
               <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-1" />
             </div>
-            <span className="text-[9px] tracking-widest font-bold" style={{ color: C.muted }}>PTTS IOT MONITORING</span>
+            <span className="text-xs tracking-widest font-bold" style={{ color: C.muted }}>PTTS IOT MONITORING</span>
           </div>
 
           {/* Language & Theme Toggle */}
@@ -352,7 +352,7 @@ export default function LoginClient() {
             {/* Language dropdown */}
             <div className="relative" ref={dropRef}>
             <button onClick={() => setOpen(!open)}
-              className="flex items-center gap-2 px-3 py-1.5 text-[10px] font-bold tracking-widest transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 text-base font-bold tracking-widest transition-colors"
               style={{
                 border: `1px solid ${open ? C.borderHi : C.border}`,
                 color: open ? C.gold : C.muted,
@@ -377,14 +377,14 @@ export default function LoginClient() {
                 style={{ background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: 2 }}>
                 {LANGS.map(l => (
                   <button key={l.code} onClick={() => { setLang(l.code); setOpen(false); }}
-                    className="flex items-center justify-between w-full px-3 py-2 text-[10px] font-bold tracking-widest transition-colors text-left"
+                    className="flex items-center justify-between w-full px-3 py-2 text-base font-bold tracking-widest transition-colors text-left"
                     style={{
                       color:      lang === l.code ? C.gold  : C.muted,
                       background: lang === l.code ? C.faint : "transparent",
                       borderBottom: `1px solid ${C.border}`,
                     }}>
                     <span>{l.label}</span>
-                    <span className="font-normal text-[9px]" style={{ color: C.muted }}>{l.native}</span>
+                    <span className="font-normal text-xs" style={{ color: C.muted }}>{l.native}</span>
                   </button>
                 ))}
               </div>
@@ -422,7 +422,7 @@ export default function LoginClient() {
 
               {/* Username */}
               <div>
-                <label className="block text-[12px] font-bold tracking-widest mb-2" style={{ color: C.muted }}>
+                <label className="block text-[15px] font-bold tracking-widest mb-2" style={{ color: C.muted }}>
                   {t.uid.toUpperCase()}
                 </label>
                 <div className="relative">
@@ -451,7 +451,7 @@ export default function LoginClient() {
 
               {/* Password */}
               <div>
-                <label className="block text-[12px] font-bold tracking-widest mb-2" style={{ color: C.muted }}>
+                <label className="block text-[15px] font-bold tracking-widest mb-2" style={{ color: C.muted }}>
                   {t.pwd.toUpperCase()}
                 </label>
                 <div className="relative">
@@ -471,7 +471,7 @@ export default function LoginClient() {
                     onBlur={e  => { e.target.style.borderColor = C.border;   e.target.style.boxShadow = "none"; }}
                   />
                   <button type="button" onClick={() => setShowPw(!showPw)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[11px] font-bold tracking-widest transition-colors"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-sm font-bold tracking-widest transition-colors"
                     style={{ color: C.muted }}
                     onMouseEnter={e => (e.currentTarget.style.color = C.gold)}
                     onMouseLeave={e => (e.currentTarget.style.color = C.muted)}>
@@ -498,7 +498,7 @@ export default function LoginClient() {
                 </button>
                 <div className="flex-1 flex items-center justify-between">
                   <span className="text-sm" style={{ color: C.muted }}>{t.remember}</span>
-                  <a href="mailto:adam@ptts.co.id" className="text-[11px] font-bold tracking-tight hover:underline transition-all" style={{ color: "var(--ptts-teal)" }}>
+                  <a href="mailto:adam@ptts.co.id" className="text-sm font-bold tracking-tight hover:underline transition-all" style={{ color: "var(--ptts-teal)" }}>
                     FORGOT ACCESS?
                   </a>
                 </div>
@@ -521,7 +521,7 @@ export default function LoginClient() {
 
             {/* Footer */}
             <div className="mt-8 pt-5" style={{ borderTop: `1px solid ${C.border}` }}>
-              <p className="text-[9px] text-center font-bold tracking-widest" style={{ color: C.faint }}>
+              <p className="text-xs text-center font-bold tracking-widest" style={{ color: C.faint }}>
                 {t.footer}
               </p>
             </div>
@@ -531,10 +531,10 @@ export default function LoginClient() {
         {/* Status bar */}
         <div className="flex items-center justify-between px-10 py-3"
           style={{ borderTop: `1px solid ${C.border}` }}>
-          <span className="text-[9px] font-bold tracking-widest" style={{ color: C.faint }}>v1.3.0</span>
+          <span className="text-xs font-bold tracking-widest" style={{ color: C.faint }}>v1.3.0</span>
           <div className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full" style={{ background: C.gold }} />
-            <span className="text-[9px] font-bold tracking-widest" style={{ color: C.faint }}>SECURED · SCRYPT · JWT</span>
+            <span className="text-xs font-bold tracking-widest" style={{ color: C.faint }}>SECURED · SCRYPT · JWT</span>
           </div>
         </div>
       </div>

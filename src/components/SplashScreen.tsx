@@ -81,7 +81,7 @@ export default function SplashScreen() {
              <div className="absolute inset-x-0 top-0 h-[1px] bg-[var(--ptts-teal)] shadow-[0_0_10px_var(--ptts-teal)] animate-[scan_2s_ease-in-out_infinite]" />
              
              <div className="-rotate-45 flex flex-col items-center justify-center">
-                <span className="text-[var(--text-bright)] text-[10px] font-bold tracking-[0.3em] opacity-50 mb-1">PTTS</span>
+                <span className="text-[var(--text-bright)] text-base font-bold tracking-[0.3em] opacity-50 mb-1">PTTS</span>
                 <div className="w-4 h-0.5 bg-[var(--ptts-teal)]" />
              </div>
            </div>
@@ -95,7 +95,7 @@ export default function SplashScreen() {
             </h1>
           </div>
           <div className="overflow-hidden">
-            <p className="text-[10px] md:text-xs tracking-[0.5em] text-[var(--ptts-teal)] uppercase translate-y-12 animate-[slide-up_0.8s_cubic-bezier(0.16,1,0.3,1)_forwards_1.2s]">
+            <p className="text-base md:text-xs tracking-[0.5em] text-[var(--ptts-teal)] uppercase translate-y-12 animate-[slide-up_0.8s_cubic-bezier(0.16,1,0.3,1)_forwards_1.2s]">
               Industrial IoT Platform <span className="opacity-50">v1.3.0</span>
             </p>
           </div>
@@ -104,14 +104,14 @@ export default function SplashScreen() {
         {/* ── Advanced Loading Analytics ── */}
         <div className="w-72 md:w-96 space-y-3 opacity-0 animate-[fade-in_1s_ease-out_forwards_1.8s]">
           <div className="flex justify-between items-end">
-            <span className="text-[9px] font-bold tracking-widest text-[var(--ptts-teal)] uppercase w-48 truncate">
+            <span className="text-xs font-bold tracking-widest text-[var(--ptts-teal)] uppercase w-48 truncate">
               {status}
             </span>
             <div className="text-right">
               <span className="text-xs font-mono text-[var(--text-bright)]">
                 {progress.toFixed(1).padStart(4, "0")}
               </span>
-              <span className="text-[8px] text-[var(--ptts-teal)] ml-1">%</span>
+              <span className="text-sm text-[var(--ptts-teal)] ml-1">%</span>
             </div>
           </div>
           
@@ -126,7 +126,7 @@ export default function SplashScreen() {
             </div>
           </div>
           
-          <div className="flex justify-between text-[7px] text-[var(--text-faint)] tracking-[0.2em] uppercase font-bold">
+          <div className="flex justify-between text-base text-[var(--text-faint)] tracking-[0.2em] uppercase font-bold">
             <span className={phase === "authenticate" ? "text-[var(--online)]" : ""}>SEC: SCRYPT-AES</span>
             <span>ENG: WEBSOCKET</span>
             <span>LAT: 12ms</span>
@@ -135,20 +135,20 @@ export default function SplashScreen() {
       </div>
 
       {/* ── Technical Diagnostics Overlay ── */}
-      <div className="absolute top-6 left-8 text-[8px] tracking-widest text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_2.5s]">
+      <div className="absolute top-6 left-8 text-sm tracking-widest text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_2.5s]">
         <p>SYS.UID: 0x8F9A</p>
         <p>MEM.ALLOC: 1024MB</p>
         <p>ENV: PRODUCTION</p>
       </div>
 
-      <div className="absolute top-6 right-8 text-right text-[8px] tracking-widest text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_2.5s]">
+      <div className="absolute top-6 right-8 text-right text-sm tracking-widest text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_2.5s]">
         <p>VIBRATION.ANALYSIS [A]</p>
         <p>THERMAL.SCAN [A]</p>
         <p>AI.DIAGNOSTICS [I]</p>
       </div>
 
       {/* ── Footer Branding ── */}
-      <div className="absolute bottom-5 text-[8px] text-[var(--text-faint)] tracking-[0.6em] opacity-40 uppercase">
+      <div className="absolute bottom-5 text-sm text-[var(--text-faint)] tracking-[0.6em] opacity-40 uppercase">
         © 2026 PT Prima Tekindo Tirta Sejahtera
       </div>
 

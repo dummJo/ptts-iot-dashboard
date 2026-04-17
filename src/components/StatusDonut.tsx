@@ -19,7 +19,7 @@ export default function StatusDonut({ linkSummary, healthSummary }: StatusDonutP
     <div className="flex flex-col gap-3">
       {/* ── Connectivity Card ── */}
       <div className="scada-card p-3">
-        <div className="scada-card-header mb-2 text-[9px]">
+        <div className="scada-card-header mb-2 text-xs">
            <span className="scada-label">NETWORK CONNECTIVITY</span>
            <span className="text-text-muted">{totalLink} NODES</span>
         </div>
@@ -27,14 +27,14 @@ export default function StatusDonut({ linkSummary, healthSummary }: StatusDonutP
            <div className="flex items-center justify-between p-2 rounded-sm bg-bg border border-border-dim">
               <div className="flex items-center gap-2">
                  <span className="led led-online" style={{ width:6, height:6 }} />
-                 <span className="text-[9px] font-bold text-text-muted">ONLINE</span>
+                 <span className="text-xs font-bold text-text-muted">ONLINE</span>
               </div>
               <span className="text-[14px] font-black text-online">{linkSummary?.online || 0}</span>
            </div>
            <div className="flex items-center justify-between p-2 rounded-sm bg-bg border border-border-dim">
               <div className="flex items-center gap-2">
                  <span className="led led-fault" style={{ width:6, height:6 }} />
-                 <span className="text-[9px] font-bold text-text-muted">OFFLINE</span>
+                 <span className="text-xs font-bold text-text-muted">OFFLINE</span>
               </div>
               <span className="text-[14px] font-black text-fault">{linkSummary?.offline || 0}</span>
            </div>
@@ -45,7 +45,7 @@ export default function StatusDonut({ linkSummary, healthSummary }: StatusDonutP
       <div className="scada-card flex flex-col">
         <div className="scada-card-header">
           <span className="scada-label">MACHINE HEALTH (CONDITION)</span>
-          <span className="text-[9px] font-bold tracking-widest text-[#00e676]">
+          <span className="text-xs font-bold tracking-widest text-[#00e676]">
             {healthSummary?.good || 0} HEALTHY
           </span>
         </div>
@@ -67,14 +67,14 @@ export default function StatusDonut({ linkSummary, healthSummary }: StatusDonutP
               <span className="text-2xl font-bold" style={{ color:"var(--text-bright)" }}>
                 {Math.round(((healthSummary?.good || 0) / (totalLink || 1)) * 100)}%
               </span>
-              <span className="text-[8px] tracking-widest" style={{ color:"var(--text-faint)" }}>GOOD</span>
+              <span className="text-sm tracking-widest" style={{ color:"var(--text-faint)" }}>GOOD</span>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2 mt-2">
             {healthData.map((d) => (
               <div key={d.name} className="flex flex-col items-center p-1 rounded-sm border border-border-dim bg-bg/50">
-                <span className="text-[7px] font-bold text-text-faint mb-0.5 tracking-tighter">{d.name}</span>
-                <span className="text-[12px] font-black leading-none" style={{ color: d.color }}>{d.value}</span>
+                <span className="text-base font-bold text-text-faint mb-0.5 tracking-tighter">{d.name}</span>
+                <span className="text-[15px] font-black leading-none" style={{ color: d.color }}>{d.value}</span>
               </div>
             ))}
           </div>

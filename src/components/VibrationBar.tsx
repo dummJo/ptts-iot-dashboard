@@ -7,7 +7,7 @@ export default function VibrationBar({ vibrationData = [] }: { vibrationData?: V
     <div className="scada-card flex flex-col">
       <div className="scada-card-header">
         <span className="scada-label">VIBRATION RANKING · RMS mm/s</span>
-        <span className="text-[9px] font-bold" style={{ color:"#FFD700" }}>LIM: 3.5</span>
+        <span className="text-xs font-bold" style={{ color:"#FFD700" }}>LIM: 3.5</span>
       </div>
       <div className="p-4">
         <ResponsiveContainer width="100%" height={155}>

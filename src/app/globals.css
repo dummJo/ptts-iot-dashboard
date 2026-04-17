@@ -15,17 +15,17 @@
   --surface:     #0b0f15;
   --surface-2:   #121822;
   --surface-3:   #18212e;
-  --border:      #25354d;
-  --border-dim:  #182436;
+  --border:      #334155; /* BRIGHTER BORDER */
+  --border-dim:  #1e293b; 
   --text:        #ffffff;
-  --text-muted:  #cbd5e1;  /* lifted for dark mode contrast */
-  --text-faint:  #94a3b8;  /* lifted to pass 4.5:1 on almost all dark surfaces */
+  --text-muted:  #e2e8f0;  /* Lifted significantly for 40+ */
+  --text-faint:  #cbd5e1;  /* Lifted significantly for 40+ */
   --text-bright: #ffffff;
 
   /* PTTS brand */
-  --ptts:        #0088cc;  /* was #007dbd — brightened */
-  --ptts-teal:   #00e5ff;
-  --ptts-glow:   #00e5ff80;
+  --ptts:        #0ea5e9;  /* Brighter */
+  --ptts-teal:   #22d3ee;  
+  --ptts-glow:   rgba(34, 211, 238, 0.5);
 
   /* Status */
   --online:      #10b981;
@@ -34,7 +34,7 @@
   --offline:     #94a3b8;
 
   /* Metric Channels (Chart Colors) */
-  --metric-vib:      #00e5ff;
+  --metric-vib:      #22d3ee;
   --metric-temp:     #fbbf24;
   --metric-rms:      #f97316;
   --metric-power:    #a855f7;
@@ -46,37 +46,37 @@
   --badge-online-bg:  rgba(16, 185, 129, 0.15);
   --badge-warning-bg: rgba(251, 191, 36, 0.15);
   --badge-fault-bg:   rgba(239, 68, 68, 0.15);
-  --badge-ptts-bg:    rgba(0, 136, 204, 0.15);
+  --badge-ptts-bg:    rgba(14, 165, 233, 0.15);
 
   --sidebar-bg:  #030508;
 }
 
 /* Light mode — "Creamy Blue" Professional Palette */
 .light {
-  --bg:          #f4f7f9;  /* soft creamy blue base */
-  --surface:     #ffffff;  /* pure white for cards */
-  --surface-2:   #e9f0f5;  /* slightly darker blue-cream */
+  --bg:          #f4f7f9;
+  --surface:     #ffffff;
+  --surface-2:   #e9f0f5;
   --surface-3:   #dee6ed;
-  --border:      #cbd5e1;  /* slate blue border */
-  --border-dim:  #e2e8f0;
-  --text:        #1e293b;  /* deep slate/navy for readability */
-  --text-muted:  #475569;
-  --text-faint:  #64748b;
-  --text-bright: #0f172a;
-  --sidebar-bg:  #ecf1f6;  /* harmonious cool sidebar */
+  --border:      #94a3b8;  /* Darker border for light mode contrast */
+  --border-dim:  #cbd5e1;
+  --text:        #020617;  /* High contrast dark text */
+  --text-muted:  #1e293b;
+  --text-faint:  #334155;
+  --text-bright: #000000;
+  --sidebar-bg:  #ecf1f6;
 
-  /* Brand colors — Shifted to deeper professional tones */
-  --ptts:        #005F8E;  
+  /* Brand colors */
+  --ptts:        #0284c7;  
   --ptts-teal:   #0d9488;  
   --ptts-glow:   rgba(13, 148, 136, 0.1);
 
-  /* Status — Deepened to exceed 4.5:1 on light surfaces */
+  /* Status */
   --online:      #15803d;  
   --warning:     #b45309;  
-  --fault:       #b91c1c;  
-  --offline:     #64748b;
+  --fault:       #dc2626;  
+  --offline:     #475569;
 
-  /* Metric Channels — Professional palette */
+  /* Metric Channels */
   --metric-vib:      #0369a1;
   --metric-temp:     #9a3412;
   --metric-rms:      #c2410c;
@@ -88,14 +88,14 @@
   /* Badge Backgrounds (Light Mode) */
   --badge-online-bg:  rgba(21, 128, 61, 0.08);
   --badge-warning-bg: rgba(180, 83, 9, 0.08);
-  --badge-fault-bg:   rgba(185, 28, 28, 0.08);
-  --badge-ptts-bg:    rgba(0, 95, 142, 0.08);
+  --badge-fault-bg:   rgba(220, 38, 38, 0.08);
+  --badge-ptts-bg:    rgba(2, 132, 199, 0.08);
 }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+  /* font-family property removed so next/font/google can apply Inter */
   transition: background 0.25s, color 0.25s;
 }
 
@@ -148,15 +148,15 @@ body {
 
 
 .scada-label {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--text-faint); /* Made fainter text brighter */
 }
 
 .scada-value {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--text-bright);
@@ -164,9 +164,9 @@ body {
 }
 
 .scada-unit {
-  font-size: 11px;
+  font-size: 14px;
   color: var(--text-muted);
-  margin-left: 4px;
+  margin-left: 6px;
 }
 
 /* LED */

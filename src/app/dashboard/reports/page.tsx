@@ -266,7 +266,7 @@ export default function TrendsPage() {
                 <span className="scada-label">REPORT GENERATOR · PT PRIMA TEKINDO TIRTA SEJAHTERA</span>
                 <div className="flex items-center gap-1.5">
                   <span className="led led-online" style={{ width:6, height:6 }} />
-                  <span className="text-[9px] font-bold tracking-widest text-[#00e676]">READY</span>
+                  <span className="text-xs font-bold tracking-widest text-[#00e676]">READY</span>
                 </div>
               </div>
 
@@ -276,7 +276,7 @@ export default function TrendsPage() {
                 {/* Period popout trigger */}
                 <div className="relative" ref={popoutRef}>
                   <button onClick={() => setPopoutOpen(!popoutOpen)}
-                    className="flex items-center gap-2.5 px-4 py-2 text-[10px] font-bold tracking-widest transition-all rounded-sm"
+                    className="flex items-center gap-2.5 px-4 py-2 text-base font-bold tracking-widest transition-all rounded-sm"
                     style={{
                       background: popoutOpen ? "#005F8E" : "var(--surface-2)",
                       color: popoutOpen ? "#fff" : "var(--text-muted)",
@@ -311,7 +311,7 @@ export default function TrendsPage() {
                       <div className="flex" style={{ borderBottom: "1px solid var(--border)" }}>
                         {(["preset","custom"] as const).map(m => (
                           <button key={m} onClick={() => setMode(m)}
-                            className="flex-1 py-2 text-[9px] font-bold tracking-widest transition-all"
+                            className="flex-1 py-2 text-xs font-bold tracking-widest transition-all"
                             style={{
                               background: mode === m ? "#00A3B415" : "transparent",
                               color: mode === m ? "#00A3B4" : "var(--text-faint)",
@@ -343,14 +343,14 @@ export default function TrendsPage() {
                                   {active && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                                 </div>
                                 <div className="flex-1">
-                                  <span className="text-[11px] font-bold" style={{ color: active ? "#00A3B4" : "var(--text)" }}>
+                                  <span className="text-sm font-bold" style={{ color: active ? "#00A3B4" : "var(--text)" }}>
                                     {opt.label}
                                   </span>
-                                  <span className="text-[9px] ml-2" style={{ color: "var(--text-faint)" }}>
+                                  <span className="text-xs ml-2" style={{ color: "var(--text-faint)" }}>
                                     {opt.sub}
                                   </span>
                                 </div>
-                                <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-sm"
+                                <span className="text-xs font-mono font-bold px-1.5 py-0.5 rounded-sm"
                                   style={{
                                     background: active ? "#00A3B415" : "var(--surface-2)",
                                     color: active ? "#00A3B4" : "var(--text-faint)",
@@ -369,29 +369,29 @@ export default function TrendsPage() {
                         <div className="p-4 flex flex-col gap-3">
                           <div className="flex gap-3">
                             <div className="flex-1 flex flex-col gap-1">
-                              <label className="text-[9px] font-bold tracking-widest" style={{ color: "var(--text-faint)" }}>DARI</label>
+                              <label className="text-xs font-bold tracking-widest" style={{ color: "var(--text-faint)" }}>DARI</label>
                               <input type="date" value={customFrom} max={customTo}
                                 onChange={e => setCustomFrom(e.target.value)}
-                                className="w-full px-2 py-1.5 text-[11px] rounded-sm outline-none font-mono"
+                                className="w-full px-2 py-1.5 text-sm rounded-sm outline-none font-mono"
                                 style={{ background: "var(--bg)", border: "1px solid var(--border)", color: "var(--text)" }} />
                             </div>
                             <div className="flex-1 flex flex-col gap-1">
-                              <label className="text-[9px] font-bold tracking-widest" style={{ color: "var(--text-faint)" }}>SAMPAI</label>
+                              <label className="text-xs font-bold tracking-widest" style={{ color: "var(--text-faint)" }}>SAMPAI</label>
                               <input type="date" value={customTo} min={customFrom} max={today}
                                 onChange={e => setCustomTo(e.target.value)}
-                                className="w-full px-2 py-1.5 text-[11px] rounded-sm outline-none font-mono"
+                                className="w-full px-2 py-1.5 text-sm rounded-sm outline-none font-mono"
                                 style={{ background: "var(--bg)", border: "1px solid var(--border)", color: "var(--text)" }} />
                             </div>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-mono" style={{ color: "var(--text-faint)" }}>
+                            <span className="text-xs font-mono" style={{ color: "var(--text-faint)" }}>
                               {dateDiffDays(customFrom, customTo)} hari ·{" "}
                               <span style={{ color: "#00A3B4" }}>
                                 {PERIOD_OPTIONS.find(o => o.key === mapDaysToPeriod(dateDiffDays(customFrom, customTo)))?.label}
                               </span>
                             </span>
                             <button onClick={() => setPopoutOpen(false)}
-                              className="text-[9px] px-3 py-1 font-bold tracking-widest rounded-sm"
+                              className="text-xs px-3 py-1 font-bold tracking-widest rounded-sm"
                               style={{ background: "#00A3B4", color: "#fff" }}>
                               TERAPKAN
                             </button>
@@ -404,7 +404,7 @@ export default function TrendsPage() {
 
                 {/* Generate button */}
                 <button onClick={handleGenerateReport} disabled={loadingReport}
-                  className="text-[9px] px-5 py-2 rounded-sm font-bold tracking-widest transition-all disabled:opacity-50"
+                  className="text-xs px-5 py-2 rounded-sm font-bold tracking-widest transition-all disabled:opacity-50"
                   style={{ background:"#005F8E", color:"#fff", border:"1px solid #00A3B4" }}>
                   {loadingReport ? "◯ MEMUAT..." : "⬇ GENERATE"}
                 </button>
@@ -413,12 +413,12 @@ export default function TrendsPage() {
                 {report && (
                   <>
                     <button onClick={handlePrint}
-                      className="text-[9px] px-4 py-2 rounded-sm font-bold tracking-widest transition-all"
+                      className="text-xs px-4 py-2 rounded-sm font-bold tracking-widest transition-all"
                       style={{ background:"#003DA5", color:"#fff", border:"1px solid #2563eb" }}>
                       ✦ PDF
                     </button>
                     <button onClick={() => csvExport(report)}
-                      className="text-[9px] px-4 py-2 rounded-sm font-bold tracking-widest transition-all"
+                      className="text-xs px-4 py-2 rounded-sm font-bold tracking-widest transition-all"
                       style={{ background:"#065F46", color:"#fff", border:"1px solid #00e676" }}>
                       ↓ CSV
                     </button>
@@ -427,7 +427,7 @@ export default function TrendsPage() {
               </div>
 
               {reportError && (
-                <div className="text-[10px] px-3 py-2 rounded-sm font-bold"
+                <div className="text-base px-3 py-2 rounded-sm font-bold"
                   style={{ background:"#CC000015", border:"1px solid #CC000040", color:"#CC0000" }}>
                   ⚠ {reportError}
                 </div>
@@ -441,14 +441,14 @@ export default function TrendsPage() {
                   <div className="flex items-center justify-between px-4 py-3 rounded-sm"
                     style={{ background:"var(--surface-2)", border:"1px solid var(--border)" }}>
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-[10px] font-bold tracking-widest text-[#00A3B4]">
+                      <span className="text-base font-bold tracking-widest text-[#00A3B4]">
                         EQUIPMENT CONDITION REPORT · {PERIOD_LABELS[report.period]}
                       </span>
-                      <span className="text-[9px]" style={{ color:"var(--text-faint)" }}>
+                      <span className="text-xs" style={{ color:"var(--text-faint)" }}>
                         {report.dateRange.from} – {report.dateRange.to}
                       </span>
                     </div>
-                    <span className="text-[9px] font-mono" style={{ color:"var(--text-faint)" }}>
+                    <span className="text-xs font-mono" style={{ color:"var(--text-faint)" }}>
                       GENERATED: {new Date(report.generatedAt).toLocaleString("id-ID")}
                     </span>
                   </div>
@@ -464,7 +464,7 @@ export default function TrendsPage() {
                     ].map(({ label, val, color }) => (
                       <div key={label} className="flex flex-col gap-1 px-3 py-3 rounded-sm"
                         style={{ background:"var(--surface-2)", border:`1px solid ${color}30` }}>
-                        <span className="text-[8px] tracking-widest font-bold" style={{ color:"var(--text-faint)" }}>{label}</span>
+                        <span className="text-sm tracking-widest font-bold" style={{ color:"var(--text-faint)" }}>{label}</span>
                         <span className="text-[18px] font-bold tabular-nums leading-none" style={{ color }}>{val}</span>
                       </div>
                     ))}
@@ -472,11 +472,11 @@ export default function TrendsPage() {
 
                   {/* Asset condition table */}
                   <div className="overflow-x-auto rounded-sm" style={{ border:"1px solid var(--border)" }}>
-                    <table className="w-full text-[11px]">
+                    <table className="w-full text-sm">
                       <thead>
                         <tr style={{ background:"var(--surface-2)", borderBottom:"1px solid var(--border)" }}>
                           {["TAG ID","NAMA ASET","TIPE","AVG SUHU","MAX SUHU","AVG VIB","MAX VIB","UPTIME","LINK","HEALTH"].map((h) => (
-                            <th key={h} className="px-3 py-2 text-left text-[9px] font-bold tracking-widest"
+                            <th key={h} className="px-3 py-2 text-left text-xs font-bold tracking-widest"
                               style={{ color:"var(--text-faint)" }}>{h}</th>
                           ))}
                         </tr>
@@ -492,16 +492,16 @@ export default function TrendsPage() {
                               borderBottom:"1px solid var(--border-dim)",
                               background: i % 2 === 0 ? "transparent" : "var(--surface-2)",
                             }}>
-                              <td className="px-3 py-2.5 font-mono text-[9px]" style={{ color:"var(--text-faint)" }}>{a.id}</td>
+                              <td className="px-3 py-2.5 font-mono text-xs" style={{ color:"var(--text-faint)" }}>{a.id}</td>
                               <td className="px-3 py-2.5 font-bold" style={{ color:"var(--text)" }}>{a.name}</td>
-                              <td className="px-3 py-2.5 text-[9px]" style={{ color:"var(--text-muted)" }}>{a.type}</td>
+                              <td className="px-3 py-2.5 text-xs" style={{ color:"var(--text-muted)" }}>{a.type}</td>
                               <td className="px-3 py-2.5 font-mono tabular-nums" style={{ color:tempC }}>{a.avgTemp}°C</td>
                               <td className="px-3 py-2.5 font-mono font-bold tabular-nums" style={{ color: a.maxTemp > 60 ? "var(--fault)" : "var(--text)" }}>{a.maxTemp}°C</td>
                               <td className="px-3 py-2.5 font-mono tabular-nums" style={{ color:vibC }}>{a.avgVib}</td>
                               <td className="px-3 py-2.5 font-mono font-bold tabular-nums" style={{ color: a.maxVib > 3.5 ? "var(--fault)" : "var(--text)" }}>{a.maxVib}</td>
-                              <td className="px-3 py-2.5 font-bold text-[9px]" style={{ color: lColor }}>{a.link.toUpperCase()}</td>
+                              <td className="px-3 py-2.5 font-bold text-xs" style={{ color: lColor }}>{a.link.toUpperCase()}</td>
                               <td className="px-3 py-2.5">
-                                <span className="text-[9px] font-bold tracking-widest px-2 py-0.5 rounded-sm"
+                                <span className="text-xs font-bold tracking-widest px-2 py-0.5 rounded-sm"
                                   style={{ color: hColor, background:`${hColor}15`, border:`1px solid ${hColor}40` }}>
                                   {a.health.toUpperCase()}
                                 </span>
@@ -514,7 +514,7 @@ export default function TrendsPage() {
                   </div>
 
                   {/* Footer note */}
-                  <div className="text-[9px] tracking-wide px-1" style={{ color:"var(--text-faint)" }}>
+                  <div className="text-xs tracking-wide px-1" style={{ color:"var(--text-faint)" }}>
                     * Laporan otomatis — batas suhu normal &lt;60°C · batas getaran ISO 10816-3 &lt;3.5 mm/s RMS. Data bersumber dari unit PTTS & RONDS SmartSensor.
                   </div>
                 </div>
@@ -525,7 +525,7 @@ export default function TrendsPage() {
                   style={{ borderColor:"var(--border-dim)", background:"var(--surface-2)" }}>
                   <div className="flex flex-col items-center gap-3">
                     <span className="text-[28px] opacity-20">📊</span>
-                    <span className="text-[10px] font-bold tracking-widest" style={{ color:"var(--text-faint)" }}>
+                    <span className="text-base font-bold tracking-widest" style={{ color:"var(--text-faint)" }}>
                       PILIH PERIODE DAN KLIK "GENERATE REPORT"
                     </span>
                   </div>

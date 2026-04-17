@@ -6,7 +6,7 @@ export default function LogoutButton() {
       <button
         type="submit"
         aria-label="Logout"
-        className="flex items-center gap-2 flex-1 px-3 py-2 rounded-sm text-[9px] font-bold tracking-widest transition-all"
+        className="flex items-center gap-2 flex-1 px-3 py-2 rounded-sm text-xs font-bold tracking-widest transition-all"
         style={{
           color: "#fff",
           background: "#7a0000",
