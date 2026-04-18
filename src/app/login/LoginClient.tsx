@@ -340,7 +340,7 @@ export default function LoginClient() {
                style={{ background: 'var(--surface-2)', border: `1px solid var(--border)` }}>
             <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-2" />
           </div>
-          <h1 className="text-[28px] font-semibold tracking-tight text-center" style={{ color: C.cream }}>
+          <h1 className="text-[32px] tracking-tight text-center italic" style={{ color: C.cream, fontFamily: 'var(--font-serif)' }}>
             IoT Dashboard
           </h1>
           <p className="text-[15px] mt-1 font-medium text-center opacity-80" style={{ color: C.muted }}>
