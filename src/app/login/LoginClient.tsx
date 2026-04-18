@@ -278,288 +278,199 @@ export default function LoginClient() {
     </div>
   );
 
-  /* ── LOGIN FORM ──────────────────────────────────────────── */
+  /* ── APPLE CONCEPT LIQUID GLASS LOGIN FORM ──────────────────────────────────────────── */
   return (
-    <div className="fixed inset-0 flex overflow-hidden animate-slide-in" style={{ background: C.bg }}>
+    <div className="fixed inset-0 flex items-center justify-center overflow-hidden animate-slide-in" style={{ background: C.bg }}>
 
-      {/* ── LEFT — branding ── */}
-      <div className="hidden lg:flex flex-col justify-between w-[52%] relative overflow-hidden p-12"
-        style={{ background: C.bgPanel, borderRight: `1px solid ${C.border}` }}>
+      {/* Full-width Immersive Ambient Background Layer */}
+      <div className="absolute inset-0 z-0">
         <DigitalBackground />
-
-        {/* Logo + company */}
-        <div className="relative z-10 flex items-start gap-4">
-          <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 mt-0.5"
-            style={{ background: C.bgCard, border: `1px solid ${C.border}` }}>
-            <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-1.5" />
-          </div>
-          <div>
-            <p className="text-xs tracking-[.3em] font-bold leading-relaxed" style={{ color: C.muted }}>
-              PT PRIMA TEKINDO<br />TIRTA SEJAHTERA
-            </p>
-          </div>
-        </div>
-
-        {/* Hero */}
-        <div className="relative z-10">
-          {/* Gold rule */}
-          <div className="w-8 h-px mb-8" style={{ background: C.gold }} />
-
-          <h1 className="text-[2.6rem] font-bold leading-[1.1] tracking-tight mb-5" style={{ color: C.cream }}>
-            IoT Dashboard™<br />
-            <span style={{ color: C.gold }}>Industrial</span><br />
-            Monitoring
-          </h1>
-          <p className="text-sm leading-relaxed max-w-xs" style={{ color: C.muted }}>
-            Advanced visualization for industrial assets — motor, pump, and sensor data integration at a glance.
-          </p>
-
-          {/* Subtle stat row */}
-          <div className="flex gap-8 mt-10">
-            {[["MQTT", "Realtime"], ["JWT", "Secured"], ["PostgreSQL", "Persistent"]].map(([label, sub]) => (
-              <div key={label}>
-                <p className="text-xs font-bold tracking-wider" style={{ color: C.gold }}>{label}</p>
-                <p className="text-base mt-0.5" style={{ color: C.muted }}>{sub}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Footer left */}
-        <div className="relative z-10">
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full" style={{ background: C.gold }} />
-            <span className="text-xs font-bold tracking-widest" style={{ color: C.muted }}>SYSTEM ONLINE</span>
-          </div>
-          <p className="text-xs font-bold tracking-widest mt-1" style={{ color: C.faint }}>
-            v1.3.0 · SCRYPT · JWT
-          </p>
-        </div>
       </div>
 
-      {/* ── RIGHT — form ── */}
-      <div className="flex-1 flex flex-col" style={{ background: C.bg }}>
-
-        {/* Top bar: lang picker */}
-        <div className="flex items-center justify-end px-10 py-4"
-          style={{ borderBottom: `1px solid ${C.border}` }}>
-
-          {/* Mobile logo */}
-          <div className="lg:hidden flex items-center gap-3 mr-auto">
-            <div className="w-7 h-7 rounded-full overflow-hidden"
-              style={{ background: C.bgPanel, border: `1px solid ${C.border}` }}>
-              <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-1" />
-            </div>
-            <span className="text-xs tracking-widest font-bold" style={{ color: C.muted }}>PTTS IOT MONITORING</span>
-          </div>
-
-          {/* Language & Theme Toggle */}
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            
-            {/* Language dropdown */}
-            <div className="relative" ref={dropRef}>
+      {/* Floating Glass Pane Window */}
+      <div className="relative z-10 w-full max-w-[420px] mx-4 p-10 flex flex-col animate-fade-up shadow-2xl"
+           style={{ 
+             background: 'var(--surface)', 
+             backdropFilter: 'blur(40px) saturate(200%)',
+             WebkitBackdropFilter: 'blur(40px) saturate(200%)',
+             border: `1px solid var(--border)`,
+             borderRadius: '32px',
+           }}>
+           
+        {/* Language & Theme Toggle (Top Right) */}
+        <div className="absolute top-5 right-6 flex items-center gap-2">
+          <ThemeToggle />
+          
+          <div className="relative" ref={dropRef}>
             <button onClick={() => setOpen(!open)}
-              className="flex items-center gap-2 px-3 py-1.5 text-base font-bold tracking-widest transition-colors"
+              className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
               style={{
-                border: `1px solid ${open ? C.borderHi : C.border}`,
                 color: open ? C.gold : C.muted,
-                background: "transparent",
-                borderRadius: 2,
+                background: open ? C.bgInput : "transparent",
               }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-              </svg>
-              {LANGS.find(l => l.code === lang)?.label}
-              <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-                style={{ transition: "transform .2s", transform: open ? "rotate(180deg)" : "none" }}>
-                <polyline points="6 9 12 15 18 9"/>
               </svg>
             </button>
 
             {open && (
-              <div className="absolute right-0 top-full mt-1 w-36 z-50 overflow-hidden animate-fade-up"
-                style={{ background: C.bgCard, border: `1px solid ${C.border}`, borderRadius: 2 }}>
+              <div className="absolute right-0 top-full mt-2 w-36 z-50 overflow-hidden shadow-xl"
+                style={{ background: 'var(--surface-3)', border: `1px solid var(--border)`, borderRadius: '16px', backdropFilter: 'blur(20px)' }}>
                 {LANGS.map(l => (
                   <button key={l.code} onClick={() => { setLang(l.code); setOpen(false); }}
-                    className="flex items-center justify-between w-full px-3 py-2 text-base font-bold tracking-widest transition-colors text-left"
+                    className="flex items-center justify-between w-full px-4 py-2.5 text-[14px] font-semibold transition-colors text-left"
                     style={{
                       color:      lang === l.code ? C.gold  : C.muted,
-                      background: lang === l.code ? C.faint : "transparent",
-                      borderBottom: `1px solid ${C.border}`,
+                      background: lang === l.code ? C.bgInput : "transparent",
                     }}>
                     <span>{l.label}</span>
-                    <span className="font-normal text-xs" style={{ color: C.muted }}>{l.native}</span>
+                    <span className="font-normal text-xs opacity-60">{l.native}</span>
                   </button>
                 ))}
               </div>
             )}
           </div>
         </div>
-      </div>
 
-        {/* Form */}
-        <div className="flex-1 flex items-center justify-center px-8">
-          <div className="w-full max-w-[340px]">
-
-            {/* Heading */}
-            <div className="mb-9">
-              <div className="w-6 h-px mb-6" style={{ background: C.gold }} />
-              <h2 className="text-3xl font-bold tracking-tight mb-2" style={{ color: C.cream }}>
-                IoT Monitoring
-              </h2>
-              <p className="text-base font-medium" style={{ color: C.muted }}>{t.sub}</p>
-            </div>
-
-            {/* Error */}
-            {state?.error && (
-              <div className="flex items-center gap-2 text-xs px-3 py-2.5 mb-5 animate-fade-up"
-                style={{ background: "#3a100810", border: `1px solid #7a201830`, color: "#c0705a", borderRadius: 2 }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24"
-                  fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-                </svg>
-                {state.error}
-              </div>
-            )}
-
-            <form action={action} className="space-y-5">
-
-              {/* Username */}
-              <div>
-                <label className="block text-[15px] font-bold tracking-widest mb-2" style={{ color: C.muted }}>
-                  {t.uid.toUpperCase()}
-                </label>
-                <div className="relative">
-                  <input type="text" name="username" autoComplete="username"
-                    required maxLength={64} placeholder={t.uid_ph}
-                    className="w-full px-4 py-3 text-base outline-none transition-all"
-                    style={{
-                      background: C.bgInput,
-                      border: `1px solid ${C.border}`,
-                      color: C.cream,
-                      fontFamily: "ui-sans-serif, system-ui, sans-serif",
-                      borderRadius: 2,
-                      fontSize: 15,
-                    }}
-                    onFocus={e => { e.target.style.borderColor = C.borderHi; e.target.style.boxShadow = `0 0 0 2px ${C.gold}20`; }}
-                    onBlur={e  => { e.target.style.borderColor = C.border;   e.target.style.boxShadow = "none"; }}
-                  />
-                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2" style={{ color: C.muted }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
-                      fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                    </svg>
-                  </div>
-                </div>
-              </div>
-
-              {/* Password */}
-              <div>
-                <label className="block text-[15px] font-bold tracking-widest mb-2" style={{ color: C.muted }}>
-                  {t.pwd.toUpperCase()}
-                </label>
-                <div className="relative">
-                  <input type={showPw ? "text" : "password"} name="password"
-                    autoComplete="current-password" required maxLength={64}
-                    placeholder={t.pwd_ph}
-                    className="w-full px-4 py-3 outline-none transition-all pr-16"
-                    style={{
-                      background: C.bgInput,
-                      border: `1px solid ${C.border}`,
-                      color: C.cream,
-                      fontFamily: "ui-sans-serif, system-ui, sans-serif",
-                      borderRadius: 2,
-                      fontSize: 15,
-                    }}
-                    onFocus={e => { e.target.style.borderColor = C.borderHi; e.target.style.boxShadow = `0 0 0 2px ${C.gold}20`; }}
-                    onBlur={e  => { e.target.style.borderColor = C.border;   e.target.style.boxShadow = "none"; }}
-                  />
-                  <button type="button" onClick={() => setShowPw(!showPw)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-sm font-bold tracking-widest transition-colors"
-                    style={{ color: C.muted }}
-                    onMouseEnter={e => (e.currentTarget.style.color = C.gold)}
-                    onMouseLeave={e => (e.currentTarget.style.color = C.muted)}>
-                    {showPw ? "HIDE" : "SHOW"}
-                  </button>
-                </div>
-              </div>
-
-              {/* Remember me */}
-              <div className="flex items-center gap-3">
-                <button type="button" onClick={() => setRem(!remember)}
-                  className="w-4 h-4 flex-shrink-0 flex items-center justify-center transition-all"
-                  style={{
-                    background: remember ? C.gold : "transparent",
-                    border: `1px solid ${remember ? C.gold : C.border}`,
-                    borderRadius: 3,
-                  }}>
-                  {remember && (
-                    <svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24"
-                      fill="none" stroke={C.bg} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
-                  )}
-                </button>
-                <div className="flex-1 flex items-center justify-between">
-                  <span className="text-sm" style={{ color: C.muted }}>{t.remember}</span>
-                  <a href="mailto:adam@ptts.co.id" className="text-sm font-bold tracking-tight hover:underline transition-all" style={{ color: "var(--ptts-teal)" }}>
-                    FORGOT ACCESS?
-                  </a>
-                </div>
-              </div>
-
-              {/* Submit */}
-              <button type="submit" disabled={pending}
-                className="w-full py-3 text-xs font-bold tracking-[.15em] transition-all disabled:opacity-50 mt-1"
-                style={{
-                  background: pending ? C.faint : C.gold,
-                  color: pending ? C.muted : C.bg,
-                  border: "none",
-                  borderRadius: 2,
-                }}
-                onMouseEnter={e => { if (!pending) e.currentTarget.style.background = C.goldDim; }}
-                onMouseLeave={e => { if (!pending) e.currentTarget.style.background = C.gold; }}>
-                {pending ? t.pending : t.btn.toUpperCase()}
-              </button>
-            </form>
-
-            {/* Footer */}
-            <div className="mt-8 pt-5" style={{ borderTop: `1px solid ${C.border}` }}>
-              <p className="text-xs text-center font-bold tracking-widest" style={{ color: C.faint }}>
-                {t.footer}
-              </p>
-            </div>
+        {/* Logo and Brand Title Header */}
+        <div className="flex flex-col items-center mb-10 mt-2">
+          <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 mb-4 shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-transform hover:scale-105"
+               style={{ background: 'var(--surface-2)', border: `1px solid var(--border)` }}>
+            <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-2" />
           </div>
+          <h1 className="text-[28px] font-semibold tracking-tight text-center" style={{ color: C.cream }}>
+            IoT Dashboard
+          </h1>
+          <p className="text-[15px] mt-1 font-medium text-center opacity-80" style={{ color: C.muted }}>
+            {t.sub}
+          </p>
         </div>
 
-        {/* Status bar */}
-        <div className="flex items-center justify-between px-10 py-3"
-          style={{ borderTop: `1px solid ${C.border}` }}>
-          <span className="text-xs font-bold tracking-widest" style={{ color: C.faint }}>v1.3.0</span>
+        {/* Error Notification */}
+        {state?.error && (
+          <div className="flex items-center gap-3 px-4 py-3 mb-6 animate-fade-up shadow-sm"
+            style={{ 
+              background: "rgba(220, 38, 38, 0.1)", 
+              border: `1px solid rgba(220, 38, 38, 0.2)`, 
+              color: "var(--fault)", 
+              borderRadius: "14px" 
+            }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <span className="text-[14px] font-semibold">{state.error}</span>
+          </div>
+        )}
+
+        <form action={action} className="space-y-6">
+          
+          {/* Apple-style Soft Inputs Container */}
+          <div className="space-y-4">
+            
+            {/* Username */}
+            <div className="relative group">
+              <input type="text" name="username" autoComplete="username"
+                required maxLength={64} placeholder={t.uid_ph}
+                className="w-full px-5 py-4 text-[16px] outline-none transition-all placeholder-opacity-50"
+                style={{
+                  background: 'var(--surface-2)',
+                  border: `1px solid var(--border-dim)`,
+                  color: C.cream,
+                  borderRadius: '16px',
+                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
+                }}
+                onFocus={e => { e.target.style.borderColor = C.gold; e.target.style.boxShadow = `0 0 0 3px ${C.gold}30, inset 0 2px 4px rgba(0,0,0,0.02)`; }}
+                onBlur={e  => { e.target.style.borderColor = 'var(--border-dim)';   e.target.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.02)"; }}
+              />
+            </div>
+
+            {/* Password */}
+            <div className="relative group">
+              <input type={showPw ? "text" : "password"} name="password"
+                autoComplete="current-password" required maxLength={64}
+                placeholder={t.pwd_ph}
+                className="w-full px-5 py-4 pr-16 text-[16px] outline-none transition-all placeholder-opacity-50"
+                style={{
+                  background: 'var(--surface-2)',
+                  border: `1px solid var(--border-dim)`,
+                  color: C.cream,
+                  borderRadius: '16px',
+                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
+                }}
+                onFocus={e => { e.target.style.borderColor = C.gold; e.target.style.boxShadow = `0 0 0 3px ${C.gold}30, inset 0 2px 4px rgba(0,0,0,0.02)`; }}
+                onBlur={e  => { e.target.style.borderColor = 'var(--border-dim)';   e.target.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.02)"; }}
+              />
+              <button type="button" onClick={() => setShowPw(!showPw)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-2 hover:bg-[rgba(150,150,150,0.1)] transition-colors"
+                style={{ color: C.muted }}>
+                {showPw ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between px-1">
+            <label className="flex items-center gap-2.5 cursor-pointer group">
+              <div className="w-[18px] h-[18px] rounded-[6px] border flex items-center justify-center transition-all bg-[var(--surface-3)]"
+                   style={{ borderColor: remember ? C.gold : 'var(--border-dim)' }}>
+                {remember && (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                    fill="none" stroke={C.gold} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                )}
+                <input type="checkbox" className="hidden" checked={remember} onChange={() => setRem(!remember)} />
+              </div>
+              <span className="text-[14px] font-medium" style={{ color: C.muted }}>{t.remember}</span>
+            </label>
+            <a href="mailto:adam@ptts.co.id" className="text-[14px] font-semibold hover:opacity-80 transition-opacity" style={{ color: C.gold }}>
+              Forgot Password?
+            </a>
+          </div>
+
+          <button type="submit" disabled={pending}
+            className="w-full py-4 text-[16px] font-semibold rounded-[16px] transition-all disabled:opacity-50 mt-4 shadow-lg hover:shadow-xl active:scale-[0.98]"
+            style={{
+              background: pending ? 'var(--surface-3)' : C.gold,
+              color: pending ? C.muted : '#ffffff',
+              border: "none",
+            }}>
+            {pending ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                {t.pending}
+              </span>
+            ) : t.btn}
+          </button>
+        </form>
+
+        <div className="mt-8 pt-6 flex flex-col items-center" style={{ borderTop: `1px solid var(--border-dim)` }}>
+          <p className="text-[13px] font-medium tracking-wide mb-1 opacity-70" style={{ color: C.muted }}>
+            PT PRIMA TEKINDO TIRTA SEJAHTERA
+          </p>
           <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full" style={{ background: C.gold }} />
-            <span className="text-xs font-bold tracking-widest" style={{ color: C.faint }}>SECURED · SCRYPT · JWT</span>
+            <div className="w-1.5 h-1.5 rounded-full bg-[var(--online)]" />
+            <span className="text-[12px] font-medium opacity-50" style={{ color: C.muted }}>Secure Encryption v1.3.0</span>
           </div>
         </div>
       </div>
 
       {/* Auto Logout Toast */}
       {showInactivityToast && (
-        <div className="fixed top-6 right-6 z-50 animate-slide-in flex shadow-2xl" 
-          style={{ background: "#2a4af5", color: "white", padding: "16px 20px 16px 24px", borderRadius: "1px", minWidth: "320px", maxWidth: "400px" }}>
-          <div className="flex-1 mr-6">
-            <p className="text-base font-semibold" style={{ fontFamily: "ui-sans-serif, system-ui, sans-serif" }}>You have been logged out</p>
-            <p className="text-sm mt-1" style={{ fontFamily: "ui-sans-serif, system-ui, sans-serif" }}>(inactivity or invalid token detected)</p>
+        <div className="fixed top-8 right-8 z-50 animate-slide-in flex shadow-2xl" 
+          style={{ background: 'var(--surface)', backdropFilter: 'blur(20px)', border: '1px solid var(--border)', color: "var(--text)", padding: "16px 20px", borderRadius: "16px" }}>
+          <div className="flex-1 mr-4">
+            <p className="text-[15px] font-semibold">Session Expired</p>
+            <p className="text-[13px] mt-1 opacity-70">For your security, please log in again.</p>
           </div>
-          <button onClick={() => setShowInactivityToast(false)} className="self-start text-white opacity-80 hover:opacity-100 transition-opacity">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
+          <button onClick={() => setShowInactivityToast(false)} className="self-start opacity-50 hover:opacity-100 transition-opacity">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         </div>
       )}
