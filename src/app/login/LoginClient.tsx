@@ -208,16 +208,16 @@ export default function LoginClient() {
 
         {/* Init lines */}
         {["init","bar","ready"].includes(phase) && (
-          <div className="font-mono text-sm space-y-2 mb-6 w-80">
+          <div className="text-base space-y-2.5 mb-8 w-80 font-medium tracking-normal">
             {INIT_LINES.slice(0, lines).map((ln, i) => (
               <div key={i} className="flex items-center gap-3 animate-fade-up">
-                <span className="text-xs px-1.5 py-0.5 font-bold w-10 text-center"
-                   style={{ background: "var(--surface-3)", border: `1px solid var(--border)`, color: "var(--ptts-teal)" }}>
+                <span className="text-[10px] px-2 py-0.5 font-bold w-12 text-center rounded-sm"
+                   style={{ background: "rgba(0,163,180,0.1)", border: `1px solid rgba(0,163,180,0.3)`, color: "var(--ptts-teal)" }}>
                   {ln.tag}
                 </span>
-                <span className="flex-1 font-bold" style={{ color: "var(--text-bright)" }}>{ln.text}</span>
+                <span className="flex-1 font-semibold" style={{ color: "var(--text-bright)" }}>{ln.text}</span>
                 {i < lines - 1 || phase !== "init"
-                  ? <span className="text-base font-bold" style={{ color: "var(--ptts-teal)" }}>OK</span>
+                  ? <span className="text-sm font-black" style={{ color: "var(--online)" }}>READY</span>
                   : <span style={{ color: "var(--ptts-teal)" }} className="animate-blink">_</span>}
               </div>
             ))}
@@ -227,18 +227,18 @@ export default function LoginClient() {
         {/* Progress bar (Glassmorphism standard) */}
         {["bar","ready"].includes(phase) && (
           <div className="w-80 mt-6 animate-[fade-in_0.5s_ease-out_forwards]">
-            <div className="h-[3px] w-full bg-[#0d1620] overflow-hidden rounded-full border border-[rgba(0,163,180,0.2)]">
+            <div className="h-[4px] w-full bg-[rgba(255,255,255,0.05)] overflow-hidden rounded-full border border-[rgba(255,255,255,0.1)]">
               <div 
                 className="h-full bg-gradient-to-r from-[var(--ptts)] to-[var(--ptts-teal)] relative transition-all duration-75"
                 style={{ width: `${pct}%` }}>
-                <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white opacity-50" />
+                <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white opacity-40" />
               </div>
             </div>
-            <div className="flex justify-between mt-2 tracking-widest uppercase">
-              <span className="text-sm font-bold" style={{ color: C.muted }}>
-                {phase === "ready" ? "SYSTEM READY. ENGAGING INTERFACE." : "CALIBRATING ASSET TELEMETRY..."}
+            <div className="flex justify-between mt-3 tracking-normal">
+              <span className="text-sm font-semibold capitalize" style={{ color: "var(--text-muted)" }}>
+                {phase === "ready" ? "System ready. Interface engaging." : "Loading asset telemetry data..."}
               </span>
-              <span className="text-sm font-mono text-[var(--text-bright)]">{pct}%</span>
+              <span className="text-base font-bold" style={{ color: "var(--text-bright)" }}>{pct}%</span>
             </div>
           </div>
         )}
