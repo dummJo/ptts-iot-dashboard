@@ -133,8 +133,9 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
           return (
             <motion.div
               key={item.href}
-              whileHover={{ x: 6, backgroundColor: active ? "#005F8E30" : "var(--surface-2)" }}
-              whileTap={{ scale: 0.97 }}
+              initial={false}
+              whileHover={{ x: 6, scale: 1.02, backgroundColor: active ? "var(--ptts-glow)" : "var(--surface-3)", transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }}
+              whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
             >
               <Link href={item.href}
