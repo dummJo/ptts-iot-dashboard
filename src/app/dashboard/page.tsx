@@ -24,11 +24,12 @@ const containerVariants: Variants = {
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 30, scale: 0.98 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { type: "spring", stiffness: 280, damping: 20 }
+    scale: 1,
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } // Apple macOS Spring ease-out
   }
 };
 export default function DashboardPage() {

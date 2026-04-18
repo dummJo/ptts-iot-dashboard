@@ -17,9 +17,8 @@ export default function KPICard({ label, value, unit, sub, trend, trendUp, color
   return (
     <motion.div 
       className="scada-card flex flex-col h-full"
-      whileHover={{ y: -4, scale: 1.01 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      whileHover={{ y: -6, scale: 1.02, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } }}
+      whileTap={{ scale: 0.97, transition: { duration: 0.2, ease: "easeOut" } }}
     >
       <div className="scada-card-header">
         <span className="scada-label">{label}</span>

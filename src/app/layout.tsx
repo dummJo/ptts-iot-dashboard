@@ -1,9 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import AppWrapper from "@/components/AppWrapper";
 
-const inter = Inter({ subsets: ["latin"], display: 'swap' });
+const mainFont = Plus_Jakarta_Sans({ 
+  subsets: ["latin"], 
+  display: 'swap',
+  weight: ['400', '500', '600', '700', '800']
+});
 
 export const metadata: Metadata = {
   title: "PTTS SmartSensor Dashboard",
@@ -32,7 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className={inter.className} suppressHydrationWarning>
+      <body className={mainFont.className} suppressHydrationWarning>
         <AppWrapper>
           {children}
         </AppWrapper>
