@@ -190,7 +190,7 @@ export default function LoginClient() {
              <div className="absolute inset-x-0 top-0 h-[1px] bg-[var(--ptts-teal)] shadow-[0_0_10px_var(--ptts-teal)] animate-[scan_2s_ease-in-out_infinite]" />
              
              <div className="-rotate-45 flex flex-col items-center justify-center">
-                <span className="text-[var(--text-bright)] text-sm font-bold tracking-[0.3em] opacity-50 mb-1">PTTS</span>
+                <span className="font-black text-sm text-[var(--text-bright)] opacity-60 mb-1" style={{ fontFamily: 'var(--font-inter)', letterSpacing: '0.1em' }}>PTTS</span>
                 <div className="w-3 h-px bg-[var(--ptts-teal)]" />
              </div>
            </div>
@@ -198,11 +198,11 @@ export default function LoginClient() {
 
         {/* Typography Section */}
         <div className={`text-center space-y-2 mb-10 transition-all duration-700 delay-100 ${phase === "logo" ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}>
-          <h1 className="text-2xl md:text-4xl font-black tracking-[0.25em] text-[var(--text-bright)]">
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-[var(--text-bright)]" style={{ fontFamily: 'var(--font-inter)' }}>
             SMART<span className="text-[var(--ptts-teal)]">SENSOR</span>
           </h1>
-          <p className="text-xs tracking-[0.4em] text-[var(--ptts-teal)] uppercase">
-            Industrial IoT Platform <span className="opacity-50">v1.3.0</span>
+          <p className="text-sm tracking-[0.2em] font-bold text-[var(--ptts-teal)] uppercase" style={{ fontFamily: 'var(--font-inter)' }}>
+            Industrial IoT Platform <span className="opacity-60">v1.3.0</span>
           </p>
         </div>
 
@@ -245,13 +245,13 @@ export default function LoginClient() {
       </div>
 
       {/* Technical Diagnostics Overlay */}
-      <div className="absolute top-6 left-8 text-sm tracking-widest text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_1s]">
+      <div className="absolute top-6 left-8 text-[12px] font-bold tracking-wider text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_1s]" style={{ fontFamily: 'var(--font-inter)' }}>
         <p>SYS.UID: 0x8F9A</p>
         <p>MEM.ALLOC: 1024MB</p>
         <p>ENV: PRODUCTION</p>
       </div>
 
-      <div className="absolute top-6 right-8 text-right text-sm tracking-widest text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_1s]">
+      <div className="absolute top-6 right-8 text-right text-[12px] font-bold tracking-wider text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_1s]" style={{ fontFamily: 'var(--font-inter)' }}>
         <p>SEC: SCRYPT-AES</p>
         <p>ENG: WEBSOCKET [A]</p>
         <p>LAT: 12ms</p>
@@ -264,7 +264,7 @@ export default function LoginClient() {
       <div className="absolute bottom-8 right-8 border-b border-r border-[var(--border-dim)] w-8 h-8 opacity-50" />
 
       {/* Footer Branding */}
-      <div className="absolute bottom-5 text-base text-[var(--text-faint)] tracking-[0.6em] opacity-40 uppercase">
+      <div className="absolute bottom-6 text-sm font-bold text-[var(--text-faint)] tracking-[0.3em] opacity-40 uppercase" style={{ fontFamily: 'var(--font-inter)' }}>
         © 2026 PT Prima Tekindo Tirta Sejahtera
       </div>
 
