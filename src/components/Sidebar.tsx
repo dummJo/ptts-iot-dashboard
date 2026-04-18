@@ -196,6 +196,13 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         </div>
       </div>
 
+      {/* Trademark Signature */}
+      <div className="mt-auto mb-5 w-full text-center opacity-30 hover:opacity-100 transition-opacity duration-500">
+        <p className="text-[10px] tracking-[0.15em] font-bold uppercase" style={{ color: "var(--text-muted)" }}>
+          Engineered by <span className="capitalize" style={{ color: "var(--ptts-teal)", fontFamily: "var(--font-serif)", fontSize: "14px", fontStyle: "italic", letterSpacing: "0.02em" }}>dummJo</span>
+        </p>
+      </div>
+
 
 
       {/* Switch Account Modal */}
