@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, useActionState } from "react";
 import LogoutButton from "./LogoutButton";
 import { loginAction, getCurrentSessionAction, autoLogoutAction } from "@/app/actions/auth";
+import { motion, AnimatePresence } from "framer-motion";
 
 const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png";
 
@@ -130,20 +131,27 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
           const active = pathname === item.href;
           const badge = item.isAlarm ? alarmCount : null;
           return (
-            <Link key={item.href} href={item.href}
-              className="flex items-center gap-2.5 px-3 py-2 rounded-sm text-sm font-bold tracking-[.1em] transition-all"
-              style={active
-                ? { background: "#005F8E20", color: "#00c8e0", borderLeft: "2px solid #00A3B4" }
-                : { color: "var(--text-muted)" }}>
-              <span className="w-4 text-center text-sm">{item.icon}</span>
-              <span className="flex-1">{item.label}</span>
-              {badge && badge > 0 ? (
-                <span className="text-xs px-1.5 py-0.5 rounded-sm font-bold"
-                  style={{ background: "var(--badge-fault-bg)", color: "var(--fault)", border: "1px solid var(--fault)" }}>
-                  {badge}
-                </span>
-              ) : null}
-            </Link>
+            <motion.div
+              key={item.href}
+              whileHover={{ x: 6, backgroundColor: active ? "#005F8E30" : "var(--surface-2)" }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            >
+              <Link href={item.href}
+                className="flex items-center gap-2.5 px-3 py-2 rounded-sm text-sm font-bold tracking-[.1em]"
+                style={active
+                  ? { background: "#005F8E20", color: "#00c8e0", borderLeft: "2px solid #00A3B4" }
+                  : { color: "var(--text-muted)", borderLeft: "2px solid transparent" }}>
+                <span className="w-4 text-center text-sm">{item.icon}</span>
+                <span className="flex-1">{item.label}</span>
+                {badge && badge > 0 ? (
+                  <span className="text-xs px-1.5 py-0.5 rounded-sm font-bold"
+                    style={{ background: "var(--badge-fault-bg)", color: "var(--fault)", border: "1px solid var(--fault)" }}>
+                    {badge}
+                  </span>
+                ) : null}
+              </Link>
+            </motion.div>
           );
         })}
       </nav>
@@ -190,57 +198,66 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
 
 
       {/* Switch Account Modal */}
-      {showSwitch && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
-          style={{ background: "#00000080" }}
-          onClick={(e) => { if (e.target === e.currentTarget) setShowSwitch(false); }}
-        >
-          <div
-            className="w-72 rounded-sm p-4 space-y-3"
-            style={{ background: "var(--surface)", border: "1px solid var(--border)", borderTop: "2px solid #00A3B4" }}
+      <AnimatePresence>
+        {showSwitch && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{ background: "#00000080" }}
+            onClick={(e) => { if (e.target === e.currentTarget) setShowSwitch(false); }}
           >
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-bold tracking-[.2em]" style={{ color: "#00A3B4" }}>SWITCH ACCOUNT</p>
-              <button
-                onClick={() => setShowSwitch(false)}
-                className="text-sm leading-none"
-                style={{ color: "#4a6a8a" }}
-              >✕</button>
-            </div>
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 15 }}
+              transition={{ type: "spring", damping: 25, stiffness: 350 }}
+              className="w-72 rounded-sm p-4 space-y-3"
+              style={{ background: "var(--surface)", border: "1px solid var(--border)", borderTop: "2px solid #00A3B4" }}
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-bold tracking-[.2em]" style={{ color: "#00A3B4" }}>SWITCH ACCOUNT</p>
+                <button
+                  onClick={() => setShowSwitch(false)}
+                  className="text-sm leading-none"
+                  style={{ color: "#4a6a8a" }}
+                >✕</button>
+              </div>
 
-            <form action={switchAction} className="space-y-2">
-              <input
-                name="username"
-                type="text"
-                placeholder="USERNAME"
-                autoComplete="username"
-                className="w-full px-2.5 py-2 text-base rounded-sm outline-none tracking-widest"
-                style={{ background: "#0b0e13", border: "1px solid #242d3f", color: "#d4e4f4" }}
-              />
-              <input
-                name="password"
-                type="password"
-                placeholder="PASSWORD"
-                autoComplete="current-password"
-                className="w-full px-2.5 py-2 text-base rounded-sm outline-none tracking-widest"
-                style={{ background: "#0b0e13", border: "1px solid #242d3f", color: "#d4e4f4" }}
-              />
-              {switchState?.error && (
-                <p className="text-xs tracking-widest" style={{ color: "var(--fault)" }}>{switchState.error}</p>
-              )}
-              <button
-                type="submit"
-                disabled={switchPending}
-                className="w-full py-2 text-xs font-bold tracking-widest rounded-sm transition-all disabled:opacity-50"
-                style={{ background: "var(--ptts)", color: "var(--text-bright)", border: "1px solid var(--border)" }}
-              >
-                {switchPending ? "AUTHENTICATING..." : "SWITCH →"}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
+              <form action={switchAction} className="space-y-2">
+                <input
+                  name="username"
+                  type="text"
+                  placeholder="USERNAME"
+                  autoComplete="username"
+                  className="w-full px-2.5 py-2 text-base rounded-sm outline-none tracking-widest"
+                  style={{ background: "#0b0e13", border: "1px solid #242d3f", color: "#d4e4f4" }}
+                />
+                <input
+                  name="password"
+                  type="password"
+                  placeholder="PASSWORD"
+                  autoComplete="current-password"
+                  className="w-full px-2.5 py-2 text-base rounded-sm outline-none tracking-widest"
+                  style={{ background: "#0b0e13", border: "1px solid #242d3f", color: "#d4e4f4" }}
+                />
+                {switchState?.error && (
+                  <p className="text-xs tracking-widest" style={{ color: "var(--fault)" }}>{switchState.error}</p>
+                )}
+                <button
+                  type="submit"
+                  disabled={switchPending}
+                  className="w-full py-2 text-xs font-bold tracking-widest rounded-sm transition-all disabled:opacity-50"
+                  style={{ background: "var(--ptts)", color: "var(--text-bright)", border: "1px solid var(--border)" }}
+                >
+                  {switchPending ? "AUTHENTICATING..." : "SWITCH →"}
+                </button>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </aside>
   );
 }

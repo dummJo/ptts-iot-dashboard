@@ -13,40 +13,53 @@ function sanitize(input: string): string {
 }
 
 export async function loginAction(
-  _prev: { error: string } | null,
+  _prev: { error?: string, success?: boolean } | null,
   formData: FormData
-): Promise<{ error: string } | null> {
-  const username = sanitize(formData.get("username") as string ?? "");
-  const password = sanitize(formData.get("password") as string ?? "");
+): Promise<{ error?: string, success?: boolean } | null> {
+  try {
+    const username = sanitize(formData.get("username") as string ?? "");
+    const password = sanitize(formData.get("password") as string ?? "");
 
-  if (!username || !password) return { error: "Username and password required." };
-  if (INJECTION_PATTERN.test(username) || INJECTION_PATTERN.test(password)) {
-    return { error: "Invalid input detected." };
+    if (!username || !password) return { error: "Username and password required." };
+    if (INJECTION_PATTERN.test(username) || INJECTION_PATTERN.test(password)) {
+      return { error: "Invalid input detected." };
+    }
+
+    // Find user in PostgreSQL via Prisma
+    const user = await prisma.user.findUnique({
+      where: { username }
+    });
+
+    if (!user) return { error: "Invalid credentials." };
+
+    // ⚡ INDUSTRIAL UPGRADE: Using specialized security utility with Scrypt & SHA-256 fallback
+    if (!verifyPassword(password, user.passwordHash)) {
+      return { error: "Invalid credentials." };
+    }
+
+    // Gracefully migrate legacy SHA256 hashes to Scrypt upon successful login
+    if (user.passwordHash.length === 64) {
+        await prisma.user.update({
+            where: { username },
+            data: { passwordHash: hashPassword(password) }
+        });
+    }
+
+    const token = await createSession(username, user.role);
+    const jar = await cookies();
+    jar.set("ptts-session", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production" && process.env.HTTPS_ONLY === "true", // Disabled by default for local IoT network access
+      sameSite: "lax",
+      maxAge: 60 * 60, // 60 minutes
+      path: "/",
+    });
+    
+    return { success: true };
+  } catch (err: any) {
+    console.error("Login Error:", err);
+    return { error: "Internal Error: " + (err.message || String(err)) };
   }
-
-  // Find user in PostgreSQL via Prisma
-  const user = await prisma.user.findUnique({
-    where: { username }
-  });
-
-  if (!user) return { error: "Invalid credentials." };
-
-  // ⚡ INDUSTRIAL UPGRADE: Using specialized security utility with Scrypt
-  if (!verifyPassword(password, user.passwordHash)) {
-    return { error: "Invalid credentials." };
-  }
-
-  const token = await createSession(username, user.role);
-  const jar = await cookies();
-  jar.set("ptts-session", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 60 * 60, // 60 minutes
-    path: "/",
-  });
-
-  redirect("/dashboard");
 }
 
 export async function logoutAction() {

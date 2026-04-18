@@ -13,7 +13,24 @@ import { apiClient } from "@/lib/apiClient";
 import type { DashboardData, Asset } from "@/lib/types";
 import { EMPTY_DASHBOARD } from "@/lib/types";
 import { calculateMachineHealth } from "@/lib/utils";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08, delayChildren: 0.1 }
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 280, damping: 20 }
+  }
+};
 export default function DashboardPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [dashboardData, setDashboardData] = useState<DashboardData>(EMPTY_DASHBOARD);
@@ -119,32 +136,53 @@ export default function DashboardPage() {
         <TopBar title="OVERVIEW" onRefresh={handleRefresh} refreshing={refreshing} connected={dashboardData?.system?.connected} pollInterval={pollInterval} onPollChange={setPollInterval} />
 
         {/* ── Content ── */}
-        <div className="flex-1 p-6 space-y-4">
-
+        <motion.div 
+          className="flex-1 p-6 space-y-4"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
 
           {/* KPI row */}
           <div className="grid grid-cols-4 gap-3">
-            {dynamicKPIs.map((k: any) => <KPICard key={k.label} {...k} />)}
+            {dynamicKPIs.map((k: any) => (
+              <motion.div key={k.label} variants={itemVariants}>
+                <KPICard {...k} />
+              </motion.div>
+            ))}
           </div>
 
           {/* Trend + Donut */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2"><TrendChart trendData={trendData} assets={topAssets} /></div>
-            <div><StatusDonut linkSummary={linkSummary} healthSummary={dynamicHealthSummary} /></div>
+            <motion.div className="col-span-2" variants={itemVariants}>
+              <TrendChart trendData={trendData} assets={topAssets} />
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <StatusDonut linkSummary={linkSummary} healthSummary={dynamicHealthSummary} />
+            </motion.div>
           </div>
 
           {/* Asset table + Vib bar */}
           <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2"><AssetTable assets={dynamicAssets} onOverridesChange={handleOverridesChange} /></div>
-            <div><VibrationBar vibrationData={vibrationBarData} /></div>
+            <motion.div className="col-span-2" variants={itemVariants}>
+              <AssetTable assets={dynamicAssets} onOverridesChange={handleOverridesChange} />
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <VibrationBar vibrationData={vibrationBarData} />
+            </motion.div>
           </div>
 
           {/* Alarms */}
-          <AlertsTable alerts={recentAlerts} />
+          <motion.div variants={itemVariants}>
+            <AlertsTable alerts={recentAlerts} />
+          </motion.div>
 
           {/* Footer bar */}
-          <div className="flex items-center justify-between px-2 py-1 text-sm tracking-[.15em] border-t border-border-dim mt-2"
-            style={{ color:"var(--text-faint)" }}>
+          <motion.div 
+            variants={itemVariants}
+            className="flex items-center justify-between px-2 py-1 text-sm tracking-[.15em] border-t border-border-dim mt-2"
+            style={{ color:"var(--text-faint)" }}
+          >
             <div className="flex gap-4">
               <span>PTTS SMARTSENSOR IoT PLATFORM · v1.3.0</span>
               <span>LIVE CLOUD · MQTT LINK ACTIVE</span>
@@ -152,8 +190,8 @@ export default function DashboardPage() {
             <div className="flex gap-4">
               <span>SESSION: 60 MIN · SCRYPT · JWT</span>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </main>
     </div>
   );
