@@ -127,7 +127,13 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
 
       {/* Nav */}
       <nav className="flex-1 px-2 py-3 space-y-0.5">
-        {navItems.map((item) => {
+        {navItems
+          .filter(item => {
+            // Role block: Only admin can see settings
+            if (item.href.includes("settings") && currentUser?.role !== "admin") return false;
+            return true;
+          })
+          .map((item) => {
           const active = pathname === item.href;
           const badge = item.isAlarm ? alarmCount : null;
           return (
