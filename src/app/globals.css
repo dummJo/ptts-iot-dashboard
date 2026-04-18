@@ -9,98 +9,104 @@
 /*   #00A3B4  → PTTS teal accent                                 */
 /* ──────────────────────────────────────────────────────────────*/
 
-/* Dark (Ignition SCADA — High Accessibility / 40++ Optimized) */
+/* Dark (Apple Concept — Glass & Depth) */
 :root {
-  --bg:          #05070a;
-  --surface:     #0b0f15;
-  --surface-2:   #121822;
-  --surface-3:   #18212e;
-  --border:      #334155; /* BRIGHTER BORDER */
-  --border-dim:  #1e293b; 
-  --text:        #ffffff;
-  --text-muted:  #e2e8f0;  /* Lifted significantly for 40+ */
-  --text-faint:  #cbd5e1;  /* Lifted significantly for 40+ */
+  --bg:          #000000;
+  --bg-gradient: radial-gradient(circle at 15% 50%, rgba(34, 211, 238, 0.15), transparent 40%), radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.15), transparent 50%);
+  --surface:     rgba(28, 28, 30, 0.65);
+  --surface-2:   rgba(44, 44, 46, 0.65);
+  --surface-3:   rgba(58, 58, 60, 0.65);
+  --border:      rgba(255, 255, 255, 0.12); /* Vibrant glass border */
+  --border-dim:  rgba(255, 255, 255, 0.05); 
+  --shadow:      0 10px 40px rgba(0, 0, 0, 0.5);
+  --text:        #f5f5f7;
+  --text-muted:  #a1a1a6;  
+  --text-faint:  #86868b;
   --text-bright: #ffffff;
 
-  /* PTTS brand */
-  --ptts:        #0ea5e9;  /* Brighter */
-  --ptts-teal:   #22d3ee;  
-  --ptts-glow:   rgba(34, 211, 238, 0.5);
+  /* PTTS brand (Apple Blue/Cyan) */
+  --ptts:        #0066cc;  
+  --ptts-teal:   #32ade6;  
+  --ptts-glow:   rgba(50, 173, 230, 0.5);
 
-  /* Status */
-  --online:      #10b981;
-  --warning:     #fbbf24;
-  --fault:       #ef4444;
-  --offline:     #94a3b8;
-
-  /* Metric Channels (Chart Colors) */
-  --metric-vib:      #22d3ee;
-  --metric-temp:     #fbbf24;
-  --metric-rms:      #f97316;
-  --metric-power:    #a855f7;
-  --metric-freq:     #38bdf8;
-  --metric-velocity: #fb923c;
-  --metric-current:  #4ade80;
-
-  /* Badge Backgrounds (Dark Mode) */
-  --badge-online-bg:  rgba(16, 185, 129, 0.15);
-  --badge-warning-bg: rgba(251, 191, 36, 0.15);
-  --badge-fault-bg:   rgba(239, 68, 68, 0.15);
-  --badge-ptts-bg:    rgba(14, 165, 233, 0.15);
-
-  --sidebar-bg:       #030508;
-  --sidebar-glass:    rgba(3, 5, 8, 0.8);
-  --topbar-glass:     rgba(5, 7, 10, 0.65);
-}
-
-/* Light mode — "Creamy Blue" Professional Palette */
-.light {
-  --bg:          #f4f7f9;
-  --surface:     #ffffff;
-  --surface-2:   #e9f0f5;
-  --surface-3:   #dee6ed;
-  --border:      #94a3b8;  /* Darker border for light mode contrast */
-  --border-dim:  #cbd5e1;
-  --text:        #020617;  /* High contrast dark text */
-  --text-muted:  #1e293b;
-  --text-faint:  #334155;
-  --text-bright: #000000;
-  --sidebar-bg:  #ecf1f6;
-  --sidebar-glass: rgba(236, 241, 246, 0.85); /* Bright frosted glass */
-  --topbar-glass:  rgba(255, 255, 255, 0.7);
-
-  /* Brand colors */
-  --ptts:        #0284c7;  
-  --ptts-teal:   #0d9488;  
-  --ptts-glow:   rgba(13, 148, 136, 0.1);
-
-  /* Status */
-  --online:      #15803d;  
-  --warning:     #b45309;  
-  --fault:       #dc2626;  
-  --offline:     #475569;
+  /* Status (Apple UI Colors) */
+  --online:      #34c759;
+  --warning:     #ffcc00;
+  --fault:       #ff3b30;
+  --offline:     #8e8e93;
 
   /* Metric Channels */
-  --metric-vib:      #0369a1;
-  --metric-temp:     #9a3412;
-  --metric-rms:      #c2410c;
-  --metric-power:    #6b21a8;
-  --metric-freq:     #0369a1;
-  --metric-velocity: #ea580c;
-  --metric-current:  #166534;
+  --metric-vib:      #32ade6;
+  --metric-temp:     #ffcc00;
+  --metric-rms:      #ff9500;
+  --metric-power:    #af52de;
+  --metric-freq:     #007aff;
+  --metric-velocity: #ff3b30;
+  --metric-current:  #34c759;
+
+  /* Badge Backgrounds (Dark Mode Glass) */
+  --badge-online-bg:  rgba(52, 199, 89, 0.15);
+  --badge-warning-bg: rgba(255, 204, 0, 0.15);
+  --badge-fault-bg:   rgba(255, 59, 48, 0.15);
+  --badge-ptts-bg:    rgba(0, 102, 204, 0.15);
+
+  --sidebar-bg:       #000000;
+  --sidebar-glass:    rgba(28, 28, 30, 0.7);
+  --topbar-glass:     rgba(28, 28, 30, 0.4);
+}
+
+/* Light mode — Apple Concept Liquid Glass */
+.light {
+  --bg:          #f2f2f7;
+  --bg-gradient: radial-gradient(circle at 15% 50%, rgba(50, 173, 230, 0.1), transparent 40%), radial-gradient(circle at 85% 30%, rgba(0, 122, 255, 0.1), transparent 50%);
+  --surface:     rgba(255, 255, 255, 0.7);
+  --surface-2:   rgba(242, 242, 247, 0.7);
+  --surface-3:   rgba(229, 229, 234, 0.7);
+  --border:      rgba(255, 255, 255, 0.6);
+  --border-dim:  rgba(0, 0, 0, 0.05);
+  --shadow:      0 8px 32px rgba(0, 0, 0, 0.06);
+  --text:        #1d1d1f; 
+  --text-muted:  #86868b;
+  --text-faint:  #a1a1a6;
+  --text-bright: #000000;
+  
+  --sidebar-bg:  #f2f2f7;
+  --sidebar-glass: rgba(255, 255, 255, 0.75);
+  --topbar-glass:  rgba(255, 255, 255, 0.5);
+
+  /* Brand colors */
+  --ptts:        #0066cc;  
+  --ptts-teal:   #32ade6;  
+  --ptts-glow:   rgba(50, 173, 230, 0.2);
+
+  /* Status */
+  --online:      #28cd41;  
+  --warning:     #ffcc00;  
+  --fault:       #ff3b30;  
+  --offline:     #8e8e93;
+
+  /* Metric Channels */
+  --metric-vib:      #32ade6;
+  --metric-temp:     #ffcc00;
+  --metric-rms:      #ff9500;
+  --metric-power:    #af52de;
+  --metric-freq:     #007aff;
+  --metric-velocity: #ff3b30;
+  --metric-current:  #28cd41;
 
   /* Badge Backgrounds (Light Mode) */
-  --badge-online-bg:  rgba(21, 128, 61, 0.08);
-  --badge-warning-bg: rgba(180, 83, 9, 0.08);
-  --badge-fault-bg:   rgba(220, 38, 38, 0.08);
-  --badge-ptts-bg:    rgba(2, 132, 199, 0.08);
+  --badge-online-bg:  rgba(40, 205, 65, 0.1);
+  --badge-warning-bg: rgba(255, 204, 0, 0.1);
+  --badge-fault-bg:   rgba(255, 59, 48, 0.1);
+  --badge-ptts-bg:    rgba(0, 102, 204, 0.1);
 }
 
 body {
   background: var(--bg);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
   color: var(--text);
-  /* font-family property removed so next/font/google can apply Inter */
-  transition: background 0.25s, color 0.25s;
+  transition: background 0.4s ease, color 0.4s ease;
 }
 
 /* ─── Splash / SCADA Animations ─────────────────────────────── */
@@ -127,24 +133,22 @@ body {
 .animate-led        { animation: led-on 2s ease infinite; }
 .animate-flicker    { animation: flicker 8s ease infinite; }
 
-/* ─── SCADA card chrome ──────────────────────────────────────── */
+/* ─── Apple Concept Liquid Glass Cards ────────────────────────────── */
 .scada-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-top: 2px solid var(--ptts-teal);
-  border-radius: 6px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Toned down shadow */
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
   position: relative;
   overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease, border 0.3s ease;
 }
 
 .scada-card-header {
-  background: rgba(var(--surface-2-rgb, 18, 24, 34), 0.4);
-  backdrop-filter: blur(4px);
-  border-bottom: 1px solid var(--border-dim);
-  padding: 8px 14px;
+  background: transparent;
+  padding: 16px 20px 8px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -152,23 +156,23 @@ body {
 
 
 .scada-label {
-  font-size: 12px;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--text-faint); /* Made fainter text brighter */
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-faint); 
 }
 
 .scada-value {
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 36px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
   color: var(--text-bright);
   font-variant-numeric: tabular-nums;
 }
 
 .scada-unit {
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 500;
   color: var(--text-muted);
   margin-left: 6px;
 }
