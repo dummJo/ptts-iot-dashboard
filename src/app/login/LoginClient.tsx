@@ -320,7 +320,7 @@ export default function LoginClient() {
                 style={{ background: 'var(--surface-3)', border: `1px solid var(--border)`, borderRadius: '16px', backdropFilter: 'blur(20px)' }}>
                 {LANGS.map(l => (
                   <button key={l.code} onClick={() => { setLang(l.code); setOpen(false); }}
-                    className="flex items-center justify-between w-full px-4 py-2.5 text-[14px] font-semibold transition-colors text-left"
+                    className="flex items-center justify-between w-full px-4 py-3 text-[16px] font-bold transition-colors text-left"
                     style={{
                       color:      lang === l.code ? C.gold  : C.muted,
                       background: lang === l.code ? C.bgInput : "transparent",
@@ -340,8 +340,8 @@ export default function LoginClient() {
                style={{ background: 'var(--surface-2)', border: `1px solid var(--border)` }}>
             <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-2" />
           </div>
-          <h1 className="text-[32px] tracking-tight text-center italic" style={{ color: C.cream, fontFamily: 'var(--font-serif)' }}>
-            IoT Dashboard
+          <h1 className="text-[36px] font-extrabold tracking-tight text-center" style={{ color: C.cream, fontFamily: 'var(--font-inter)' }}>
+            IOT DASHBOARD
           </h1>
           <p className="text-[15px] mt-1 font-medium text-center opacity-80" style={{ color: C.muted }}>
             {t.sub}
@@ -374,7 +374,7 @@ export default function LoginClient() {
             <div className="relative group">
               <input type="text" name="username" autoComplete="username"
                 required maxLength={64} placeholder={t.uid_ph}
-                className="w-full px-5 py-4 text-[16px] outline-none transition-all placeholder-opacity-50"
+                className="w-full px-5 py-5 text-[18px] font-semibold outline-none transition-all placeholder-opacity-50"
                 style={{
                   background: 'var(--surface-2)',
                   border: `1px solid var(--border-dim)`,
@@ -392,7 +392,7 @@ export default function LoginClient() {
               <input type={showPw ? "text" : "password"} name="password"
                 autoComplete="current-password" required maxLength={64}
                 placeholder={t.pwd_ph}
-                className="w-full px-5 py-4 pr-16 text-[16px] outline-none transition-all placeholder-opacity-50"
+                className="w-full px-5 py-5 pr-16 text-[18px] font-semibold outline-none transition-all placeholder-opacity-50"
                 style={{
                   background: 'var(--surface-2)',
                   border: `1px solid var(--border-dim)`,
@@ -435,7 +435,7 @@ export default function LoginClient() {
           </div>
 
           <button type="submit" disabled={pending}
-            className="w-full py-4 text-[16px] font-semibold rounded-[16px] transition-all disabled:opacity-50 mt-4 shadow-lg hover:shadow-xl active:scale-[0.98]"
+            className="w-full py-5 text-[18px] font-bold rounded-[16px] transition-all disabled:opacity-50 mt-4 shadow-lg hover:shadow-xl active:scale-[0.98]"
             style={{
               background: pending ? 'var(--surface-3)' : C.gold,
               color: pending ? C.muted : '#ffffff',
