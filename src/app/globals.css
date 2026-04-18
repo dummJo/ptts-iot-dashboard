@@ -11,94 +11,95 @@
 
 /* Dark (Apple Concept — Glass & Depth) */
 :root {
-  --bg:          #000000;
+  --bg: #000000;
   --bg-gradient: radial-gradient(circle at 15% 50%, rgba(34, 211, 238, 0.15), transparent 40%), radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.15), transparent 50%);
-  --surface:     rgba(28, 28, 30, 0.65);
-  --surface-2:   rgba(44, 44, 46, 0.65);
-  --surface-3:   rgba(58, 58, 60, 0.65);
-  --border:      rgba(255, 255, 255, 0.12); /* Vibrant glass border */
-  --border-dim:  rgba(255, 255, 255, 0.05); 
-  --shadow:      0 10px 40px rgba(0, 0, 0, 0.5);
-  --text:        #f5f5f7;
-  --text-muted:  #a1a1a6;  
-  --text-faint:  #86868b;
+  --surface: rgba(28, 28, 30, 0.65);
+  --surface-2: rgba(44, 44, 46, 0.65);
+  --surface-3: rgba(58, 58, 60, 0.65);
+  --border: rgba(255, 255, 255, 0.12);
+  /* Vibrant glass border */
+  Scratchpad --border-dim: rgba(255, 255, 255, 0.05);
+  --shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  --text: #f5f5f7;
+  --text-muted: #a1a1a6;
+  --text-faint: #86868b;
   --text-bright: #ffffff;
 
   /* PTTS brand (Apple Blue/Cyan) */
-  --ptts:        #0066cc;  
-  --ptts-teal:   #32ade6;  
-  --ptts-glow:   rgba(50, 173, 230, 0.5);
+  --ptts: #0066cc;
+  --ptts-teal: #32ade6;
+  --ptts-glow: rgba(50, 173, 230, 0.5);
 
   /* Status (Apple UI Colors) */
-  --online:      #34c759;
-  --warning:     #ffcc00;
-  --fault:       #ff3b30;
-  --offline:     #8e8e93;
+  --online: #34c759;
+  --warning: #ffcc00;
+  --fault: #ff3b30;
+  --offline: #8e8e93;
 
   /* Metric Channels */
-  --metric-vib:      #32ade6;
-  --metric-temp:     #ffcc00;
-  --metric-rms:      #ff9500;
-  --metric-power:    #af52de;
-  --metric-freq:     #007aff;
+  --metric-vib: #32ade6;
+  --metric-temp: #ffcc00;
+  --metric-rms: #ff9500;
+  --metric-power: #af52de;
+  --metric-freq: #007aff;
   --metric-velocity: #ff3b30;
-  --metric-current:  #34c759;
+  --metric-current: #34c759;
 
   /* Badge Backgrounds (Dark Mode Glass) */
-  --badge-online-bg:  rgba(52, 199, 89, 0.15);
+  --badge-online-bg: rgba(52, 199, 89, 0.15);
   --badge-warning-bg: rgba(255, 204, 0, 0.15);
-  --badge-fault-bg:   rgba(255, 59, 48, 0.15);
-  --badge-ptts-bg:    rgba(0, 102, 204, 0.15);
+  --badge-fault-bg: rgba(255, 59, 48, 0.15);
+  --badge-ptts-bg: rgba(0, 102, 204, 0.15);
 
-  --sidebar-bg:       #000000;
-  --sidebar-glass:    rgba(28, 28, 30, 0.7);
-  --topbar-glass:     rgba(28, 28, 30, 0.4);
+  --sidebar-bg: #000000;
+  --sidebar-glass: rgba(28, 28, 30, 0.7);
+  --topbar-glass: rgba(28, 28, 30, 0.4);
 }
 
 /* Light mode — Apple Concept Liquid Glass */
 .light {
-  --bg:          #f2f2f7;
+  --bg: #f2f2f7;
   --bg-gradient: radial-gradient(circle at 15% 50%, rgba(50, 173, 230, 0.1), transparent 40%), radial-gradient(circle at 85% 30%, rgba(0, 122, 255, 0.1), transparent 50%);
-  --surface:     rgba(255, 255, 255, 0.7);
-  --surface-2:   rgba(242, 242, 247, 0.7);
-  --surface-3:   rgba(229, 229, 234, 0.7);
-  --border:      rgba(255, 255, 255, 0.6);
-  --border-dim:  rgba(0, 0, 0, 0.05);
-  --shadow:      0 8px 32px rgba(0, 0, 0, 0.06);
-  --text:        #1d1d1f; 
-  --text-muted:  #86868b;
-  --text-faint:  #a1a1a6;
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-2: rgba(242, 242, 247, 0.7);
+  --surface-3: rgba(229, 229, 234, 0.7);
+  --border: rgba(255, 255, 255, 0.6);
+  --border-dim: rgba(0, 0, 0, 0.05);
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  --text: #1d1d1f;
+  --text-muted: #86868b;
+  --text-faint: #a1a1a6;
   --text-bright: #000000;
-  
-  --sidebar-bg:  #f2f2f7;
+
+  --sidebar-bg: #f2f2f7;
   --sidebar-glass: rgba(255, 255, 255, 0.75);
-  --topbar-glass:  rgba(255, 255, 255, 0.5);
+  --topbar-glass: rgba(255, 255, 255, 0.5);
 
   /* Brand colors */
-  --ptts:        #0066cc;  
-  --ptts-teal:   #32ade6;  
-  --ptts-glow:   rgba(50, 173, 230, 0.2);
+  --ptts: #0066cc;
+  --ptts-teal: #32ade6;
+  --ptts-glow: rgba(50, 173, 230, 0.2);
 
   /* Status */
-  --online:      #28cd41;  
-  --warning:     #ffcc00;  
-  --fault:       #ff3b30;  
-  --offline:     #8e8e93;
+  --online: #28cd41;
+  --warning: #ffcc00;
+  --fault: #ff3b30;
+  --offline: #8e8e93;
 
   /* Metric Channels */
-  --metric-vib:      #32ade6;
-  --metric-temp:     #ffcc00;
-  --metric-rms:      #ff9500;
-  --metric-power:    #af52de;
-  --metric-freq:     #007aff;
+  --metric-vib: #32ade6;
+  --metric-temp: #ffcc00;
+  --metric-rms: #ff9500;
+  --metric-power: #af52de;
+  --metric-freq: #007aff;
   --metric-velocity: #ff3b30;
-  --metric-current:  #28cd41;
+  --metric-current: #28cd41;
 
   /* Badge Backgrounds (Light Mode) */
-  --badge-online-bg:  rgba(40, 205, 65, 0.1);
+  --badge-online-bg: rgba(40, 205, 65, 0.1);
   --badge-warning-bg: rgba(255, 204, 0, 0.1);
-  --badge-fault-bg:   rgba(255, 59, 48, 0.1);
-  --badge-ptts-bg:    rgba(0, 102, 204, 0.1);
+  --badge-fault-bg: rgba(255, 59, 48, 0.1);
+  --badge-ptts-bg: rgba(0, 102, 204, 0.1);
 }
 
 body {
@@ -110,28 +111,187 @@ body {
 }
 
 /* ─── Splash / SCADA Animations ─────────────────────────────── */
-@keyframes fade-in    { from { opacity:0; transform:scale(0.94); } to { opacity:1; transform:scale(1); } }
-@keyframes fade-up    { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-@keyframes slide-in   { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
-@keyframes spin-cw    { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
-@keyframes spin-ccw   { from { transform:rotate(0deg); } to { transform:rotate(-360deg); } }
-@keyframes pulse-ring { 0%,100%{ box-shadow:0 0 0 0 #005F8E50; } 60%{ box-shadow:0 0 0 14px #005F8E00; } }
-@keyframes blink      { 0%,100%{ opacity:1; } 50%{ opacity:0; } }
-@keyframes led-on     { 0%,100%{ opacity:1; } 50%{ opacity:.6; } }
-@keyframes scan       { from{ transform:translateY(-100%); } to{ transform:translateY(100vh); } }
-@keyframes flicker    { 0%,100%{ opacity:1; } 92%{ opacity:.95; } 94%{ opacity:.85; } 96%{ opacity:.98; } }
-@keyframes grid-drift { from { background-position: 0 0; } to { background-position: 40px 40px; } }
-@keyframes data-pulse { 0%, 100% { opacity: 0.2; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.5); } }
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
 
-.animate-fade-in    { animation: fade-in  .55s ease forwards; }
-.animate-fade-up    { animation: fade-up  .4s  ease forwards; }
-.animate-slide-in   { animation: slide-in .45s ease forwards; }
-.animate-spin-cw    { animation: spin-cw  3s   linear infinite; }
-.animate-spin-ccw   { animation: spin-ccw 2s   linear infinite; }
-.animate-pulse-ring { animation: pulse-ring 2.5s ease infinite; }
-.animate-blink      { animation: blink 1s step-end infinite; }
-.animate-led        { animation: led-on 2s ease infinite; }
-.animate-flicker    { animation: flicker 8s ease infinite; }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin-cw {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spin-ccw {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes pulse-ring {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 #005F8E50;
+  }
+
+  60% {
+    box-shadow: 0 0 0 14px #005F8E00;
+  }
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes led-on {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .6;
+  }
+}
+
+@keyframes scan {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes flicker {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  92% {
+    opacity: .95;
+  }
+
+  94% {
+    opacity: .85;
+  }
+
+  96% {
+    opacity: .98;
+  }
+}
+
+@keyframes grid-drift {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 40px 40px;
+  }
+}
+
+@keyframes data-pulse {
+
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.5);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in .55s ease forwards;
+}
+
+.animate-fade-up {
+  animation: fade-up .4s ease forwards;
+}
+
+.animate-slide-in {
+  animation: slide-in .45s ease forwards;
+}
+
+.animate-spin-cw {
+  animation: spin-cw 3s linear infinite;
+}
+
+.animate-spin-ccw {
+  animation: spin-ccw 2s linear infinite;
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2.5s ease infinite;
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
+
+.animate-led {
+  animation: led-on 2s ease infinite;
+}
+
+.animate-flicker {
+  animation: flicker 8s ease infinite;
+}
 
 /* ─── Apple Concept Liquid Glass Cards ────────────────────────────── */
 .scada-card {
@@ -159,13 +319,12 @@ body {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.02em;
-  color: var(--text-faint); 
+  color: var(--text-faint);
 }
 
 .scada-value {
-  font-family: var(--font-mono), monospace;
   font-size: 36px;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: -0.04em;
   color: var(--text-bright);
   font-variant-numeric: tabular-nums;
@@ -185,12 +344,40 @@ body {
   border-radius: 50%;
   display: inline-block;
 }
-.led-online  { background: var(--online);  box-shadow: 0 0 6px var(--online); animation: led-on 3s ease infinite; }
-.led-warning { background: var(--warning); box-shadow: 0 0 6px var(--warning); animation: led-on 1.5s ease infinite; }
-.led-fault   { background: var(--fault);   box-shadow: 0 0 8px var(--fault);   animation: led-on 0.8s ease infinite; }
-.led-offline { background: var(--offline); }
+
+.led-online {
+  background: var(--online);
+  box-shadow: 0 0 6px var(--online);
+  animation: led-on 3s ease infinite;
+}
+
+.led-warning {
+  background: var(--warning);
+  box-shadow: 0 0 6px var(--warning);
+  animation: led-on 1.5s ease infinite;
+}
+
+.led-fault {
+  background: var(--fault);
+  box-shadow: 0 0 8px var(--fault);
+  animation: led-on 0.8s ease infinite;
+}
+
+.led-offline {
+  background: var(--offline);
+}
 
 /* Scrollbar */
-::-webkit-scrollbar       { width: 3px; height: 3px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}

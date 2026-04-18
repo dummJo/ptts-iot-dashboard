@@ -454,9 +454,15 @@ export default function LoginClient() {
           <p className="text-[13px] font-medium tracking-wide mb-1 opacity-70" style={{ color: C.muted }}>
             PT PRIMA TEKINDO TIRTA SEJAHTERA
           </p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-4">
             <div className="w-1.5 h-1.5 rounded-full bg-[var(--online)]" />
             <span className="text-[12px] font-medium opacity-50" style={{ color: C.muted }}>Secure Encryption v1.3.0</span>
+          </div>
+          
+          <div className="opacity-40 hover:opacity-100 transition-opacity duration-500 cursor-default">
+            <p className="text-[11px] tracking-[0.15em] font-bold uppercase" style={{ color: C.muted }}>
+              Engineered by <span className="capitalize" style={{ color: C.gold, fontFamily: "var(--font-serif)", fontSize: "16px", fontStyle: "italic", letterSpacing: "0.02em" }}>dummJo</span>
+            </p>
           </div>
         </div>
       </div>
