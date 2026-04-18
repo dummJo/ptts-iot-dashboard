@@ -1,3 +1,5 @@
+"use client";
+
 interface KPICardProps {
   label: string;
   value: string;
@@ -9,9 +11,16 @@ interface KPICardProps {
   ledClass: string;
 }
 
+import { motion } from "framer-motion";
+
 export default function KPICard({ label, value, unit, sub, trend, trendUp, color, ledClass }: KPICardProps) {
   return (
-    <div className="scada-card flex flex-col">
+    <motion.div 
+      className="scada-card flex flex-col h-full"
+      whileHover={{ y: -4, scale: 1.01 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+    >
       <div className="scada-card-header">
         <span className="scada-label">{label}</span>
         <span className={`led ${ledClass}`} />
@@ -28,6 +37,6 @@ export default function KPICard({ label, value, unit, sub, trend, trendUp, color
           <span>{trend}</span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

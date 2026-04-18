@@ -30,8 +30,25 @@ export function hashPassword(password: string): string {
  * @returns Boolean indicating match
  */
 export function verifyPassword(password: string, hash: string): boolean {
-  const newHash = hashPassword(password);
-  return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(newHash, 'hex'));
+  try {
+    const newHash = hashPassword(password);
+    const hashBuf = Buffer.from(hash, 'hex');
+    const newHashBuf = Buffer.from(newHash, 'hex');
+
+    // If lengths match, try timing-safe scrypt comparison
+    if (hashBuf.length === newHashBuf.length) {
+      if (crypto.timingSafeEqual(hashBuf, newHashBuf)) return true;
+    }
+
+    // Fallback for legacy SHA256 hashes (64 hex characters == 32 bytes)
+    if (hash.length === 64) {
+      const sha256Hash = crypto.createHash("sha256").update(password).digest("hex");
+      return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(sha256Hash, 'hex'));
+    }
+  } catch (err) {
+    console.error("verifyPassword error:", err);
+  }
+  return false;
 }
 
 /**

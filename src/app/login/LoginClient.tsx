@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useActionState, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { loginAction } from "@/app/actions/auth";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -99,8 +100,15 @@ export default function LoginClient() {
   const [open,  setOpen]   = useState(false);
   const [remember, setRem] = useState(true);
   const [state, action, pending] = useActionState(loginAction, null);
+  const router = useRouter();
   const dropRef = useRef<HTMLDivElement>(null);
   const t = T[lang];
+
+  useEffect(() => {
+    if (state?.success) {
+      router.push("/dashboard");
+    }
+  }, [state?.success, router]);
 
   const [showInactivityToast, setShowInactivityToast] = useState(false);
 
