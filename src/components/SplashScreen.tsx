@@ -41,22 +41,22 @@ export default function SplashScreen() {
   return (
     <div className="fixed inset-0 z-[9999] bg-[#000000] overflow-hidden flex flex-col items-center justify-center select-none" style={{ fontFamily: "var(--font-inter), sans-serif" }}>
       
-      {/* ── Apple Style Ambient Blur Gradients ── */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-60">
-        <div className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] rounded-full blur-[120px] bg-[#32ade6] opacity-20 animate-[pulse_8s_ease-in-out_infinite_alternate]" />
-        <div className="absolute bottom-1/4 -right-1/4 w-[600px] h-[600px] rounded-full blur-[120px] bg-[#007aff] opacity-20 animate-[pulse_10s_ease-in-out_infinite_alternate]" />
+      {/* ── Apple Style Ambient Blur Gradients (Vibrant) ── */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="absolute top-0 -left-1/4 w-[800px] h-[800px] rounded-full blur-[140px] bg-[#007aff] opacity-40 animate-[pulse_10s_ease-in-out_infinite_alternate]" />
+        <div className="absolute bottom-0 -right-1/4 w-[800px] h-[800px] rounded-full blur-[140px] bg-[#32ade6] opacity-40 animate-[pulse_12s_ease-in-out_infinite_alternate]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[150px] bg-[#5856d6] opacity-20 animate-[pulse_15s_ease-in-out_infinite_alternate]" />
       </div>
 
       <div className="relative z-10 flex flex-col items-center animate-[fade-in_1s_ease-out_forwards]">
         
-        {/* ── Liquid Glass Logo ── */}
+        {/* ── Liquid Glass Logo (Vibrant) ── */}
         <div className="relative w-32 h-32 flex items-center justify-center mb-10 group">
-          <div className="absolute inset-0 bg-white/5 border border-white/10 rounded-[32px] backdrop-blur-2xl shadow-2xl transition-transform duration-1000 group-hover:scale-105" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent rounded-[32px] pointer-events-none" />
+          <div className="absolute inset-0 bg-white/10 border border-white/20 rounded-[36px] backdrop-blur-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-transform duration-1000 group-hover:scale-110" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent rounded-[36px] pointer-events-none" />
           
-          <div className="relative flex flex-col items-center justify-center animate-[fade-up_1s_ease-out_0.2s_forwards] opacity-0 text-[#f5f5f7]">
-            <span className="text-xl font-bold tracking-[0.3em] ml-1">PTTS</span>
-            <div className="w-6 h-[2px] bg-white/30 rounded-full mt-2" />
+          <div className="relative w-20 h-20 animate-[fade-up_1s_ease-out_0.2s_forwards] opacity-0 flex items-center justify-center">
+            <img src="https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png" alt="PTTS" className="w-full h-full object-contain brightness-0 invert opacity-90" />
           </div>
         </div>
 
