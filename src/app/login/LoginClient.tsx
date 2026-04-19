@@ -29,8 +29,8 @@ const T: Record<Lang, {
   pwd: string; pwd_ph: string; remember: string;
   btn: string; pending: string; footer: string;
 }> = {
-  en: { sub:"Operator Sign In",    uid:"Operator ID",  uid_ph:"Enter your operator ID",   pwd:"Password",   pwd_ph:"Enter your password",    remember:"Stay signed in", btn:"Sign In",  pending:"Verifying...", footer:"PT Prima Tekindo Tirta Sejahtera" },
-  id: { sub:"Masuk Operator",      uid:"ID Operator",  uid_ph:"Masukkan ID operator Anda", pwd:"Kata Sandi", pwd_ph:"Masukkan kata sandi",     remember:"Ingat saya",     btn:"Masuk",    pending:"Memverifikasi...", footer:"PT Prima Tekindo Tirta Sejahtera" },
+  en: { sub:"Operator Sign In",    uid:"Operator ID",  uid_ph:"Enter your operator ID",   pwd:"Password",   pwd_ph:"Enter your password",    remember:"Stay signed in", btn:"Sign In",  pending:"Verifying...", footer:"Engineered by DummVinci" },
+  id: { sub:"Masuk Operator",      uid:"ID Operator",  uid_ph:"Masukkan ID operator Anda", pwd:"Kata Sandi", pwd_ph:"Masukkan kata sandi",     remember:"Ingat saya",     btn:"Masuk",    pending:"Memverifikasi...", footer:"Engineered by DummVinci" },
   ja: { sub:"オペレーターサインイン", uid:"オペレーター ID", uid_ph:"ID を入力してください",    pwd:"パスワード",  pwd_ph:"パスワードを入力してください", remember:"ログイン状態を保持", btn:"サインイン", pending:"確認中...", footer:"PT プリマ テキンド ティルタ セジャテラ" },
   ko: { sub:"운영자 로그인",          uid:"운영자 ID",     uid_ph:"운영자 ID를 입력하세요",   pwd:"비밀번호",   pwd_ph:"비밀번호를 입력하세요",    remember:"로그인 유지",     btn:"로그인",    pending:"확인 중...", footer:"PT 프리마 테킨도 티르타 세자테라" },
   zh: { sub:"操作员登录",             uid:"操作员 ID",     uid_ph:"请输入操作员 ID",          pwd:"密码",       pwd_ph:"请输入密码",               remember:"保持登录",        btn:"登录",      pending:"验证中...", footer:"PT 普里马 特金多 蒂尔塔 塞贾特拉" },
@@ -54,39 +54,10 @@ const C = {
 /* ── Digitalization Background Animation ────────────────────── */
 function DigitalBackground() {
   return (
-    <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none opacity-40">
-      {/* Drifting Grid */}
-      <div className="absolute inset-0 opacity-20"
-        style={{ 
-          backgroundImage: `linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)`,
-          backgroundSize: '40px 40px',
-          animation: 'grid-drift 20s linear infinite'
-        }} />
-      
-      {/* Animated Data Bits */}
-      <svg className="w-full h-full">
-        <defs>
-          <filter id="glow-digital">
-            <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-            <feMerge>
-              <feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/>
-            </feMerge>
-          </filter>
-        </defs>
-        {Array.from({ length: 15 }).map((_, i) => (
-          <circle key={i} r={Math.random() * 2 + 1} fill="var(--ptts-teal)" filter="url(#glow-digital)">
-            <animate attributeName="cx" from={`${Math.random() * 100}%`} to={`${Math.random() * 100}%`} dur={`${10 + Math.random() * 20}s`} repeatCount="indefinite" />
-            <animate attributeName="cy" from={`${Math.random() * 100}%`} to={`${Math.random() * 100}%`} dur={`${15 + Math.random() * 15}s`} repeatCount="indefinite" />
-            <animate attributeName="opacity" values="0;0.6;0" dur={`${3 + Math.random() * 5}s`} repeatCount="indefinite" />
-          </circle>
-        ))}
-      </svg>
-
-      {/* Center Glow */}
-      <div className="absolute inset-0"
-        style={{ 
-          background: 'radial-gradient(circle at 50% 50%, var(--ptts-glow) 0%, transparent 70%)'
-        }} />
+    <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none transition-opacity duration-1000">
+      <div className="absolute top-0 -left-1/4 w-[800px] h-[800px] rounded-full blur-[140px] opacity-20 bg-[var(--online)] animate-[pulse_10s_ease-in-out_infinite_alternate]" />
+      <div className="absolute bottom-0 -right-1/4 w-[800px] h-[800px] rounded-full blur-[140px] opacity-30 bg-[#007aff] animate-[pulse_12s_ease-in-out_infinite_alternate]" />
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[150px] opacity-10 bg-[var(--ptts-teal)] animate-[pulse_14s_ease-in-out_infinite_alternate]" />
     </div>
   );
 }
@@ -265,7 +236,7 @@ export default function LoginClient() {
 
       {/* Footer Branding */}
       <div className="absolute bottom-6 text-sm font-bold text-[var(--text-faint)] tracking-[0.3em] opacity-40 uppercase" style={{ fontFamily: 'var(--font-inter)' }}>
-        © 2026 PT Prima Tekindo Tirta Sejahtera
+        © 2026 Engineered by DummVinci
       </div>
 
       {/* Inject Keyframes */}
@@ -288,13 +259,14 @@ export default function LoginClient() {
       </div>
 
       {/* Floating Glass Pane Window */}
-      <div className="relative z-10 w-full max-w-[420px] mx-4 p-10 flex flex-col animate-fade-up shadow-2xl"
+      <div className="relative z-10 w-full max-w-[420px] mx-4 p-10 flex flex-col animate-fade-up shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
            style={{ 
              background: 'var(--surface)', 
-             backdropFilter: 'blur(40px) saturate(200%)',
-             WebkitBackdropFilter: 'blur(40px) saturate(200%)',
+             backdropFilter: 'blur(64px) saturate(200%)',
+             WebkitBackdropFilter: 'blur(64px) saturate(200%)',
              border: `1px solid var(--border)`,
-             borderRadius: '32px',
+             borderTop: `1px solid rgba(255,255,255,0.25)`,
+             borderRadius: '36px',
            }}>
            
         {/* Language & Theme Toggle (Top Right) */}
@@ -336,8 +308,8 @@ export default function LoginClient() {
 
         {/* Logo and Brand Title Header */}
         <div className="flex flex-col items-center mb-10 mt-2">
-          <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 mb-4 shadow-[0_4px_16px_rgba(0,0,0,0.1)] transition-transform hover:scale-105"
-               style={{ background: 'var(--surface-2)', border: `1px solid var(--border)` }}>
+          <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 mb-5 shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-transform hover:scale-105"
+               style={{ background: 'var(--surface-2)', border: `1px solid var(--border)`, borderTop: '1px solid rgba(255,255,255,0.4)', backdropFilter: 'blur(20px)' }}>
             <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-2" />
           </div>
           <h1 className="text-[36px] font-extrabold tracking-tight text-center" style={{ color: C.cream, fontFamily: 'var(--font-inter)' }}>
@@ -374,16 +346,17 @@ export default function LoginClient() {
             <div className="relative group">
               <input type="text" name="username" autoComplete="username"
                 required maxLength={64} placeholder={t.uid_ph}
-                className="w-full px-5 py-5 text-[18px] font-semibold outline-none transition-all placeholder-opacity-50"
+                className="w-full px-5 py-5 text-[17px] font-semibold outline-none transition-all placeholder-opacity-50"
                 style={{
                   background: 'var(--surface-2)',
-                  border: `1px solid var(--border-dim)`,
+                  backdropFilter: 'blur(20px)',
+                  border: `1px solid var(--border)`,
                   color: C.cream,
-                  borderRadius: '16px',
+                  borderRadius: '20px',
                   boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
                 }}
-                onFocus={e => { e.target.style.borderColor = C.gold; e.target.style.boxShadow = `0 0 0 3px ${C.gold}30, inset 0 2px 4px rgba(0,0,0,0.02)`; }}
-                onBlur={e  => { e.target.style.borderColor = 'var(--border-dim)';   e.target.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.02)"; }}
+                onFocus={e => { e.target.style.borderColor = C.gold; e.target.style.boxShadow = `0 0 0 3px ${C.gold}20, inset 0 2px 4px rgba(0,0,0,0.02)`; }}
+                onBlur={e  => { e.target.style.borderColor = 'var(--border)';       e.target.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.02)"; }}
               />
             </div>
 
@@ -392,16 +365,17 @@ export default function LoginClient() {
               <input type={showPw ? "text" : "password"} name="password"
                 autoComplete="current-password" required maxLength={64}
                 placeholder={t.pwd_ph}
-                className="w-full px-5 py-5 pr-16 text-[18px] font-semibold outline-none transition-all placeholder-opacity-50"
+                className="w-full px-5 py-5 pr-16 text-[17px] font-semibold outline-none transition-all placeholder-opacity-50"
                 style={{
                   background: 'var(--surface-2)',
-                  border: `1px solid var(--border-dim)`,
+                  backdropFilter: 'blur(20px)',
+                  border: `1px solid var(--border)`,
                   color: C.cream,
-                  borderRadius: '16px',
+                  borderRadius: '20px',
                   boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
                 }}
-                onFocus={e => { e.target.style.borderColor = C.gold; e.target.style.boxShadow = `0 0 0 3px ${C.gold}30, inset 0 2px 4px rgba(0,0,0,0.02)`; }}
-                onBlur={e  => { e.target.style.borderColor = 'var(--border-dim)';   e.target.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.02)"; }}
+                onFocus={e => { e.target.style.borderColor = C.gold; e.target.style.boxShadow = `0 0 0 3px ${C.gold}20, inset 0 2px 4px rgba(0,0,0,0.02)`; }}
+                onBlur={e  => { e.target.style.borderColor = 'var(--border)';       e.target.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.02)"; }}
               />
               <button type="button" onClick={() => setShowPw(!showPw)}
                 className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-2 hover:bg-[rgba(150,150,150,0.1)] transition-colors"
@@ -451,8 +425,8 @@ export default function LoginClient() {
         </form>
 
         <div className="mt-8 pt-6 flex flex-col items-center" style={{ borderTop: `1px solid var(--border-dim)` }}>
-          <p className="text-[13px] font-medium tracking-wide mb-1 opacity-70" style={{ color: C.muted }}>
-            PT PRIMA TEKINDO TIRTA SEJAHTERA
+          <p className="text-[13px] font-bold tracking-widest mb-1 opacity-70 uppercase" style={{ color: C.muted }}>
+            Engineered by DummVinci
           </p>
           <div className="flex items-center gap-2 mb-4">
             <div className="w-1.5 h-1.5 rounded-full bg-[var(--online)]" />

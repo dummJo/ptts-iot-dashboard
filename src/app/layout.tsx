@@ -9,7 +9,7 @@ const fontMono = JetBrains_Mono({ subsets: ["latin"], display: 'swap', variable:
 
 export const metadata: Metadata = {
   title: "PTTS SmartSensor Dashboard",
-  description: "Real-time IoT monitoring — PT Prima Tekindo Tirta Sejahtera",
+  description: "Real-time IoT monitoring — Engineered by DummVinci",
   icons: {
     icon: "/favicon.ico",
   },

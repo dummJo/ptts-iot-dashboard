@@ -109,7 +109,7 @@ export default function SplashScreen() {
 
       {/* ── Subdued Minimalist Footer ── */}
       <div className="absolute bottom-8 left-0 right-0 text-center text-[9px] text-[#86868b] tracking-[0.4em] uppercase font-medium opacity-0 animate-[fade-in_2s_ease-out_forwards_1.5s]">
-        © 2026 PT Prima Tekindo Tirta Sejahtera
+        © 2026 Engineered by DummVinci
       </div>
 
       <style dangerouslySetInnerHTML={{__html: `
