@@ -370,19 +370,13 @@ export default function LoginClient() {
           </button>
         </form>
 
-        <div className="mt-8 pt-6 flex flex-col items-center" style={{ borderTop: `1px solid var(--border-dim)` }}>
-          <p className="text-[13px] font-bold tracking-widest mb-1 opacity-70 uppercase" style={{ color: C.muted }}>
-            Engineered by DummVinci
+        <div className="mt-10 pt-6 flex flex-col items-center opacity-40" style={{ borderTop: `1px solid var(--border-dim)` }}>
+          <p className="text-[10px] tracking-[0.2em] font-bold uppercase" style={{ color: C.muted }}>
+            Engineered by DummVinci · v1.3.0
           </p>
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-1.5 h-1.5 rounded-full bg-[var(--online)]" />
-            <span className="text-[12px] font-medium opacity-50" style={{ color: C.muted }}>Secure Encryption v1.3.0</span>
-          </div>
-          
-          <div className="opacity-40 hover:opacity-100 transition-opacity duration-500 cursor-default">
-            <p className="text-[11px] tracking-[0.15em] font-bold uppercase" style={{ color: C.muted }}>
-              Engineered by <span className="capitalize" style={{ color: C.gold, fontFamily: "var(--font-serif)", fontSize: "16px", fontStyle: "italic", letterSpacing: "0.02em" }}>dummJo</span>
-            </p>
+          <div className="flex items-center gap-1.5 mt-1.5">
+            <div className="w-1 h-1 rounded-full bg-[var(--online)]" />
+            <span className="text-[9px] font-bold tracking-widest uppercase opacity-60" style={{ color: C.muted }}>Secure Encryption Active</span>
           </div>
         </div>
       </div>
