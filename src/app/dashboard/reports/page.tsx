@@ -44,7 +44,7 @@ function mapDaysToPeriod(days: number): ReportPeriod {
 
 function csvExport(report: ReportSummary) {
   const rows = [
-    ["PTTS SMARTSENSOR – SUMMARY REPORT"],
+    ["Engineered by DummVinci – SUMMARY REPORT"],
     [`Periode: ${PERIOD_LABELS[report.period]}`],
     [`Tanggal: ${report.dateRange.from} – ${report.dateRange.to}`],
     [`Dibuat: ${new Date(report.generatedAt).toLocaleString("id-ID")}`],
@@ -69,7 +69,7 @@ function csvExport(report: ReportSummary) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `PTTS_Report_${report.period}_${report.dateRange.to.replace(/ /g,"_")}.csv`;
+  a.download = `DummVinci_Report_${report.period}_${report.dateRange.to.replace(/ /g,"_")}.csv`;
   a.click();
   URL.revokeObjectURL(url);
 }
@@ -86,7 +86,7 @@ function PrintTemplate({ report }: { report: ReportSummary }) {
       <div style={{ display:"flex", alignItems:"center", borderBottom:"2px solid #003DA5", paddingBottom:12, marginBottom:16 }}>
         <img src={LOGO} alt="PTTS" style={{ width:64, height:64, objectFit:"contain" }} />
         <div style={{ marginLeft:16 }}>
-          <div style={{ fontSize:14, fontWeight:700, color:"#003DA5", letterSpacing:2 }}>PT PRIMA TEKINDO TIRTA SEJAHTERA</div>
+          <div style={{ fontSize:14, fontWeight:700, color:"#003DA5", letterSpacing:2 }}>Engineered by DummVinci</div>
           <div style={{ fontSize:10, color:"#555" }}>Jl. Pangeran Jayakarta, Ruko 141 Blok A1 No. 11, Jembatan Merah, Jakarta Pusat, 10730</div>
           <div style={{ fontSize:9, color:"#888", marginTop:2 }}>Tel: (021) 629 3028 · Email: info@ptts.co.id · Web: www.ptts.co.id</div>
         </div>
@@ -162,10 +162,10 @@ function PrintTemplate({ report }: { report: ReportSummary }) {
 
       {/* Notes */}
       <div style={{ fontSize:9, color:"#888", borderTop:"1px solid #ccc", paddingTop:10, marginTop:8 }}>
-        <b>Catatan:</b> Laporan ini dibuat secara otomatis oleh sistem PTTS SmartSensor. Batas suhu normal: &lt;60°C. Batas getaran normal (ISO 10816-3): &lt;3.5 mm/s RMS. Data bersumber dari unit PTTS SmartSensor & RONDS SmartSensor.
+        <b>Catatan:</b> Laporan ini dibuat secara otomatis oleh sistem Engineered by DummVinci. Batas suhu normal: &lt;60°C. Batas getaran normal (ISO 10816-3): &lt;3.5 mm/s RMS. Data bersumber dari unit PTTS SmartSensor & RONDS SmartSensor.
       </div>
       <div style={{ fontSize:9, color:"#888", marginTop:8, display:"flex", justifyContent:"space-between" }}>
-        <span>PTTS SmartSensor IoT Platform · v1.3.0 (LIVE DEMO)</span>
+        <span>Engineered by DummVinci · v1.3.0 (LIVE DEMO)</span>
         <span>Dokumen ini adalah data simulasi — bukan pengganti inspeksi manual</span>
       </div>
     </div>
@@ -263,7 +263,7 @@ export default function TrendsPage() {
             {/* ── Report Generator Panel ── */}
             <div className="scada-card p-4 flex flex-col gap-4">
               <div className="scada-card-header">
-                <span className="scada-label">REPORT GENERATOR · PT PRIMA TEKINDO TIRTA SEJAHTERA</span>
+                <span className="scada-label">REPORT GENERATOR · Engineered by DummVinci</span>
                 <div className="flex items-center gap-1.5">
                   <span className="led led-online" style={{ width:6, height:6 }} />
                   <span className="text-xs font-bold tracking-widest text-[#00e676]">READY</span>
@@ -515,7 +515,7 @@ export default function TrendsPage() {
 
                   {/* Footer note */}
                   <div className="text-xs tracking-wide px-1" style={{ color:"var(--text-faint)" }}>
-                    * Laporan otomatis — batas suhu normal &lt;60°C · batas getaran ISO 10816-3 &lt;3.5 mm/s RMS. Data bersumber dari unit PTTS & RONDS SmartSensor.
+                    * Laporan otomatis — batas suhu normal &lt;60°C · batas getaran ISO 10816-3 &lt;3.5 mm/s RMS. Data bersumber dari unit Engineered by DummVinci & RONDS.
                   </div>
                 </div>
               )}

@@ -187,7 +187,7 @@ export default function DashboardPage() {
             style={{ color:"var(--text-faint)" }}
           >
             <div className="flex gap-4">
-              <span>PTTS SMARTSENSOR IoT PLATFORM · v1.3.0</span>
+              <span>Engineered by DummVinci · v1.3.0</span>
               <span>LIVE CLOUD · MQTT LINK ACTIVE</span>
             </div>
             <div className="flex gap-4">
