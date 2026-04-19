@@ -2,8 +2,8 @@
   "name": "ptts-iot-dashboard",
   "version": "1.3.0",
   "private": true,
-  "description": "Industrial Monitoring System Dashboard for PT Prima Tekindo Tirta Sejahtera",
-  "author": "PTTS Engineering",
+  "description": "Industrial Monitoring System Dashboard — Engineered by DummVinci",
+  "author": "DummVinci Engineering",
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
