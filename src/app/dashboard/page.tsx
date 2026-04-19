@@ -13,6 +13,14 @@ import type { DashboardData, Asset } from "@/lib/types";
 import { EMPTY_DASHBOARD } from "@/lib/types";
 import { calculateMachineHealth } from "@/lib/utils";
 
+/**
+ * DASHBOARD SHELL — ENGINEERED BY DUMMVINCI
+ * UI/UX STANDARDIZATION: ENTERPRISE GRID (META/DELOITTE STYLE)
+ * - Proportional Spacing: 8px / 1rem Grid System
+ * - Layout Integrity: Overflow protection & Sticky context
+ * - Visual Hierarchy: Primary (KPI) -> Secondary (Trends) -> Operational (Tables)
+ */
+
 export default function DashboardPage() {
   const [refreshing, setRefreshing] = useState(false);
   const [dashboardData, setDashboardData] = useState<DashboardData>(EMPTY_DASHBOARD);
@@ -72,8 +80,8 @@ export default function DashboardPage() {
       label: "TOTAL NODES",
       value: (linkSummary.online + linkSummary.offline).toString(),
       unit: "/ 200",
-      sub: `${linkSummary.offline} nodes currently unreachable`,
-      trend: "Within capacity",
+      sub: `${linkSummary.offline} nodes unreachable`,
+      trend: "Stable",
       trendUp: true,
       color: "var(--ptts-teal)",
       ledClass: "led-online",
@@ -83,7 +91,7 @@ export default function DashboardPage() {
       value: (dynamicHealthSummary.warning + dynamicHealthSummary.fault).toString(),
       unit: "EVENTS",
       sub: `${dynamicHealthSummary.fault} fault · ${dynamicHealthSummary.warning} warning`,
-      trend: "Priority: HIGH",
+      trend: "Urgent",
       trendUp: false,
       color: "var(--fault)",
       ledClass: "led-fault",
@@ -92,67 +100,79 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-[var(--bg)]">
-      {/* ── Stable Menu Architecture (Standard Sidebar) ── */}
+    <div className="flex h-screen w-full bg-[var(--bg)] overflow-hidden">
+      {/* ── Fixed Sidebar ── */}
       <Sidebar pollInterval={pollInterval} />
 
-      <main className="flex-1 min-w-0 flex flex-col h-screen overflow-hidden">
-        {/* ── Top bar ── */}
-        <TopBar 
-          title="OVERVIEW" 
-          onRefresh={handleRefresh} 
-          refreshing={refreshing} 
-          connected={dashboardData?.system?.connected} 
-          pollInterval={pollInterval} 
-          onPollChange={setPollInterval} 
-        />
+      {/* ── Main Work Area ── */}
+      <main className="flex-1 flex flex-col min-w-0 h-full relative">
+        
+        {/* ── TopBar (Sticky/Fixed Context) ── */}
+        <header className="flex-none z-30">
+          <TopBar 
+            title="OVERVIEW" 
+            onRefresh={handleRefresh} 
+            refreshing={refreshing} 
+            connected={dashboardData?.system?.connected} 
+            pollInterval={pollInterval} 
+            onPollChange={setPollInterval} 
+          />
+        </header>
 
-        {/* ── Scrollable Dashboard Content (Stable Re-implementation) ── */}
-        <div className="flex-1 overflow-y-auto overflow-x-hidden p-6 space-y-8 custom-scrollbar">
+        {/* ── Scrollable Workspace ── */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar bg-gradient-to-b from-transparent to-[#ffffff02]">
           
-          {/* KPI grid */}
-          <section className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-            {dynamicKPIs.map((k: any) => (
-              <KPICard key={k.label} {...k} />
-            ))}
-          </section>
+          <div className="max-w-[1920px] mx-auto p-4 md:p-6 lg:p-8 space-y-10">
+            
+            {/* 1. Executive Summary KPIs (Deloitte Pattern: Horizontal Consistency) */}
+            <section aria-label="KPI Summary">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+                {dynamicKPIs.map((k: any) => (
+                  <KPICard key={k.label} {...k} />
+                ))}
+              </div>
+            </section>
 
-          {/* Metrics row */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2">
-              <TrendChart trendData={trendData} assets={topAssets} />
-            </div>
-            <div>
-              <StatusDonut linkSummary={linkSummary} healthSummary={dynamicHealthSummary} />
-            </div>
+            {/* 2. Primary Analytics Layer */}
+            <section aria-label="Trend Analytics" className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+              <div className="xl:col-span-8">
+                <TrendChart trendData={trendData} assets={topAssets} />
+              </div>
+              <div className="xl:col-span-4 h-full">
+                <StatusDonut linkSummary={linkSummary} healthSummary={dynamicHealthSummary} />
+              </div>
+            </section>
+
+            {/* 3. Operational Data Layer (Meta Pattern: Complex Data Handling) */}
+            <section aria-label="Asset Inventory" className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+              <div className="xl:col-span-8 order-2 xl:order-1">
+                <AssetTable assets={dynamicAssets} onOverridesChange={handleOverridesChange} />
+              </div>
+              <div className="xl:col-span-4 order-1 xl:order-2">
+                <VibrationBar vibrationData={vibrationBarData} />
+              </div>
+            </section>
+
+            {/* 4. Fault Management Layer */}
+            <section aria-label="Alarm History">
+              <AlertsTable alerts={recentAlerts} />
+            </section>
+
+            {/* 5. Minimalist Enterprise Footer (Deloitte Style: Standardized Metadata) */}
+            <footer className="pt-12 pb-8 border-t border-[var(--border-dim)] flex flex-col md:flex-row items-center justify-between text-[10px] tracking-[.25em] text-[var(--text-faint)] font-bold gap-6">
+              <div className="flex flex-wrap justify-center md:justify-start gap-x-8 gap-y-2">
+                <span className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--online)]" />
+                  ENGINEERED BY DUMMVINCI · v1.3.0
+                </span>
+                <span className="opacity-60 uppercase">Cloud Infrastructure Active</span>
+              </div>
+              <div className="flex flex-wrap justify-center md:justify-end gap-x-8 gap-y-2 uppercase">
+                <span className="opacity-60">SCRYPT AES-256 SECURED</span>
+                <span className="text-[var(--ptts-teal)] opacity-80">Latency: 12ms nominal</span>
+              </div>
+            </footer>
           </div>
-
-          {/* Asset intelligence row */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 order-2 lg:order-1">
-              <AssetTable assets={dynamicAssets} onOverridesChange={handleOverridesChange} />
-            </div>
-            <div className="order-1 lg:order-2">
-              <VibrationBar vibrationData={vibrationBarData} />
-            </div>
-          </div>
-
-          {/* Alarm sequence */}
-          <section>
-            <AlertsTable alerts={recentAlerts} />
-          </section>
-
-          {/* Final footer info strip */}
-          <footer className="pt-8 border-t border-[var(--border-dim)] flex flex-col md:flex-row items-center justify-between text-[10px] tracking-[.2em] text-[var(--text-faint)] font-bold gap-4">
-            <div className="flex gap-6">
-              <span>ENGINEERED BY DUMMVINCI · BUILD 1.3.0</span>
-              <span>LIVE CLOUD INFRASTRUCTURE ACTIVE</span>
-            </div>
-            <div className="flex gap-6">
-              <span>SCRYPT AES-256 SECURED</span>
-              <span>NOMINAL SCADA LATENCY: 12MS</span>
-            </div>
-          </footer>
         </div>
       </main>
     </div>
