@@ -198,7 +198,7 @@ export default function DashboardPage() {
       </main>
 
       {/* ── Mobile Navigation Bar (iPhone 17 Pro Standard) ── */}
-      <nav className="mobile-nav lg:hidden">
+      <nav className="mobile-nav flex lg:hidden">
         <button className="mobile-nav-item active">
           <span className="mobile-nav-icon">▤</span>
           <span>DASHBOARD</span>
