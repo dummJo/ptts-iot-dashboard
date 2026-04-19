@@ -120,131 +120,78 @@ export default function LoginClient() {
     }
   }, []);
 
-  /* ── SPLASH ──────────────────────────────────────────────── */
+  /* ── APPLE STYLE SPLASH SEQUENCE ────────────────────────────────────────── */
   if (phase !== "login") return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center overflow-hidden select-none"
-      style={{ background: "#03060a" }}>
+    <div className="fixed inset-0 z-[9999] bg-[#000000] overflow-hidden flex flex-col items-center justify-center select-none" style={{ fontFamily: "var(--font-inter), sans-serif" }}>
       
-      {/* ── Ambient Radial Glow ── */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-[800px] h-[800px] rounded-full" 
-          style={{ 
-            background: "radial-gradient(circle, rgba(0,163,180,0.06) 0%, rgba(0,0,0,0) 70%)",
-            transform: `scale(${phase === "ready" ? 1.2 : 0.8})`,
-            transition: "transform 2s cubic-bezier(0.16, 1, 0.3, 1)"
-          }} 
-        />
+      {/* ── Apple Style Ambient Blur Gradients ── */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-60">
+        <div className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] rounded-full blur-[120px] bg-[#32ade6] opacity-15 animate-[pulse_8s_ease-in-out_infinite_alternate]" />
+        <div className="absolute bottom-1/4 -right-1/4 w-[600px] h-[600px] rounded-full blur-[120px] bg-[#007aff] opacity-15 animate-[pulse_10s_ease-in-out_infinite_alternate]" />
       </div>
 
-      {/* ── Subtitle Grid Overlay ── */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
-           style={{ 
-             backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
-             backgroundSize: '48px 48px',
-             backgroundPosition: 'center center',
-             animation: 'grid-pan 30s linear infinite'
-           }} />
-
-      {/* ── Vertical & Horizontal Precision Crosshairs ── */}
-      <div className="absolute top-1/2 left-0 w-full h-px bg-[var(--ptts-teal)] opacity-20 -translate-y-1/2 scale-x-0 animate-[scaleX_1.5s_cubic-bezier(0.8,0,0.2,1)_forwards_0.5s]" />
-      <div className="absolute left-1/2 top-0 w-px h-full bg-[var(--ptts-teal)] opacity-20 -translate-x-1/2 scale-y-0 animate-[scaleY_1.5s_cubic-bezier(0.8,0,0.2,1)_forwards_0.8s]" />
-
-      <div className="relative z-10 flex flex-col items-center">
+      <div className="relative z-10 flex flex-col items-center animate-[fade-in_1s_ease-out_forwards]">
         
-        {/* ── 3D Geometry / Abstract Brand Architecture ── */}
-        <div className={`relative w-36 h-36 flex items-center justify-center mb-10 transition-all duration-1000 ${phase === "logo" ? "opacity-0 scale-90" : "opacity-100 scale-100"}`}>
-           <div className="absolute inset-0 border border-[var(--ptts-teal)] opacity-10 rounded-full animate-[spin_10s_linear_infinite]" />
-           <div className="absolute inset-2 border-[0.5px] border-dashed border-[var(--ptts-teal)] opacity-30 rounded-full animate-[spin_15s_linear_infinite_reverse]" />
-           
-           <div className="relative w-16 h-16 bg-[#001018] border border-[var(--ptts-teal)] rotate-45 shadow-[0_0_20px_rgba(0,163,180,0.1)] flex items-center justify-center overflow-hidden transition-all duration-1000"
-                style={{ boxShadow: phase === "ready" ? '0 0 50px rgba(0,163,180,0.5)' : '0 0 20px rgba(0,163,180,0.1)' }}>
-             <div className="absolute inset-x-0 top-0 h-[1px] bg-[var(--ptts-teal)] shadow-[0_0_10px_var(--ptts-teal)] animate-[scan_2s_ease-in-out_infinite]" />
-             
-             <div className="-rotate-45 flex flex-col items-center justify-center">
-                <span className="font-black text-sm text-[var(--text-bright)] opacity-60 mb-1" style={{ fontFamily: 'var(--font-inter)', letterSpacing: '0.1em' }}>PTTS</span>
-                <div className="w-3 h-px bg-[var(--ptts-teal)]" />
-             </div>
-           </div>
+        {/* ── Liquid Glass Logo ── */}
+        <div className={`relative w-28 h-28 flex items-center justify-center mb-10 transition-all duration-1000 ${phase === "logo" ? "opacity-0 scale-90" : "opacity-100 scale-100"}`}>
+          <div className="absolute inset-0 bg-white/5 border border-white/10 rounded-[28px] backdrop-blur-2xl shadow-2xl" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent rounded-[28px] pointer-events-none" />
+          
+          <div className="relative flex flex-col items-center justify-center text-[#f5f5f7]">
+            <span className="text-lg font-bold tracking-[0.3em] ml-1">PTTS</span>
+            <div className="w-5 h-[1.5px] bg-white/30 rounded-full mt-1.5" />
+          </div>
         </div>
 
-        {/* Typography Section */}
-        <div className={`text-center space-y-2 mb-10 transition-all duration-700 delay-100 ${phase === "logo" ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}>
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-[var(--text-bright)]" style={{ fontFamily: 'var(--font-inter)' }}>
-            SMART<span className="text-[var(--ptts-teal)]">SENSOR</span>
+        {/* ── Cinematic Typography ── */}
+        <div className={`text-center space-y-3 mb-12 transition-all duration-700 delay-100 ${phase === "logo" ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}>
+          <h1 className="text-3xl md:text-5xl font-semibold tracking-widest text-[#f5f5f7]">
+            SMART<span className="text-[#86868b] font-light">SENSOR</span>
           </h1>
-          <p className="text-sm tracking-[0.2em] font-bold text-[var(--ptts-teal)] uppercase" style={{ fontFamily: 'var(--font-inter)' }}>
-            Industrial IoT Platform <span className="opacity-60">v1.3.0</span>
+          <p className="text-xs md:text-sm tracking-[0.4em] text-[#a1a1a6] uppercase">
+            Industrial IoT Platform <span className="opacity-40 font-mono italic">v1.3.0</span>
           </p>
         </div>
 
-        {/* Init lines */}
-        {["init","bar","ready"].includes(phase) && (
-          <div className="text-base space-y-2.5 mb-8 w-80 font-medium tracking-normal">
-            {INIT_LINES.slice(0, lines).map((ln, i) => (
-              <div key={i} className="flex items-center gap-3 animate-fade-up">
-                <span className="text-[10px] px-2 py-0.5 font-bold w-12 text-center rounded-sm"
-                   style={{ background: "rgba(0,163,180,0.1)", border: `1px solid rgba(0,163,180,0.3)`, color: "var(--ptts-teal)" }}>
-                  {ln.tag}
-                </span>
-                <span className="flex-1 font-semibold" style={{ color: "var(--text-bright)" }}>{ln.text}</span>
-                {i < lines - 1 || phase !== "init"
-                  ? <span className="text-sm font-black" style={{ color: "var(--online)" }}>READY</span>
-                  : <span style={{ color: "var(--ptts-teal)" }} className="animate-blink">_</span>}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Progress bar (Glassmorphism standard) */}
-        {["bar","ready"].includes(phase) && (
-          <div className="w-80 mt-6 animate-[fade-in_0.5s_ease-out_forwards]">
-            <div className="h-[4px] w-full bg-[rgba(255,255,255,0.05)] overflow-hidden rounded-full border border-[rgba(255,255,255,0.1)]">
-              <div 
-                className="h-full bg-gradient-to-r from-[var(--ptts)] to-[var(--ptts-teal)] relative transition-all duration-75"
-                style={{ width: `${pct}%` }}>
-                <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-r from-transparent to-white opacity-40" />
-              </div>
-            </div>
-            <div className="flex justify-between mt-3 tracking-normal">
-              <span className="text-sm font-semibold capitalize" style={{ color: "var(--text-muted)" }}>
-                {phase === "ready" ? "System ready. Interface engaging." : "Loading asset telemetry data..."}
+        {/* ── Apple-Style Loading Indicator ── */}
+        <div className={`w-64 md:w-80 space-y-4 transition-opacity duration-500 ${["bar","ready"].includes(phase) ? "opacity-100" : "opacity-0"}`}>
+          <div className="flex justify-between items-end px-1">
+            <span className="text-[10px] font-semibold tracking-widest text-[#a1a1a6] uppercase w-48 truncate">
+              {phase === "ready" ? "System ready. Engaging." : "Loading telemetry data..."}
+            </span>
+            <div className="text-right">
+              <span className="text-[10px] font-semibold text-[#f5f5f7] tabular-nums tracking-widest">
+                {pct}%
               </span>
-              <span className="text-base font-bold" style={{ color: "var(--text-bright)" }}>{pct}%</span>
             </div>
           </div>
-        )}
+          
+          {/* Progress Bar Container: Liquid Glass Pill */}
+          <div className="h-1.5 w-full bg-white/10 overflow-hidden rounded-full backdrop-blur-md">
+            <div 
+              className="h-full bg-white relative rounded-full"
+              style={{ width: `${pct}%`, transition: "width 0.2s linear" }}
+            >
+              <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-r from-transparent to-white opacity-80" />
+            </div>
+          </div>
+          
+          {/* Subdued metrics blending into background */}
+          <div className="flex justify-between pt-2 text-[9px] text-[#86868b] tracking-[0.2em] font-medium font-mono uppercase">
+            <span>SCRYPT-AES</span>
+            <span>WEBSOCKET</span>
+            <span>12MS LATENCY</span>
+          </div>
+        </div>
       </div>
 
-      {/* Technical Diagnostics Overlay */}
-      <div className="absolute top-6 left-8 text-[12px] font-bold tracking-wider text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_1s]" style={{ fontFamily: 'var(--font-inter)' }}>
-        <p>SYS.UID: 0x8F9A</p>
-        <p>MEM.ALLOC: 1024MB</p>
-        <p>ENV: PRODUCTION</p>
-      </div>
-
-      <div className="absolute top-6 right-8 text-right text-[12px] font-bold tracking-wider text-[var(--text-faint)] opacity-0 animate-[fade-in_2s_ease-out_forwards_1s]" style={{ fontFamily: 'var(--font-inter)' }}>
-        <p>SEC: SCRYPT-AES</p>
-        <p>ENG: WEBSOCKET [A]</p>
-        <p>LAT: 12ms</p>
-      </div>
-
-      {/* Frame Corners */}
-      <div className="absolute top-8 left-8 border-t border-l border-[var(--border-dim)] w-8 h-8 opacity-50" />
-      <div className="absolute top-8 right-8 border-t border-r border-[var(--border-dim)] w-8 h-8 opacity-50" />
-      <div className="absolute bottom-8 left-8 border-b border-l border-[var(--border-dim)] w-8 h-8 opacity-50" />
-      <div className="absolute bottom-8 right-8 border-b border-r border-[var(--border-dim)] w-8 h-8 opacity-50" />
-
-      {/* Footer Branding */}
-      <div className="absolute bottom-6 text-sm font-bold text-[var(--text-faint)] tracking-[0.3em] opacity-40 uppercase" style={{ fontFamily: 'var(--font-inter)' }}>
+      {/* ── Subdued Minimalist Footer ── */}
+      <div className="absolute bottom-8 left-0 right-0 text-center text-[9px] text-[#86868b] tracking-[0.4em] uppercase font-medium opacity-0 animate-[fade-in_2s_ease-out_forwards_1.5s]">
         © 2026 Engineered by DummVinci
       </div>
 
-      {/* Inject Keyframes */}
       <style dangerouslySetInnerHTML={{__html: `
-        @keyframes scaleX { to { transform: translate(-50%, -50%) scaleX(1); } }
-        @keyframes scaleY { to { transform: translate(-50%, -50%) scaleY(1); } }
         @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes grid-pan { from { background-position: 0 0; } to { background-position: -48px 48px; } }
       `}} />
     </div>
   );
