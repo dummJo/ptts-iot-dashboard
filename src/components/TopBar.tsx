@@ -30,19 +30,19 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
   }, []);
 
   return (
-    <div className="sticky top-0 z-50 flex items-center justify-between px-5 py-2 backdrop-blur-xl transition-colors duration-250"
+    <div className="sticky top-0 z-50 flex items-center justify-between px-4 md:px-5 py-2 backdrop-blur-xl transition-colors duration-250 responsive-container"
       style={{ background: "var(--topbar-glass)", borderBottom: "1px solid var(--border-dim)", minHeight: 44, boxShadow: "0 4px 30px rgba(0,0,0,0.05)" }}>
       {/* Left — breadcrumb */}
-      <div className="flex items-center gap-2 text-xs tracking-widest font-bold">
-        <span style={{ color:"var(--text-muted)" }}>PTTS</span>
-        <span style={{ color:"var(--text-faint)" }}>›</span>
-        <span style={{ color:"var(--text-muted)" }}>SMARTSENSOR</span>
-        <span style={{ color:"var(--text-faint)" }}>›</span>
-        <span style={{ color:"var(--ptts-teal)" }}>{title.toUpperCase()}</span>
+      <div className="flex items-center gap-2 text-[10px] md:text-xs tracking-widest font-bold">
+        <span className="hidden md:inline" style={{ color:"var(--text-muted)" }}>PTTS</span>
+        <span className="hidden md:inline" style={{ color:"var(--text-faint)" }}>›</span>
+        <span className="hidden md:inline" style={{ color:"var(--text-muted)" }}>SMARTSENSOR</span>
+        <span className="hidden md:inline" style={{ color:"var(--text-faint)" }}>›</span>
+        <span className="text-[13px] md:text-xs" style={{ color:"var(--ptts-teal)" }}>{title.toUpperCase()}</span>
       </div>
 
       {/* Center — timestamp */}
-      <div className="flex items-center gap-3 text-xs font-mono">
+      <div className="hidden lg:flex items-center gap-3 text-xs font-mono">
         <span style={{ color:"var(--text-faint)" }}>{dateStr.toUpperCase()}</span>
         <span className="tabular-nums" style={{ color:"var(--text-muted)" }}>{timeStr}</span>
         <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm"
@@ -51,8 +51,8 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
             border: `1px solid ${connected ? "var(--online)" : "var(--fault)"}` 
           }}>
           <span className={`led ${connected ? "led-online" : "led-fault"}`} style={{ width:6, height:6 }} />
-          <span style={{ color: connected ? "var(--online)" : "var(--fault)" }} className="tracking-widest font-bold">
-            {connected ? "LIVE DEMO" : "OFFLINE (RETAINED DATA)"}
+          <span style={{ color: connected ? "var(--online)" : "var(--fault)" }} className="tracking-widest font-bold text-[9px] md:text-xs">
+            {connected ? "LIVE" : "OFFLINE"}
           </span>
         </div>
       </div>
@@ -69,23 +69,23 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
         </button>
         <ThemeToggle />
         {onPollChange && (
-          <>
+          <div className="hidden sm:block">
             <label htmlFor="poll-interval" className="sr-only">Polling Interval</label>
             <select id="poll-interval" aria-label="Polling Interval" value={pollInterval} onChange={(e) => onPollChange(Number(e.target.value))}
               className="text-xs px-2 py-1.5 rounded-sm font-bold tracking-widest transition-all outline-none"
               style={{ border:"1px solid var(--border)", color:"var(--text)", background:"var(--surface)" }}>
-              <option value={5000}>POLL: 5s</option>
-              <option value={60000}>POLL: 1m</option>
-              <option value={300000}>POLL: 5m</option>
-              <option value={0}>POLL: OFF</option>
+              <option value={5000}>5s</option>
+              <option value={60000}>1m</option>
+              <option value={300000}>5m</option>
+              <option value={0}>OFF</option>
             </select>
-          </>
+          </div>
         )}
         {onRefresh && (
           <button onClick={onRefresh} disabled={refreshing}
-            className="text-xs px-2.5 py-1.5 rounded-sm font-bold tracking-widest transition-all disabled:opacity-50"
+            className="text-[10px] md:text-xs px-2 md:px-2.5 py-1.5 rounded-sm font-bold tracking-widest transition-all disabled:opacity-50"
             style={{ border:"1px solid var(--border)", color:"var(--text-muted)", background:"var(--surface)" }}>
-            {refreshing ? "◯ SYNCING..." : "⟳ REFRESH"}
+            {refreshing ? "..." : "⟳"}
           </button>
         )}
       </div>

@@ -1,5 +1,6 @@
 import prisma from './prisma';
 import { NotificationService } from './notifications';
+import { formatLocalNumber } from './utils';
 
 /**
  * Industrial Alarm Engine
@@ -25,10 +26,10 @@ export async function runAlarmEngine(assetId: string, telemetry: { vibOverall?: 
     
     if (vib >= limits.fault) {
       severity = 'critical';
-      msg = `Vibration Fault: ${vib.toFixed(2)}mm/s exceeded limit ${limits.fault}mm/s`;
+      msg = `Vibration Fault: ${formatLocalNumber(vib, 2)}mm/s exceeded limit ${formatLocalNumber(limits.fault, 1)}mm/s`;
     } else if (vib >= limits.warning) {
       severity = 'warning';
-      msg = `Vibration Warning: ${vib.toFixed(2)}mm/s exceeded limit ${limits.warning}mm/s`;
+      msg = `Vibration Warning: ${formatLocalNumber(vib, 2)}mm/s exceeded limit ${formatLocalNumber(limits.warning, 1)}mm/s`;
     }
 
     if (severity) {

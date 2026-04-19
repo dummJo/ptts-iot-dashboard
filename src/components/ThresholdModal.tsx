@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import type { Asset } from "@/lib/types";
-import { getISO10816Thresholds } from "@/lib/utils";
+import { getISO10816Thresholds, formatLocalNumber } from "@/lib/utils";
 
 // ISO class label based on power
 function getISOClass(powerKW?: number) {
@@ -72,13 +72,18 @@ export default function ThresholdModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.65)" }}
+      className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4"
+      style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(8px)" }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
-        className="w-full max-w-md rounded-sm shadow-2xl"
-        style={{ background: "var(--surface)", border: "1px solid var(--border)", borderTop: "2px solid var(--ptts-teal)" }}
+        className="w-full max-w-md rounded-t-[32px] md:rounded-2xl shadow-2xl animate-fade-up"
+        style={{ 
+          background: "var(--surface)", 
+          border: "1px solid var(--border)", 
+          borderTop: "1px solid rgba(255,255,255,0.2)",
+          paddingBottom: "env(safe-area-inset-bottom, 20px)" 
+        }}
       >
         {/* Header */}
         <div className="flex items-start justify-between px-5 py-4" style={{ borderBottom: "1px solid var(--border-dim)" }}>
@@ -106,15 +111,16 @@ export default function ThresholdModal({
         <div className="px-5 py-4 space-y-5">
 
           {/* Motor Specs */}
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             {[
               { label: "Motor Power", value: asset.powerKW ? `${asset.powerKW} kW` : "Not set" },
               { label: "Foundation", value: asset.foundation ? asset.foundation.charAt(0).toUpperCase() + asset.foundation.slice(1) : "Rigid" },
               { label: "ISO Class", value: getISOClass(asset.powerKW) },
-            ].map(({ label, value }) => (
-              <div key={label} className="rounded-sm px-3 py-2" style={{ background: "var(--surface-2)", border: "1px solid var(--border-dim)" }}>
-                <p className="text-sm tracking-widest font-bold" style={{ color: "var(--text-faint)" }}>{label.toUpperCase()}</p>
-                <p className="text-base font-bold mt-0.5" style={{ color: "var(--text)" }}>{value}</p>
+            ].map(({ label, value }, i) => (
+              <div key={label} className={`rounded-xl px-3 py-2`} 
+                style={{ background: "var(--surface-2)", border: "1px solid var(--border-dim)" }}>
+                <p className="text-[10px] md:text-sm tracking-widest font-bold" style={{ color: "var(--text-faint)" }}>{label.toUpperCase()}</p>
+                <p className="text-sm md:text-base font-bold mt-0.5" style={{ color: "var(--text)" }}>{value}</p>
               </div>
             ))}
           </div>
@@ -125,8 +131,8 @@ export default function ThresholdModal({
               ISO 10816 BASELINE  —  Read only
             </p>
             <div className="flex gap-6 text-base">
-              <span>Warning: <strong className="font-black" style={{ color: "#ffdd00" }}>{isoDefaults.warning} mm/s</strong></span>
-              <span>Fault: <strong className="font-black" style={{ color: "#ff6666" }}>{isoDefaults.fault} mm/s</strong></span>
+              <span>Warning: <strong className="font-black" style={{ color: "#ffdd00" }}>{formatLocalNumber(isoDefaults.warning, 1)} mm/s</strong></span>
+              <span>Fault: <strong className="font-black" style={{ color: "#ff6666" }}>{formatLocalNumber(isoDefaults.fault, 1)} mm/s</strong></span>
             </div>
           </div>
 
@@ -137,8 +143,8 @@ export default function ThresholdModal({
             </p>
             <div className="flex justify-between text-xs mb-1.5" style={{ color: "var(--text-faint)" }}>
               <span>0</span>
-              <span className="font-black" style={{ color: "#fff" }}>{asset.vib.toFixed(2)} mm/s</span>
-              <span>{sliderMax.toFixed(0)}</span>
+              <span className="font-black" style={{ color: "#fff" }}>{formatLocalNumber(asset.vib, 2)} mm/s</span>
+              <span>{formatLocalNumber(sliderMax, 0)}</span>
             </div>
             <RangeBar value={asset.vib} warning={warning} fault={fault} max={sliderMax} />
             <div className="flex justify-between mt-1.5 text-sm" style={{ color: "var(--text-faint)" }}>
@@ -161,7 +167,7 @@ export default function ThresholdModal({
                   Warning Threshold
                 </label>
                 <span className="text-sm font-black font-mono tabular-nums" style={{ color: "#ffdd00" }}>
-                  {warning.toFixed(1)} mm/s
+                  {formatLocalNumber(warning, 1)} mm/s
                 </span>
               </div>
               <input
@@ -178,22 +184,20 @@ export default function ThresholdModal({
                   background: readOnly ? "var(--surface-3)" : `linear-gradient(to right, #ffdd00 ${(warning / sliderMax * 100).toFixed(1)}%, var(--surface-3) 0%)`,
                 }}
               />
-              <div className="flex gap-2 mt-1">
-                {[isoDefaults.warning, isoDefaults.warning * 0.75, isoDefaults.warning * 1.25].map((preset) => (
-                  <button
-                    key={preset}
-                    disabled={readOnly}
-                    onClick={() => handleWarning(parseFloat(preset.toFixed(1)))}
-                    className="text-sm px-2 py-0.5 rounded-sm font-bold tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                    style={{ border: "1px solid #ffdd0040", color: "#ffdd00", background: "transparent" }}
-                    onMouseEnter={(e) => { if (!readOnly) e.currentTarget.style.background = "#ffdd0015"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                  >
-                    {preset.toFixed(1)}
-                  </button>
-                ))}
-                <span className="text-sm self-center ml-1" style={{ color: "var(--text-faint)" }}>Presets</span>
-              </div>
+                {/* Presets - Larger for touch */}
+                <div className="flex gap-2 mt-2">
+                  {[isoDefaults.warning, isoDefaults.warning * 0.75, isoDefaults.warning * 1.25].map((preset) => (
+                    <button
+                      key={preset}
+                      disabled={readOnly}
+                      onClick={() => handleWarning(parseFloat(preset.toFixed(1)))}
+                      className="text-xs md:text-sm px-3 py-1.5 rounded-xl font-bold tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95"
+                      style={{ border: "1px solid #ffdd0040", color: "#ffdd00", background: "rgba(255,204,0,0.05)" }}
+                    >
+                      {formatLocalNumber(preset, 1)}
+                    </button>
+                  ))}
+                </div>
             </div>
 
             {/* Fault slider */}
@@ -203,7 +207,7 @@ export default function ThresholdModal({
                   Fault Threshold
                 </label>
                 <span className="text-sm font-black font-mono tabular-nums" style={{ color: "#ff6666" }}>
-                  {fault.toFixed(1)} mm/s
+                  {formatLocalNumber(fault, 1)} mm/s
                 </span>
               </div>
               <input
@@ -220,22 +224,20 @@ export default function ThresholdModal({
                   background: readOnly ? "var(--surface-3)" : `linear-gradient(to right, #ff6666 ${(fault / sliderMax * 100).toFixed(1)}%, var(--surface-3) 0%)`,
                 }}
               />
-              <div className="flex gap-2 mt-1">
-                {[isoDefaults.fault, isoDefaults.fault * 0.75, isoDefaults.fault * 1.25].map((preset) => (
-                  <button
-                    key={preset}
-                    disabled={readOnly}
-                    onClick={() => handleFault(parseFloat(preset.toFixed(1)))}
-                    className="text-sm px-2 py-0.5 rounded-sm font-bold tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                    style={{ border: "1px solid #ff666640", color: "#ff6666", background: "transparent" }}
-                    onMouseEnter={(e) => { if (!readOnly) e.currentTarget.style.background = "#ff666615"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                  >
-                    {preset.toFixed(1)}
-                  </button>
-                ))}
-                <span className="text-sm self-center ml-1" style={{ color: "var(--text-faint)" }}>Presets</span>
-              </div>
+                {/* Presets - Larger for touch */}
+                <div className="flex gap-2 mt-2">
+                  {[isoDefaults.fault, isoDefaults.fault * 0.75, isoDefaults.fault * 1.25].map((preset) => (
+                    <button
+                      key={preset}
+                      disabled={readOnly}
+                      onClick={() => handleFault(parseFloat(preset.toFixed(1)))}
+                      className="text-xs md:text-sm px-3 py-1.5 rounded-xl font-bold tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95"
+                      style={{ border: "1px solid #ff666640", color: "#ff6666", background: "rgba(255,102,102,0.05)" }}
+                    >
+                      {formatLocalNumber(preset, 1)}
+                    </button>
+                  ))}
+                </div>
             </div>
           </div>
 

@@ -122,10 +122,10 @@ body {
   }
 }
 
-@keyframes fade-up {
+@keyframes slide-up {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(30px);
   }
 
   to {
@@ -134,16 +134,15 @@ body {
   }
 }
 
-@keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
+@keyframes spring-scale {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
 
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+@keyframes blur-fade {
+  from { backdrop-filter: blur(0px); opacity: 0; }
+  to { backdrop-filter: blur(28px); opacity: 1; }
 }
 
 @keyframes spin-cw {
@@ -261,11 +260,11 @@ body {
 }
 
 .animate-fade-up {
-  animation: fade-up .4s ease forwards;
+  animation: slide-up .6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .animate-slide-in {
-  animation: slide-in .45s ease forwards;
+  animation: slide-in .7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .animate-spin-cw {
@@ -296,21 +295,58 @@ body {
 .scada-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15); /* Apple-style highlight */
+  border-radius: 28px; /* Slightly more rounded for iPhone 17 Pro feel */
   box-shadow: var(--shadow);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  backdrop-filter: blur(32px) saturate(210%);
+  -webkit-backdrop-filter: blur(32px) saturate(210%);
   position: relative;
   overflow: hidden;
-  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease, border 0.3s ease;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scada-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.scada-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
 }
 
 .scada-card-header {
   background: transparent;
-  padding: 16px 20px 8px 20px;
+  padding: 20px 24px 8px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+/* Haptic Effect (Apple Standard) */
+.haptic-press {
+  transition: transform 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.haptic-press:active {
+  transform: scale(0.96);
+}
+
+.glass-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.glass-btn:active {
+  transform: scale(0.97);
+  background: var(--surface-3);
 }
 
 
@@ -364,6 +400,83 @@ body {
 
 .led-offline {
   background: var(--offline);
+}
+
+/* ─── Responsive Adjustments (iPhone 17 Pro & iPad) ─────────── */
+:root {
+  --safe-top: env(safe-area-inset-top, 20px);
+  --safe-bottom: env(safe-area-inset-bottom, 20px);
+  --grid-cols: 4;
+}
+
+@media (max-width: 1200px) {
+  :root { --grid-cols: 2; }
+}
+
+@media (max-width: 768px) {
+  :root { 
+    --grid-cols: 1; 
+    --safe-top: env(safe-area-inset-top, 44px); /* Dynamic Island */
+  }
+  
+  .scada-card {
+    border-radius: 22px;
+  }
+}
+
+/* Mobile Bottom Navigation (Apple Style) */
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(70px + env(safe-area-inset-bottom, 0px));
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 100;
+  animation: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-faint);
+  font-size: 10px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.mobile-nav-item.active {
+  color: var(--ptts-teal);
+}
+
+.mobile-nav-icon {
+  font-size: 22px;
+}
+
+/* Layout Padding Fixes */
+.responsive-container {
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+  padding-left: max(16px, env(safe-area-inset-left));
+  padding-right: max(16px, env(safe-area-inset-right));
+}
+
+/* iPad specific tweaks */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
 }
 
 /* Scrollbar */
