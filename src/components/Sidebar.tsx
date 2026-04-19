@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, useActionState } from "react";
 import LogoutButton from "./LogoutButton";
 import { loginAction, getCurrentSessionAction, autoLogoutAction } from "@/app/actions/auth";
-import { motion, AnimatePresence } from "framer-motion";
 
 const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png";
 
@@ -48,13 +47,11 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
     fetchSession();
     fetchAlarmsCount();
     
-    // Refresh count periodically if not off
     let alarmIv: NodeJS.Timeout;
     if (pollInterval > 0) {
       alarmIv = setInterval(fetchAlarmsCount, pollInterval);
     }
 
-    // Get server startup time from sessionStorage or initialize
     const storageKey = "db-startup-time";
     let startTime = sessionStorage.getItem(storageKey);
     if (!startTime) {
@@ -75,7 +72,6 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
     updateUptime();
     const iv = setInterval(updateUptime, 1000);
 
-    // Auto Logout Setup (60 minutes inactivity)
     let inactivityTimer: NodeJS.Timeout;
     const resetInactivity = () => {
       clearTimeout(inactivityTimer);
@@ -84,7 +80,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
       }, 60 * 60 * 1000); // 60 minutes
     };
 
-    resetInactivity(); // Init
+    resetInactivity();
     const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'];
     events.forEach(e => window.addEventListener(e, resetInactivity));
 
@@ -94,184 +90,123 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
       clearTimeout(inactivityTimer);
       events.forEach(e => window.removeEventListener(e, resetInactivity));
     };
-  }, []);
+  }, [pollInterval]);
 
   return (
-    <aside className="hidden lg:flex relative flex-col w-52 min-h-screen shrink-0 z-40 transition-colors duration-250"
-      style={{ background: "var(--sidebar-glass)", borderRight: "1px solid var(--border-dim)", backdropFilter: "blur(20px)", boxShadow: "5px 0 20px rgba(0,0,0,0.1)" }}>
+    <aside className="relative flex flex-col w-56 min-h-screen shrink-0 z-40 bg-[var(--sidebar-bg)] border-r border-[#ffffff10]">
 
       {/* Header */}
-      <div className="px-4 py-4" style={{ borderBottom: "1px solid var(--border-dim)" }}>
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-9 h-9 rounded-full overflow-hidden shrink-0"
-            style={{ border: "1.5px solid var(--border)", background: "var(--surface-2)" }}>
-            <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-0.5" />
+      <div className="px-5 py-6 border-b border-[#ffffff08]">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-[#ffffff15] bg-[#00000020]">
+            <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-1" />
           </div>
           <div>
-            <p className="text-xs font-bold tracking-[.25em] text-ptts-teal" style={{ color: "var(--ptts-teal)" }}>PTTS</p>
-            <p className="text-sm tracking-widest" style={{ color: "var(--text-faint)" }}>IoT PLATFORM</p>
+            <p className="text-xs font-bold tracking-[.3em] text-[#00c8e0]">PTTS</p>
+            <p className="text-sm tracking-widest text-[#86868b]">IoT PLATFORM</p>
           </div>
         </div>
-        {/* Live status */}
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm transition-all"
-          style={{
-            background: pollInterval === 0 ? "var(--surface-2)" : "var(--badge-online-bg)",
-            border: pollInterval === 0 ? "1px solid var(--border)" : "1px solid var(--online)",
-          }}>
-          <span className={`led ${pollInterval === 0 ? "led-offline" : "led-online"}`} style={{ width: 5, height: 5 }} />
-          <span className="text-xs tracking-widest font-black" style={{ color: pollInterval === 0 ? "var(--text-muted)" : "var(--online)" }}>
-            {pollInterval === 0 ? "POLL: OFF" : `LIVE · ${pollInterval >= 60000 ? pollInterval / 60000 + "M" : pollInterval / 1000 + "S"}`}
+        
+        {/* Status indicator */}
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[#00c8e010] border border-[#00c8e030]">
+          <span className={`led ${pollInterval === 0 ? "led-offline" : "led-online"}`} style={{ width: 6, height: 6 }} />
+          <span className="text-[10px] tracking-widest font-bold text-[#00c8e0]">
+            {pollInterval === 0 ? "POLLING: OFF" : `SYSTEM: LIVE · ${pollInterval >= 60000 ? pollInterval / 60000 + "M" : pollInterval / 1000 + "S"}`}
           </span>
         </div>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 px-2 py-3 space-y-0.5">
+      {/* Navigation Menu (Reverted to Stable Architecture) */}
+      <nav className="flex-1 px-3 py-6 space-y-1">
         {navItems
-          .filter(item => {
-            // Role block: Only admin can see settings
-            if (item.href.includes("settings") && currentUser?.role !== "admin") return false;
-            return true;
-          })
+          .filter(item => !(item.href.includes("settings") && currentUser?.role !== "admin"))
           .map((item) => {
-          const active = pathname === item.href;
-          const badge = item.isAlarm ? alarmCount : null;
-          return (
-            <motion.div
-              key={item.href}
-              initial={false}
-              whileHover={{ x: 6, scale: 1.02, backgroundColor: active ? "var(--ptts-glow)" : "var(--surface-3)", transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              <Link href={item.href}
-                className="flex items-center gap-2.5 px-3 py-2 rounded-sm text-sm font-bold tracking-[.1em]"
+            const active = pathname === item.href;
+            const badge = item.isAlarm ? alarmCount : null;
+            return (
+              <Link key={item.href} href={item.href}
+                className="flex items-center gap-3 px-4 py-3 rounded-sm text-sm font-bold tracking-widest transition-all hover:bg-[#ffffff05]"
                 style={active
-                  ? { background: "#005F8E20", color: "#00c8e0", borderLeft: "2px solid #00A3B4" }
-                  : { color: "var(--text-muted)", borderLeft: "2px solid transparent" }}>
-                <span className="w-4 text-center text-sm">{item.icon}</span>
+                  ? { background: "#00c8e015", color: "#00c8e0", borderLeft: "3px solid #00c8e0" }
+                  : { color: "#a1a1a6", borderLeft: "3px solid transparent" }}>
+                <span className="w-5 text-center text-[16px]">{item.icon}</span>
                 <span className="flex-1">{item.label}</span>
-                {badge && badge > 0 ? (
-                  <span className="text-xs px-1.5 py-0.5 rounded-sm font-bold"
-                    style={{ background: "var(--badge-fault-bg)", color: "var(--fault)", border: "1px solid var(--fault)" }}>
+                {badge && badge > 0 && (
+                  <span className="text-[10px] px-1.5 py-0.5 rounded-sm font-bold bg-[#ff3b3020] text-[#ff3b30] border border-[#ff3b3040]">
                     {badge}
                   </span>
-                ) : null}
+                )}
               </Link>
-            </motion.div>
-          );
-        })}
+            );
+          })}
       </nav>
 
-      {/* System info */}
-      <div className="px-3 py-2 mx-2 mb-2 rounded-sm text-xs space-y-1"
-        style={{ background: "var(--surface)", border: "1px solid var(--border-dim)" }}>
+      {/* System Metrics Strip */}
+      <div className="px-4 py-3 mx-3 mb-4 rounded-sm bg-[#ffffff03] border border-[#ffffff08] text-[10px] space-y-2">
         <div className="flex justify-between">
-          <span style={{ color: "var(--text-faint)" }}>UPTIME</span>
-          <span style={{ color: "var(--text-muted)", fontFamily: "monospace" }}>{uptime}</span>
+          <span className="text-[#86868b]">SYSTEM UPTIME</span>
+          <span className="text-[#f5f5f7] font-mono">{uptime}</span>
         </div>
         <div className="flex justify-between">
-          <span style={{ color: "var(--text-faint)" }}>TAGS</span>
-          <span style={{ color: "var(--text-muted)" }}>147 / 200</span>
+          <span className="text-[#86868b]">CONNECTED NODES</span>
+          <span className="text-[#f5f5f7]">147 / 200</span>
         </div>
         <div className="flex justify-between">
-          <span style={{ color: "var(--text-faint)" }}>DATA</span>
-          <span className="text-ptts-teal">SIMULATED</span>
+          <span className="text-[#86868b]">STATUS</span>
+          <span className="text-[#00c8e0]">NOMINAL</span>
         </div>
       </div>
 
-      {/* User */}
-      <div className="px-3 py-3 mx-2 mb-2 rounded-sm" style={{ background: "var(--badge-ptts-bg)", border: "1px solid var(--border)", borderTop: "2px solid var(--online)" }}>
-        <div
-          className="flex items-center gap-2 px-2 mb-2 rounded-sm cursor-pointer transition-all"
-          style={{ background: "transparent" }}
-          onClick={() => setShowSwitch(true)}
-          onMouseEnter={(e) => { e.currentTarget.style.background = "var(--badge-online-bg)"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}>
-          <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold"
-            style={{ background: "var(--surface-2)", color: "var(--online)", border: "1.5px solid var(--online)" }}>
+      {/* User Section (Reverted to Stable) */}
+      <div className="mx-3 mb-6 p-4 rounded-sm bg-[#00c8e010] border border-[#00c8e020] border-t-2 border-t-[#34c759]">
+        <div className="flex items-center gap-3 mb-3 cursor-pointer group" onClick={() => setShowSwitch(true)}>
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 border-[#34c759] text-[#34c759] bg-[#00000020] group-hover:scale-105 transition-transform">
             {currentUser?.username?.substring(0,2).toUpperCase() || "..."}
           </div>
-          <div>
-            <p className="text-base font-bold" style={{ color: "var(--text-bright)" }}>{currentUser?.username || "..."}</p>
-            <p className="text-sm tracking-widest" style={{ color: "var(--online)" }}>{currentUser?.role?.toUpperCase() || "..."}</p>
+          <div className="overflow-hidden">
+            <p className="text-sm font-bold text-[#f5f5f7] truncate">{currentUser?.username || "..."}</p>
+            <p className="text-[10px] tracking-widest text-[#34c759] uppercase">{currentUser?.role || "..."}</p>
           </div>
         </div>
-        <div className="flex gap-1.5">
-          <LogoutButton />
-        </div>
+        <LogoutButton />
       </div>
 
-      {/* Trademark Signature */}
-      <div className="mt-auto mb-5 w-full text-center opacity-30 hover:opacity-100 transition-opacity duration-500">
-        <p className="text-[10px] tracking-[0.15em] font-bold uppercase" style={{ color: "var(--text-muted)" }}>
-          Engineered by <span className="capitalize" style={{ color: "var(--ptts-teal)", fontFamily: "var(--font-serif)", fontSize: "14px", fontStyle: "italic", letterSpacing: "0.02em" }}>DummVinci</span>
+      {/* Fixed Trademark Signature */}
+      <div className="pb-6 text-center">
+        <p className="text-[9px] tracking-[.3em] font-bold text-[#86868b] uppercase">
+          ENGINEERED BY <span className="text-[#00c8e0]">DUMMVINCI</span>
         </p>
       </div>
 
-
-
-      {/* Switch Account Modal */}
-      <AnimatePresence>
-        {showSwitch && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center"
-            style={{ background: "#00000080" }}
-            onClick={(e) => { if (e.target === e.currentTarget) setShowSwitch(false); }}
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 15 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 15 }}
-              transition={{ type: "spring", damping: 25, stiffness: 350 }}
-              className="w-72 rounded-sm p-4 space-y-3"
-              style={{ background: "var(--surface)", border: "1px solid var(--border)", borderTop: "2px solid #00A3B4" }}
-            >
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-bold tracking-[.2em]" style={{ color: "#00A3B4" }}>SWITCH ACCOUNT</p>
-                <button
-                  onClick={() => setShowSwitch(false)}
-                  className="text-sm leading-none"
-                  style={{ color: "#4a6a8a" }}
-                >✕</button>
+      {/* Switch Account Modal (Simple Overlay) */}
+      {showSwitch && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+             onClick={(e) => { if (e.target === e.currentTarget) setShowSwitch(false); }}>
+          <div className="w-80 p-6 rounded-sm bg-[#1c1c1e] border border-[#ffffff15] border-t-2 border-t-[#00c8e0]">
+            <div className="flex items-center justify-between mb-6">
+              <p className="text-xs font-bold tracking-[.3em] text-[#00c8e0]">SWITCH IDENTITY</p>
+              <button onClick={() => setShowSwitch(false)} className="text-[#86868b] hover:text-white transition-colors">✕</button>
+            </div>
+            <form action={switchAction} className="space-y-4">
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-bold tracking-widest text-[#86868b] uppercase">User Access UID</label>
+                <input name="username" type="text" placeholder="UID" autoComplete="username"
+                  className="w-full px-4 py-3 bg-black/40 border border-[#ffffff10] text-sm text-[#f5f5f7] rounded-sm focus:border-[#00c8e0] outline-none transition-all" />
               </div>
-
-              <form action={switchAction} className="space-y-2">
-                <input
-                  name="username"
-                  type="text"
-                  placeholder="USERNAME"
-                  autoComplete="username"
-                  className="w-full px-2.5 py-2 text-base rounded-sm outline-none tracking-widest"
-                  style={{ background: "#0b0e13", border: "1px solid #242d3f", color: "#d4e4f4" }}
-                />
-                <input
-                  name="password"
-                  type="password"
-                  placeholder="PASSWORD"
-                  autoComplete="current-password"
-                  className="w-full px-2.5 py-2 text-base rounded-sm outline-none tracking-widest"
-                  style={{ background: "#0b0e13", border: "1px solid #242d3f", color: "#d4e4f4" }}
-                />
-                {switchState?.error && (
-                  <p className="text-xs tracking-widest" style={{ color: "var(--fault)" }}>{switchState.error}</p>
-                )}
-                <button
-                  type="submit"
-                  disabled={switchPending}
-                  className="w-full py-2 text-xs font-bold tracking-widest rounded-sm transition-all disabled:opacity-50"
-                  style={{ background: "var(--ptts)", color: "var(--text-bright)", border: "1px solid var(--border)" }}
-                >
-                  {switchPending ? "AUTHENTICATING..." : "SWITCH →"}
-                </button>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <div className="space-y-1.5">
+                <label className="text-[9px] font-bold tracking-widest text-[#86868b] uppercase">Security Key</label>
+                <input name="password" type="password" placeholder="KEY" autoComplete="current-password"
+                  className="w-full px-4 py-3 bg-black/40 border border-[#ffffff10] text-sm text-[#f5f5f7] rounded-sm focus:border-[#00c8e0] outline-none transition-all" />
+              </div>
+              {switchState?.error && <p className="text-[10px] text-[#ff3b30] font-bold tracking-widest">{switchState.error}</p>}
+              <button type="submit" disabled={switchPending}
+                className="w-full py-3 bg-[#00c8e015] border border-[#00c8e040] text-[#00c8e0] text-xs font-bold tracking-[.4em] rounded-sm hover:bg-[#00c8e025] transition-all disabled:opacity-50">
+                {switchPending ? "VALIDATING..." : "AUTHENTICATE →"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </aside>
   );
 }
