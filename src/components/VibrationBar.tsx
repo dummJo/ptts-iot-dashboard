@@ -22,7 +22,7 @@ export default function VibrationBar({ vibrationData = [] }: { vibrationData?: V
             <Tooltip
               contentStyle={{ background:"var(--surface-2)", border:"1px solid var(--border)", borderRadius:2, fontSize:10, fontFamily:"inherit" }}
               itemStyle={{ color:"var(--text)" }}
-              formatter={(val: number) => [formatLocalNumber(val, 2) + " mm/s", "Vibration"]}
+              formatter={(val: any) => [formatLocalNumber(val, 2) + " mm/s", "Vibration"]}
             />
             <Bar dataKey="value" radius={[0,2,2,0]} barSize={12}>
               {vibrationData.map((e,i) => (

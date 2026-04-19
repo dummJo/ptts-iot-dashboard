@@ -206,7 +206,7 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
               contentStyle={{ background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: 2, fontSize: 11, fontFamily: "inherit" }}
               labelStyle={{ color: "var(--text-muted)", fontWeight: 700 }}
               itemStyle={{ color: "var(--text)" }}
-              formatter={(val: number, name: string) => [formatLocalNumber(val, 2), name]}
+              formatter={(val: any, name: any) => [formatLocalNumber(val, 2), name]}
             />
             <Legend wrapperStyle={{ fontSize: 9, paddingTop: 8, fontFamily: "inherit", letterSpacing: "0.1em" }} />
             {activeMetricDefs.map((m) => (
