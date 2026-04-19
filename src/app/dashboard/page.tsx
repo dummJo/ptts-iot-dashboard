@@ -130,7 +130,9 @@ export default function DashboardPage() {
         <div className="absolute -top-40 -left-20 w-[600px] h-[600px] rounded-full blur-[100px] opacity-[0.03] bg-[var(--ptts-teal)]" />
       </div>
 
-      <Sidebar pollInterval={pollInterval} />
+      <div className="hidden lg:block">
+        <Sidebar pollInterval={pollInterval} />
+      </div>
 
       <main className="flex-1 overflow-auto flex flex-col relative z-10">
         {/* ── Top bar ── */}
@@ -138,14 +140,14 @@ export default function DashboardPage() {
 
         {/* ── Content ── */}
         <motion.div 
-          className="flex-1 p-6 space-y-4"
+          className="flex-1 p-4 md:p-6 pb-24 md:pb-6 space-y-6 responsive-container"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
 
           {/* KPI row */}
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {dynamicKPIs.map((k: any) => (
               <motion.div key={k.label} variants={itemVariants}>
                 <KPICard {...k} />
@@ -154,8 +156,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Trend + Donut */}
-          <div className="grid grid-cols-3 gap-3">
-            <motion.div className="col-span-2" variants={itemVariants}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <motion.div className="lg:col-span-2" variants={itemVariants}>
               <TrendChart trendData={trendData} assets={topAssets} />
             </motion.div>
             <motion.div variants={itemVariants}>
@@ -164,11 +166,11 @@ export default function DashboardPage() {
           </div>
 
           {/* Asset table + Vib bar */}
-          <div className="grid grid-cols-3 gap-3">
-            <motion.div className="col-span-2" variants={itemVariants}>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <motion.div className="lg:col-span-2 order-2 lg:order-1" variants={itemVariants}>
               <AssetTable assets={dynamicAssets} onOverridesChange={handleOverridesChange} />
             </motion.div>
-            <motion.div variants={itemVariants}>
+            <motion.div className="order-1 lg:order-2" variants={itemVariants}>
               <VibrationBar vibrationData={vibrationBarData} />
             </motion.div>
           </div>
@@ -181,7 +183,7 @@ export default function DashboardPage() {
           {/* Footer bar */}
           <motion.div 
             variants={itemVariants}
-            className="flex items-center justify-between px-2 py-1 text-sm tracking-[.15em] border-t border-border-dim mt-2"
+            className="hidden md:flex items-center justify-between px-2 py-1 text-sm tracking-[.15em] border-t border-border-dim mt-2"
             style={{ color:"var(--text-faint)" }}
           >
             <div className="flex gap-4">
@@ -194,6 +196,26 @@ export default function DashboardPage() {
           </motion.div>
         </motion.div>
       </main>
+
+      {/* ── Mobile Navigation Bar (iPhone 17 Pro Standard) ── */}
+      <nav className="mobile-nav lg:hidden">
+        <button className="mobile-nav-item active">
+          <span className="mobile-nav-icon">▤</span>
+          <span>DASHBOARD</span>
+        </button>
+        <button className="mobile-nav-item">
+          <span className="mobile-nav-icon">⛃</span>
+          <span>ASSETS</span>
+        </button>
+        <button className="mobile-nav-item">
+          <span className="mobile-nav-icon">⚠</span>
+          <span>ALARMS</span>
+        </button>
+        <button className="mobile-nav-item">
+          <span className="mobile-nav-icon">⚙</span>
+          <span>SETTINGS</span>
+        </button>
+      </nav>
     </div>
   );
 }

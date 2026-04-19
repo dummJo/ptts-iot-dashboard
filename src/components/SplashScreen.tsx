@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatLocalNumber } from "@/lib/utils";
 
 export default function SplashScreen() {
   const [progress, setProgress] = useState(0);
@@ -109,7 +110,7 @@ export default function SplashScreen() {
             </span>
             <div className="text-right">
               <span className="text-xs font-mono text-[var(--text-bright)]">
-                {progress.toFixed(1).padStart(4, "0")}
+                {formatLocalNumber(progress, 1).padStart(4, "0")}
               </span>
               <span className="text-sm text-[var(--ptts-teal)] ml-1">%</span>
             </div>

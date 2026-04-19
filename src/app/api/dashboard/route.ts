@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { runAlarmEngine } from '@/lib/alarmEngine';
 import { NotificationService } from '@/lib/notifications';
+import { formatLocalNumber } from '@/lib/utils';
 import type { DashboardData, TrendPoint, Asset, Alarm } from '@/lib/types';
 
 /**
@@ -107,7 +108,7 @@ export async function GET() {
         },
         {
           label: "AVG VIBRATION",
-          value: (topAssets.reduce((sum, a) => sum + a.vib, 0) / (topAssets.length || 1)).toFixed(2),
+          value: formatLocalNumber(topAssets.reduce((sum, a) => sum + a.vib, 0) / (topAssets.length || 1), 2),
           unit: "mm/s",
           sub: "General site health",
           trend: "Real-time sync",
@@ -117,7 +118,7 @@ export async function GET() {
         },
         {
           label: "AVG TEMP",
-          value: (topAssets.reduce((sum, a) => sum + a.temp, 0) / (topAssets.length || 1)).toFixed(0),
+          value: formatLocalNumber(topAssets.reduce((sum, a) => sum + a.temp, 0) / (topAssets.length || 1), 0),
           unit: "°C",
           sub: `Ambient: 28°C`,
           trend: "Stable",
@@ -226,10 +227,10 @@ export async function POST(req: Request) {
       
       if (vibOverall >= limits.fault) {
         severity = 'critical';
-        msg = `Vibration Fault: ${vibOverall.toFixed(2)}mm/s exceeded limit ${limits.fault}mm/s`;
+        msg = `Vibration Fault: ${formatLocalNumber(vibOverall, 2)}mm/s exceeded limit ${formatLocalNumber(limits.fault, 1)}mm/s`;
       } else if (vibOverall >= limits.warning) {
         severity = 'warning';
-        msg = `Vibration Warning: ${vibOverall.toFixed(2)}mm/s exceeded limit ${limits.warning}mm/s`;
+        msg = `Vibration Warning: ${formatLocalNumber(vibOverall, 2)}mm/s exceeded limit ${formatLocalNumber(limits.warning, 1)}mm/s`;
       }
 
       if (severity) {

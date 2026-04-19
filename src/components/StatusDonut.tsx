@@ -19,33 +19,33 @@ export default function StatusDonut({ linkSummary, healthSummary }: StatusDonutP
     <div className="flex flex-col gap-3">
       {/* ── Connectivity Card ── */}
       <div className="scada-card p-3">
-        <div className="scada-card-header mb-2 text-xs">
+        <div className="scada-card-header mb-2 text-[10px] md:text-xs">
            <span className="scada-label">NETWORK CONNECTIVITY</span>
            <span className="text-text-muted">{totalLink} NODES</span>
         </div>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
            <div className="flex items-center justify-between p-2 rounded-sm bg-bg border border-border-dim">
-              <div className="flex items-center gap-2">
+               <div className="flex items-center gap-1.5 md:gap-2">
                  <span className="led led-online" style={{ width:6, height:6 }} />
-                 <span className="text-xs font-bold text-text-muted">ONLINE</span>
+                 <span className="text-[10px] md:text-xs font-bold text-text-muted">ONLINE</span>
               </div>
-              <span className="text-[14px] font-black text-online">{linkSummary?.online || 0}</span>
+              <span className="text-xs md:text-[14px] font-black text-online">{linkSummary?.online || 0}</span>
            </div>
            <div className="flex items-center justify-between p-2 rounded-sm bg-bg border border-border-dim">
-              <div className="flex items-center gap-2">
+               <div className="flex items-center gap-1.5 md:gap-2">
                  <span className="led led-fault" style={{ width:6, height:6 }} />
-                 <span className="text-xs font-bold text-text-muted">OFFLINE</span>
+                 <span className="text-[10px] md:text-xs font-bold text-text-muted">OFFLINE</span>
               </div>
-              <span className="text-[14px] font-black text-fault">{linkSummary?.offline || 0}</span>
+              <span className="text-xs md:text-[14px] font-black text-fault">{linkSummary?.offline || 0}</span>
            </div>
         </div>
       </div>
 
       {/* ── Health Donut Card ── */}
       <div className="scada-card flex flex-col">
-        <div className="scada-card-header">
+        <div className="scada-card-header flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-0">
           <span className="scada-label">MACHINE HEALTH (CONDITION)</span>
-          <span className="text-xs font-bold tracking-widest text-[#00e676]">
+          <span className="text-[10px] md:text-xs font-bold tracking-widest text-[#00e676]">
             {healthSummary?.good || 0} HEALTHY
           </span>
         </div>
@@ -70,11 +70,11 @@ export default function StatusDonut({ linkSummary, healthSummary }: StatusDonutP
               <span className="text-sm tracking-widest" style={{ color:"var(--text-faint)" }}>GOOD</span>
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-2 mt-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4 sm:mt-2">
             {healthData.map((d) => (
-              <div key={d.name} className="flex flex-col items-center p-1 rounded-sm border border-border-dim bg-bg/50">
-                <span className="text-base font-bold text-text-faint mb-0.5 tracking-tighter">{d.name}</span>
-                <span className="text-[15px] font-black leading-none" style={{ color: d.color }}>{d.value}</span>
+              <div key={d.name} className="flex flex-row sm:flex-col items-center justify-between sm:justify-center px-4 sm:px-1 py-2 sm:py-1.5 rounded-sm md:rounded-[8px] border border-border-dim bg-bg/50">
+                <span className="text-[10px] md:text-[10px] uppercase font-bold text-text-faint md:mb-0.5 tracking-widest">{d.name}</span>
+                <span className="text-sm md:text-[15px] font-black leading-none" style={{ color: d.color }}>{d.value}</span>
               </div>
             ))}
           </div>

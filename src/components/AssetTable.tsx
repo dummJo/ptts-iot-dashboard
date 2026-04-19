@@ -31,8 +31,8 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
         <button className="text-xs font-bold tracking-widest transition-all"
           style={{ color: "var(--ptts-teal)" }}>ALL →</button>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto scrollbar-hide">
+        <table className="w-full text-sm min-w-[700px] lg:min-w-0">
           <thead>
             <tr style={{ borderBottom: "1px solid var(--border-dim)", background: "var(--surface-2)" }}>
               {["TAG ID", "ASSET NAME", "TYPE", "TEMP", "VIBRATION", "LINK", "HEALTH", "CFG"].map((h, i) => (
@@ -58,7 +58,7 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
 
               return (
                 <tr key={a.id}
-                  className="transition-colors cursor-pointer hover:bg-white/5"
+                  className="transition-colors cursor-pointer hover:bg-white/5 active:scale-[0.99] transition-transform duration-200"
                   style={{
                     borderBottom: "1px solid var(--border-dim)",
                     background: idx % 2 === 0 ? "transparent" : "var(--surface-2)",
