@@ -1,104 +1,66 @@
 @import "tailwindcss";
 
-/* ─── Color System ───────────────────────────────────────────── */
-/* Reference palette (not displayed as labels):                  */
-/*   #CC0000  → fault / critical                                 */
-/*   #FFD700  → warning / temperature                            */
-/*   #003DA5  → vibration / info                                 */
-/*   #005F8E  → PTTS primary                                     */
-/*   #00A3B4  → PTTS teal accent                                 */
-/* ──────────────────────────────────────────────────────────────*/
+/**
+ * DUMMVINCI DESIGN SYSTEM v2.0
+ * Multinational Consultant Grade — Sophisticated Minimalism
+ */
 
-/* Dark (Apple Concept — Glass & Depth) */
 :root {
+  /* Dark (Elite Monolith) */
   --bg: #000000;
-  --bg-gradient: radial-gradient(circle at 15% 50%, rgba(34, 211, 238, 0.15), transparent 40%), radial-gradient(circle at 85% 30%, rgba(14, 165, 233, 0.15), transparent 50%);
-  --surface: rgba(28, 28, 30, 0.65);
-  --surface-2: rgba(44, 44, 46, 0.65);
-  --surface-3: rgba(58, 58, 60, 0.65);
-  --border: rgba(255, 255, 255, 0.12);
-  --border-dim: rgba(255, 255, 255, 0.05);
-  --shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  --bg-gradient: radial-gradient(circle at 0% 0%, rgba(50, 173, 230, 0.03), transparent 30%), 
+                 radial-gradient(circle at 100% 100%, rgba(0, 102, 204, 0.03), transparent 30%);
+  
+  --surface: rgba(18, 18, 18, 0.85); /* Darker, more serious surface */
+  --surface-2: rgba(28, 28, 30, 0.95);
+  --surface-3: rgba(44, 44, 46, 0.95);
+  
+  --border: rgba(255, 255, 255, 0.08);
+  --border-dim: rgba(255, 255, 255, 0.04);
+  --border-bright: rgba(255, 255, 255, 0.15);
+  
+  --shadow-elite: 0 40px 100px -20px rgba(0, 0, 0, 0.8);
+  
   --text: #f5f5f7;
-  --text-muted: #a1a1a6;
-  --text-faint: #86868b;
+  --text-muted: #86868b;
+  --text-faint: #424245;
   --text-bright: #ffffff;
 
-  /* PTTS brand (Apple Blue/Cyan) */
-  --ptts: #0066cc;
-  --ptts-teal: #32ade6;
-  --ptts-glow: rgba(50, 173, 230, 0.5);
+  /* Accent: PURE PRECISION */
+  --ptts: #0071e3; /* Apple Blue */
+  --ptts-teal: #29cdf4;
+  --ptts-glow: rgba(41, 205, 244, 0.2);
 
-  /* Status (Apple UI Colors) */
-  --online: #34c759;
-  --warning: #ffcc00;
-  --fault: #ff3b30;
-  --offline: #8e8e93;
+  /* Status (Subdued but Clear) */
+  --online: #30d158;
+  --warning: #ffd60a;
+  --fault: #ff453a;
+  --offline: #48484a;
 
-  /* Metric Channels */
-  --metric-vib: #32ade6;
-  --metric-temp: #ffcc00;
-  --metric-rms: #ff9500;
-  --metric-power: #af52de;
-  --metric-freq: #007aff;
-  --metric-velocity: #ff3b30;
-  --metric-current: #34c759;
-
-  /* Badge Backgrounds (Dark Mode Glass) */
-  --badge-online-bg: rgba(52, 199, 89, 0.15);
-  --badge-warning-bg: rgba(255, 204, 0, 0.15);
-  --badge-fault-bg: rgba(255, 59, 48, 0.15);
-  --badge-ptts-bg: rgba(0, 102, 204, 0.15);
+  /* Metric Channels (Clinical Palette) */
+  --metric-vib: #64d2ff;
+  --metric-temp: #ffd60a;
+  --metric-rms: #ff9f0a;
+  --metric-power: #bf5af2;
+  --metric-current: #30d158;
 
   --sidebar-bg: #000000;
-  --sidebar-glass: rgba(28, 28, 30, 0.7);
-  --topbar-glass: rgba(28, 28, 30, 0.4);
+  --topbar-glass: rgba(0, 0, 0, 0.75);
 }
 
-/* Light mode — Apple Concept Liquid Glass */
 .light {
-  --bg: #f2f2f7;
-  --bg-gradient: radial-gradient(circle at 15% 50%, rgba(50, 173, 230, 0.1), transparent 40%), radial-gradient(circle at 85% 30%, rgba(0, 122, 255, 0.1), transparent 50%);
-  --surface: rgba(255, 255, 255, 0.7);
-  --surface-2: rgba(242, 242, 247, 0.7);
-  --surface-3: rgba(229, 229, 234, 0.7);
-  --border: rgba(255, 255, 255, 0.6);
-  --border-dim: rgba(0, 0, 0, 0.05);
-  --shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+  --bg: #ffffff;
+  --bg-gradient: radial-gradient(circle at 0% 0%, rgba(0, 113, 227, 0.03), transparent 30%);
+  --surface: rgba(255, 255, 255, 0.8);
+  --surface-2: rgba(245, 245, 247, 0.9);
+  --surface-3: rgba(232, 232, 237, 0.9);
+  --border: rgba(0, 0, 0, 0.08);
+  --border-dim: rgba(0, 0, 0, 0.04);
   --text: #1d1d1f;
   --text-muted: #86868b;
-  --text-faint: #a1a1a6;
+  --text-faint: #d2d2d7;
   --text-bright: #000000;
-
-  --sidebar-bg: #f2f2f7;
-  --sidebar-glass: rgba(255, 255, 255, 0.75);
-  --topbar-glass: rgba(255, 255, 255, 0.5);
-
-  /* Brand colors */
-  --ptts: #0066cc;
-  --ptts-teal: #32ade6;
-  --ptts-glow: rgba(50, 173, 230, 0.2);
-
-  /* Status */
-  --online: #28cd41;
-  --warning: #ffcc00;
-  --fault: #ff3b30;
-  --offline: #8e8e93;
-
-  /* Metric Channels */
-  --metric-vib: #32ade6;
-  --metric-temp: #ffcc00;
-  --metric-rms: #ff9500;
-  --metric-power: #af52de;
-  --metric-freq: #007aff;
-  --metric-velocity: #ff3b30;
-  --metric-current: #28cd41;
-
-  /* Badge Backgrounds (Light Mode) */
-  --badge-online-bg: rgba(40, 205, 65, 0.1);
-  --badge-warning-bg: rgba(255, 204, 0, 0.1);
-  --badge-fault-bg: rgba(255, 59, 48, 0.1);
-  --badge-ptts-bg: rgba(0, 102, 204, 0.1);
+  --sidebar-bg: #ffffff;
 }
 
 body {
@@ -106,352 +68,90 @@ body {
   background-image: var(--bg-gradient);
   background-attachment: fixed;
   color: var(--text);
-  transition: background 0.4s ease, color 0.4s ease;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
 }
 
-/* ─── Splash / SCADA Animations ─────────────────────────────── */
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: scale(0.94);
-  }
+/* ─── Elite Components ────────────────────────────── */
 
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-@keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes spring-scale {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
-@keyframes blur-fade {
-  from { backdrop-filter: blur(0px); opacity: 0; }
-  to { backdrop-filter: blur(28px); opacity: 1; }
-}
-
-@keyframes spin-cw {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes spin-ccw {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(-360deg);
-  }
-}
-
-@keyframes pulse-ring {
-
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 #005F8E50;
-  }
-
-  60% {
-    box-shadow: 0 0 0 14px #005F8E00;
-  }
-}
-
-@keyframes blink {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0;
-  }
-}
-
-@keyframes led-on {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: .6;
-  }
-}
-
-@keyframes scan {
-  from {
-    transform: translateY(-100%);
-  }
-
-  to {
-    transform: translateY(100vh);
-  }
-}
-
-@keyframes flicker {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  92% {
-    opacity: .95;
-  }
-
-  94% {
-    opacity: .85;
-  }
-
-  96% {
-    opacity: .98;
-  }
-}
-
-@keyframes grid-drift {
-  from {
-    background-position: 0 0;
-  }
-
-  to {
-    background-position: 40px 40px;
-  }
-}
-
-@keyframes data-pulse {
-
-  0%,
-  100% {
-    opacity: 0.2;
-    transform: scale(1);
-  }
-
-  50% {
-    opacity: 0.8;
-    transform: scale(1.5);
-  }
-}
-
-.animate-fade-in {
-  animation: fade-in .55s ease forwards;
-}
-
-.animate-fade-up {
-  animation: slide-up .6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.animate-slide-in {
-  animation: slide-in .7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.animate-spin-cw {
-  animation: spin-cw 3s linear infinite;
-}
-
-.animate-spin-ccw {
-  animation: spin-ccw 2s linear infinite;
-}
-
-.animate-pulse-ring {
-  animation: pulse-ring 2.5s ease infinite;
-}
-
-.animate-blink {
-  animation: blink 1s step-end infinite;
-}
-
-.animate-led {
-  animation: led-on 2s ease infinite;
-}
-
-.animate-flicker {
-  animation: flicker 8s ease infinite;
-}
-
-/* ─── Apple Concept Liquid Glass Cards ────────────────────────────── */
 .scada-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-top: 1px solid rgba(255, 255, 255, 0.15); /* Apple-style highlight */
-  border-radius: 28px; /* Slightly more rounded for iPhone 17 Pro feel */
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(32px) saturate(210%);
-  -webkit-backdrop-filter: blur(32px) saturate(210%);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.scada-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 40%);
-  pointer-events: none;
+  border-radius: 1px; /* Sharper, more professional corners */
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .scada-card:hover {
-  transform: translateY(-8px) scale(1.01);
-  border-color: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  border-color: var(--border-bright);
+  background: var(--surface-2);
 }
 
 .scada-card-header {
-  background: transparent;
-  padding: 20px 24px 8px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+  border-bottom: 1px solid var(--border-dim);
 }
-
-/* Haptic Effect (Apple Standard) */
-.haptic-press {
-  transition: transform 0.2s cubic-bezier(0.33, 1, 0.68, 1);
-}
-
-.haptic-press:active {
-  transform: scale(0.96);
-}
-
-.glass-btn {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-  border-radius: 12px;
-  transition: all 0.3s ease;
-}
-
-.glass-btn:active {
-  transform: scale(0.97);
-  background: var(--surface-3);
-}
-
 
 .scada-label {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--text-faint);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  text-transform: uppercase;
 }
 
 .scada-value {
-  font-size: 36px;
-  font-weight: 600;
-  letter-spacing: -0.04em;
-  color: var(--text-bright);
-  font-variant-numeric: tabular-nums;
-}
-
-.scada-unit {
-  font-size: 15px;
+  font-family: var(--font-mono); /* Precision indicator */
+  font-size: 2rem;
   font-weight: 500;
-  color: var(--text-muted);
-  margin-left: 6px;
+  letter-spacing: -0.02em;
+  color: var(--text-bright);
 }
 
-/* LED */
+/* Modern Typography Presets */
+.h1-elite {
+  font-size: 2.5rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--text-bright);
+}
+
+.h2-elite {
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* Scrollbar (Invisible but functional) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border-bright);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Animations (Subtle Linear) */
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slide-up-fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in { animation: fade-in 0.8s ease-out forwards; }
+.animate-slide-up { animation: slide-up-fade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
 .led {
-  width: 10px;
-  height: 10px;
   border-radius: 50%;
   display: inline-block;
 }
 
-.led-online {
-  background: var(--online);
-  box-shadow: 0 0 6px var(--online);
-  animation: led-on 3s ease infinite;
-}
-
-.led-warning {
-  background: var(--warning);
-  box-shadow: 0 0 6px var(--warning);
-  animation: led-on 1.5s ease infinite;
-}
-
-.led-fault {
-  background: var(--fault);
-  box-shadow: 0 0 8px var(--fault);
-  animation: led-on 0.8s ease infinite;
-}
-
-.led-offline {
-  background: var(--offline);
-}
-
-/* ─── Responsive Adjustments (iPhone 17 Pro & iPad) ─────────── */
-:root {
-  --safe-top: env(safe-area-inset-top, 20px);
-  --safe-bottom: env(safe-area-inset-bottom, 20px);
-  --grid-cols: 4;
-}
-
-@media (max-width: 1200px) {
-  :root { --grid-cols: 2; }
-}
-
-@media (max-width: 768px) {
-  :root { 
-    --grid-cols: 1; 
-    --safe-top: env(safe-area-inset-top, 44px); /* Dynamic Island */
-  }
-  
-  .scada-card {
-    border-radius: 22px;
-  }
-}
-
-/* Layout Padding Fixes */
-.responsive-container {
-  padding-top: var(--safe-top);
-  padding-bottom: var(--safe-bottom);
-  padding-left: max(16px, env(safe-area-inset-left));
-  padding-right: max(16px, env(safe-area-inset-right));
-}
-
-/* iPad specific tweaks */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-  }
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 2px;
-}
+.led-online { background: var(--online); box-shadow: 0 0 10px rgba(48, 209, 88, 0.3); }
+.led-fault { background: var(--fault); box-shadow: 0 0 10px rgba(255, 69, 58, 0.3); }
+.led-warning { background: var(--warning); }

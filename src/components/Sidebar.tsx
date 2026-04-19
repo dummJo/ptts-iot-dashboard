@@ -8,13 +8,17 @@ import { loginAction, getCurrentSessionAction, autoLogoutAction } from "@/app/ac
 const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png";
 
 const navItems = [
-  { href: "/dashboard",          label: "OVERVIEW",  icon: "▣" },
-  { href: "/dashboard/assets",   label: "ASSETS",    icon: "◈" },
-  { href: "/dashboard/alerts",   label: "ALARMS",    icon: "◬", isAlarm: true },
-  { href: "/dashboard/reports",  label: "TRENDS",    icon: "∿" },
-  { href: "/dashboard/settings", label: "CONFIG",    icon: "⚙" },
+  { href: "/dashboard",          label: "Dashboard",  icon: "〣" },
+  { href: "/dashboard/assets",   label: "Asset Map",   icon: "⊞" },
+  { href: "/dashboard/alerts",   label: "Alarms",     icon: "◬", isAlarm: true },
+  { href: "/dashboard/reports",  label: "Deep Trends", icon: "∿" },
+  { href: "/dashboard/settings", label: "Kernel Config", icon: "⚙" },
 ];
 
+/**
+ * ELITE SIDEBAR — CLAUDE/DELOITTE GRADE
+ * Design: Monolithic Minimalism
+ */
 
 export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: number }) {
   const pathname = usePathname();
@@ -25,7 +29,6 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
   const [alarmCount, setAlarmCount] = useState(0);
 
   useEffect(() => {
-    // Fetch current session on mount
     const fetchSession = async () => {
       const session = await getCurrentSessionAction();
       if (session.success && session.username && session.role) {
@@ -37,9 +40,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         const res = await fetch("/api/dashboard");
         if (res.ok) {
           const data = await res.json();
-          const warnings = data.healthSummary?.warning || 0;
-          const faults = data.healthSummary?.fault || 0;
-          setAlarmCount(warnings + faults);
+          setAlarmCount((data.healthSummary?.warning || 0) + (data.healthSummary?.fault || 0));
         }
       } catch (e) {}
     };
@@ -48,76 +49,58 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
     fetchAlarmsCount();
     
     let alarmIv: NodeJS.Timeout;
-    if (pollInterval > 0) {
-      alarmIv = setInterval(fetchAlarmsCount, pollInterval);
-    }
+    if (pollInterval > 0) alarmIv = setInterval(fetchAlarmsCount, pollInterval);
 
     const storageKey = "db-startup-time";
     let startTime = sessionStorage.getItem(storageKey);
     if (!startTime) {
-      startTime = new Date().getTime().toString();
+      startTime = Date.now().toString();
       sessionStorage.setItem(storageKey, startTime);
     }
 
     const updateUptime = () => {
       const elapsed = Math.floor((Date.now() - parseInt(startTime!)) / 1000);
-      const hours = Math.floor(elapsed / 3600);
-      const mins = Math.floor((elapsed % 3600) / 60);
-      const secs = elapsed % 60;
-      setUptime(
-        `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`
-      );
+      const h = String(Math.floor(elapsed / 3600)).padStart(2, "0");
+      const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, "0");
+      const s = String(elapsed % 60).padStart(2, "0");
+      setUptime(`${h}:${m}:${s}`);
     };
 
     updateUptime();
     const iv = setInterval(updateUptime, 1000);
 
-    let inactivityTimer: NodeJS.Timeout;
-    const resetInactivity = () => {
-      clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(() => {
-        autoLogoutAction();
-      }, 60 * 60 * 1000); // 60 minutes
-    };
-
-    resetInactivity();
-    const events = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll'];
-    events.forEach(e => window.addEventListener(e, resetInactivity));
-
     return () => {
       clearInterval(iv);
       if (alarmIv) clearInterval(alarmIv);
-      clearTimeout(inactivityTimer);
-      events.forEach(e => window.removeEventListener(e, resetInactivity));
     };
   }, [pollInterval]);
 
   return (
-    <aside className="relative flex flex-col w-56 min-h-screen shrink-0 z-40 bg-[var(--sidebar-bg)] border-r border-[#ffffff10]">
+    <aside className="relative flex flex-col w-52 min-h-screen shrink-0 z-40 bg-[var(--sidebar-bg)] border-r border-[var(--border)] font-sans antialiased">
 
-      {/* Header */}
-      <div className="px-5 py-6 border-b border-[#ffffff08]">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border border-[#ffffff15] bg-[#00000020]">
-            <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-1" />
+      {/* Corporate Identity */}
+      <div className="px-6 py-8 border-b border-[var(--border-dim)]">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-8 h-8 rounded-sm bg-white/5 border border-white/10 flex items-center justify-center">
+            <img src={LOGO} alt="P" className="w-5 h-5 object-contain brightness-0 invert opacity-80" />
           </div>
-          <div>
-            <p className="text-xs font-bold tracking-[.3em] text-[#00c8e0]">PTTS</p>
-            <p className="text-sm tracking-widest text-[#86868b]">IoT PLATFORM</p>
+          <div className="leading-none">
+            <p className="text-[14px] font-bold tracking-tight text-[var(--text-bright)]">PTTS</p>
+            <p className="text-[10px] font-medium tracking-widest text-[var(--text-muted)] uppercase mt-0.5">Industrial OS</p>
           </div>
         </div>
         
-        {/* Status indicator */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm bg-[#00c8e010] border border-[#00c8e030]">
-          <span className={`led ${pollInterval === 0 ? "led-offline" : "led-online"}`} style={{ width: 6, height: 6 }} />
-          <span className="text-[10px] tracking-widest font-bold text-[#00c8e0]">
-            {pollInterval === 0 ? "POLLING: OFF" : `SYSTEM: LIVE · ${pollInterval >= 60000 ? pollInterval / 60000 + "M" : pollInterval / 1000 + "S"}`}
+        {/* Core Status */}
+        <div className="inline-flex items-center gap-2 group cursor-help">
+          <span className={`w-1.5 h-1.5 rounded-full ${pollInterval === 0 ? "bg-[var(--offline)]" : "bg-[var(--online)]"}`} />
+          <span className="text-[9px] font-bold tracking-[0.2em] text-[var(--text-muted)] uppercase">
+            {pollInterval === 0 ? "KERNEL: STANDBY" : "KERNEL: OPERATIONAL"}
           </span>
         </div>
       </div>
 
-      {/* Navigation Menu (Reverted to Stable Architecture) */}
-      <nav className="flex-1 px-3 py-6 space-y-1">
+      {/* Navigation Layer */}
+      <nav className="flex-1 px-4 py-8 space-y-1">
         {navItems
           .filter(item => !(item.href.includes("settings") && currentUser?.role !== "admin"))
           .map((item) => {
@@ -125,14 +108,14 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
             const badge = item.isAlarm ? alarmCount : null;
             return (
               <Link key={item.href} href={item.href}
-                className="flex items-center gap-3 px-4 py-3 rounded-sm text-sm font-bold tracking-widest transition-all hover:bg-[#ffffff05]"
-                style={active
-                  ? { background: "#00c8e015", color: "#00c8e0", borderLeft: "3px solid #00c8e0" }
-                  : { color: "#a1a1a6", borderLeft: "3px solid transparent" }}>
-                <span className="w-5 text-center text-[16px]">{item.icon}</span>
-                <span className="flex-1">{item.label}</span>
+                className="flex items-center gap-3 px-3 py-2.5 transition-all group"
+                style={active ? { color: "var(--text-bright)" } : { color: "var(--text-muted)" }}>
+                <span className={`text-[15px] ${active ? "opacity-100" : "opacity-40 group-hover:opacity-80 transition-opacity"}`}>{item.icon}</span>
+                <span className={`text-[13px] font-medium tracking-tight ${active ? "translate-x-0" : "-translate-x-1 group-hover:translate-x-0 transition-transform"}`}>
+                  {item.label}
+                </span>
                 {badge && badge > 0 && (
-                  <span className="text-[10px] px-1.5 py-0.5 rounded-sm font-bold bg-[#ff3b3020] text-[#ff3b30] border border-[#ff3b3040]">
+                  <span className="ml-auto text-[10px] px-1.5 py-0.5 font-bold bg-[var(--fault)] text-white flex items-center justify-center">
                     {badge}
                   </span>
                 )}
@@ -141,67 +124,63 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
           })}
       </nav>
 
-      {/* System Metrics Strip */}
-      <div className="px-4 py-3 mx-3 mb-4 rounded-sm bg-[#ffffff03] border border-[#ffffff08] text-[10px] space-y-2">
-        <div className="flex justify-between">
-          <span className="text-[#86868b]">SYSTEM UPTIME</span>
-          <span className="text-[#f5f5f7] font-mono">{uptime}</span>
+      {/* System Registry Info */}
+      <div className="px-5 py-6 space-y-4 border-t border-[var(--border-dim)] bg-[#0a0a0a]">
+        <div className="space-y-1">
+          <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Chronos Uptime</p>
+          <p className="text-[12px] font-mono font-medium text-[var(--text-muted)]">{uptime}</p>
         </div>
-        <div className="flex justify-between">
-          <span className="text-[#86868b]">CONNECTED NODES</span>
-          <span className="text-[#f5f5f7]">147 / 200</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="text-[#86868b]">STATUS</span>
-          <span className="text-[#00c8e0]">NOMINAL</span>
+        <div className="space-y-1">
+          <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Registry Nodes</p>
+          <p className="text-[12px] font-medium text-[var(--text-muted)]">147 <span className="text-[var(--text-faint)]">/ 200</span></p>
         </div>
       </div>
 
-      {/* User Section (Reverted to Stable) */}
-      <div className="mx-3 mb-6 p-4 rounded-sm bg-[#00c8e010] border border-[#00c8e020] border-t-2 border-t-[#34c759]">
+      {/* Authenticated Entity */}
+      <div className="p-4 bg-[var(--surface)] border-t border-[var(--border)]">
         <div className="flex items-center gap-3 mb-3 cursor-pointer group" onClick={() => setShowSwitch(true)}>
-          <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 border-[#34c759] text-[#34c759] bg-[#00000020] group-hover:scale-105 transition-transform">
-            {currentUser?.username?.substring(0,2).toUpperCase() || "..."}
+          <div className="w-7 h-7 bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-bold text-[var(--online)]">
+            {currentUser?.username?.substring(0,2).toUpperCase() || "ID"}
           </div>
           <div className="overflow-hidden">
-            <p className="text-sm font-bold text-[#f5f5f7] truncate">{currentUser?.username || "..."}</p>
-            <p className="text-[10px] tracking-widest text-[#34c759] uppercase">{currentUser?.role || "..."}</p>
+            <p className="text-[12px] font-bold text-[var(--text-bright)] truncate leading-none">{currentUser?.username || "Guest Entity"}</p>
+            <p className="text-[9px] font-bold tracking-widest text-[var(--online)] uppercase mt-1">{currentUser?.role || "Pending..."}</p>
           </div>
         </div>
         <LogoutButton />
       </div>
 
-      {/* Fixed Trademark Signature */}
-      <div className="pb-6 text-center">
-        <p className="text-[9px] tracking-[.3em] font-bold text-[#86868b] uppercase">
-          ENGINEERED BY <span className="text-[#00c8e0]">DUMMVINCI</span>
+      {/* Signature */}
+      <div className="py-4 text-center bg-black">
+        <p className="text-[8px] tracking-[0.4em] font-bold text-[var(--text-faint)] uppercase">
+          By <span className="text-[var(--text-muted)]">DummVinci Consulting</span>
         </p>
       </div>
 
-      {/* Switch Account Modal (Simple Overlay) */}
+      {/* Identity Switch Modal */}
       {showSwitch && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
              onClick={(e) => { if (e.target === e.currentTarget) setShowSwitch(false); }}>
-          <div className="w-80 p-6 rounded-sm bg-[#1c1c1e] border border-[#ffffff15] border-t-2 border-t-[#00c8e0]">
-            <div className="flex items-center justify-between mb-6">
-              <p className="text-xs font-bold tracking-[.3em] text-[#00c8e0]">SWITCH IDENTITY</p>
-              <button onClick={() => setShowSwitch(false)} className="text-[#86868b] hover:text-white transition-colors">✕</button>
+          <div className="w-80 p-6 bg-[var(--surface-2)] border border-[var(--border)] animate-fade-in shadow-elite">
+            <div className="flex items-center justify-between mb-8">
+              <p className="text-[10px] font-bold tracking-[0.3em] text-[var(--text-muted)] uppercase">Kernel Access Overlay</p>
+              <button onClick={() => setShowSwitch(false)} className="text-[var(--text-faint)] hover:text-white">✕</button>
             </div>
-            <form action={switchAction} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-[9px] font-bold tracking-widest text-[#86868b] uppercase">User Access UID</label>
-                <input name="username" type="text" placeholder="UID" autoComplete="username"
-                  className="w-full px-4 py-3 bg-black/40 border border-[#ffffff10] text-sm text-[#f5f5f7] rounded-sm focus:border-[#00c8e0] outline-none transition-all" />
+            <form action={switchAction} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-[9px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">Entity UID</label>
+                <input name="username" type="text" placeholder="Access Code"
+                  className="w-full bg-black border border-[var(--border)] px-3 py-2 text-[13px] outline-none focus:border-[var(--ptts)] transition-all" />
               </div>
-              <div className="space-y-1.5">
-                <label className="text-[9px] font-bold tracking-widest text-[#86868b] uppercase">Security Key</label>
-                <input name="password" type="password" placeholder="KEY" autoComplete="current-password"
-                  className="w-full px-4 py-3 bg-black/40 border border-[#ffffff10] text-sm text-[#f5f5f7] rounded-sm focus:border-[#00c8e0] outline-none transition-all" />
+              <div className="space-y-2">
+                <label className="text-[9px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">Encryption Key</label>
+                <input name="password" type="password" placeholder="Key Token"
+                  className="w-full bg-black border border-[var(--border)] px-3 py-2 text-[13px] outline-none focus:border-[var(--ptts)] transition-all" />
               </div>
-              {switchState?.error && <p className="text-[10px] text-[#ff3b30] font-bold tracking-widest">{switchState.error}</p>}
+              {switchState?.error && <p className="text-[10px] font-bold text-[var(--fault)] uppercase tracking-widest">{switchState.error}</p>}
               <button type="submit" disabled={switchPending}
-                className="w-full py-3 bg-[#00c8e015] border border-[#00c8e040] text-[#00c8e0] text-xs font-bold tracking-[.4em] rounded-sm hover:bg-[#00c8e025] transition-all disabled:opacity-50">
-                {switchPending ? "VALIDATING..." : "AUTHENTICATE →"}
+                className="w-full py-3 bg-[var(--text-muted)] text-black text-[10px] font-bold tracking-[0.4em] uppercase hover:bg-white transition-all disabled:opacity-50">
+                {switchPending ? "Authorizing..." : "Engage Protocol →"}
               </button>
             </form>
           </div>
