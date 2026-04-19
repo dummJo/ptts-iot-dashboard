@@ -124,22 +124,21 @@ export default function LoginClient() {
   if (phase !== "login") return (
     <div className="fixed inset-0 z-[9999] bg-[#000000] overflow-hidden flex flex-col items-center justify-center select-none" style={{ fontFamily: "var(--font-inter), sans-serif" }}>
       
-      {/* ── Apple Style Ambient Blur Gradients ── */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-60">
-        <div className="absolute top-1/4 -left-1/4 w-[600px] h-[600px] rounded-full blur-[120px] bg-[#32ade6] opacity-15 animate-[pulse_8s_ease-in-out_infinite_alternate]" />
-        <div className="absolute bottom-1/4 -right-1/4 w-[600px] h-[600px] rounded-full blur-[120px] bg-[#007aff] opacity-15 animate-[pulse_10s_ease-in-out_infinite_alternate]" />
+      {/* ── Apple Style Ambient Blur Gradients (Vibrant) ── */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="absolute top-0 -left-1/4 w-[800px] h-[800px] rounded-full blur-[140px] bg-[#007aff] opacity-30 animate-[pulse_10s_ease-in-out_infinite_alternate]" />
+        <div className="absolute bottom-0 -right-1/4 w-[800px] h-[800px] rounded-full blur-[140px] bg-[#32ade6] opacity-30 animate-[pulse_12s_ease-in-out_infinite_alternate]" />
       </div>
 
       <div className="relative z-10 flex flex-col items-center animate-[fade-in_1s_ease-out_forwards]">
         
-        {/* ── Liquid Glass Logo ── */}
+        {/* ── Liquid Glass Logo (Vibrant) ── */}
         <div className={`relative w-28 h-28 flex items-center justify-center mb-10 transition-all duration-1000 ${phase === "logo" ? "opacity-0 scale-90" : "opacity-100 scale-100"}`}>
-          <div className="absolute inset-0 bg-white/5 border border-white/10 rounded-[28px] backdrop-blur-2xl shadow-2xl" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent rounded-[28px] pointer-events-none" />
+          <div className="absolute inset-0 bg-white/10 border border-white/20 rounded-[28px] backdrop-blur-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent rounded-[28px] pointer-events-none" />
           
-          <div className="relative flex flex-col items-center justify-center text-[#f5f5f7]">
-            <span className="text-lg font-bold tracking-[0.3em] ml-1">PTTS</span>
-            <div className="w-5 h-[1.5px] bg-white/30 rounded-full mt-1.5" />
+          <div className="relative w-16 h-16 flex items-center justify-center">
+            <img src="https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png" alt="PTTS" className="w-full h-full object-contain brightness-0 invert opacity-90" />
           </div>
         </div>
 
