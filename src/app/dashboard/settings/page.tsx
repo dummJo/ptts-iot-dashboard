@@ -368,7 +368,7 @@ export default function SettingsPage() {
                 style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
                 <div>
                   <h2 className="text-sm font-bold tracking-widest mb-3"
-                    style={{ color: "#00A3B4" }}>PTTS SMARTSENSOR — API DOCUMENTATION</h2>
+                    style={{ color: "#00A3B4" }}>Engineered by DummVinci — API DOCUMENTATION</h2>
 
                   <div className="space-y-3 text-xs" style={{ color: "var(--text-muted)" }}>
                     <div className="p-3 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
@@ -688,7 +688,7 @@ export default function SettingsPage() {
           <div className="mt-8 flex items-center justify-between px-2 py-1 text-sm tracking-[.15em] border-t border-border-dim"
             style={{ color:"var(--text-faint)" }}>
             <div className="flex gap-4">
-              <span>PTTS SMARTSENSOR IoT PLATFORM · v1.3.0</span>
+              <span>Engineered by DummVinci · v1.3.0</span>
               <span>ADMIN CONFIGURATION MODULE</span>
             </div>
             <div className="flex gap-4">
