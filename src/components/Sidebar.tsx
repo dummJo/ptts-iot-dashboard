@@ -97,7 +97,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
   }, []);
 
   return (
-    <aside className="relative flex flex-col w-52 min-h-screen shrink-0 z-40 transition-colors duration-250"
+    <aside className="hidden lg:flex relative flex-col w-52 min-h-screen shrink-0 z-40 transition-colors duration-250"
       style={{ background: "var(--sidebar-glass)", borderRight: "1px solid var(--border-dim)", backdropFilter: "blur(20px)", boxShadow: "5px 0 20px rgba(0,0,0,0.1)" }}>
 
       {/* Header */}
@@ -205,7 +205,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
       {/* Trademark Signature */}
       <div className="mt-auto mb-5 w-full text-center opacity-30 hover:opacity-100 transition-opacity duration-500">
         <p className="text-[10px] tracking-[0.15em] font-bold uppercase" style={{ color: "var(--text-muted)" }}>
-          Engineered by <span className="capitalize" style={{ color: "var(--ptts-teal)", fontFamily: "var(--font-serif)", fontSize: "14px", fontStyle: "italic", letterSpacing: "0.02em" }}>dummJo</span>
+          Engineered by <span className="capitalize" style={{ color: "var(--ptts-teal)", fontFamily: "var(--font-serif)", fontSize: "14px", fontStyle: "italic", letterSpacing: "0.02em" }}>DummVinci</span>
         </p>
       </div>
 
