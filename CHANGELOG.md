@@ -5,17 +5,23 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.0] — 2026-04-17
+## [2.0.0] - 2026-04-19
+### Unified Monolithic Deployment
+- **Aesthetic**: Full transition to "Monolithic Minimalism" (Sharp edges, 0 radius, zero-fluff clinical interface).
+- **Branding**: Fully white-labeled to PTTS across all touchpoints (Login, Sidebar, Dashboard, Reports).
+- **Accessibility**: Increased typography scale across SCADA cards, inputs, and headers for 40-50 age compliance.
+- **Theme**: Replaced generic high-key light mode with "Multinational Slate" (Deep Dark Grey) for high-end eye comfort.
+- **Stability**: Fixed Hydration Mismatch on root layout and resolved text clipping in Splash Sequence.
+- **Security**: Hardened authentication error messages and transitioned to Scrypt-AES session encryption.
+- **Maxun Scraper Bridge (Alpha)** — Initialized the high-authority proxy bridge for legacy asset telemetry ingestion via visual scraping.
 
-### Added
-- **Industrial Security Reinforcement** — Introduced a dedicated security utility (`src/lib/security.ts`) providing standard-compliant Scrypt hashing and AES-256-GCM encryption.
-- **Transparent Field Encryption** — All sensitive data, including ABB/RONDS API keys and Telegram/WhatsApp notification tokens, are now automatically encrypted at rest in PostgreSQL.
-- **Scrypt Key Derivation (KDF)** — Encryption keys are now derived using Scrypt with industrial-grade cost parameters, ensuring high resistance to hardware-accelerated attacks.
-- **SCRYPT-JWT Architecture** — Migrated the session layer from standard HS256 to a custom SCRYPT-derived key architecture, significantly increasing the complexity required for token forgery attacks.
-- **Security Visibility Update** — Refreshed all UI security labels across Login, Dashboard, and Settings modules to reflect the new **SCRYPT · JWT** industrial standard.
-- **Edge Runtime Optimization** — Resolved a critical authentication lock-out by migrating JWT verification to a cross-platform architecture compatible with Next.js Middleware (Edge Runtime).
-- **Alarm Export functionality** — Fully functional cross-platform CSV Export button embedded directly inside the `AlertsTable` component for seamless alarm trace logging.
-- **Global Acknowledge** — Connected the "Acknowledge All" button from within the table to hit the API loop instead of maintaining a faux local state.
+### Changed
+- **Typography Overhaul** — Transitioned all data values to monospaced high-precision fonts and clinical tight-tracking sans-serif for headers (Standard: Deloitte/Meta).
+- **Design Token System v2.0** — Replaced rounded decorative UI elements with high-tenacity sharp-edged industrial grids and a refined "Monolithic" color palette.
+- **Branding Consolidation** — Purged third-party naming conventions in favor of a clean, proprietary PTTS corporate identity across all system footers.
+- **UX Layout Stabilization** — Fixed multi-device element collisions by implementing a robust Grid Shell for TopBar and Scrollable workspace.
+
+## [1.3.0] — 2026-04-17
 
 ### Changed
 - **Visual Gimmick Reduction** — Removed the hyper-animated CSS panning grid and replaced it with a much softer, static dotted mesh to reduce cognitive overload in industrial environments.

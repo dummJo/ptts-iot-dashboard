@@ -9,7 +9,7 @@ const fontMono = JetBrains_Mono({ subsets: ["latin"], display: 'swap', variable:
 
 export const metadata: Metadata = {
   title: "PTTS SmartSensor Dashboard",
-  description: "Real-time IoT monitoring — Engineered by DummVinci",
+  description: "Real-time IoT monitoring — Unified Operations Console",
   icons: {
     icon: "/favicon.ico",
   },
@@ -29,7 +29,7 @@ export const viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{

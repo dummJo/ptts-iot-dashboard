@@ -1,54 +1,28 @@
-import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import { AssetService } from '@/services/assetService';
+import { Response } from '@/lib/api-response';
 
 /**
  * Asset Management API
- * Handles listing and (future) CRUD operations for IoT equipment.
  */
 
 export async function GET() {
   try {
-    const assets = await prisma.asset.findMany({
-      orderBy: { tagId: 'asc' }
-    });
-
-    return NextResponse.json({
-      success: true,
-      assets
-    });
+    const assets = await AssetService.getAll();
+    return Response.success({ assets });
   } catch (error) {
-    console.error('[Asset API] Database error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch assets' },
-      { status: 500 }
-    );
+    console.error('[Asset API] Error:', error);
+    return Response.error('Failed to fetch assets');
   }
 }
 
 export async function POST(req: Request) {
   try {
     const data = await req.json();
-    
-    const asset = await prisma.asset.create({
-      data: {
-        tagId: data.tagId,
-        name: data.name,
-        type: data.type,
-        location: data.location,
-        powerKw: parseFloat(data.powerKw) || 0,
-        foundationType: data.foundationType || 'rigid',
-        vibLimitWarning: parseFloat(data.vibLimitWarning) || null,
-        vibLimitFault: parseFloat(data.vibLimitFault) || null,
-      }
-    });
-
-    return NextResponse.json({ success: true, asset });
+    const asset = await AssetService.create(data);
+    return Response.success({ asset });
   } catch (error) {
     console.error('[Asset API] Create error:', error);
-    return NextResponse.json(
-      { error: 'Failed to create asset' },
-      { status: 500 }
-    );
+    return Response.error('Failed to create asset');
   }
 }
 
@@ -58,23 +32,18 @@ export async function PATCH(req: Request) {
     const { tagId, vibLimitWarning, vibLimitFault } = data;
 
     if (!tagId) {
-      return NextResponse.json({ error: 'tagId is required' }, { status: 400 });
+      return Response.badRequest('tagId is required');
     }
 
-    const updated = await prisma.asset.update({
-      where: { tagId },
-      data: {
-        vibLimitWarning: vibLimitWarning !== undefined ? parseFloat(vibLimitWarning) : undefined,
-        vibLimitFault: vibLimitFault !== undefined ? parseFloat(vibLimitFault) : undefined,
-      }
-    });
+    const updated = await AssetService.updateThresholds(
+      tagId, 
+      vibLimitWarning !== undefined ? parseFloat(vibLimitWarning) : undefined,
+      vibLimitFault !== undefined ? parseFloat(vibLimitFault) : undefined
+    );
 
-    return NextResponse.json({ success: true, asset: updated });
+    return Response.success({ asset: updated });
   } catch (error) {
     console.error('[Asset API] Update error:', error);
-    return NextResponse.json(
-      { error: 'Failed to update asset thresholds' },
-      { status: 500 }
-    );
+    return Response.error('Failed to update asset thresholds');
   }
 }

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 /**
- * DUMMVINCI DESIGN SYSTEM v2.0
- * Multinational Consultant Grade — Sophisticated Minimalism
+ * PTTS DESIGN SYSTEM v2.0
+ * Industrial Grade — Sophisticated Minimalism
  */
 
 :root {
@@ -49,18 +49,18 @@
 }
 
 .light {
-  --bg: #ffffff;
-  --bg-gradient: radial-gradient(circle at 0% 0%, rgba(0, 113, 227, 0.03), transparent 30%);
-  --surface: rgba(255, 255, 255, 0.8);
-  --surface-2: rgba(245, 245, 247, 0.9);
-  --surface-3: rgba(232, 232, 237, 0.9);
-  --border: rgba(0, 0, 0, 0.08);
-  --border-dim: rgba(0, 0, 0, 0.04);
-  --text: #1d1d1f;
-  --text-muted: #86868b;
-  --text-faint: #d2d2d7;
-  --text-bright: #000000;
-  --sidebar-bg: #ffffff;
+  --bg: #0a0a0b; /* Sophisticated Deep Slate, not white */
+  --bg-gradient: radial-gradient(circle at 0% 0%, rgba(0, 113, 227, 0.05), transparent 40%);
+  --surface: rgba(22, 22, 24, 0.95);
+  --surface-2: rgba(32, 32, 35, 0.98);
+  --surface-3: rgba(45, 45, 48, 0.98);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-dim: rgba(255, 255, 255, 0.03);
+  --text: #f5f5f7;
+  --text-muted: #a1a1a6;
+  --text-faint: #424245;
+  --text-bright: #ffffff;
+  --sidebar-bg: #050505;
 }
 
 body {
@@ -78,7 +78,7 @@ body {
 .scada-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 1px; /* Sharper, more professional corners */
+  border-radius: 0; /* Pure precision: 0 radius */
   backdrop-filter: blur(40px) saturate(180%);
   -webkit-backdrop-filter: blur(40px) saturate(180%);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -96,16 +96,16 @@ body {
 }
 
 .scada-label {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.2em;
   color: var(--text-muted);
   text-transform: uppercase;
 }
 
 .scada-value {
   font-family: var(--font-mono); /* Precision indicator */
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 500;
   letter-spacing: -0.02em;
   color: var(--text-bright);
@@ -113,14 +113,14 @@ body {
 
 /* Modern Typography Presets */
 .h1-elite {
-  font-size: 2.5rem;
+  font-size: 3rem;
   font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--text-bright);
 }
 
 .h2-elite {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 500;
   letter-spacing: -0.02em;
 }

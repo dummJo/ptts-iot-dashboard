@@ -58,7 +58,7 @@ export async function loginAction(
     return { success: true };
   } catch (err: any) {
     console.error("Login Error:", err);
-    return { error: "Internal Error: " + (err.message || String(err)) };
+    return { error: "Identity not recognized. Verify Operator ID or secure link." };
   }
 }
 

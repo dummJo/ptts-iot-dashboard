@@ -29,7 +29,7 @@ function RangeBar({ value, warning, fault, max }: { value: number; warning: numb
       <div className="absolute inset-y-0 w-px" style={{ left: pct(fault), background: "#ff6666" }} />
       {/* Current value marker */}
       <div
-        className="absolute top-0 bottom-0 w-1 rounded-sm transition-all"
+        className="absolute top-0 bottom-0 w-1 rounded-none transition-all"
         style={{ left: `calc(${pct(value)} - 2px)`, background: valueColor, boxShadow: `0 0 6px ${valueColor}` }}
       />
     </div>
@@ -117,7 +117,7 @@ export default function ThresholdModal({
               { label: "Foundation", value: asset.foundation ? asset.foundation.charAt(0).toUpperCase() + asset.foundation.slice(1) : "Rigid" },
               { label: "ISO Class", value: getISOClass(asset.powerKW) },
             ].map(({ label, value }, i) => (
-              <div key={label} className={`rounded-xl px-3 py-2`} 
+              <div key={label} className={`rounded-none px-3 py-2`} 
                 style={{ background: "var(--surface-2)", border: "1px solid var(--border-dim)" }}>
                 <p className="text-[10px] md:text-sm tracking-widest font-bold" style={{ color: "var(--text-faint)" }}>{label.toUpperCase()}</p>
                 <p className="text-sm md:text-base font-bold mt-0.5" style={{ color: "var(--text)" }}>{value}</p>
@@ -126,7 +126,7 @@ export default function ThresholdModal({
           </div>
 
           {/* ISO Baseline */}
-          <div className="rounded-sm px-4 py-3 space-y-2" style={{ background: "var(--surface-2)", border: "1px solid var(--border-dim)" }}>
+          <div className="rounded-none px-4 py-3 space-y-2" style={{ background: "var(--surface-2)", border: "1px solid var(--border-dim)" }}>
             <p className="text-xs font-bold tracking-widest" style={{ color: "var(--text-faint)" }}>
               ISO 10816 BASELINE  —  Read only
             </p>
@@ -191,7 +191,7 @@ export default function ThresholdModal({
                       key={preset}
                       disabled={readOnly}
                       onClick={() => handleWarning(parseFloat(preset.toFixed(1)))}
-                      className="text-xs md:text-sm px-3 py-1.5 rounded-xl font-bold tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95"
+                      className="text-xs md:text-sm px-3 py-1.5 rounded-none font-bold tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95"
                       style={{ border: "1px solid #ffdd0040", color: "#ffdd00", background: "rgba(255,204,0,0.05)" }}
                     >
                       {formatLocalNumber(preset, 1)}
@@ -231,7 +231,7 @@ export default function ThresholdModal({
                       key={preset}
                       disabled={readOnly}
                       onClick={() => handleFault(parseFloat(preset.toFixed(1)))}
-                      className="text-xs md:text-sm px-3 py-1.5 rounded-xl font-bold tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95"
+                      className="text-xs md:text-sm px-3 py-1.5 rounded-none font-bold tracking-widest disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95"
                       style={{ border: "1px solid #ff666640", color: "#ff6666", background: "rgba(255,102,102,0.05)" }}
                     >
                       {formatLocalNumber(preset, 1)}
@@ -256,7 +256,7 @@ export default function ThresholdModal({
           <div className="flex gap-2">
             <button
               onClick={onClose}
-              className="px-3 py-1.5 text-xs font-bold tracking-widest rounded-sm transition-colors"
+              className="px-3 py-1.5 text-xs font-bold tracking-widest rounded-none transition-colors"
               style={{ color: "var(--text-muted)", border: "1px solid var(--border)" }}
               onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
             >
@@ -265,7 +265,7 @@ export default function ThresholdModal({
             <button
               onClick={() => { if (!readOnly) { onSave(asset.id, { warning, fault }); onClose(); } }}
               disabled={readOnly || !hasChange}
-              className="px-4 py-1.5 text-xs font-black tracking-widest rounded-sm transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+              className="px-4 py-1.5 text-xs font-black tracking-widest rounded-none transition-all disabled:opacity-30 disabled:cursor-not-allowed"
               style={{ background: "var(--ptts-teal)", color: "#000" }}
             >
               {readOnly ? "Restricted" : "Save Changes"}

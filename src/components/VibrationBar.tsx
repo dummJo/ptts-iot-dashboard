@@ -20,11 +20,11 @@ export default function VibrationBar({ vibrationData = [] }: { vibrationData?: V
               tickLine={false} axisLine={false} width={88} />
             <ReferenceLine x={3.5} stroke="#FFD700" strokeDasharray="3 3" strokeOpacity={0.6} />
             <Tooltip
-              contentStyle={{ background:"var(--surface-2)", border:"1px solid var(--border)", borderRadius:2, fontSize:10, fontFamily:"inherit" }}
+              contentStyle={{ background:"var(--surface-2)", border:"1px solid var(--border)", borderRadius:0, fontSize:10, fontFamily:"inherit" }}
               itemStyle={{ color:"var(--text)" }}
               formatter={(val: any) => [formatLocalNumber(val, 2) + " mm/s", "Vibration"]}
             />
-            <Bar dataKey="value" radius={[0,2,2,0]} barSize={12}>
+            <Bar dataKey="value" radius={0} barSize={12}>
               {vibrationData.map((e,i) => (
                 <Cell key={i} fill={e.value >= 3.5 ? "var(--fault)" : e.value >= 2.5 ? "var(--warning)" : "var(--ptts-teal)"} />
               ))}

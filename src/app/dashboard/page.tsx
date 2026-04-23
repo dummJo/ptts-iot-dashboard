@@ -14,7 +14,7 @@ import { EMPTY_DASHBOARD } from "@/lib/types";
 import { calculateMachineHealth } from "@/lib/utils";
 
 /**
- * ELITE OPERATIONS CONSOLE v2.0 — BY DUMMVINCI CONSULTING
+ * PTTS OPERATIONS CONSOLE v2.0 — PROPRIETARY SYSTEM
  * Architecture: Monolithic Precision
  * Layout: High-Density Analytics Grid
  */
@@ -163,7 +163,7 @@ export default function DashboardPage() {
             <footer className="pt-20 pb-12 opacity-30 border-t border-[var(--border-dim)]">
               <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-[9px] tracking-[0.3em] font-bold uppercase transition-opacity hover:opacity-100 duration-500">
                 <div className="flex items-center gap-8">
-                  <p>System Build: <span className="text-white">v2.0.4-Stable</span></p>
+                  <p>System Build: <span className="text-white">v2.0.0-Stable</span></p>
                   <p>Host: <span className="text-white">Primary Cloud Instance</span></p>
                 </div>
                 <div className="flex items-center gap-8">
@@ -171,7 +171,7 @@ export default function DashboardPage() {
                     <span className="w-1 h-1 bg-current" />
                     Secure Link Protocol
                   </p>
-                  <p>© 2026 DummVinci Consulting · Proprietary System</p>
+                  <p>© 2026 PTTS · By DummVinci</p>
                 </div>
               </div>
             </footer>

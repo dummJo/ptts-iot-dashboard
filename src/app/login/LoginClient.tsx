@@ -29,8 +29,8 @@ const T: Record<Lang, {
   pwd: string; pwd_ph: string; remember: string;
   btn: string; pending: string; footer: string;
 }> = {
-  en: { sub:"Operator Sign In",    uid:"Operator ID",  uid_ph:"Enter your operator ID",   pwd:"Password",   pwd_ph:"Enter your password",    remember:"Stay signed in", btn:"Sign In",  pending:"Verifying...", footer:"Engineered by DummVinci" },
-  id: { sub:"Masuk Operator",      uid:"ID Operator",  uid_ph:"Masukkan ID operator Anda", pwd:"Kata Sandi", pwd_ph:"Masukkan kata sandi",     remember:"Ingat saya",     btn:"Masuk",    pending:"Memverifikasi...", footer:"Engineered by DummVinci" },
+  en: { sub:"Operator Sign In",    uid:"Operator ID",  uid_ph:"Enter your operator ID",   pwd:"Password",   pwd_ph:"Enter your password",    remember:"Stay signed in", btn:"Sign In",  pending:"Verifying...", footer:"PTTS SmartSensor" },
+  id: { sub:"Masuk Operator",      uid:"ID Operator",  uid_ph:"Masukkan ID operator Anda", pwd:"Kata Sandi", pwd_ph:"Masukkan kata sandi",     remember:"Ingat saya",     btn:"Masuk",    pending:"Memverifikasi...", footer:"PTTS SmartSensor" },
   ja: { sub:"オペレーターサインイン", uid:"オペレーター ID", uid_ph:"ID を入力してください",    pwd:"パスワード",  pwd_ph:"パスワードを入力してください", remember:"ログイン状態を保持", btn:"サインイン", pending:"確認中...", footer:"PT プリマ テキンド ティルタ セジャテラ" },
   ko: { sub:"운영자 로그인",          uid:"운영자 ID",     uid_ph:"운영자 ID를 입력하세요",   pwd:"비밀번호",   pwd_ph:"비밀번호를 입력하세요",    remember:"로그인 유지",     btn:"로그인",    pending:"확인 중...", footer:"PT 프리마 테킨도 티르타 세자테라" },
   zh: { sub:"操作员登录",             uid:"操作员 ID",     uid_ph:"请输入操作员 ID",          pwd:"密码",       pwd_ph:"请输入密码",               remember:"保持登录",        btn:"登录",      pending:"验证中...", footer:"PT 普里马 特金多 蒂尔塔 塞贾特拉" },
@@ -64,6 +64,7 @@ function DigitalBackground() {
 
 export default function LoginClient() {
   const [phase, setPhase]  = useState<Phase>("logo");
+  const [isExiting, setIsExiting] = useState(false);
   const [lines, setLines]  = useState(0);
   const [pct,   setPct]    = useState(0);
   const [showPw, setShowPw]= useState(false);
@@ -97,7 +98,8 @@ export default function LoginClient() {
       const iv = setInterval(() => { p = Math.min(p + 2, 100); setPct(p); if (p >= 100) clearInterval(iv); }, 18);
     }, 3700));
     ids.push(setTimeout(() => setPhase("ready"), 5000));
-    ids.push(setTimeout(() => setPhase("login"),  5600));
+    ids.push(setTimeout(() => setIsExiting(true), 5400));
+    ids.push(setTimeout(() => setPhase("login"),  6000));
     return () => ids.forEach(clearTimeout);
   }, []);
 
@@ -120,9 +122,9 @@ export default function LoginClient() {
     }
   }, []);
 
-  /* ── APPLE STYLE SPLASH SEQUENCE ────────────────────────────────────────── */
+  /* ── MONOLITHIC SPLASH SEQUENCE ────────────────────────────────────────── */
   if (phase !== "login") return (
-    <div className="fixed inset-0 z-[9999] bg-[#000000] overflow-hidden flex flex-col items-center justify-center select-none" style={{ fontFamily: "var(--font-inter), sans-serif" }}>
+    <div className={`fixed inset-0 z-[9999] bg-[#000000] overflow-hidden flex flex-col items-center justify-center select-none transition-opacity duration-700 ${isExiting ? "opacity-0" : "opacity-100"}`} style={{ fontFamily: "var(--font-inter), sans-serif" }}>
       
       {/* ── Apple Style Ambient Blur Gradients (Vibrant) ── */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -132,10 +134,10 @@ export default function LoginClient() {
 
       <div className="relative z-10 flex flex-col items-center animate-[fade-in_1s_ease-out_forwards]">
         
-        {/* ── Liquid Glass Logo (Vibrant) ── */}
+        {/* ── Monolithic Precision Logo ── */}
         <div className={`relative w-28 h-28 flex items-center justify-center mb-10 transition-all duration-1000 ${phase === "logo" ? "opacity-0 scale-90" : "opacity-100 scale-100"}`}>
-          <div className="absolute inset-0 bg-white/10 border border-white/20 rounded-[28px] backdrop-blur-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/20 to-transparent rounded-[28px] pointer-events-none" />
+          <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl shadow-[0_20px_60px_rgba(0,0,0,0.6)]" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none" />
           
           <div className="relative w-16 h-16 flex items-center justify-center">
             <img src="https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png" alt="PTTS" className="w-full h-full object-contain brightness-0 invert opacity-90" />
@@ -144,11 +146,11 @@ export default function LoginClient() {
 
         {/* ── Cinematic Typography ── */}
         <div className={`text-center space-y-3 mb-12 transition-all duration-700 delay-100 ${phase === "logo" ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}>
-          <h1 className="text-3xl md:text-5xl font-semibold tracking-widest text-[#f5f5f7]">
+          <h1 className="text-4xl md:text-6xl font-semibold tracking-[0.2em] text-[#f5f5f7]">
             SMART<span className="text-[#86868b] font-light">SENSOR</span>
           </h1>
-          <p className="text-xs md:text-sm tracking-[0.4em] text-[#a1a1a6] uppercase">
-            Industrial IoT Platform <span className="opacity-40 font-mono italic">v1.3.0</span>
+          <p className="text-sm md:text-base tracking-[0.4em] text-[#a1a1a6] uppercase">
+            Industrial IoT Platform <span className="opacity-40 font-mono italic">v2.0.0</span>
           </p>
         </div>
 
@@ -165,13 +167,13 @@ export default function LoginClient() {
             </div>
           </div>
           
-          {/* Progress Bar Container: Liquid Glass Pill */}
-          <div className="h-1.5 w-full bg-white/10 overflow-hidden rounded-full backdrop-blur-md">
+          {/* Progress Bar Container: Monolithic Bar */}
+          <div className="h-1 w-full bg-white/5 overflow-hidden backdrop-blur-md border border-white/5">
             <div 
-              className="h-full bg-white relative rounded-full"
+              className="h-full bg-white relative"
               style={{ width: `${pct}%`, transition: "width 0.2s linear" }}
             >
-              <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-r from-transparent to-white opacity-80" />
+              <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-r from-transparent to-white opacity-40" />
             </div>
           </div>
           
@@ -186,7 +188,7 @@ export default function LoginClient() {
 
       {/* ── Subdued Minimalist Footer ── */}
       <div className="absolute bottom-8 left-0 right-0 text-center text-[9px] text-[#86868b] tracking-[0.4em] uppercase font-medium opacity-0 animate-[fade-in_2s_ease-out_forwards_1.5s]">
-        © 2026 Engineered by DummVinci
+        © 2026 PTTS SmartSensor
       </div>
 
       <style dangerouslySetInnerHTML={{__html: `
@@ -204,15 +206,12 @@ export default function LoginClient() {
         <DigitalBackground />
       </div>
 
-      {/* Floating Glass Pane Window */}
-      <div className="relative z-10 w-full max-w-[420px] mx-4 p-10 flex flex-col animate-fade-up shadow-[0_20px_40px_rgba(0,0,0,0.3)]"
+      {/* Monolithic Console Pane */}
+      <div className="relative z-10 w-full max-w-[420px] mx-4 p-12 flex flex-col animate-fade-up border border-[var(--border)] bg-[#050505] shadow-elite"
            style={{ 
              background: 'var(--surface)', 
-             backdropFilter: 'blur(64px) saturate(200%)',
-             WebkitBackdropFilter: 'blur(64px) saturate(200%)',
-             border: `1px solid var(--border)`,
-             borderTop: `1px solid rgba(255,255,255,0.25)`,
-             borderRadius: '36px',
+             backdropFilter: 'blur(32px)',
+             WebkitBackdropFilter: 'blur(32px)',
            }}>
            
         {/* Language & Theme Toggle (Top Right) */}
@@ -221,7 +220,7 @@ export default function LoginClient() {
           
           <div className="relative" ref={dropRef}>
             <button onClick={() => setOpen(!open)}
-              className="flex items-center justify-center w-8 h-8 rounded-full transition-colors"
+              className="flex items-center justify-center w-8 h-8 rounded-none transition-colors"
               style={{
                 color: open ? C.gold : C.muted,
                 background: open ? C.bgInput : "transparent",
@@ -234,17 +233,16 @@ export default function LoginClient() {
             </button>
 
             {open && (
-              <div className="absolute right-0 top-full mt-2 w-36 z-50 overflow-hidden shadow-xl"
-                style={{ background: 'var(--surface-3)', border: `1px solid var(--border)`, borderRadius: '16px', backdropFilter: 'blur(20px)' }}>
+              <div className="absolute right-0 top-full mt-2 w-36 z-50 overflow-hidden shadow-2xl bg-black border border-[var(--border)]">
                 {LANGS.map(l => (
                   <button key={l.code} onClick={() => { setLang(l.code); setOpen(false); }}
-                    className="flex items-center justify-between w-full px-4 py-3 text-[16px] font-bold transition-colors text-left"
+                    className="flex items-center justify-between w-full px-5 py-4 text-[17px] font-bold transition-colors text-left border-b border-white/5 last:border-0"
                     style={{
                       color:      lang === l.code ? C.gold  : C.muted,
-                      background: lang === l.code ? C.bgInput : "transparent",
+                      background: lang === l.code ? "rgba(255,255,255,0.05)" : "transparent",
                     }}>
                     <span>{l.label}</span>
-                    <span className="font-normal text-xs opacity-60">{l.native}</span>
+                    <span className="font-normal text-sm opacity-60">{l.native}</span>
                   </button>
                 ))}
               </div>
@@ -252,16 +250,16 @@ export default function LoginClient() {
           </div>
         </div>
 
-        {/* Logo and Brand Title Header */}
+        {/* Brand Identity Header */}
         <div className="flex flex-col items-center mb-10 mt-2">
-          <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 mb-5 shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-transform hover:scale-105"
-               style={{ background: 'var(--surface-2)', border: `1px solid var(--border)`, borderTop: '1px solid rgba(255,255,255,0.4)', backdropFilter: 'blur(20px)' }}>
-            <img src={LOGO} alt="PTTS" className="w-full h-full object-contain p-2" />
+          <div className="w-16 h-16 overflow-hidden flex-shrink-0 mb-6 border border-[var(--border)] bg-[#0a0a0a] flex items-center justify-center shadow-lg"
+               style={{ backdropFilter: 'blur(20px)' }}>
+            <img src={LOGO} alt="PTTS" className="w-10 h-10 object-contain brightness-0 invert opacity-90" />
           </div>
-          <h1 className="text-[36px] font-extrabold tracking-tight text-center" style={{ color: C.cream, fontFamily: 'var(--font-inter)' }}>
+          <h1 className="text-[42px] font-extrabold tracking-tight text-center" style={{ color: C.cream, fontFamily: 'var(--font-inter)' }}>
             IOT DASHBOARD
           </h1>
-          <p className="text-[15px] mt-1 font-medium text-center opacity-80" style={{ color: C.muted }}>
+          <p className="text-[17px] mt-2 font-medium text-center opacity-80" style={{ color: C.muted }}>
             {t.sub}
           </p>
         </div>
@@ -270,10 +268,9 @@ export default function LoginClient() {
         {state?.error && (
           <div className="flex items-center gap-3 px-4 py-3 mb-6 animate-fade-up shadow-sm"
             style={{ 
-              background: "rgba(220, 38, 38, 0.1)", 
+              background: "rgba(220, 38, 38, 0.05)", 
               border: `1px solid rgba(220, 38, 38, 0.2)`, 
               color: "var(--fault)", 
-              borderRadius: "14px" 
             }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
               fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -292,14 +289,12 @@ export default function LoginClient() {
             <div className="relative group">
               <input type="text" name="username" autoComplete="username"
                 required maxLength={64} placeholder={t.uid_ph}
-                className="w-full px-5 py-5 text-[17px] font-semibold outline-none transition-all placeholder-opacity-50"
+                className="w-full px-6 py-6 text-[19px] font-semibold outline-none transition-all placeholder-opacity-50"
                 style={{
-                  background: 'var(--surface-2)',
-                  backdropFilter: 'blur(20px)',
+                  background: 'rgba(255,255,255,0.03)',
                   border: `1px solid var(--border)`,
                   color: C.cream,
-                  borderRadius: '20px',
-                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
+                  boxShadow: 'inset 0 0 15px rgba(0,0,0,0.3)',
                 }}
                 onFocus={e => { e.target.style.borderColor = C.gold; e.target.style.boxShadow = `0 0 0 3px ${C.gold}20, inset 0 2px 4px rgba(0,0,0,0.02)`; }}
                 onBlur={e  => { e.target.style.borderColor = 'var(--border)';       e.target.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.02)"; }}
@@ -311,20 +306,18 @@ export default function LoginClient() {
               <input type={showPw ? "text" : "password"} name="password"
                 autoComplete="current-password" required maxLength={64}
                 placeholder={t.pwd_ph}
-                className="w-full px-5 py-5 pr-16 text-[17px] font-semibold outline-none transition-all placeholder-opacity-50"
+                className="w-full px-6 py-6 pr-16 text-[19px] font-semibold outline-none transition-all placeholder-opacity-50"
                 style={{
-                  background: 'var(--surface-2)',
-                  backdropFilter: 'blur(20px)',
+                  background: 'rgba(255,255,255,0.03)',
                   border: `1px solid var(--border)`,
                   color: C.cream,
-                  borderRadius: '20px',
-                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)',
+                  boxShadow: 'inset 0 0 15px rgba(0,0,0,0.3)',
                 }}
                 onFocus={e => { e.target.style.borderColor = C.gold; e.target.style.boxShadow = `0 0 0 3px ${C.gold}20, inset 0 2px 4px rgba(0,0,0,0.02)`; }}
                 onBlur={e  => { e.target.style.borderColor = 'var(--border)';       e.target.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.02)"; }}
               />
               <button type="button" onClick={() => setShowPw(!showPw)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-2 hover:bg-[rgba(150,150,150,0.1)] transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-none p-2 hover:bg-[rgba(150,150,150,0.1)] transition-colors"
                 style={{ color: C.muted }}>
                 {showPw ? (
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -337,7 +330,7 @@ export default function LoginClient() {
 
           <div className="flex items-center justify-between px-1">
             <label className="flex items-center gap-2.5 cursor-pointer group">
-              <div className="w-[18px] h-[18px] rounded-[6px] border flex items-center justify-center transition-all bg-[var(--surface-3)]"
+              <div className="w-[18px] h-[18px] border flex items-center justify-center transition-all bg-black"
                    style={{ borderColor: remember ? C.gold : 'var(--border-dim)' }}>
                 {remember && (
                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
@@ -355,10 +348,10 @@ export default function LoginClient() {
           </div>
 
           <button type="submit" disabled={pending}
-            className="w-full py-5 text-[18px] font-bold rounded-[16px] transition-all disabled:opacity-50 mt-4 shadow-lg hover:shadow-xl active:scale-[0.98]"
+            className="w-full py-6 text-[16px] tracking-[0.5em] font-bold uppercase transition-all disabled:opacity-30 mt-6 shadow-2xl active:scale-[0.99]"
             style={{
-              background: pending ? 'var(--surface-3)' : C.gold,
-              color: pending ? C.muted : '#ffffff',
+              background: pending ? 'rgba(255,255,255,0.1)' : 'white',
+              color: pending ? C.muted : 'black',
               border: "none",
             }}>
             {pending ? (
@@ -372,7 +365,7 @@ export default function LoginClient() {
 
         <div className="mt-10 pt-6 flex flex-col items-center opacity-40" style={{ borderTop: `1px solid var(--border-dim)` }}>
           <p className="text-[10px] tracking-[0.2em] font-bold uppercase" style={{ color: C.muted }}>
-            Engineered by DummVinci · v1.3.0
+            PTTS Industrial OS · v2.0.0
           </p>
           <div className="flex items-center gap-1.5 mt-1.5">
             <div className="w-1 h-1 rounded-full bg-[var(--online)]" />

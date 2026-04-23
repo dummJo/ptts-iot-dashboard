@@ -1,10 +1,9 @@
-import { NextResponse } from 'next/server';
+import { Response } from '@/lib/api-response';
 import prisma from '@/lib/prisma';
 import { encryptData, decryptData } from '@/lib/security';
 
 /**
  * System Configuration API - Powered by PostgreSQL
- * Manages API keys (ABB/RONDS) and platform settings with Scrypt-AES protection.
  */
 
 export async function GET() {
@@ -14,7 +13,7 @@ export async function GET() {
     });
 
     if (!config) {
-      return NextResponse.json({
+      return Response.success({
         apiKeys: [],
         notifications: {
           telegramToken: "",
@@ -27,15 +26,14 @@ export async function GET() {
       });
     }
 
-    // Decrypt keys for management UI
     const keysMap = (config.getKeys as any) || {};
     const apiKeys = Object.entries(keysMap).map(([vendor, key]) => ({
       vendor,
-      key: decryptData(key as string) || key, // Fallback to raw if decryption fails
+      key: decryptData(key as string) || key,
       status: 'active'
     }));
 
-    return NextResponse.json({
+    return Response.success({
       apiKeys,
       notifications: {
         telegramToken: config.telegramToken ? decryptData(config.telegramToken) : "",
@@ -48,11 +46,8 @@ export async function GET() {
     });
 
   } catch (error) {
-    console.error('[Config API] Database error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch config' },
-      { status: 500 }
-    );
+    console.error('[Config API] Error:', error);
+    return Response.error('Failed to fetch config');
   }
 }
 
@@ -61,7 +56,6 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { apiKeys, notifications, settings } = body;
 
-    // Encrypt keys before storage
     const keysMap: Record<string, any> = {};
     if (Array.isArray(apiKeys)) {
       apiKeys.forEach((k: any) => {
@@ -92,13 +86,10 @@ export async function POST(req: Request) {
       }
     });
 
-    return NextResponse.json({ success: true, timestamp: updated.updatedAt });
+    return Response.success({ timestamp: updated.updatedAt });
 
   } catch (error) {
     console.error('[Config API] Save error:', error);
-    return NextResponse.json(
-      { error: 'Failed to save configuration' },
-      { status: 500 }
-    );
+    return Response.error('Failed to save configuration');
   }
 }
