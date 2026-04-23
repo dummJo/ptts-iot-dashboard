@@ -88,9 +88,10 @@ export const apiClient = {
    * Backend contract: GET /api/dashboard → DashboardData
    * DB: SELECT * FROM telemetry LEFT JOIN assets WHERE timestamp > NOW()-5m
    */
-  async getDashboardData(): Promise<DashboardData> {
+  async getDashboardData(orgId?: string): Promise<DashboardData> {
+    const query = orgId ? `?orgId=${orgId}` : '';
     return apiFetch<DashboardData>(
-      `${serviceUrl('telemetry')}/api/dashboard`,
+      `${serviceUrl('telemetry')}/api/dashboard${query}`,
       { cache: 'no-store' }
     );
   },

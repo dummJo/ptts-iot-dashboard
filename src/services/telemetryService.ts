@@ -63,10 +63,14 @@ export class TelemetryService {
   }
 
   /**
-   * Fetches latest telemetry for all assets.
+   * Fetches latest telemetry for assets in a specific organization.
+   * @param orgId The organization ID (default is 'demo-mode')
    */
-  static async getLatestState() {
+  static async getLatestState(orgId: string = 'demo-mode') {
     return prisma.asset.findMany({
+      where: {
+        organizationId: orgId
+      },
       include: {
         telemetries: {
           orderBy: { timestamp: 'desc' },

@@ -35,7 +35,8 @@ export default function DashboardPage() {
 
   const fetchDashboardData = async () => {
     try {
-      const data = await apiClient.getDashboardData();
+      const savedOrg = typeof window !== 'undefined' ? localStorage.getItem("ptts-selected-org") || "demo-mode" : "demo-mode";
+      const data = await apiClient.getDashboardData(savedOrg);
       setDashboardData(data);
     } catch (e) { console.error(e); }
   };

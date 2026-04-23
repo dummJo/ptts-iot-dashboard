@@ -28,8 +28,10 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
   const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null);
   const [alarmCount, setAlarmCount] = useState(0);
 
-  const [selectedOrg, setSelectedOrg] = useState("PT Cabot");
-  const abbOrganizations = ["PT Cabot", "PT Amerta Indah Otsuka"];
+  const [selectedOrg, setSelectedOrg] = useState("demo-mode");
+  const [organizations, setOrganizations] = useState<{id: string, name: string, type: string}[]>([
+    { id: 'demo-mode', name: 'Live Demo Mode', type: 'Demo' }
+  ]);
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -38,9 +40,30 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         setCurrentUser({ username: session.username, role: session.role });
       }
     };
+    
+    const fetchOrgs = async () => {
+      try {
+        const res = await fetch("/api/organizations");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.organizations) {
+            setOrganizations(data.organizations);
+            // Restore selection from localStorage if available
+            const savedOrg = localStorage.getItem("ptts-selected-org");
+            if (savedOrg && data.organizations.some((o: any) => o.id === savedOrg)) {
+              setSelectedOrg(savedOrg);
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Failed to fetch organizations", e);
+      }
+    };
+
     const fetchAlarmsCount = async () => {
       try {
-        const res = await fetch("/api/dashboard");
+        const savedOrg = localStorage.getItem("ptts-selected-org") || "demo-mode";
+        const res = await fetch(`/api/dashboard?orgId=${savedOrg}`);
         if (res.ok) {
           const data = await res.json();
           setAlarmCount((data.healthSummary?.warning || 0) + (data.healthSummary?.fault || 0));
@@ -49,6 +72,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
     };
 
     fetchSession();
+    fetchOrgs();
     fetchAlarmsCount();
     
     let alarmIv: NodeJS.Timeout;
@@ -141,15 +165,21 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
 
       {/* Organization Scope */}
       <div className="px-5 py-6 space-y-3 border-t border-[var(--border-dim)] bg-[#0a0a0a]">
-        <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">ABB Data Scope</p>
+        <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Select Organization</p>
         <select 
           value={selectedOrg}
-          onChange={(e) => setSelectedOrg(e.target.value)}
+          onChange={(e) => {
+            const val = e.target.value;
+            setSelectedOrg(val);
+            localStorage.setItem("ptts-selected-org", val);
+            // Reload to force all dashboard components to pick up the new organization scope
+            window.location.reload();
+          }}
           className="w-full bg-black border border-[var(--border-dim)] text-[11px] font-bold text-[var(--text-muted)] p-2 outline-none focus:border-[var(--ptts)] cursor-pointer transition-colors"
         >
-          {abbOrganizations.map(org => (
-            <option key={org} value={org} className="bg-black text-[var(--text-muted)]">
-              {org}
+          {organizations.map(org => (
+            <option key={org.id} value={org.id} className="bg-black text-[var(--text-muted)]">
+              {org.name}
             </option>
           ))}
         </select>
