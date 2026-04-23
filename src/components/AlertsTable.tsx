@@ -71,7 +71,7 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
           <button
             onClick={handleExportLog}
             disabled={alerts.length === 0}
-            className="text-xs font-bold tracking-widest transition-all px-3 py-1.5 rounded-sm shadow-sm disabled:opacity-40"
+            className="text-xs font-bold tracking-widest transition-all px-3 py-1.5 rounded-none shadow-sm disabled:opacity-40"
             style={{ 
               color: "var(--text-muted)", 
               background: "var(--surface-2)",
@@ -83,7 +83,7 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
           <button
             onClick={handleAckAll}
             disabled={loading || alerts.length === 0}
-            className="text-xs font-bold tracking-widest transition-all px-3 py-1.5 rounded-sm shadow-sm disabled:opacity-40"
+            className="text-xs font-bold tracking-widest transition-all px-3 py-1.5 rounded-none shadow-sm disabled:opacity-40"
             style={{ 
               color: "var(--bg)", 
               background: "var(--ptts-teal)",
@@ -103,7 +103,7 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
           return (
             <div
               key={a.id}
-              className="rounded-sm p-3 flex flex-col gap-2 transition-opacity"
+              className="rounded-none p-3 flex flex-col gap-2 transition-opacity"
               style={{
                 background: s.bg,
                 border: `1px solid ${isAcked ? "var(--border)" : s.color + "40"}`,
@@ -144,7 +144,7 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
                 <button
                   onClick={() => handleAck(a.id)}
                   disabled={isAcked}
-                  className="text-xs px-2.5 py-1 rounded-sm font-bold tracking-widest transition-all disabled:opacity-40 disabled:cursor-default"
+                  className="text-xs px-2.5 py-1 rounded-none font-bold tracking-widest transition-all disabled:opacity-40 disabled:cursor-default"
                   style={{
                     border: `1px solid ${isAcked ? "var(--border)" : s.color}`,
                     color: isAcked ? "var(--text-faint)" : s.color,

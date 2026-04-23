@@ -45,7 +45,7 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
       <div className="hidden lg:flex items-center gap-3 text-xs font-mono">
         <span style={{ color:"var(--text-faint)" }}>{dateStr.toUpperCase()}</span>
         <span className="tabular-nums" style={{ color:"var(--text-muted)" }}>{timeStr}</span>
-        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-sm"
+        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-none"
           style={{ 
             background: connected ? "var(--badge-online-bg)" : "var(--badge-fault-bg)", 
             border: `1px solid ${connected ? "var(--online)" : "var(--fault)"}` 
@@ -61,7 +61,7 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
       <div className="flex items-center gap-2">
         <button 
           onClick={() => setShowChangelog(true)}
-          className="w-8 h-8 flex items-center justify-center rounded-sm text-[15px] font-bold transition-all border border-border bg-surface hover:bg-surface-2"
+          className="w-8 h-8 flex items-center justify-center rounded-none text-[15px] font-bold transition-all border border-border bg-surface hover:bg-surface-2"
           title="System Logs"
           style={{ color: "var(--ptts-teal)" }}
         >
@@ -72,7 +72,7 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
           <div className="hidden sm:block">
             <label htmlFor="poll-interval" className="sr-only">Polling Interval</label>
             <select id="poll-interval" aria-label="Polling Interval" value={pollInterval} onChange={(e) => onPollChange(Number(e.target.value))}
-              className="text-xs px-2 py-1.5 rounded-sm font-bold tracking-widest transition-all outline-none"
+              className="text-xs px-2 py-1.5 rounded-none font-bold tracking-widest transition-all outline-none"
               style={{ border:"1px solid var(--border)", color:"var(--text)", background:"var(--surface)" }}>
               <option value={5000}>5s</option>
               <option value={60000}>1m</option>
@@ -83,7 +83,7 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
         )}
         {onRefresh && (
           <button onClick={onRefresh} disabled={refreshing}
-            className="text-[10px] md:text-xs px-2 md:px-2.5 py-1.5 rounded-sm font-bold tracking-widest transition-all disabled:opacity-50"
+            className="text-[10px] md:text-xs px-2 md:px-2.5 py-1.5 rounded-none font-bold tracking-widest transition-all disabled:opacity-50"
             style={{ border:"1px solid var(--border)", color:"var(--text-muted)", background:"var(--surface)" }}>
             {refreshing ? "..." : "⟳"}
           </button>

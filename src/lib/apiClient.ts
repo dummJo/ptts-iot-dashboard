@@ -19,8 +19,7 @@ import type {
   ReportPeriod,
 } from './types';
 import { serviceUrl, REQUEST_CONFIG } from './config';
-
-// ── Internal fetch wrapper with retry & timeout ───────────────────────────────
+import { ApiResponse } from './api-response';
 
 async function apiFetch<T>(
   url: string,
@@ -37,28 +36,26 @@ async function apiFetch<T>(
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        // When integrating a real JWT backend, inject Bearer token here:
-        // 'Authorization': `Bearer ${getSessionToken()}`,
         ...options.headers,
       },
     });
 
     clearTimeout(timer);
 
-    // Retry on transient server errors
     if ((res.status === 503 || res.status === 502) && retries > 0) {
       await delay(REQUEST_CONFIG.retryDelayMs);
       return apiFetch<T>(url, options, retries - 1);
     }
 
-    if (!res.ok) {
-      throw new ApiError(res.status, `${options.method ?? 'GET'} ${url} → HTTP ${res.status}`);
+    const body = (await res.json()) as ApiResponse<T>;
+
+    if (!res.ok || !body.success) {
+      throw new ApiError(res.status, body.error || `${options.method ?? 'GET'} ${url} → HTTP ${res.status}`);
     }
 
-    return (await res.json()) as T;
+    return body.data as T;
   } catch (err) {
     clearTimeout(timer);
-    // Retry on network failure
     if (err instanceof TypeError && retries > 0) {
       await delay(REQUEST_CONFIG.retryDelayMs);
       return apiFetch<T>(url, options, retries - 1);

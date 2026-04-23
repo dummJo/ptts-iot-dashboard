@@ -1,38 +1,18 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { runAlarmEngine } from '@/lib/alarmEngine';
-import { NotificationService } from '@/lib/notifications';
+import { TelemetryService } from '@/services/telemetryService';
+import { Response } from '@/lib/api-response';
 import { formatLocalNumber } from '@/lib/utils';
 import type { DashboardData, TrendPoint, Asset, Alarm } from '@/lib/types';
 
 /**
  * Dashboard Overview API - Powered by PostgreSQL
- * Pulls assets, telemetry history, and displays active alarms.
  */
 export async function GET() {
   try {
-    // 1. Fetch Assets with latest telemetry
-    const assetsData = await prisma.asset.findMany({
-      include: {
-        telemetries: {
-          orderBy: { timestamp: 'desc' },
-          take: 1
-        }
-      }
-    });
+    const assetsData = await TelemetryService.getLatestState();
 
-    // 2. ⚡ RUN ALARM ENGINE (Refactored)
-    // In production, this should ideally be triggered by telemetry ingestion,
-    // not by the dashboard GET route. Keeping it here for demo consistency.
-    for (const asset of assetsData) {
-      const latest = asset.telemetries[0];
-      if (latest) {
-        await runAlarmEngine(asset.id, { vibOverall: latest.vibOverall });
-      }
-    }
-
-    // 3. Fetch Trend Data
-    // Attempt to find MTR-001, but fallback to the first asset if missing
+    // Fetch Trend Data (MTR-001 or fallback)
     let trendAsset = await prisma.asset.findFirst({
        where: { tagId: 'MTR-001' },
        include: {
@@ -56,7 +36,6 @@ export async function GET() {
       current: t.motorCurrent || 0,
     }));
 
-    // 4. Transform Assets for Frontend
     const topAssets: Asset[] = assetsData.map(a => {
       const latest = a.telemetries[0] || {};
       return {
@@ -76,7 +55,6 @@ export async function GET() {
       };
     });
 
-    // 5. Fetch Active Alarms
     const activeAlarms = await prisma.alarm.findMany({
       where: { acknowledgedAt: null },
       include: { asset: true },
@@ -93,7 +71,6 @@ export async function GET() {
       time: al.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }));
 
-    // 6. Build Final Response
     const data: DashboardData = {
       kpiData: [
         {
@@ -161,109 +138,33 @@ export async function GET() {
       }
     };
 
-    return NextResponse.json(data);
+    return Response.success(data);
   } catch (error) {
     console.error('[Dashboard API] Error:', error);
-    return NextResponse.json({ error: 'Failed to fetch dashboard data' }, { status: 500 });
+    return Response.error('Failed to fetch dashboard data');
   }
 }
 
 /**
  * MQTT Data Ingestion - Receives batch data from MQTT bridge
- * Backend contract: POST /api/dashboard → { success, count }
  */
 export async function POST(req: Request) {
   try {
     const payload = await req.json();
     
-    // Basic validation
     if (!payload.data || !Array.isArray(payload.data)) {
-      return NextResponse.json({ error: 'Invalid payload format' }, { status: 400 });
+      return Response.badRequest('Invalid payload format');
     }
 
-    const { data: entries } = payload;
-    let processedCount = 0;
+    const processedCount = await TelemetryService.ingestBatch(payload.data);
 
-    for (const entry of entries) {
-      const { tagId, timestamp, temp, vibOverall, vibVelocity, motorCurrent } = entry;
-      
-      if (!tagId) continue;
-
-      // 1. Upsert Asset (Ensures MTR-XXX exists)
-      const asset = await prisma.asset.upsert({
-        where: { tagId },
-        update: { updatedAt: new Date() }, // Just update timestamp if exists
-        create: {
-          tagId,
-          name: `Motor ${tagId}`,
-          type: 'Motor',
-          location: 'Main Plant',
-          vibLimitWarning: 4.5,
-          vibLimitFault: 7.1
-        }
-      });
-
-      // 2. Save Telemetry
-      const telemetry = await prisma.telemetry.create({
-        data: {
-          assetId: asset.id,
-          timestamp: new Date(timestamp),
-          temp: temp || 0,
-          vibOverall: vibOverall || 0,
-          vibVelocity: vibVelocity || 0,
-          motorCurrent: motorCurrent || 0,
-          rawPayload: entry
-        }
-      });
-
-      // 3. ⚡ Immediate Alarm Engine Logic (Duplicated from GET for real-time trigger)
-      const limits = {
-        warning: asset.vibLimitWarning || 4.5,
-        fault: asset.vibLimitFault || 7.1
-      };
-
-      let severity: 'critical' | 'warning' | null = null;
-      let msg = '';
-      
-      if (vibOverall >= limits.fault) {
-        severity = 'critical';
-        msg = `Vibration Fault: ${formatLocalNumber(vibOverall, 2)}mm/s exceeded limit ${formatLocalNumber(limits.fault, 1)}mm/s`;
-      } else if (vibOverall >= limits.warning) {
-        severity = 'warning';
-        msg = `Vibration Warning: ${formatLocalNumber(vibOverall, 2)}mm/s exceeded limit ${formatLocalNumber(limits.warning, 1)}mm/s`;
-      }
-
-      if (severity) {
-        const existing = await prisma.alarm.findFirst({
-          where: { assetId: asset.id, severity, acknowledgedAt: null }
-        });
-
-        if (!existing) {
-          await prisma.alarm.create({
-            data: {
-              assetId: asset.id,
-              alarmType: 'Vibration',
-              severity,
-              message: msg,
-              timestamp: new Date()
-            }
-          });
-          
-          await NotificationService.sendAlert(`${tagId}: ${msg}`);
-        }
-      }
-
-      processedCount++;
-    }
-
-    return NextResponse.json({ 
-      success: true, 
+    return Response.success({ 
       processed: processedCount,
       timestamp: new Date().toISOString()
     });
 
   } catch (error) {
     console.error('[Dashboard Ingestion] Error:', error);
-    return NextResponse.json({ error: 'Ingestion failed' }, { status: 500 });
+    return Response.error('Ingestion failed');
   }
 }

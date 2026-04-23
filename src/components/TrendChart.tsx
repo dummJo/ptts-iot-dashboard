@@ -129,7 +129,7 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
             aria-label="Select Asset"
             value={assetId}
             onChange={(e) => setAssetId(e.target.value)}
-            className="text-[10px] md:text-xs px-2 py-1.5 md:py-1 rounded-sm font-bold tracking-widest outline-none cursor-pointer transition-all max-w-[140px] md:max-w-[180px] truncate"
+            className="text-[10px] md:text-xs px-2 py-1.5 md:py-1 rounded-none font-bold tracking-widest outline-none cursor-pointer transition-all max-w-[140px] md:max-w-[180px] truncate"
             style={{ background: "var(--surface-2)", color: "var(--ptts-teal)", border: "1px solid var(--border)" }}
           >
             {assetOptions.map((a) => (
@@ -144,7 +144,7 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
             aria-label="Time Granularity"
             value={gran}
             onChange={(e) => setGran(e.target.value as GranKey)}
-            className="text-[10px] md:text-xs px-2 py-1.5 md:py-1 rounded-sm font-bold tracking-widest outline-none cursor-pointer transition-all"
+            className="text-[10px] md:text-xs px-2 py-1.5 md:py-1 rounded-none font-bold tracking-widest outline-none cursor-pointer transition-all"
             style={{ background: "var(--surface-2)", color: "var(--text)", border: "1px solid var(--border)" }}
           >
             {GRANULARITY.map((g) => (
@@ -162,7 +162,7 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
             <button
               key={m.key}
               onClick={() => toggleMetric(m.key)}
-              className="flex items-center gap-1.5 px-2 py-1 rounded-sm text-xs font-bold tracking-widest transition-all"
+              className="flex items-center gap-1.5 px-2 py-1 rounded-none text-xs font-bold tracking-widest transition-all"
               style={{
                 background: on ? "var(--bg)" : "var(--surface-2)",
                 border: `1px solid ${on ? m.color : "var(--border)"}`,
@@ -203,7 +203,7 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
                 label={{ value: `${formatLocalNumber(vibLimit, 1)}`, position: "insideTopRight", fontSize: 8, fill: "var(--warning)" }} />
             )}
             <Tooltip
-              contentStyle={{ background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: 2, fontSize: 11, fontFamily: "inherit" }}
+              contentStyle={{ background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: 0, fontSize: 11, fontFamily: "inherit" }}
               labelStyle={{ color: "var(--text-muted)", fontWeight: 700 }}
               itemStyle={{ color: "var(--text)" }}
               formatter={(val: any, name: any) => [formatLocalNumber(val, 2), name]}
@@ -250,7 +250,7 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
                 onChange={(e) => setTempLimit(parseFloat(e.target.value) || 0)}
                 onBlur={() => setEditTemp(false)}
                 onKeyDown={(e) => e.key === "Enter" && setEditTemp(false)}
-                className="w-14 px-1 py-0.5 text-xs font-black rounded-sm outline-none font-mono"
+                className="w-14 px-1 py-0.5 text-xs font-black rounded-none outline-none font-mono"
                 style={{ background: "var(--surface-2)", border: "1px solid var(--fault)", color: "var(--fault)" }}
               />
             ) : (
@@ -270,7 +270,7 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
                 onChange={(e) => setVibLimit(parseFloat(e.target.value) || 0)}
                 onBlur={() => setEditVib(false)}
                 onKeyDown={(e) => e.key === "Enter" && setEditVib(false)}
-                className="w-16 px-1 py-0.5 text-xs font-black rounded-sm outline-none font-mono"
+                className="w-16 px-1 py-0.5 text-xs font-black rounded-none outline-none font-mono"
                 style={{ background: "var(--surface-2)", border: "1px solid var(--warning)", color: "var(--warning)" }}
               />
             ) : (

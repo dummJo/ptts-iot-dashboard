@@ -28,6 +28,9 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
   const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null);
   const [alarmCount, setAlarmCount] = useState(0);
 
+  const [selectedOrg, setSelectedOrg] = useState("PT Cabot");
+  const abbOrganizations = ["PT Cabot", "PT Amerta Indah Otsuka"];
+
   useEffect(() => {
     const fetchSession = async () => {
       const session = await getCurrentSessionAction();
@@ -81,7 +84,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
       {/* Corporate Identity */}
       <div className="px-6 py-8 border-b border-[var(--border-dim)]">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 rounded-sm bg-white/5 border border-white/10 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-none bg-white/5 border border-white/10 flex items-center justify-center">
             <img src={LOGO} alt="P" className="w-5 h-5 object-contain brightness-0 invert opacity-80" />
           </div>
           <div className="leading-none">
@@ -136,6 +139,22 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         </div>
       </div>
 
+      {/* Organization Scope */}
+      <div className="px-5 py-6 space-y-3 border-t border-[var(--border-dim)] bg-[#0a0a0a]">
+        <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">ABB Data Scope</p>
+        <select 
+          value={selectedOrg}
+          onChange={(e) => setSelectedOrg(e.target.value)}
+          className="w-full bg-black border border-[var(--border-dim)] text-[11px] font-bold text-[var(--text-muted)] p-2 outline-none focus:border-[var(--ptts)] cursor-pointer transition-colors"
+        >
+          {abbOrganizations.map(org => (
+            <option key={org} value={org} className="bg-black text-[var(--text-muted)]">
+              {org}
+            </option>
+          ))}
+        </select>
+      </div>
+
       {/* Authenticated Entity */}
       <div className="p-4 bg-[var(--surface)] border-t border-[var(--border)]">
         <div className="flex items-center gap-3 mb-3 cursor-pointer group" onClick={() => setShowSwitch(true)}>
@@ -150,12 +169,12 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         <LogoutButton />
       </div>
 
-      {/* Signature */}
-      <div className="py-4 text-center bg-black">
-        <p className="text-[8px] tracking-[0.4em] font-bold text-[var(--text-faint)] uppercase">
-          By <span className="text-[var(--text-muted)]">DummVinci Consulting</span>
+      <div className="mt-auto px-5 py-6 opacity-20 hover:opacity-100 transition-opacity duration-500">
+        <p className="text-[8px] tracking-[0.4em] font-bold text-[var(--text-faint)] uppercase text-center">
+          Dev: By DummVinci
         </p>
       </div>
+
 
       {/* Identity Switch Modal */}
       {showSwitch && (

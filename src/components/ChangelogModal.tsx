@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
-const CURRENT_VERSION = "1.1.0";
+const CURRENT_VERSION = "2.0.0";
 
 export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen?: boolean; onClose?: () => void }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -170,14 +170,14 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
                   value={ackText}
                   onChange={(e) => setAckText(e.target.value)}
                   placeholder="ENTER ACK..."
-                  className="w-full md:w-48 px-4 py-2 bg-bg border border-border rounded-sm text-sm font-mono tracking-widest text-text-bright outline-none focus:border-ptts/60 transition-all uppercase"
+                  className="w-full md:w-48 px-4 py-2 bg-bg border border-border rounded-none text-sm font-mono tracking-widest text-text-bright outline-none focus:border-ptts/60 transition-all uppercase"
                 />
               </div>
 
               <button
                 onClick={handleAcknowledge}
                 disabled={ackText.toUpperCase() !== "ACK"}
-                className="w-full md:w-auto px-8 py-3 rounded-sm font-black text-[15px] tracking-[.2em] transition-all disabled:opacity-30 disabled:grayscale"
+                className="w-full md:w-auto px-8 py-3 rounded-none font-black text-[15px] tracking-[.2em] transition-all disabled:opacity-30 disabled:grayscale"
                 style={{ 
                   background: "var(--ptts)", 
                   color: "#fff", 
@@ -189,7 +189,7 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
             </>
           ) : (
              <div className="flex-1 flex justify-end">
-               <button onClick={onClose} className="px-8 py-2.5 rounded-sm font-bold text-sm tracking-widest transition-all" style={{ background: "var(--surface-3)", border: "1px solid var(--border)", color: "var(--text-bright)" }}>
+               <button onClick={onClose} className="px-8 py-2.5 rounded-none font-bold text-sm tracking-widest transition-all" style={{ background: "var(--surface-3)", border: "1px solid var(--border)", color: "var(--text-bright)" }}>
                  CLOSE
                </button>
              </div>

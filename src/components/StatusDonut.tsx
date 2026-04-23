@@ -24,14 +24,14 @@ export default function StatusDonut({ linkSummary, healthSummary }: StatusDonutP
            <span className="text-text-muted">{totalLink} NODES</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-           <div className="flex items-center justify-between p-2 rounded-sm bg-bg border border-border-dim">
+           <div className="flex items-center justify-between p-2 rounded-none bg-bg border border-border-dim">
                <div className="flex items-center gap-1.5 md:gap-2">
                  <span className="led led-online" style={{ width:6, height:6 }} />
                  <span className="text-[10px] md:text-xs font-bold text-text-muted">ONLINE</span>
               </div>
               <span className="text-xs md:text-[14px] font-black text-online">{linkSummary?.online || 0}</span>
            </div>
-           <div className="flex items-center justify-between p-2 rounded-sm bg-bg border border-border-dim">
+           <div className="flex items-center justify-between p-2 rounded-none bg-bg border border-border-dim">
                <div className="flex items-center gap-1.5 md:gap-2">
                  <span className="led led-fault" style={{ width:6, height:6 }} />
                  <span className="text-[10px] md:text-xs font-bold text-text-muted">OFFLINE</span>
@@ -58,7 +58,7 @@ export default function StatusDonut({ linkSummary, healthSummary }: StatusDonutP
                   {healthData.map((e, i) => <Cell key={i} fill={e.color} />)}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ background:"var(--surface-2)", border:"1px solid var(--border)", borderRadius:2, fontSize:10, fontFamily:"inherit" }}
+                  contentStyle={{ background:"var(--surface-2)", border:"1px solid var(--border)", borderRadius:0, fontSize:10, fontFamily:"inherit" }}
                   itemStyle={{ color:"var(--text)" }}
                 />
               </PieChart>
@@ -72,7 +72,7 @@ export default function StatusDonut({ linkSummary, healthSummary }: StatusDonutP
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4 sm:mt-2">
             {healthData.map((d) => (
-              <div key={d.name} className="flex flex-row sm:flex-col items-center justify-between sm:justify-center px-4 sm:px-1 py-2 sm:py-1.5 rounded-sm md:rounded-[8px] border border-border-dim bg-bg/50">
+              <div key={d.name} className="flex flex-row sm:flex-col items-center justify-between sm:justify-center px-4 sm:px-1 py-2 sm:py-1.5 rounded-none md:rounded-none border border-border-dim bg-bg/50">
                 <span className="text-[10px] md:text-[10px] uppercase font-bold text-text-faint md:mb-0.5 tracking-widest">{d.name}</span>
                 <span className="text-sm md:text-[15px] font-black leading-none" style={{ color: d.color }}>{d.value}</span>
               </div>

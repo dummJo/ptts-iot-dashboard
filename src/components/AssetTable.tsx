@@ -89,7 +89,7 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
 
                   {/* HEALTH STATUS (Condition) */}
                   <td className="px-3 py-3">
-                    <div className="inline-flex items-center px-2 py-0.5 rounded-sm border"
+                    <div className="inline-flex items-center px-2 py-0.5 rounded-none border"
                       style={{
                         background: currentHealth === 'fault' ? 'var(--badge-fault-bg)' : currentHealth === 'warning' ? 'var(--badge-warning-bg)' : 'var(--badge-online-bg)',
                         borderColor: `var(--${currentHealth === 'fault' ? 'fault' : currentHealth === 'warning' ? 'warning' : 'online'})`,

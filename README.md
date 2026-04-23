@@ -7,7 +7,7 @@
 ██╔═══╝    ██║      ██║   ╚════██║
 ██║        ██║      ██║   ███████║
 ╚═╝        ╚═╝      ╚═╝   ╚══════╝
-  SmartSensor · Industrial IoT Platform v1.3.0
+  SmartSensor · Industrial IoT Platform v2.0.0
 ```
 
 **PT PRIMA TEKINDO TIRTA SEJAHTERA**
@@ -58,7 +58,7 @@
 > **Cross-Domain Mapping:**
 > `Sensor` → `MQTT` → `NestJS (PLC)` → `PostgreSQL (Historian)` → `Next.js (HMI/SCADA)`
 
-**Backend Repository:** [dummJo/ptts-iot-backend](https://github.com/dummJo/ptts-iot-backend)
+**Backend Repository:** [DummVinci/ptts-iot-backend](https://github.com/dummJo/ptts-iot-backend)
 
 ### 📄 Standardized Documentation
 - [**API Service Contract**](./docs/API_CONTRACT.md) — Specs for NestJS Developers
@@ -212,7 +212,7 @@ Detail lengkap di [SETUP.md](./SETUP.md#database-schema).
 
 <div align="center">
 
-**PTTS SmartSensor IoT Platform · v1.3.0**
+**PTTS SmartSensor IoT Platform · v2.0.0**
 *Full-stack integration: NestJS + PostgreSQL + Next.js*
 
 `Sensor → MQTT → NestJS → PostgreSQL → Next.js → User`
