@@ -7,8 +7,9 @@ import prisma from '@/lib/prisma';
  */
 
 export class AssetService {
-  static async getAll() {
+  static async getAll(orgId: string = 'demo-mode') {
     return prisma.asset.findMany({
+      where: { organizationId: orgId },
       orderBy: { tagId: 'asc' }
     });
   }

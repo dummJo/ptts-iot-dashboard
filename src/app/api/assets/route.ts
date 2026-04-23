@@ -5,9 +5,12 @@ import { Response } from '@/lib/api-response';
  * Asset Management API
  */
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const assets = await AssetService.getAll();
+    const { searchParams } = new URL(req.url);
+    const orgId = searchParams.get('orgId') || 'demo-mode';
+
+    const assets = await AssetService.getAll(orgId);
     return Response.success({ assets });
   } catch (error) {
     console.error('[Asset API] Error:', error);

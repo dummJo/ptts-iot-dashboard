@@ -28,6 +28,8 @@ model Asset {
   foundationType    String?     @default("rigid") @map("foundation_type")
   vibLimitWarning   Float?      @map("vib_limit_warning")
   vibLimitFault     Float?      @map("vib_limit_fault")
+  organizationId    String?     @default("demo-mode") @map("organization_id")
+  organizationName  String?     @default("Live Demo") @map("organization_name")
   createdAt         DateTime    @default(now()) @map("created_at")
   updatedAt         DateTime    @updatedAt @map("updated_at")
   telemetries       Telemetry[]

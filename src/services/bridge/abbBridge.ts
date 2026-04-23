@@ -79,6 +79,20 @@ export class AbbBridge {
   }
 
   /**
+   * Helper to make an authenticated GET request to the Powertrain API.
+   */
+  static async get(endpointPath: string) {
+    const token = await this.getAccessToken();
+    const baseUrl = 'https://api.powertrain.abb.com';
+    
+    return axios.get(`${baseUrl}${endpointPath}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  /**
    * Helper to make an authenticated POST request to the Powertrain API.
    */
   static async post(endpointPath: string, payload: any) {

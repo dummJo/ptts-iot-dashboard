@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { TelemetryService } from '@/services/telemetryService';
+import { AbbBridge } from '@/services/bridge/abbBridge';
 import { Response } from '@/lib/api-response';
 import { formatLocalNumber } from '@/lib/utils';
 import type { DashboardData, TrendPoint, Asset, Alarm } from '@/lib/types';
@@ -8,9 +9,74 @@ import type { DashboardData, TrendPoint, Asset, Alarm } from '@/lib/types';
 /**
  * Dashboard Overview API - Powered by PostgreSQL
  */
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const assetsData = await TelemetryService.getLatestState();
+    const { searchParams } = new URL(req.url);
+    const orgId = searchParams.get('orgId') || 'demo-mode';
+
+    // 1. If it's a Real Organization, ensure we have assets for it
+    if (orgId !== 'demo-mode') {
+      const existingAssets = await prisma.asset.count({ where: { organizationId: orgId } });
+      if (existingAssets === 0) {
+        console.log(`[Dashboard API] New Organization detected (${orgId}). Triggering sync...`);
+        // Trigger a background sync (Conceptually)
+        // For now, let's call a sync method directly (simplified)
+        try {
+          const response = await AbbBridge.post('/api/asset/Asset/Search', {
+            organizationIds: [orgId],
+            take: 100,
+            skip: 0
+          });
+          
+          if (response.data && Array.isArray(response.data.items)) {
+            for (const abbAsset of response.data.items) {
+              const asset = await prisma.asset.upsert({
+                where: { tagId: abbAsset.serialNumber },
+                update: { 
+                  organizationId: orgId,
+                  updatedAt: new Date()
+                },
+                create: {
+                  tagId: abbAsset.serialNumber,
+                  name: abbAsset.name || `ABB Asset ${abbAsset.serialNumber}`,
+                  type: abbAsset.assetType || 'Motor',
+                  organizationId: orgId,
+                  organizationName: "ABB Organization",
+                  vibLimitWarning: 4.5,
+                  vibLimitFault: 7.1
+                }
+              });
+
+              // 2. Fetch Last Known Telemetry for this asset
+              try {
+                const telemetryRes = await AbbBridge.get(`/api/timeseries/Timeseries/LastKnown/${abbAsset.id}`);
+                const tData = telemetryRes.data;
+                
+                if (tData) {
+                  await prisma.telemetry.create({
+                    data: {
+                      assetId: asset.id,
+                      timestamp: tData.timestamp ? new Date(tData.timestamp) : new Date(),
+                      temp: tData.Temperature || 0,
+                      vibOverall: tData.VibrationOverall || 0,
+                      vibVelocity: tData.VibrationRms || 0,
+                      motorCurrent: tData.MotorCurrent || 0,
+                      rawPayload: tData
+                    }
+                  });
+                }
+              } catch (tError) {
+                console.warn(`[Dashboard API] Could not fetch telemetry for asset ${abbAsset.id}:`, tError);
+              }
+            }
+          }
+        } catch (syncError) {
+          console.error('[Dashboard API] Sync failed:', syncError);
+        }
+      }
+    }
+
+    const assetsData = await TelemetryService.getLatestState(orgId);
 
     // Fetch Trend Data (MTR-001 or fallback)
     let trendAsset = await prisma.asset.findFirst({
