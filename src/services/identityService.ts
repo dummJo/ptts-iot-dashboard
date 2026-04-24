@@ -1,4 +1,10 @@
 import axios from 'axios';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Force load local environment in all runtimes
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 /**
  * DUMMVINCI IDENTITY SERVICE (v3.5 - DYNAMIC DISCOVERY)
