@@ -35,8 +35,11 @@ export async function getDynamicBearerToken(): Promise<string> {
     password: process.env.ABB_PASSWORD
   };
 
-  if (!credentials.username || !credentials.password) {
-    throw new Error('IDENTITY_ERROR: Credentials missing in environment.');
+  if (!credentials.username) {
+    throw new Error('IDENTITY_ERROR: ABB_USERNAME missing in environment.');
+  }
+  if (!credentials.password) {
+    throw new Error('IDENTITY_ERROR: ABB_PASSWORD missing in environment.');
   }
 
   // Known Identity Providers & Client Registry (Discovery Pool)
