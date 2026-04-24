@@ -5,7 +5,7 @@ import type { NextRequest } from 'next/server';
  * PTTS SECURITY MIDDLEWARE
  * Purpose: Enforces authentication across all dashboard routes.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const session = request.cookies.get('ptts-session')?.value;
   const { pathname } = request.nextUrl;
 
