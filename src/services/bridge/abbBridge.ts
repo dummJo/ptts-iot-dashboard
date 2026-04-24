@@ -37,53 +37,63 @@ export class AbbBridge {
     // We rotate through these automatically so the user never has to manually update .env.local
     const discoveryClientIds = [
       process.env.ABB_CLIENT_ID, // 1. Try what's in env first
-      '88691515-d913-43c3-b78b-333e6181b53e', // 2. Primary Developer Portal ID
-      'iB3nB9Vvn5t55Vff_123xATBEf4a' // 3. Secondary Production Gateway ID
+      'k2spGAvfEich60kU63_lz7Ogrwsa', // 2. Official Portal Client ID (Verified via Subagent)
+      '88691515-d913-43c3-b78b-333e6181b53e', // 3. Primary Developer Portal ID
+      'iB3nB9Vvn5t55Vff_123xATBEf4a' // 4. Secondary Production Gateway ID
     ].filter(Boolean) as string[];
 
     if (!username || !password) {
       throw new Error('ABB credentials are not configured in the environment.');
     }
 
+    // Try multiple token endpoints if needed
+    const tokenEndpoints = [
+      'https://accessmanagement.motion.abb.com/polaris/token',
+      'https://polaris.iam.motion.abb.com/oauth2/token'
+    ];
+
     let lastError: any = null;
 
-    for (const client_id of discoveryClientIds) {
-      try {
-        console.log(`[ABB Bridge] Discovery Probe: Attempting CIAM handshake with ID [${client_id.slice(0, 8)}...]`);
-        
-        const response = await axios.post(
-          'https://accessmanagement.motion.abb.com/polaris/token',
-          new URLSearchParams({
-            grant_type: 'password',
-            username: username,
-            password: password,
-            client_id: client_id,
-            scope: 'openid'
-          }).toString(),
-          {
-            headers: { 
-              'Content-Type': 'application/x-www-form-urlencoded'
+    for (const endpoint of tokenEndpoints) {
+      for (const client_id of discoveryClientIds) {
+        try {
+          console.log(`[ABB Bridge] Discovery Probe: Handshake with ID [${client_id.slice(0, 8)}...] at ${new URL(endpoint).hostname}`);
+          
+          const response = await axios.post(
+            endpoint,
+            new URLSearchParams({
+              grant_type: 'password',
+              username: username,
+              password: password,
+              client_id: client_id,
+              scope: 'openid profile'
+            }).toString(),
+            {
+              headers: { 
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              timeout: 10000 // 10s timeout
             }
-          }
-        );
+          );
 
-        const data = response.data;
-        this.accessToken = data.access_token;
-        // Expire 1 minute before actual expiry to be safe
-        this.tokenExpiry = Date.now() + ((data.expires_in - 60) * 1000);
+          const data = response.data;
+          this.accessToken = data.access_token;
+          // Expire 1 minute before actual expiry to be safe
+          this.tokenExpiry = Date.now() + ((data.expires_in - 60) * 1000);
 
-        console.log(`[ABB Bridge] Discovery Successful. Authenticated using Client ID: ${client_id}`);
-        return this.accessToken as string;
+          console.log(`[ABB Bridge] Discovery Successful. Authenticated using ID: ${client_id}`);
+          return this.accessToken as string;
 
-      } catch (error: any) {
-        lastError = error.response?.data || error.message;
-        console.warn(`[ABB Bridge] Discovery Probe failed for ID ${client_id}:`, lastError);
-        // Continue to next client_id
+        } catch (error: any) {
+          lastError = error.response?.data || error.message;
+          console.warn(`[ABB Bridge] Probe failed for ID ${client_id} at ${endpoint}:`, lastError);
+          // Continue to next client_id
+        }
       }
     }
 
-    console.error('[ABB Bridge] All Discovery Probes failed. Identity provider rejected the handshake.');
-    throw new Error(`Failed to authenticate with ABB CIAM. Ensure account is active. Last error: ${JSON.stringify(lastError)}`);
+    console.error('[ABB Bridge] All Discovery Probes failed.');
+    throw new Error(`Failed to authenticate with ABB CIAM. Last error: ${JSON.stringify(lastError)}`);
   }
 
   /**
