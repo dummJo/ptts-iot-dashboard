@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { getDynamicBearerToken, withDynamicAuth } from './identityService';
+import { getDynamicBearerToken, withDynamicAuth } from '../identityService';
 
 /**
  * ABB POWERTRAIN API BRIDGE — ENTERPRISE INTEGRATION LAYER (v3.5)
@@ -39,7 +39,7 @@ export class AbbBridge {
    * STANDARDIZED API INTERFACE WITH DYNAMIC AUTH WRAPPER
    */
   static async get(path: string) {
-    return withDynamicAuth(async (token) => {
+    return withDynamicAuth(async (token: string) => {
       return this.getClient().get(path, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -47,7 +47,7 @@ export class AbbBridge {
   }
 
   static async post(path: string, data: any) {
-    return withDynamicAuth(async (token) => {
+    return withDynamicAuth(async (token: string) => {
       return this.getClient().post(path, data, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -55,7 +55,7 @@ export class AbbBridge {
   }
 
   static async patch(path: string, data: any) {
-    return withDynamicAuth(async (token) => {
+    return withDynamicAuth(async (token: string) => {
       return this.getClient().patch(path, data, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
