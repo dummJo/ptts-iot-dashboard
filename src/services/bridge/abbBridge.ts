@@ -25,28 +25,32 @@ export class AbbBridge {
 
   /**
    * Performs the seamless login (Resource Owner Password Credentials flow)
-   * to the ABB CIAM endpoint.
-   * Note: The exact flow depends on the CIAM's configuration for the client application.
-   * We are using the credentials provided by the user to exchange for a JWT.
+   * to the ABB CIAM endpoint with Smart Discovery.
    */
   private static async seamlessLogin(): Promise<string> {
-    console.log('[ABB Bridge] Performing seamless login for ABB Powertrain API...');
+    console.log('[ABB Bridge] Performing smart discovery login for ABB Powertrain API...');
     
     const username = process.env.ABB_USERNAME;
     const password = process.env.ABB_PASSWORD;
-    const clientIds = [
-      process.env.ABB_CLIENT_ID || '88691515-d913-43c3-b78b-333e6181b53e',
-      'iB3nB9Vvn5t55Vff_123xATBEf4a' // Secondary Client ID found in portal
-    ];
     
+    // ⚡ DUMMVINCI SMART DISCOVERY: Known valid Client IDs for the Powertrain Portal
+    // We rotate through these automatically so the user never has to manually update .env.local
+    const discoveryClientIds = [
+      process.env.ABB_CLIENT_ID, // 1. Try what's in env first
+      '88691515-d913-43c3-b78b-333e6181b53e', // 2. Primary Developer Portal ID
+      'iB3nB9Vvn5t55Vff_123xATBEf4a' // 3. Secondary Production Gateway ID
+    ].filter(Boolean) as string[];
+
     if (!username || !password) {
       throw new Error('ABB credentials are not configured in the environment.');
     }
 
-    let lastError = null;
-    for (const client_id of clientIds) {
+    let lastError: any = null;
+
+    for (const client_id of discoveryClientIds) {
       try {
-        console.log(`[ABB Bridge] Attempting login with Client ID: ${client_id}...`);
+        console.log(`[ABB Bridge] Discovery Probe: Attempting CIAM handshake with ID [${client_id.slice(0, 8)}...]`);
+        
         const response = await axios.post(
           'https://accessmanagement.motion.abb.com/polaris/token',
           new URLSearchParams({
@@ -65,18 +69,21 @@ export class AbbBridge {
 
         const data = response.data;
         this.accessToken = data.access_token;
+        // Expire 1 minute before actual expiry to be safe
         this.tokenExpiry = Date.now() + ((data.expires_in - 60) * 1000);
 
-        console.log('[ABB Bridge] Seamless login successful.');
+        console.log(`[ABB Bridge] Discovery Successful. Authenticated using Client ID: ${client_id}`);
         return this.accessToken as string;
 
       } catch (error: any) {
         lastError = error.response?.data || error.message;
-        console.warn(`[ABB Bridge] Login failed for Client ID ${client_id}:`, lastError);
+        console.warn(`[ABB Bridge] Discovery Probe failed for ID ${client_id}:`, lastError);
+        // Continue to next client_id
       }
     }
 
-    throw new Error(`Failed to authenticate with ABB CIAM. Last error: ${JSON.stringify(lastError)}`);
+    console.error('[ABB Bridge] All Discovery Probes failed. Identity provider rejected the handshake.');
+    throw new Error(`Failed to authenticate with ABB CIAM. Ensure account is active. Last error: ${JSON.stringify(lastError)}`);
   }
 
   /**
