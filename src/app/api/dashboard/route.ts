@@ -50,7 +50,7 @@ export async function GET(req: Request) {
                 name: abbAsset.name || `Asset ${tagId}`,
                 type: abbAsset.assetType || 'SmartSensor',
                 organizationId: orgId,
-                organizationName: orgId === '340494' ? 'PT Cabot' : 'ABB Organization',
+                organizationName: abbAsset.organization?.name || 'ABB Organization',
                 vibLimitWarning: 4.5,
                 vibLimitFault: 7.1
               }

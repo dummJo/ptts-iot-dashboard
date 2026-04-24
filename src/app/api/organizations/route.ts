@@ -1,51 +1,48 @@
 import { NextResponse } from 'next/server';
 import { AbbBridge } from '@/services/bridge/abbBridge';
 
+/**
+ * DYNAMIC ORGANIZATION DISCOVERY
+ * Purpose: Fetches authorized organizations directly from ABB CIAM/Powertrain Gateway.
+ * Zero-touch: Any organization added in the ABB portal automatically appears here.
+ */
 export async function GET() {
   try {
-    // 1. Define the Demo Mode organization
-    const demoOrg = { id: 'demo-mode', name: 'Live Demo', type: 'Demo' };
-
-    // 2. Define the known real organizations (verified from portal)
-    const verifiedOrgs = [
-      { id: '340494', name: 'PT Cabot', type: 'Real' },
-      { id: '337963', name: 'PT Amerta Indah Otsuka', type: 'Real' },
-      { id: '340061', name: 'PT.WKP', type: 'Real' },
-      { id: '336281', name: 'SmSe_PTTS', type: 'Real' }
+    // 1. Initial Identity Scope (Demo Mode)
+    const organizations = [
+      { id: 'demo-mode', name: 'Live Demo', type: 'Demo' }
     ];
 
-    // 3. Attempt to fetch dynamically from ABB CIAM (as dynamic fallback)
-    let dynamicOrgs: any[] = [];
+    // 2. Fetch Real Organizations from ABB Powertrain API
     try {
+      console.log('[API Organizations] Pulling dynamic organizational scope from ABB CIAM...');
+      
       const response = await AbbBridge.post('/api/organization/Organization/Search', {
         take: 100,
         skip: 0
       });
 
       if (response.data && Array.isArray(response.data.items)) {
-        dynamicOrgs = response.data.items.map((item: any) => ({
-          id: item.id || item.organizationId,
+        const realOrgs = response.data.items.map((item: any) => ({
+          id: String(item.id || item.organizationId),
           name: item.name,
           type: 'Real'
         }));
+        
+        organizations.push(...realOrgs);
+        console.log(`[API Organizations] Successfully discovered ${realOrgs.length} real organizations.`);
       }
     } catch (abbError: any) {
-      console.warn('[ABB API] Could not fetch real organizations dynamically:', abbError.message);
+      console.error('[API Organizations] Dynamic fetch failed. Check AbbBridge credentials/connection.');
+      // We don't fail the whole request, just return what we have (Demo) or return error if required.
     }
-
-    // Combine them, ensuring known verified ones are present
-    // Use a Map to deduplicate by ID
-    const orgMap = new Map();
-    [demoOrg, ...verifiedOrgs, ...dynamicOrgs].forEach(org => {
-      orgMap.set(org.id, org);
-    });
 
     return NextResponse.json({
       success: true,
-      organizations: Array.from(orgMap.values())
+      organizations: organizations
     });
   } catch (error: any) {
-    console.error('[API Organizations] Error:', error);
+    console.error('[API Organizations] Fatal Error:', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
