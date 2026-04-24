@@ -48,10 +48,13 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
           const data = await res.json();
           if (data.success && data.organizations) {
             setOrganizations(data.organizations);
-            // Restore selection from localStorage if available
+            // Restore selection from localStorage if available, otherwise default to demo-mode
             const savedOrg = localStorage.getItem("ptts-selected-org");
             if (savedOrg && data.organizations.some((o: any) => o.id === savedOrg)) {
               setSelectedOrg(savedOrg);
+            } else {
+              setSelectedOrg("demo-mode");
+              localStorage.setItem("ptts-selected-org", "demo-mode");
             }
           }
         }

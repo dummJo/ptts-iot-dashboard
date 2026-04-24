@@ -78,6 +78,8 @@ export default function LoginClient() {
 
   useEffect(() => {
     if (state?.success) {
+      // ⚡ DUMMVINCI DEFAULT: Set Live Demo as default upon initial login
+      localStorage.setItem("ptts-selected-org", "demo-mode");
       router.push("/dashboard");
     }
   }, [state?.success, router]);
