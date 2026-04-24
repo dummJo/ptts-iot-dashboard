@@ -55,47 +55,51 @@ export async function getDynamicBearerToken(): Promise<string> {
   console.log('[IDENTITY] Initiating dynamic discovery for new Bearer Token...');
 
   for (const url of endpoints) {
-    for (const client_id of clientPool) {
-      try {
-        const response = await axios.post(url, 
-          new URLSearchParams({
-            grant_type: 'password',
-            username: credentials.username,
-            password: credentials.password,
-            client_id: client_id,
-            scope: 'openid profile email'
-          }).toString(),
-          { 
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            timeout: 10000 
+    // Try with and without DEFAULT/ prefix to cover all user store configurations
+    const usernameVariants = [credentials.username, `DEFAULT/${credentials.username}`];
+
+    for (const user of usernameVariants) {
+      for (const client_id of clientPool) {
+        try {
+          const response = await axios.post(url, 
+            new URLSearchParams({
+              grant_type: 'password',
+              username: user,
+              password: credentials.password,
+              client_id: client_id,
+              scope: 'openid profile email'
+            }).toString(),
+            { 
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              timeout: 10000 
+            }
+          );
+
+          const { access_token, expires_in } = response.data;
+          
+          currentSession = {
+            token: access_token,
+            expiresAt: Date.now() + (expires_in * 1000),
+            clientId: client_id
+          };
+
+          console.log(`[IDENTITY] Verified via ${user} | ID: ${client_id}`);
+          return access_token;
+
+        } catch (error: any) {
+          const data = error.response?.data;
+          const errorDesc = data?.error_description || '';
+          
+          if (errorDesc.includes('locked')) {
+            console.error(`[IDENTITY] SECURITY ALERT: ${errorDesc}`);
+            throw new Error(`ACCOUNT_LOCKED: ${errorDesc}`);
           }
-        );
-
-        const { access_token, expires_in } = response.data;
-        
-        currentSession = {
-          token: access_token,
-          expiresAt: Date.now() + (expires_in * 1000),
-          clientId: client_id
-        };
-
-        console.log(`[IDENTITY] Successfully discovered active session via ID: ${client_id}`);
-        return access_token;
-
-      } catch (error: any) {
-        // Silently continue to next candidate in pool
-        const status = error.response?.status;
-        const msg = error.response?.data?.error || error.message;
-        
-        if (msg === 'invalid_grant' && error.response?.data?.error_description?.includes('locked')) {
-          console.error(`[IDENTITY] ALERT: Account locked for ID ${client_id}. User intervention required.`);
-          throw new Error('ACCOUNT_LOCKED_BY_ABB');
         }
       }
     }
   }
 
-  throw new Error('IDENTITY_DISCOVERY_FAILED: Exhausted all Client/Endpoint combinations.');
+  throw new Error('IDENTITY_DISCOVERY_FAILED: Handshake rejected by all gateways.');
 }
 
 /**
