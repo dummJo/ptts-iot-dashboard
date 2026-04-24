@@ -14,6 +14,7 @@ export async function GET() {
     ];
 
     let systemConnected = false;
+    let systemError = null;
 
     // 2. Fetch Real Organizations from ABB Powertrain API
     try {
@@ -36,7 +37,8 @@ export async function GET() {
         console.log(`[API Organizations] Successfully discovered ${realOrgs.length} real organizations.`);
       }
     } catch (abbError: any) {
-      console.error('[API Organizations] Dynamic fetch failed. Check AbbBridge credentials/connection.');
+      systemError = abbError.message || 'Identity discovery failed';
+      console.error('[API Organizations] Dynamic fetch failed:', systemError);
     }
 
     return NextResponse.json({
@@ -44,6 +46,7 @@ export async function GET() {
       organizations: organizations,
       system: {
         connected: systemConnected,
+        error: systemError,
         lastAttempt: new Date().toISOString()
       }
     });
