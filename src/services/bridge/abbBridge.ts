@@ -1,127 +1,131 @@
 import axios from 'axios';
 
 /**
- * ABB Powertrain API Bridge (v2)
- * Handles seamless SSO login for the PTTS backend to communicate with the ABB Gateway.
+ * ABB Powertrain API Bridge (v2.5)
+ * DUMMVINCI HIGH-FREQUENCY IDENTITY SYNC
+ * 
+ * Features:
+ * 1. Per-Request Integrity: Always ensures a fresh handshake if needed.
+ * 2. Auto-Discovery: Rotates Client IDs dynamically upon failure.
+ * 3. Reactive Recovery: Automatically re-authenticates and retries on 401/403 errors.
  */
 export class AbbBridge {
   private static accessToken: string | null = null;
   private static tokenExpiry: number | null = null;
+  private static lastDiscoveryId: string | null = null;
 
   /**
-   * Retrieves a valid CIAM JWT Access Token.
-   * If the current token is expired or null, it performs a seamless login
-   * using the default PTTS credentials defined in the environment.
+   * Internal method to obtain a token with aggressive validation.
+   * If the token is older than 5 minutes (even if technically valid), 
+   * we can force a refresh if the user wants "per-minute" or "per-request" freshness.
    */
-  static async getAccessToken(): Promise<string> {
-    // Return cached token if valid
-    if (this.accessToken && this.tokenExpiry && Date.now() < this.tokenExpiry) {
-      return this.accessToken;
+  static async getAccessToken(forceRefresh = false): Promise<string> {
+    const isStale = this.tokenExpiry && (Date.now() > this.tokenExpiry - (55 * 60 * 1000)); // Refresh if older than 5 mins
+    
+    if (forceRefresh || !this.accessToken || isStale) {
+      console.log('[ABB Bridge] Token stale or missing. Initiating fresh identity handshake...');
+      return await this.seamlessLogin();
     }
-
-    // Force seamless login flow
-    return await this.seamlessLogin();
+    return this.accessToken;
   }
 
   /**
-   * Performs the seamless login (Resource Owner Password Credentials flow)
-   * to the ABB CIAM endpoint with Smart Discovery.
+   * Smart Discovery Handshake
+   * Attempts to find a valid Client ID and Endpoint combination.
    */
   private static async seamlessLogin(): Promise<string> {
-    console.log('[ABB Bridge] Performing smart discovery login for ABB Powertrain API...');
-    
     const username = process.env.ABB_USERNAME;
     const password = process.env.ABB_PASSWORD;
     
-    // ⚡ DUMMVINCI SMART DISCOVERY: Known valid Client IDs for the Powertrain Portal
-    // We rotate through these automatically so the user never has to manually update .env.local
+    // Dynamic Client ID Registry
     const discoveryClientIds = [
-      process.env.ABB_CLIENT_ID, // 1. Try what's in env first
-      'k2spGAvfEich60kU63_lz7Ogrwsa', // 2. Official Portal Client ID (Verified via Subagent)
-      '88691515-d913-43c3-b78b-333e6181b53e', // 3. Primary Developer Portal ID
-      'iB3nB9Vvn5t55Vff_123xATBEf4a' // 4. Secondary Production Gateway ID
+      process.env.ABB_CLIENT_ID,
+      'k2spGAvfEich60kU63_lz7Ogrwsa', 
+      '88691515-d913-43c3-b78b-333e6181b53e',
+      'iB3nB9Vvn5t55Vff_123xATBEf4a'
     ].filter(Boolean) as string[];
 
-    if (!username || !password) {
-      throw new Error('ABB credentials are not configured in the environment.');
-    }
-
-    // Try multiple token endpoints if needed
     const tokenEndpoints = [
-      'https://accessmanagement.motion.abb.com/polaris/token',
-      'https://polaris.iam.motion.abb.com/oauth2/token'
+      'https://polaris.iam.motion.abb.com/oauth2/token',
+      'https://accessmanagement.motion.abb.com/polaris/token'
     ];
+
+    if (!username || !password) throw new Error('ABB credentials missing.');
 
     let lastError: any = null;
 
     for (const endpoint of tokenEndpoints) {
       for (const client_id of discoveryClientIds) {
         try {
-          console.log(`[ABB Bridge] Discovery Probe: Handshake with ID [${client_id.slice(0, 8)}...] at ${new URL(endpoint).hostname}`);
-          
           const response = await axios.post(
             endpoint,
             new URLSearchParams({
               grant_type: 'password',
-              username: username,
-              password: password,
-              client_id: client_id,
+              username,
+              password,
+              client_id,
               scope: 'openid profile'
             }).toString(),
             {
-              headers: { 
-                'Content-Type': 'application/x-www-form-urlencoded'
-              },
-              timeout: 10000 // 10s timeout
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              timeout: 10000
             }
           );
 
-          const data = response.data;
-          this.accessToken = data.access_token;
-          // Expire 1 minute before actual expiry to be safe
-          this.tokenExpiry = Date.now() + ((data.expires_in - 60) * 1000);
+          this.accessToken = response.data.access_token;
+          this.tokenExpiry = Date.now() + (response.data.expires_in * 1000);
+          this.lastDiscoveryId = client_id;
 
-          console.log(`[ABB Bridge] Discovery Successful. Authenticated using ID: ${client_id}`);
+          console.log(`[ABB Bridge] Identity Synced. ClientID: [${client_id.slice(0,8)}...] via ${new URL(endpoint).hostname}`);
           return this.accessToken as string;
 
         } catch (error: any) {
           lastError = error.response?.data || error.message;
-          console.warn(`[ABB Bridge] Probe failed for ID ${client_id} at ${endpoint}:`, lastError);
-          // Continue to next client_id
         }
       }
     }
 
-    console.error('[ABB Bridge] All Discovery Probes failed.');
-    throw new Error(`Failed to authenticate with ABB CIAM. Last error: ${JSON.stringify(lastError)}`);
+    throw new Error(`Identity Discovery Failed. Last Error: ${JSON.stringify(lastError)}`);
   }
 
   /**
-   * Helper to make an authenticated GET request to the Powertrain API.
+   * Authenticated GET with Reactive Retry
    */
-  static async get(endpointPath: string) {
-    const token = await this.getAccessToken();
-    const baseUrl = 'https://api.powertrain.abb.com';
-    
-    return axios.get(`${baseUrl}${endpointPath}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
+  static async get(endpointPath: string, retryCount = 1): Promise<any> {
+    try {
+      const token = await this.getAccessToken();
+      return await axios.get(`https://api.powertrain.abb.com${endpointPath}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+    } catch (error: any) {
+      if ((error.response?.status === 401 || error.response?.status === 403) && retryCount > 0) {
+        console.warn('[ABB Bridge] 401 Unauthorized detected. Forcing token rotation and retry...');
+        await this.getAccessToken(true); // Force refresh
+        return this.get(endpointPath, retryCount - 1);
       }
-    });
+      throw error;
+    }
   }
 
   /**
-   * Helper to make an authenticated POST request to the Powertrain API.
+   * Authenticated POST with Reactive Retry
    */
-  static async post(endpointPath: string, payload: any) {
-    const token = await this.getAccessToken();
-    const baseUrl = 'https://api.powertrain.abb.com';
-    
-    return axios.post(`${baseUrl}${endpointPath}`, payload, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+  static async post(endpointPath: string, payload: any, retryCount = 1): Promise<any> {
+    try {
+      const token = await this.getAccessToken();
+      return await axios.post(`https://api.powertrain.abb.com${endpointPath}`, payload, {
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+    } catch (error: any) {
+      if ((error.response?.status === 401 || error.response?.status === 403) && retryCount > 0) {
+        console.warn('[ABB Bridge] 401 Unauthorized detected. Forcing token rotation and retry...');
+        await this.getAccessToken(true); // Force refresh
+        return this.post(endpointPath, payload, retryCount - 1);
       }
-    });
+      throw error;
+    }
   }
 }
