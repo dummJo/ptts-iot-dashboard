@@ -30,6 +30,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
 
   const [selectedOrg, setSelectedOrg] = useState("demo-mode");
   const [ciamConnected, setCiamConnected] = useState(true);
+  const [ciamError, setCiamError] = useState<string | null>(null);
   const [organizations, setOrganizations] = useState<{id: string, name: string, type: string}[]>([
     { id: 'demo-mode', name: 'Live Demo Mode', type: 'Demo' }
   ]);
@@ -50,6 +51,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
           if (data.success && data.organizations) {
             setOrganizations(data.organizations);
             setCiamConnected(data.system?.connected ?? true);
+            setCiamError(data.system?.error || null);
             
             // Restore selection from localStorage if available, otherwise default to demo-mode
             const savedOrg = localStorage.getItem("ptts-selected-org");
@@ -175,7 +177,16 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         <div className="flex items-center justify-between">
           <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Select Organization</p>
           {!ciamConnected && (
-            <span className="text-[8px] font-bold text-[var(--fault)] animate-pulse">CIAM OFFLINE</span>
+            <div className="group relative">
+              <span className="text-[8px] font-bold text-[var(--fault)] animate-pulse cursor-help">CIAM OFFLINE</span>
+              {ciamError && (
+                <div className="absolute bottom-full right-0 mb-2 w-48 p-2 bg-slate-900 border border-red-500/30 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                  <p className="text-[9px] text-red-400 leading-tight">
+                    {ciamError}
+                  </p>
+                </div>
+              )}
+            </div>
           )}
         </div>
         <select 
