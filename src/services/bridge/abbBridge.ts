@@ -32,50 +32,51 @@ export class AbbBridge {
   private static async seamlessLogin(): Promise<string> {
     console.log('[ABB Bridge] Performing seamless login for ABB Powertrain API...');
     
-    // Credentials provided by PTTS admin
     const username = process.env.ABB_USERNAME;
     const password = process.env.ABB_PASSWORD;
+    const clientIds = [
+      process.env.ABB_CLIENT_ID || '88691515-d913-43c3-b78b-333e6181b53e',
+      'iB3nB9Vvn5t55Vff_123xATBEf4a' // Secondary Client ID found in portal
+    ];
     
-    // Ensure credentials exist
     if (!username || !password) {
       throw new Error('ABB credentials are not configured in the environment.');
     }
 
-    try {
-      // Important: This simulates the CIAM login. Because ABB CIAM typically uses 
-      // strict OAuth2 (Authorization Code with PKCE) for user logins in the browser,
-      // server-to-server seamless login using username/password requires the
-      // 'password' grant type to be enabled on the CIAM client configuration.
-      const response = await axios.post(
-        'https://accessmanagement.motion.abb.com/polaris/token',
-        new URLSearchParams({
-          grant_type: 'password',
-          username: username,
-          password: password,
-          // client_id must be provided by the developer portal app registration
-          client_id: process.env.ABB_CLIENT_ID || 'PENDING_APP_REGISTRATION',
-          scope: 'openid'
-        }).toString(),
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+    let lastError = null;
+    for (const client_id of clientIds) {
+      try {
+        console.log(`[ABB Bridge] Attempting login with Client ID: ${client_id}...`);
+        const response = await axios.post(
+          'https://accessmanagement.motion.abb.com/polaris/token',
+          new URLSearchParams({
+            grant_type: 'password',
+            username: username,
+            password: password,
+            client_id: client_id,
+            scope: 'openid'
+          }).toString(),
+          {
+            headers: { 
+              'Content-Type': 'application/x-www-form-urlencoded'
+            }
           }
-        }
-      );
+        );
 
-      const data = response.data;
-      
-      this.accessToken = data.access_token;
-      // Expire 1 minute before actual expiry to be safe
-      this.tokenExpiry = Date.now() + ((data.expires_in - 60) * 1000);
+        const data = response.data;
+        this.accessToken = data.access_token;
+        this.tokenExpiry = Date.now() + ((data.expires_in - 60) * 1000);
 
-      console.log('[ABB Bridge] Seamless login successful. JWT obtained.');
-      return this.accessToken as string;
+        console.log('[ABB Bridge] Seamless login successful.');
+        return this.accessToken as string;
 
-    } catch (error: any) {
-      console.error('[ABB Bridge] Seamless login failed:', error.response?.data || error.message);
-      throw new Error('Failed to authenticate with ABB CIAM. Ensure the Client ID is configured and supports password grants.');
+      } catch (error: any) {
+        lastError = error.response?.data || error.message;
+        console.warn(`[ABB Bridge] Login failed for Client ID ${client_id}:`, lastError);
+      }
     }
+
+    throw new Error(`Failed to authenticate with ABB CIAM. Last error: ${JSON.stringify(lastError)}`);
   }
 
   /**

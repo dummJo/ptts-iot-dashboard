@@ -17,77 +17,103 @@ export async function GET(req: Request) {
     // 1. If it's a Real Organization, ensure we have assets for it
     if (orgId !== 'demo-mode') {
       const existingAssets = await prisma.asset.count({ where: { organizationId: orgId } });
+      
+      // Always sync if assets are empty or if we want to ensure fresh data
       if (existingAssets === 0) {
-        console.log(`[Dashboard API] New Organization detected (${orgId}). Triggering sync...`);
-        // Trigger a background sync (Conceptually)
-        // For now, let's call a sync method directly (simplified)
+        console.log(`[ABB Sync] Triggering full sync for organization: ${orgId}`);
         try {
-          const response = await AbbBridge.post('/api/asset/Asset/Search', {
+          // Search Assets in this organization
+          const assetRes = await AbbBridge.post('/api/asset/Asset/Search', {
             organizationIds: [orgId],
             take: 100,
             skip: 0
           });
           
-          if (response.data && Array.isArray(response.data.items)) {
-            for (const abbAsset of response.data.items) {
-              const asset = await prisma.asset.upsert({
-                where: { tagId: abbAsset.serialNumber },
-                update: { 
-                  organizationId: orgId,
-                  updatedAt: new Date()
-                },
-                create: {
-                  tagId: abbAsset.serialNumber,
-                  name: abbAsset.name || `ABB Asset ${abbAsset.serialNumber}`,
-                  type: abbAsset.assetType || 'Motor',
-                  organizationId: orgId,
-                  organizationName: "ABB Organization",
-                  vibLimitWarning: 4.5,
-                  vibLimitFault: 7.1
-                }
-              });
+          const abbAssets = assetRes.data.items || [];
+          console.log(`[ABB Sync] Found ${abbAssets.length} assets for org ${orgId}`);
 
-              // 2. Fetch Last Known Telemetry for this asset
-              try {
-                const telemetryRes = await AbbBridge.get(`/api/timeseries/Timeseries/LastKnown/${abbAsset.id}`);
-                const tData = telemetryRes.data;
-                
-                if (tData) {
-                  await prisma.telemetry.create({
-                    data: {
-                      assetId: asset.id,
-                      timestamp: tData.timestamp ? new Date(tData.timestamp) : new Date(),
-                      temp: tData.Temperature || 0,
-                      vibOverall: tData.VibrationOverall || 0,
-                      vibVelocity: tData.VibrationRms || 0,
-                      motorCurrent: tData.MotorCurrent || 0,
-                      rawPayload: tData
-                    }
-                  });
-                }
-              } catch (tError) {
-                console.warn(`[Dashboard API] Could not fetch telemetry for asset ${abbAsset.id}:`, tError);
+          for (const abbAsset of abbAssets) {
+            // Map ABB Asset to PTTS Asset
+            // Use serialNumber as unique tagId if available, otherwise fallback to id
+            const tagId = abbAsset.serialNumber || abbAsset.id;
+            
+            const asset = await prisma.asset.upsert({
+              where: { tagId: tagId },
+              update: { 
+                name: abbAsset.name,
+                type: abbAsset.assetType || 'SmartSensor',
+                organizationId: orgId,
+                updatedAt: new Date()
+              },
+              create: {
+                tagId: tagId,
+                name: abbAsset.name || `Asset ${tagId}`,
+                type: abbAsset.assetType || 'SmartSensor',
+                organizationId: orgId,
+                organizationName: orgId === '340494' ? 'PT Cabot' : 'ABB Organization',
+                vibLimitWarning: 4.5,
+                vibLimitFault: 7.1
               }
+            });
+
+            // 2. Fetch Last Known Telemetry
+            try {
+              const telemetryRes = await AbbBridge.get(`/api/timeseries/Timeseries/LastKnown/${abbAsset.id}`);
+              const tData = telemetryRes.data;
+              
+              if (tData) {
+                // The structure can be { data: { Temperature: [...], ... } } or flat
+                // Let's handle both based on the guide
+                const extractValue = (key: string) => {
+                  const val = tData.data ? tData.data[key] : tData[key];
+                  if (Array.isArray(val) && val.length > 0) {
+                    return val[0].value || val[0].avg || val[0].max || 0;
+                  }
+                  return typeof val === 'number' ? val : 0;
+                };
+
+                const timestamp = tData.timestamp || (tData.data?.Temperature?.[0]?.timestamp) || new Date().toISOString();
+
+                await prisma.telemetry.create({
+                  data: {
+                    assetId: asset.id,
+                    timestamp: new Date(timestamp),
+                    temp: extractValue('Temperature'),
+                    vibOverall: extractValue('VibrationOverall'),
+                    vibVelocity: extractValue('VibrationRms') || extractValue('VibrationVelocity'),
+                    motorCurrent: extractValue('MotorCurrent'),
+                    rawPayload: tData
+                  }
+                });
+                console.log(`[ABB Sync] Ingested telemetry for ${tagId}`);
+              }
+            } catch (tError) {
+              console.warn(`[ABB Sync] Could not fetch telemetry for asset ${abbAsset.id}:`, tError);
             }
           }
         } catch (syncError) {
-          console.error('[Dashboard API] Sync failed:', syncError);
+          console.error(`[ABB Sync] Critical failure during organization sync (${orgId}):`, syncError);
         }
       }
     }
 
     const assetsData = await TelemetryService.getLatestState(orgId);
 
-    // Fetch Trend Data (MTR-001 or fallback)
+    // Fetch Trend Data (Scoped to organization)
     let trendAsset = await prisma.asset.findFirst({
-       where: { tagId: 'MTR-001' },
+       where: { 
+         organizationId: orgId,
+         telemetries: { some: {} } // Ensure it has at least one telemetry
+       },
        include: {
          telemetries: { orderBy: { timestamp: 'desc' }, take: 24 }
        }
     });
 
-    if (!trendAsset || trendAsset.telemetries.length === 0) {
+    if (!trendAsset) {
+      // Fallback: Just any asset in the same organization
       trendAsset = await prisma.asset.findFirst({
+        where: { organizationId: orgId },
         include: {
           telemetries: { orderBy: { timestamp: 'desc' }, take: 24 }
         }
@@ -121,8 +147,12 @@ export async function GET(req: Request) {
       };
     });
 
+    // Scoped Alarms
     const activeAlarms = await prisma.alarm.findMany({
-      where: { acknowledgedAt: null },
+      where: { 
+        acknowledgedAt: null,
+        asset: { organizationId: orgId }
+      },
       include: { asset: true },
       orderBy: { timestamp: 'desc' },
       take: 10
