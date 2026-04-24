@@ -102,8 +102,9 @@ export class AbbBridge {
 
   /**
    * Enforces Token Freshness per OIDC Specification.
+   * Public access allowed for diagnostic/test purposes.
    */
-  private static async getAccessToken(): Promise<string | null> {
+  public static async getAccessToken(): Promise<string | null> {
     const now = Date.now();
     // Safety buffer: 300 seconds (5 minutes)
     if (this.accessToken && this.tokenExpiry && now < this.tokenExpiry - 300000) {
