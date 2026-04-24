@@ -3,7 +3,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useActionState } from "react";
 import LogoutButton from "./LogoutButton";
-import { loginAction, getCurrentSessionAction, autoLogoutAction } from "@/app/actions/auth";
+import { loginAction, getCurrentSessionAction } from "@/app/actions/auth";
+import { syncCiamAction } from "@/app/actions/ciam";
 
 const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png";
 
@@ -14,11 +15,6 @@ const navItems = [
   { href: "/dashboard/reports",  label: "Deep Trends", icon: "∿" },
   { href: "/dashboard/settings", label: "Kernel Config", icon: "⚙" },
 ];
-
-/**
- * ELITE SIDEBAR — CLAUDE/DELOITTE GRADE
- * Design: Monolithic Minimalism
- */
 
 export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: number }) {
   const pathname = usePathname();
@@ -31,9 +27,26 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
   const [selectedOrg, setSelectedOrg] = useState("demo-mode");
   const [ciamConnected, setCiamConnected] = useState(true);
   const [ciamError, setCiamError] = useState<string | null>(null);
+  const [ciamPending, setCiamPending] = useState(false);
   const [organizations, setOrganizations] = useState<{id: string, name: string, type: string}[]>([
     { id: 'demo-mode', name: 'Live Demo Mode', type: 'Demo' }
   ]);
+
+  const handleCiamSync = async () => {
+    setCiamPending(true);
+    try {
+      const res = await syncCiamAction();
+      if (res.success) {
+        window.location.reload();
+      } else {
+        alert(`Sync Failed: ${res.error}`);
+      }
+    } catch (e) {
+      alert("System error during handshake.");
+    } finally {
+      setCiamPending(false);
+    }
+  };
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -53,7 +66,6 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
             setCiamConnected(data.system?.connected ?? true);
             setCiamError(data.system?.error || null);
             
-            // Restore selection from localStorage if available, otherwise default to demo-mode
             const savedOrg = localStorage.getItem("ptts-selected-org");
             if (savedOrg && data.organizations.some((o: any) => o.id === savedOrg)) {
               setSelectedOrg(savedOrg);
@@ -66,6 +78,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
       } catch (e) {
         console.error("Failed to fetch organizations", e);
         setCiamConnected(false);
+        setCiamError("Connection lost");
       }
     };
 
@@ -113,8 +126,6 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
 
   return (
     <aside className="relative flex flex-col w-52 min-h-screen shrink-0 z-40 bg-[var(--sidebar-bg)] border-r border-[var(--border)] font-sans antialiased">
-
-      {/* Corporate Identity */}
       <div className="px-6 py-8 border-b border-[var(--border-dim)]">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-8 h-8 rounded-none bg-white/5 border border-white/10 flex items-center justify-center">
@@ -126,7 +137,6 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
           </div>
         </div>
         
-        {/* Core Status */}
         <div className="inline-flex items-center gap-2 group cursor-help">
           <span className={`w-1.5 h-1.5 rounded-full ${pollInterval === 0 ? "bg-[var(--offline)]" : "bg-[var(--online)]"}`} />
           <span className="text-[9px] font-bold tracking-[0.2em] text-[var(--text-muted)] uppercase">
@@ -135,7 +145,6 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         </div>
       </div>
 
-      {/* Navigation Layer */}
       <nav className="flex-1 px-4 py-8 space-y-1">
         {navItems
           .filter(item => !(item.href.includes("settings") && currentUser?.role !== "admin"))
@@ -160,7 +169,6 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
           })}
       </nav>
 
-      {/* System Registry Info */}
       <div className="px-5 py-6 space-y-4 border-t border-[var(--border-dim)] bg-[#0a0a0a]">
         <div className="space-y-1">
           <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Chronos Uptime</p>
@@ -172,20 +180,26 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         </div>
       </div>
 
-      {/* Organization Scope */}
       <div className="px-5 py-6 space-y-3 border-t border-[var(--border-dim)] bg-[#0a0a0a]">
-        <div className="flex items-center justify-between">
-          <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Select Organization</p>
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Scope</p>
           {!ciamConnected && (
-            <div className="group relative">
-              <span className="text-[8px] font-bold text-[var(--fault)] animate-pulse cursor-help">CIAM OFFLINE</span>
-              {ciamError && (
-                <div className="absolute bottom-full right-0 mb-2 w-48 p-2 bg-slate-900 border border-red-500/30 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                  <p className="text-[9px] text-red-400 leading-tight">
-                    {ciamError}
-                  </p>
-                </div>
-              )}
+            <div className="flex items-center gap-2">
+              <div className="group relative">
+                <span className="text-[8px] font-bold text-[var(--fault)] animate-pulse cursor-help uppercase tracking-tighter">OFFLINE</span>
+                {ciamError && (
+                  <div className="absolute bottom-full right-0 mb-2 w-48 p-2 bg-slate-900 border border-red-500/30 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                    <p className="text-[9px] text-red-400 leading-tight">{ciamError}</p>
+                  </div>
+                )}
+              </div>
+              <button 
+                onClick={handleCiamSync}
+                disabled={ciamPending}
+                className="text-[8px] px-2 py-0.5 border border-[var(--fault)] text-[var(--fault)] hover:bg-[var(--fault)] hover:text-white transition-all font-bold uppercase disabled:opacity-50"
+              >
+                {ciamPending ? "..." : "SYNC"}
+              </button>
             </div>
           )}
         </div>
@@ -195,20 +209,16 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
             const val = e.target.value;
             setSelectedOrg(val);
             localStorage.setItem("ptts-selected-org", val);
-            // Reload to force all dashboard components to pick up the new organization scope
             window.location.reload();
           }}
           className={`w-full bg-black border ${!ciamConnected ? 'border-[var(--fault)]' : 'border-[var(--border-dim)]'} text-[11px] font-bold text-[var(--text-muted)] p-2 outline-none focus:border-[var(--ptts)] cursor-pointer transition-colors`}
         >
           {organizations.map(org => (
-            <option key={org.id} value={org.id} className="bg-black text-[var(--text-muted)]">
-              {org.name}
-            </option>
+            <option key={org.id} value={org.id} className="bg-black text-[var(--text-muted)]">{org.name}</option>
           ))}
         </select>
       </div>
 
-      {/* Authenticated Entity */}
       <div className="p-4 bg-[var(--surface)] border-t border-[var(--border)]">
         <div className="flex items-center gap-3 mb-3 cursor-pointer group" onClick={() => setShowSwitch(true)}>
           <div className="w-7 h-7 bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-bold text-[var(--online)]">
@@ -223,13 +233,9 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
       </div>
 
       <div className="mt-auto px-5 py-6 opacity-20 hover:opacity-100 transition-opacity duration-500">
-        <p className="text-[8px] tracking-[0.4em] font-bold text-[var(--text-faint)] uppercase text-center">
-          Dev: By DummVinci
-        </p>
+        <p className="text-[8px] tracking-[0.4em] font-bold text-[var(--text-faint)] uppercase text-center">By DummVinci</p>
       </div>
 
-
-      {/* Identity Switch Modal */}
       {showSwitch && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
              onClick={(e) => { if (e.target === e.currentTarget) setShowSwitch(false); }}>
