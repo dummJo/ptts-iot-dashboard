@@ -29,6 +29,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
   const [alarmCount, setAlarmCount] = useState(0);
 
   const [selectedOrg, setSelectedOrg] = useState("demo-mode");
+  const [ciamConnected, setCiamConnected] = useState(true);
   const [organizations, setOrganizations] = useState<{id: string, name: string, type: string}[]>([
     { id: 'demo-mode', name: 'Live Demo Mode', type: 'Demo' }
   ]);
@@ -48,6 +49,8 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
           const data = await res.json();
           if (data.success && data.organizations) {
             setOrganizations(data.organizations);
+            setCiamConnected(data.system?.connected ?? true);
+            
             // Restore selection from localStorage if available, otherwise default to demo-mode
             const savedOrg = localStorage.getItem("ptts-selected-org");
             if (savedOrg && data.organizations.some((o: any) => o.id === savedOrg)) {
@@ -60,6 +63,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         }
       } catch (e) {
         console.error("Failed to fetch organizations", e);
+        setCiamConnected(false);
       }
     };
 
@@ -168,7 +172,12 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
 
       {/* Organization Scope */}
       <div className="px-5 py-6 space-y-3 border-t border-[var(--border-dim)] bg-[#0a0a0a]">
-        <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Select Organization</p>
+        <div className="flex items-center justify-between">
+          <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Select Organization</p>
+          {!ciamConnected && (
+            <span className="text-[8px] font-bold text-[var(--fault)] animate-pulse">CIAM OFFLINE</span>
+          )}
+        </div>
         <select 
           value={selectedOrg}
           onChange={(e) => {
@@ -178,7 +187,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
             // Reload to force all dashboard components to pick up the new organization scope
             window.location.reload();
           }}
-          className="w-full bg-black border border-[var(--border-dim)] text-[11px] font-bold text-[var(--text-muted)] p-2 outline-none focus:border-[var(--ptts)] cursor-pointer transition-colors"
+          className={`w-full bg-black border ${!ciamConnected ? 'border-[var(--fault)]' : 'border-[var(--border-dim)]'} text-[11px] font-bold text-[var(--text-muted)] p-2 outline-none focus:border-[var(--ptts)] cursor-pointer transition-colors`}
         >
           {organizations.map(org => (
             <option key={org.id} value={org.id} className="bg-black text-[var(--text-muted)]">

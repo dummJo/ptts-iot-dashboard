@@ -13,6 +13,8 @@ export async function GET() {
       { id: 'demo-mode', name: 'Live Demo', type: 'Demo' }
     ];
 
+    let systemConnected = false;
+
     // 2. Fetch Real Organizations from ABB Powertrain API
     try {
       console.log('[API Organizations] Pulling dynamic organizational scope from ABB CIAM...');
@@ -30,16 +32,20 @@ export async function GET() {
         }));
         
         organizations.push(...realOrgs);
+        systemConnected = true;
         console.log(`[API Organizations] Successfully discovered ${realOrgs.length} real organizations.`);
       }
     } catch (abbError: any) {
       console.error('[API Organizations] Dynamic fetch failed. Check AbbBridge credentials/connection.');
-      // We don't fail the whole request, just return what we have (Demo) or return error if required.
     }
 
     return NextResponse.json({
       success: true,
-      organizations: organizations
+      organizations: organizations,
+      system: {
+        connected: systemConnected,
+        lastAttempt: new Date().toISOString()
+      }
     });
   } catch (error: any) {
     console.error('[API Organizations] Fatal Error:', error);
