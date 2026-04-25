@@ -7,12 +7,17 @@ import StatusDonut from "@/components/StatusDonut";
 import VibrationBar from "@/components/VibrationBar";
 import AssetTable from "@/components/AssetTable";
 import AlertsTable from "@/components/AlertsTable";
-import ThemeToggle from "@/components/ThemeToggle";
 import TopBar from "@/components/TopBar";
 import { apiClient } from "@/lib/apiClient";
 import type { DashboardData, Asset } from "@/lib/types";
 import { EMPTY_DASHBOARD } from "@/lib/types";
 import { calculateMachineHealth } from "@/lib/utils";
+
+/**
+ * PTTS OPERATIONS CONSOLE v2.0 — PROPRIETARY SYSTEM
+ * Architecture: Monolithic Precision
+ * Layout: High-Density Analytics Grid
+ */
 
 export default function DashboardPage() {
   const [refreshing, setRefreshing] = useState(false);
@@ -22,27 +27,18 @@ export default function DashboardPage() {
 
   const handleOverridesChange = async (id: string, newOverrides: {warning: number, fault: number}) => {
     try {
-      // 1. Update local state for immediate UI feedback
-      const updated = { ...overrides, [id]: newOverrides };
-      setOverrides(updated);
-      
-      // 2. Persist to PostgreSQL
+      setOverrides(prev => ({ ...prev, [id]: newOverrides }));
       await apiClient.updateAssetThresholds(id, newOverrides.warning, newOverrides.fault);
-      
-      // 3. Trigger a background refresh to ensure all derived logic (alarms, etc) is updated
       fetchDashboardData();
-    } catch (err) {
-      console.error("Failed to persist thresholds:", err);
-    }
+    } catch (err) { console.error(err); }
   };
 
   const fetchDashboardData = async () => {
     try {
-      const data = await apiClient.getDashboardData();
+      const savedOrg = typeof window !== 'undefined' ? localStorage.getItem("ptts-selected-org") || "demo-mode" : "demo-mode";
+      const data = await apiClient.getDashboardData(savedOrg);
       setDashboardData(data);
-    } catch (e) {
-      console.error("Failed to fetch dashboard data:", e);
-    }
+    } catch (e) { console.error(e); }
   };
 
   useEffect(() => {
@@ -59,11 +55,8 @@ export default function DashboardPage() {
     setRefreshing(false);
   };
 
-
-
   const { kpiData, trendData, topAssets, recentAlerts, vibrationBarData, linkSummary } = dashboardData;
 
-  // Apply overrides and recalculate health based on ISO 10816 standards
   const dynamicAssets = topAssets?.map((a: Asset) => {
     const customThresholds = overrides[a.id] || a.vibrationThresholds;
     const newHealth = calculateMachineHealth(a.vib, a.powerKW, a.foundation, customThresholds);
@@ -78,69 +71,111 @@ export default function DashboardPage() {
 
   const dynamicKPIs = [
     {
-      label: "TOTAL NODES",
+      label: "Node Population",
       value: (linkSummary.online + linkSummary.offline).toString(),
-      unit: "/ 200",
-      sub: `${linkSummary.offline} nodes currently unreachable`,
-      trend: "Within capacity",
+      unit: "REG",
+      sub: `${linkSummary.offline} nodes currently static`,
+      trend: "Nominal",
       trendUp: true,
       color: "var(--ptts-teal)",
       ledClass: "led-online",
     },
     {
-      label: "ACTIVE ALARMS",
+      label: "System Alerts",
       value: (dynamicHealthSummary.warning + dynamicHealthSummary.fault).toString(),
-      unit: "EVENTS",
-      sub: `${dynamicHealthSummary.fault} fault · ${dynamicHealthSummary.warning} warning`,
-      trend: "Priority: HIGH",
+      unit: "EVT",
+      sub: `${dynamicHealthSummary.fault} Critical · ${dynamicHealthSummary.warning} Warning`,
+      trend: "Evaluate",
       trendUp: false,
       color: "var(--fault)",
       ledClass: "led-fault",
     },
-    ...kpiData.slice(2) // Keep the other 2 KPIs (Temp/Vib) from mock for now
+    ...kpiData.slice(2).map(k => ({...k, label: k.label.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}))
   ];
 
   return (
-    <div className="flex min-h-screen" style={{ background:"var(--bg)" }}>
+    <div className="flex h-screen w-full bg-[#050505] overflow-hidden font-sans">
+      
+      {/* Dynamic Shell Layer */}
       <Sidebar pollInterval={pollInterval} />
 
-      <main className="flex-1 overflow-auto flex flex-col">
-        {/* ── Top bar ── */}
-        <TopBar title="OVERVIEW" onRefresh={handleRefresh} refreshing={refreshing} connected={dashboardData?.system?.connected} pollInterval={pollInterval} onPollChange={setPollInterval} />
+      <main className="flex-1 flex flex-col min-w-0 h-screen relative bg-black">
+        
+        {/* Superior Top Interface */}
+        <header className="flex-none z-30">
+          <TopBar 
+            title="Consolidated Overview" 
+            onRefresh={handleRefresh} 
+            refreshing={refreshing} 
+            connected={dashboardData?.system?.connected} 
+            pollInterval={pollInterval} 
+            onPollChange={setPollInterval} 
+          />
+        </header>
 
-        {/* ── Content ── */}
-        <div className="flex-1 p-4 space-y-3">
+        {/* Clinical Scrollable Area */}
+        <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
+          
+          <div className="max-w-[1700px] mx-auto p-6 lg:p-12 space-y-12 animate-fade-in">
+            
+            {/* Primary Metrics Layer (Monolith Layout) */}
+            <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-px bg-[var(--border-dim)] border border-[var(--border-dim)]">
+              {dynamicKPIs.map((k: any) => (
+                <div key={k.label} className="bg-black p-6">
+                  <KPICard {...k} />
+                </div>
+              ))}
+            </section>
 
-          {/* KPI row */}
-          <div className="grid grid-cols-4 gap-3">
-            {dynamicKPIs.map((k: any) => <KPICard key={k.label} {...k} />)}
-          </div>
+            {/* Deep Analytics Layer */}
+            <section className="grid grid-cols-1 xl:grid-cols-12 gap-12 items-stretch">
+              <div className="xl:col-span-8">
+                <div className="h-full border border-[var(--border-dim)] bg-[#0a0a0a] p-1">
+                  <TrendChart trendData={trendData} assets={topAssets} />
+                </div>
+              </div>
+              <div className="xl:col-span-4 h-full">
+                <div className="h-full border border-[var(--border-dim)] bg-[#0a0a0a] p-1">
+                  <StatusDonut linkSummary={linkSummary} healthSummary={dynamicHealthSummary} />
+                </div>
+              </div>
+            </section>
 
-          {/* Trend + Donut */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2"><TrendChart trendData={trendData} assets={topAssets} /></div>
-            <div><StatusDonut linkSummary={linkSummary} healthSummary={dynamicHealthSummary} /></div>
-          </div>
+            {/* Logistical Inventory Layer */}
+            <section className="grid grid-cols-1 xl:grid-cols-12 gap-12 items-stretch">
+              <div className="xl:col-span-8 order-2 xl:order-1">
+                <AssetTable assets={dynamicAssets} onOverridesChange={handleOverridesChange} />
+              </div>
+              <div className="xl:col-span-4 order-1 xl:order-2">
+                <VibrationBar vibrationData={vibrationBarData} />
+              </div>
+            </section>
 
-          {/* Asset table + Vib bar */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="col-span-2"><AssetTable assets={dynamicAssets} onOverridesChange={handleOverridesChange} /></div>
-            <div><VibrationBar vibrationData={vibrationBarData} /></div>
-          </div>
+            {/* Incident Repository Layer */}
+            <section className="pt-8">
+              <div className="flex items-center gap-4 mb-6 px-2">
+                <span className="w-1 h-1 bg-[var(--fault)]" />
+                <h2 className="text-[11px] font-bold tracking-[0.4em] text-[var(--text-muted)] uppercase">Incident Registry</h2>
+              </div>
+              <AlertsTable alerts={recentAlerts} />
+            </section>
 
-          {/* Alarms */}
-          <AlertsTable alerts={recentAlerts} />
-
-          {/* Footer bar */}
-          <div className="flex items-center justify-between px-2 py-1 text-[8px] tracking-[.15em] border-t border-border-dim mt-2"
-            style={{ color:"var(--text-faint)" }}>
-            <div className="flex gap-4">
-              <span>PTTS SMARTSENSOR IoT PLATFORM · v1.1.0</span>
-              <span>LIVE DEMO · SIMULATED DATALINK</span>
-            </div>
-            <div className="flex gap-4">
-              <span>SESSION: 60 MIN · JWT HS256</span>
-            </div>
+            {/* Professional Legal & Metadata Strip */}
+            <footer className="pt-20 pb-12 opacity-30 border-t border-[var(--border-dim)]">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-[9px] tracking-[0.3em] font-bold uppercase transition-opacity hover:opacity-100 duration-500">
+                <div className="flex items-center gap-8">
+                  <p>System Build: <span className="text-white">v2.0.0-Stable</span></p>
+                  <p>Host: <span className="text-white">Primary Cloud Instance</span></p>
+                </div>
+                <div className="flex items-center gap-8">
+                  <p className="flex items-center gap-2 text-[var(--online)]">
+                    <span className="w-1 h-1 bg-current" />
+                    Secure Link Protocol
+                  </p>
+                  <p>© 2026 PTTS · By DummVinci</p>
+                </div>
+              </div>
+            </footer>
           </div>
         </div>
       </main>

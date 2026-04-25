@@ -5,27 +5,41 @@
  */
 
 /**
+ * Formats a number to Indonesian locale (comma decimal) with at most 2 decimals.
+ */
+export function formatLocalNumber(value: number | string, decimals: number = 2): string {
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  if (isNaN(num)) return '--';
+  
+  // Format to fixed decimals, then replace dot with comma
+  let formatted = num.toFixed(decimals).replace('.', ',');
+  
+  // Remove trailing zeros if they are not needed (optional, but "paling banyak 2" might imply this)
+  // But usually in industrial dashboards, fixed precision is cleaner.
+  // Given the example 3,55, I will stick with toFixed(decimals).
+  
+  return formatted;
+}
+
+/**
  * Formats temperature values to a consistent string with unit.
  */
 export function formatTemp(value: number | string): string {
-  const num = typeof value === 'string' ? parseFloat(value) : value;
-  return isNaN(num) ? '-- °C' : `${num.toFixed(1)} °C`;
+  return `${formatLocalNumber(value, 1)} °C`;
 }
 
 /**
  * Formats vibration values to a consistent string with unit.
  */
 export function formatVib(value: number | string): string {
-  const num = typeof value === 'string' ? parseFloat(value) : value;
-  return isNaN(num) ? '-- mm/s' : `${num.toFixed(2)} mm/s`;
+  return `${formatLocalNumber(value, 2)} mm/s`;
 }
 
 /**
  * Formats frequency values.
  */
 export function formatFreq(value: number | string): string {
-  const num = typeof value === 'string' ? parseFloat(value) : value;
-  return isNaN(num) ? '-- Hz' : `${num.toFixed(1)} Hz`;
+  return `${formatLocalNumber(value, 1)} Hz`;
 }
 
 /**
