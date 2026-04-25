@@ -7,7 +7,7 @@
 ██╔═══╝    ██║      ██║   ╚════██║
 ██║        ██║      ██║   ███████║
 ╚═╝        ╚═╝      ╚═╝   ╚══════╝
-  SmartSensor · Industrial IoT Platform v1.1.0
+  SmartSensor · Industrial IoT Platform v2.0.0
 ```
 
 **PT PRIMA TEKINDO TIRTA SEJAHTERA**
@@ -58,7 +58,7 @@
 > **Cross-Domain Mapping:**
 > `Sensor` → `MQTT` → `NestJS (PLC)` → `PostgreSQL (Historian)` → `Next.js (HMI/SCADA)`
 
-**Backend Repository:** [dummJo/ptts-iot-backend](https://github.com/dummJo/ptts-iot-backend)
+**Backend Repository:** [DummVinci/ptts-iot-backend](https://github.com/dummJo/ptts-iot-backend)
 
 ### 📄 Standardized Documentation
 - [**API Service Contract**](./docs/API_CONTRACT.md) — Specs for NestJS Developers
@@ -158,7 +158,7 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
 |---|---|
 | **Frontend** | Next.js 16, TypeScript, Tailwind CSS |
 | **Chart** | Recharts (drill-down zoom support) |
-| **Auth** | JWT HS256, HTTPOnly Cookie |
+| **Auth** | SCRYPT · JWT, HTTPOnly Cookie |
 | **Backend** | NestJS 10, TypeORM, class-validator |
 | **Database** | PostgreSQL 14+ |
 | **Broker (Planned)** | MQTT Cloud Broker |
@@ -194,7 +194,7 @@ Detail lengkap di [SETUP.md](./SETUP.md#database-schema).
 
 - Session JWT dengan expiry 60 menit
 - Cookie `httpOnly` — tidak dapat diakses JavaScript
-- SHA-256 password hashing (upgrade ke bcrypt untuk produksi)
+- Scrypt industrial-grade password hashing
 - SQL Injection protection via TypeORM parameterized queries
 - CORS dikonfigurasi eksplisit — hanya origin yang diizinkan
 - Semua data mengalir melalui API layer — **tidak ada akses DB langsung dari Frontend**
@@ -212,7 +212,7 @@ Detail lengkap di [SETUP.md](./SETUP.md#database-schema).
 
 <div align="center">
 
-**PTTS SmartSensor IoT Platform · v1.1.0**
+**PTTS SmartSensor IoT Platform · v2.0.0**
 *Full-stack integration: NestJS + PostgreSQL + Next.js*
 
 `Sensor → MQTT → NestJS → PostgreSQL → Next.js → User`

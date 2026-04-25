@@ -1,9 +1,9 @@
 "use server";
-import crypto from "crypto";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSession, verifySession } from "@/lib/session";
 import prisma from "@/lib/prisma";
+import { hashPassword, verifyPassword } from "@/lib/security";
 
 // Block common injection patterns
 const INJECTION_PATTERN = /(['";\\]|--|\/\*|\bOR\b|\bAND\b|\bUNION\b|\bSELECT\b|\bDROP\b|\bINSERT\b)/i;
@@ -13,55 +13,53 @@ function sanitize(input: string): string {
 }
 
 export async function loginAction(
-  _prev: { error: string } | null,
+  _prev: { error?: string, success?: boolean } | null,
   formData: FormData
-): Promise<{ error: string } | null> {
-  const username = sanitize(formData.get("username") as string ?? "");
-  const password = sanitize(formData.get("password") as string ?? "");
-
-  if (!username || !password) return { error: "Username and password required." };
-  if (INJECTION_PATTERN.test(username) || INJECTION_PATTERN.test(password)) {
-    return { error: "Invalid input detected." };
-  }
-
-  // Find user in PostgreSQL via Prisma
-  const user = await prisma.user.findUnique({
-    where: { username }
-  });
-
-  if (!user) return { error: "Invalid credentials." };
-
-  // Note: For production use bcrypt. This mock uses sha256 to maintain compatibility with the demo hash.
-  const inputHash = crypto.createHash("sha256").update(password).digest("hex");
-
-  // In seed script we used "admin_ptts_2024_hashed" for 'admin'
-  // Let's handle special case for initial seed if needed, or stick to standard hash verification
-  let valid = false;
+): Promise<{ error?: string, success?: boolean } | null> {
   try {
-    valid = crypto.timingSafeEqual(
-      Buffer.from(user.passwordHash, "hex"),
-      Buffer.from(inputHash, "hex")
-    );
-  } catch {
-    // Fallback for raw text comparison if seed used text (only for initial dev)
-    if (user.passwordHash === password + "_hashed" || user.passwordHash === password) {
-      valid = true;
+    const username = sanitize(formData.get("username") as string ?? "");
+    const password = sanitize(formData.get("password") as string ?? "");
+
+    if (!username || !password) return { error: "Username and password required." };
+    if (INJECTION_PATTERN.test(username) || INJECTION_PATTERN.test(password)) {
+      return { error: "Invalid input detected." };
     }
+
+    // Find user in PostgreSQL via Prisma
+    const user = await prisma.user.findUnique({
+      where: { username }
+    });
+
+    if (!user) return { error: "Invalid credentials." };
+
+    // ⚡ INDUSTRIAL UPGRADE: Using specialized security utility with Scrypt & SHA-256 fallback
+    if (!verifyPassword(password, user.passwordHash)) {
+      return { error: "Invalid credentials." };
+    }
+
+    // Gracefully migrate legacy SHA256 hashes to Scrypt upon successful login
+    if (user.passwordHash.length === 64) {
+        await prisma.user.update({
+            where: { username },
+            data: { passwordHash: hashPassword(password) }
+        });
+    }
+
+    const token = await createSession(username, user.role);
+    const jar = await cookies();
+    jar.set("ptts-session", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production" && process.env.HTTPS_ONLY === "true", // Disabled by default for local IoT network access
+      sameSite: "lax",
+      maxAge: 60 * 60, // 60 minutes
+      path: "/",
+    });
+    
+    return { success: true };
+  } catch (err: any) {
+    console.error("Login Error:", err);
+    return { error: "Identity not recognized. Verify Operator ID or secure link." };
   }
-
-  if (!valid) return { error: "Invalid credentials." };
-
-  const token = await createSession(username, user.role);
-  const jar = await cookies();
-  jar.set("ptts-session", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 60 * 60, // 60 minutes
-    path: "/",
-  });
-
-  redirect("/dashboard");
 }
 
 export async function logoutAction() {
@@ -102,7 +100,7 @@ export async function createUserAction(
   }
 
   try {
-    const hash = crypto.createHash("sha256").update(password).digest("hex");
+    const hash = hashPassword(password);
     await prisma.user.create({
       data: { username, passwordHash: hash, role }
     });

@@ -5,8 +5,44 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.0.0] - 2026-04-19
+### Unified Monolithic Deployment
+- **Aesthetic**: Full transition to "Monolithic Minimalism" (Sharp edges, 0 radius, zero-fluff clinical interface).
+- **Branding**: Fully white-labeled to PTTS across all touchpoints (Login, Sidebar, Dashboard, Reports).
+- **Accessibility**: Increased typography scale across SCADA cards, inputs, and headers for 40-50 age compliance.
+- **Theme**: Replaced generic high-key light mode with "Multinational Slate" (Deep Dark Grey) for high-end eye comfort.
+- **Stability**: Fixed Hydration Mismatch on root layout and resolved text clipping in Splash Sequence.
+- **Security**: Hardened authentication error messages and transitioned to Scrypt-AES session encryption.
+- **Maxun Scraper Bridge (Alpha)** — Initialized the high-authority proxy bridge for legacy asset telemetry ingestion via visual scraping.
 
+### Changed
+- **Typography Overhaul** — Transitioned all data values to monospaced high-precision fonts and clinical tight-tracking sans-serif for headers (Standard: Deloitte/Meta).
+- **Design Token System v2.0** — Replaced rounded decorative UI elements with high-tenacity sharp-edged industrial grids and a refined "Monolithic" color palette.
+- **Branding Consolidation** — Purged third-party naming conventions in favor of a clean, proprietary PTTS corporate identity across all system footers.
+- **UX Layout Stabilization** — Fixed multi-device element collisions by implementing a robust Grid Shell for TopBar and Scrollable workspace.
+
+## [1.3.0] — 2026-04-17
+
+### Changed
+- **Visual Gimmick Reduction** — Removed the hyper-animated CSS panning grid and replaced it with a much softer, static dotted mesh to reduce cognitive overload in industrial environments.
+- **Changelog Interactions** — Manually clicking the Changelog view no longer forcefully traps operators into typing an "ACK" confirmation code.
+- **Glassmorphism Aesthetic** — Refined `scada-card`, `Sidebar`, and `TopBar` primitives to feature dark frosted glass backdrop filters, dropping massive opaque cards for an elevated cyberpunk holographic standard.
+
+### Changed
+- **Encrypted Data Flow** — Refactored the `Configuration API` and `Notification Service` to handle just-in-time decryption, ensuring secrets never reside in plaintext within the persistent layer.
+- **Synchronized Security Seeding** — Updated `prisma/seed.ts` to utilize the production-grade security library, aligning initial system states with global encryption standards.
+
+## [1.2.0] — 2026-04-17
+
+### Added
+- **Foundational API Testing** — Introduced an integration test suite (`tests/dashboard.test.ts`) covering core dashboard and reporting endpoints.
+- **Dedicated Alarm Engine** — Refactored industrial violation logic into a standalone utility (`src/lib/alarmEngine.ts`) for better modularity and future background worker support.
+- **Real-time Sidebar Observations** — The sidebar alarm badge is no longer hardcoded; it now dynamically polls and reflects the live count of active alarms from the database.
+
+### Changed
+- **Security Hardening (Scrypt)** — Upgraded password hashing from SHA-256 to **Scrypt** with secure salting, providing industrial-grade protection for user credentials.
+- **Zero-Trust Login** — Removed insecure plaintext password fallbacks and improved input sanitization in authentication server actions.
+- **Trend Data Resilience** — Enhanced the dashboard trend logic with a fallback mechanism that automatically selects the first available asset if the primary tag (`MTR-001`) is missing, preventing UI breaks.
 ## [1.1.0] — 2026-04-15
 
 - **PostgreSQL Production Migration** — Fully transitioned from local JSON storage to **Neon PostgreSQL**, enabling scalable and persistent industrial data management.
@@ -144,7 +180,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Mock data: ABB SmartSensor + RONDS SmartSensor asset set
 - Recharts and lucide-react dependencies
 
-[Unreleased]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/dummJo/ptts-iot-dashboard/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v1.2.0...v1.3.0
+[1.2.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.9.0...v1.1.0
+[0.9.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.5.0...v0.8.0
 [0.5.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/dummJo/ptts-iot-dashboard/compare/v0.2.0...v0.3.0

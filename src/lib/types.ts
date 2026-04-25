@@ -148,5 +148,27 @@ export interface ReportSummary {
   avgTemp: number;
   avgVib: number;
   assets: AssetReportRow[];
-  trendData: TrendPoint[];
+}
+
+// ── MQTT Inbound Data Contract ────────────────────────────────────────
+/**
+ * Shape of the data received from an MQTT-to-HTTP bridge.
+ * Complies with the 'gateway-data-v1' specification.
+ */
+export interface InboundTelemetryEntry {
+  tagId: string;
+  timestamp: string;      // ISO 8601
+  temp: number;
+  vibOverall: number;
+  vibVelocity?: number;
+  vibRms?: number;
+  vibFreq?: number;
+  motorCurrent?: number;
+  motorKw?: number;
+  raw?: any;             // Optional original packet for debugging
+}
+
+export interface InboundTelemetryPayload {
+  gatewayId: string;
+  data: InboundTelemetryEntry[];
 }

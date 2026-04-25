@@ -1,89 +1,126 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { NotificationService } from '@/lib/notifications';
+import { TelemetryService } from '@/services/telemetryService';
+import { AbbBridge } from '@/services/bridge/abbBridge';
+import { Response } from '@/lib/api-response';
+import { formatLocalNumber } from '@/lib/utils';
 import type { DashboardData, TrendPoint, Asset, Alarm } from '@/lib/types';
 
 /**
  * Dashboard Overview API - Powered by PostgreSQL
- * Pulls assets, telemetry history, and triggers the Alarm Engine.
  */
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    // 1. Fetch Assets with latest telemetry
-    const assetsData = await prisma.asset.findMany({
-      include: {
-        telemetries: {
-          orderBy: { timestamp: 'desc' },
-          take: 1
-        }
-      }
-    });
+    const { searchParams } = new URL(req.url);
+    const orgId = searchParams.get('orgId') || 'demo-mode';
 
-    // 2. ⚡ ALARM ENGINE: Check violations on-the-fly
-    for (const asset of assetsData) {
-      const latest = asset.telemetries[0];
-      if (!latest) continue;
-
-      const limits = {
-        warning: asset.vibLimitWarning || 4.5,
-        fault: asset.vibLimitFault || 7.1
-      };
-
-      // Determine if there's a violation
-      let severity: 'critical' | 'warning' | null = null;
-      let msg = '';
+    // 1. If it's a Real Organization, ensure we have assets for it
+    if (orgId !== 'demo-mode') {
+      const existingAssets = await prisma.asset.count({ where: { organizationId: orgId } });
       
-      const vib = latest.vibOverall ?? 0;
-      
-      if (vib >= limits.fault) {
-        severity = 'critical';
-        msg = `Vibration Fault: ${vib.toFixed(2)}mm/s exceeded limit ${limits.fault}mm/s`;
-      } else if (vib >= limits.warning) {
-        severity = 'warning';
-        msg = `Vibration Warning: ${vib.toFixed(2)}mm/s exceeded limit ${limits.warning}mm/s`;
-      }
-
-      if (severity) {
-        // Check if unacknowledged alarm already exists for this asset & severity
-        const existing = await prisma.alarm.findFirst({
-          where: {
-            assetId: asset.id,
-            severity,
-            acknowledgedAt: null
-          }
-        });
-
-        if (!existing) {
-          await prisma.alarm.create({
-            data: {
-              assetId: asset.id,
-              alarmType: 'Vibration',
-              severity,
-              message: msg,
-              timestamp: new Date()
-            }
+      // Always sync if assets are empty or if we want to ensure fresh data
+      if (existingAssets === 0) {
+        console.log(`[ABB Sync] Triggering full sync for organization: ${orgId}`);
+        try {
+          // Search Assets in this organization
+          const assetRes = await AbbBridge.post('/api/asset/Asset/Search', {
+            organizationIds: [orgId],
+            take: 100,
+            skip: 0
           });
           
-          // ⚡ EXTERNAL NOTIFICATION TRIGGER (WhatsApp / Telegram)
-          await NotificationService.sendAlert(msg);
-          
-          console.log(`🚨 Alarm Triggered: ${asset.tagId} - ${msg}`);
+          const abbAssets = assetRes.data.items || [];
+          console.log(`[ABB Sync] Found ${abbAssets.length} assets for org ${orgId}`);
+
+          for (const abbAsset of abbAssets) {
+            // Map ABB Asset to PTTS Asset
+            // Use serialNumber as unique tagId if available, otherwise fallback to id
+            const tagId = abbAsset.serialNumber || abbAsset.id;
+            
+            const asset = await prisma.asset.upsert({
+              where: { tagId: tagId },
+              update: { 
+                name: abbAsset.name,
+                type: abbAsset.assetType || 'SmartSensor',
+                organizationId: orgId,
+                updatedAt: new Date()
+              },
+              create: {
+                tagId: tagId,
+                name: abbAsset.name || `Asset ${tagId}`,
+                type: abbAsset.assetType || 'SmartSensor',
+                organizationId: orgId,
+                organizationName: abbAsset.organization?.name || 'ABB Organization',
+                vibLimitWarning: 4.5,
+                vibLimitFault: 7.1
+              }
+            });
+
+            // 2. Fetch Last Known Telemetry
+            try {
+              const telemetryRes = await AbbBridge.get(`/api/timeseries/Timeseries/LastKnown/${abbAsset.id}`);
+              const tData = telemetryRes.data;
+              
+              if (tData) {
+                // The structure can be { data: { Temperature: [...], ... } } or flat
+                // Let's handle both based on the guide
+                const extractValue = (key: string) => {
+                  const val = tData.data ? tData.data[key] : tData[key];
+                  if (Array.isArray(val) && val.length > 0) {
+                    return val[0].value || val[0].avg || val[0].max || 0;
+                  }
+                  return typeof val === 'number' ? val : 0;
+                };
+
+                const timestamp = tData.timestamp || (tData.data?.Temperature?.[0]?.timestamp) || new Date().toISOString();
+
+                await prisma.telemetry.create({
+                  data: {
+                    assetId: asset.id,
+                    timestamp: new Date(timestamp),
+                    temp: extractValue('Temperature'),
+                    vibOverall: extractValue('VibrationOverall'),
+                    vibVelocity: extractValue('VibrationRms') || extractValue('VibrationVelocity'),
+                    motorCurrent: extractValue('MotorCurrent'),
+                    rawPayload: tData
+                  }
+                });
+                console.log(`[ABB Sync] Ingested telemetry for ${tagId}`);
+              }
+            } catch (tError) {
+              console.warn(`[ABB Sync] Could not fetch telemetry for asset ${abbAsset.id}:`, tError);
+            }
+          }
+        } catch (syncError) {
+          console.error(`[ABB Sync] Critical failure during organization sync (${orgId}):`, syncError);
         }
       }
     }
 
-    // 3. Fetch Trend (Last 24 points aggregated)
-    const mainAsset = await prisma.asset.findFirst({
-       where: { tagId: 'MTR-001' },
+    const assetsData = await TelemetryService.getLatestState(orgId);
+
+    // Fetch Trend Data (Scoped to organization)
+    let trendAsset = await prisma.asset.findFirst({
+       where: { 
+         organizationId: orgId,
+         telemetries: { some: {} } // Ensure it has at least one telemetry
+       },
        include: {
-         telemetries: {
-           orderBy: { timestamp: 'desc' },
-           take: 24
-         }
+         telemetries: { orderBy: { timestamp: 'desc' }, take: 24 }
        }
     });
 
-    const trendData: TrendPoint[] = (mainAsset?.telemetries || []).reverse().map(t => ({
+    if (!trendAsset) {
+      // Fallback: Just any asset in the same organization
+      trendAsset = await prisma.asset.findFirst({
+        where: { organizationId: orgId },
+        include: {
+          telemetries: { orderBy: { timestamp: 'desc' }, take: 24 }
+        }
+      });
+    }
+
+    const trendData: TrendPoint[] = (trendAsset?.telemetries || []).reverse().map(t => ({
       time: t.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       temp: t.temp || 0,
       vib: t.vibOverall || 0,
@@ -91,7 +128,6 @@ export async function GET() {
       current: t.motorCurrent || 0,
     }));
 
-    // 4. Transform Assets for Frontend
     const topAssets: Asset[] = assetsData.map(a => {
       const latest = a.telemetries[0] || {};
       return {
@@ -101,7 +137,7 @@ export async function GET() {
         temp: latest.temp || 0,
         vib: latest.vibOverall || 0,
         link: a.telemetries.length > 0 ? 'online' : 'offline',
-        health: 'good', // Frontend recalculates health color based on thresholds returned below
+        health: 'good', 
         powerKW: a.powerKw || 0,
         foundation: (a.foundationType as 'rigid' | 'flexible') || 'rigid',
         vibrationThresholds: {
@@ -111,9 +147,12 @@ export async function GET() {
       };
     });
 
-    // 5. Fetch Active Alarms after Engine run
+    // Scoped Alarms
     const activeAlarms = await prisma.alarm.findMany({
-      where: { acknowledgedAt: null },
+      where: { 
+        acknowledgedAt: null,
+        asset: { organizationId: orgId }
+      },
       include: { asset: true },
       orderBy: { timestamp: 'desc' },
       take: 10
@@ -128,7 +167,6 @@ export async function GET() {
       time: al.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }));
 
-    // 6. Build Final Response
     const data: DashboardData = {
       kpiData: [
         {
@@ -143,7 +181,7 @@ export async function GET() {
         },
         {
           label: "AVG VIBRATION",
-          value: (topAssets.reduce((sum, a) => sum + a.vib, 0) / (topAssets.length || 1)).toFixed(2),
+          value: formatLocalNumber(topAssets.reduce((sum, a) => sum + a.vib, 0) / (topAssets.length || 1), 2),
           unit: "mm/s",
           sub: "General site health",
           trend: "Real-time sync",
@@ -153,7 +191,7 @@ export async function GET() {
         },
         {
           label: "AVG TEMP",
-          value: (topAssets.reduce((sum, a) => sum + a.temp, 0) / (topAssets.length || 1)).toFixed(0),
+          value: formatLocalNumber(topAssets.reduce((sum, a) => sum + a.temp, 0) / (topAssets.length || 1), 0),
           unit: "°C",
           sub: `Ambient: 28°C`,
           trend: "Stable",
@@ -187,18 +225,42 @@ export async function GET() {
       recentAlerts,
       vibrationBarData: topAssets.map(a => ({ name: a.id, value: a.vib })),
       system: {
-        connected: true,
-        lastSync: new Date().toISOString()
+        connected: assetsData.length > 0,
+        lastSync: assetsData.reduce((latest, a) => {
+          const t = a.telemetries[0]?.timestamp;
+          if (!t) return latest;
+          return t > latest ? t : latest;
+        }, new Date(0)).toISOString()
       }
     };
 
-    return NextResponse.json(data);
-
+    return Response.success(data);
   } catch (error) {
     console.error('[Dashboard API] Error:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch industrial data' },
-      { status: 500 }
-    );
+    return Response.error('Failed to fetch dashboard data');
+  }
+}
+
+/**
+ * MQTT Data Ingestion - Receives batch data from MQTT bridge
+ */
+export async function POST(req: Request) {
+  try {
+    const payload = await req.json();
+    
+    if (!payload.data || !Array.isArray(payload.data)) {
+      return Response.badRequest('Invalid payload format');
+    }
+
+    const processedCount = await TelemetryService.ingestBatch(payload.data);
+
+    return Response.success({ 
+      processed: processedCount,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('[Dashboard Ingestion] Error:', error);
+    return Response.error('Ingestion failed');
   }
 }
