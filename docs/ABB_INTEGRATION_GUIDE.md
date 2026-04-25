@@ -15,17 +15,23 @@ ABB uses API Key authentication for its cloud interface.
 The backend should run a scheduled task (e.g., every 5 minutes) to fetch the latest telemetry.
 
 ### Step 1: Discover Assets
+
 `GET /devices`
+
 - Returns a list of all sensors linked to the account.
 - Map `deviceId` to PTTS `asset_id`.
 
 ### Step 2: Fetch Latest Readings
+
 For each active `deviceId`:
 `GET /devices/{deviceId}/latest-telemetry`
+
 - Returns a JSON object with `temperature`, `vibrationOverall`, `rms`, etc.
 
 ### Step 3: Persistence
+
 Transform the ABB JSON into the PTTS `ptts_telemetry` schema:
+
 - `vibrationOverall` (ABB) → `vib_overall` (PTTS)
 - `temperature` (ABB) → `temp` (PTTS)
 - `vibrationRms` (ABB) → `vib_rms` (PTTS)

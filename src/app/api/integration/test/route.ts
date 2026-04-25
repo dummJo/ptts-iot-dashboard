@@ -18,44 +18,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // --- ABB Ability™ Integration ---
-    if (provider === 'smartSensorPTTS') {
-      const ABB_API_URL = 'https://api.conditionmonitoring.motion.abb.com/motion/ability/v1/devices';
-      
-      try {
-        const res = await fetch(ABB_API_URL, {
-          method: 'GET',
-          headers: {
-            'Ocp-Apim-Subscription-Key': apiKey,
-            'Accept': 'application/json',
-          },
-        });
-
-        if (res.status === 200) {
-          const devices = await res.json();
-          return NextResponse.json({
-            success: true,
-            message: `CONNECTED — ${devices.length || 0} DEVICES DISCOVERED`,
-            deviceCount: devices.length
-          });
-        } else if (res.status === 401) {
-          return NextResponse.json({
-            success: false,
-            message: 'FAILED — UNAUTHORIZED (INVALID KEY)'
-          });
-        } else {
-          return NextResponse.json({
-            success: false,
-            message: `FAILED — CLOUD ERROR (${res.status})`
-          });
-        }
-      } catch (e) {
-        return NextResponse.json({
-          success: false,
-          message: 'FAILED — COULD NOT REACH ABB CLOUD'
-        });
-      }
-    }
 
     // --- RONDS Integration (Mock/Simulated) ---
     if (provider === 'smartSensorRonds') {
