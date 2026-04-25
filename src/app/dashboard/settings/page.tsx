@@ -10,7 +10,7 @@ export default function SettingsPage() {
     smartSensorPTTS: "",
     smartSensorRonds: "",
   });
-  const [activeKeyTab, setActiveKeyTab] = useState<"smartSensorPTTS" | "smartSensorRonds">("smartSensorPTTS");
+  const [activeKeyTab, setActiveKeyTab] = useState<"smartSensorRonds">("smartSensorRonds");
   const [savedKeys, setSavedKeys] = useState<string[]>([]);
   const [isSyncing, setIsSyncing] = useState(false);
   const [tab, setTab] = useState<"swagger" | "api" | "users" | "notifications">("swagger");
@@ -421,30 +421,8 @@ export default function SettingsPage() {
                     {/* Unified API Key Group */}
                     <div className="p-4 rounded-sm" style={{ background: "var(--bg)", border: "1px solid var(--border-dim)" }}>
                       
-                      {/* Provider Selector Tabs */}
-                      <div className="flex gap-1 mb-4 p-1 rounded-sm w-fit" style={{ background: "var(--surface-2)", border: "1px solid var(--border)" }}>
-                        <button
-                          onClick={() => setActiveKeyTab("smartSensorPTTS")}
-                          className="px-4 py-1.5 text-[8px] font-bold tracking-widest rounded-sm transition-all"
-                          style={{
-                            background: activeKeyTab === "smartSensorPTTS" ? "var(--ptts-teal)" : "transparent",
-                            color: activeKeyTab === "smartSensorPTTS" ? "#fff" : "var(--text-muted)",
-                          }}>
-                          PTTS / ABB
-                        </button>
-                        <button
-                          onClick={() => setActiveKeyTab("smartSensorRonds")}
-                          className="px-4 py-1.5 text-[8px] font-bold tracking-widest rounded-sm transition-all"
-                          style={{
-                            background: activeKeyTab === "smartSensorRonds" ? "var(--ptts-teal)" : "transparent",
-                            color: activeKeyTab === "smartSensorRonds" ? "#fff" : "var(--text-muted)",
-                          }}>
-                          RONDS
-                        </button>
-                      </div>
-
                       <label className="scada-label block mb-2 uppercase text-[9px]">
-                        {activeKeyTab === "smartSensorPTTS" ? "ABB Ability™" : "RONDS Monitoring"} API Key
+                        RONDS Monitoring API Key
                       </label>
                       
                       <div className="flex gap-2">
@@ -453,7 +431,7 @@ export default function SettingsPage() {
                           name={activeKeyTab}
                           value={apiKeys[activeKeyTab]}
                           onChange={handleInputChange}
-                          placeholder={`Enter ${activeKeyTab === "smartSensorPTTS" ? "ABB" : "Ronds"} API key`}
+                          placeholder={`Enter RONDS API key`}
                           className="flex-1 px-3 py-2.5 text-[11px] rounded-sm outline-none transition-all"
                           style={{
                             background: "var(--bg)",
@@ -500,9 +478,7 @@ export default function SettingsPage() {
                       )}
 
                       <p className="text-[8px] mt-2 italic" style={{ color: "var(--text-faint)" }}>
-                        {activeKeyTab === "smartSensorPTTS" 
-                          ? "Required for communication with ABB Ability™ Condition Monitoring cloud." 
-                          : "Required for integration with RONDS wireless sensor datalink."}
+                        Required for integration with RONDS wireless sensor datalink.
                       </p>
                     </div>
                   </div>
