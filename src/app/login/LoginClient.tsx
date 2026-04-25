@@ -209,7 +209,7 @@ export default function LoginClient() {
       </div>
 
       {/* Monolithic Console Pane */}
-      <div className="relative z-10 w-full max-w-[420px] mx-4 p-12 flex flex-col animate-fade-up border border-[var(--border)] bg-[#050505] shadow-elite"
+      <div className="relative z-10 w-full max-w-[380px] mx-4 p-8 flex flex-col animate-fade-up border border-[var(--border)] bg-[#050505] shadow-elite"
            style={{ 
              background: 'var(--surface)', 
              backdropFilter: 'blur(32px)',
@@ -253,15 +253,15 @@ export default function LoginClient() {
         </div>
 
         {/* Brand Identity Header */}
-        <div className="flex flex-col items-center mb-10 mt-2">
-          <div className="w-16 h-16 overflow-hidden flex-shrink-0 mb-6 border border-[var(--border)] bg-[#0a0a0a] flex items-center justify-center shadow-lg"
+        <div className="flex flex-col items-center mb-8 mt-2">
+          <div className="w-14 h-14 overflow-hidden flex-shrink-0 mb-4 border border-[var(--border)] bg-[#0a0a0a] flex items-center justify-center shadow-lg"
                style={{ backdropFilter: 'blur(20px)' }}>
-            <img src={LOGO} alt="PTTS" className="w-10 h-10 object-contain brightness-0 invert opacity-90" />
+            <img src={LOGO} alt="PTTS" className="w-8 h-8 object-contain brightness-0 invert opacity-90" />
           </div>
-          <h1 className="text-[42px] font-extrabold tracking-tight text-center" style={{ color: C.cream, fontFamily: 'var(--font-inter)' }}>
+          <h1 className="text-[32px] font-extrabold tracking-tight text-center" style={{ color: C.cream, fontFamily: 'var(--font-inter)' }}>
             IOT DASHBOARD
           </h1>
-          <p className="text-[17px] mt-2 font-medium text-center opacity-80" style={{ color: C.muted }}>
+          <p className="text-[15px] mt-2 font-medium text-center opacity-80" style={{ color: C.muted }}>
             {t.sub}
           </p>
         </div>
@@ -291,7 +291,7 @@ export default function LoginClient() {
             <div className="relative group">
               <input type="text" name="username" autoComplete="username"
                 required maxLength={64} placeholder={t.uid_ph}
-                className="w-full px-6 py-6 text-[19px] font-semibold outline-none transition-all placeholder-opacity-50"
+                className="w-full px-5 py-4 text-[16px] font-semibold outline-none transition-all placeholder-opacity-50"
                 style={{
                   background: 'rgba(255,255,255,0.03)',
                   border: `1px solid var(--border)`,
@@ -308,7 +308,7 @@ export default function LoginClient() {
               <input type={showPw ? "text" : "password"} name="password"
                 autoComplete="current-password" required maxLength={64}
                 placeholder={t.pwd_ph}
-                className="w-full px-6 py-6 pr-16 text-[19px] font-semibold outline-none transition-all placeholder-opacity-50"
+                className="w-full px-5 py-4 pr-12 text-[16px] font-semibold outline-none transition-all placeholder-opacity-50"
                 style={{
                   background: 'rgba(255,255,255,0.03)',
                   border: `1px solid var(--border)`,
@@ -350,7 +350,7 @@ export default function LoginClient() {
           </div>
 
           <button type="submit" disabled={pending}
-            className="w-full py-6 text-[16px] tracking-[0.5em] font-bold uppercase transition-all disabled:opacity-30 mt-6 shadow-2xl active:scale-[0.99]"
+            className="w-full py-4 text-[15px] tracking-[0.4em] font-bold uppercase transition-all disabled:opacity-30 mt-6 shadow-2xl active:scale-[0.99]"
             style={{
               background: pending ? 'rgba(255,255,255,0.1)' : 'white',
               color: pending ? C.muted : 'black',

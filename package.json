@@ -14,19 +14,19 @@
     "seed": "npx tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.0.2",
-    "@prisma/adapter-neon": "^7.7.0",
+    "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@types/pg": "^8.20.0",
     "axios": "^1.15.2",
     "dotenv": "^17.4.2",
     "framer-motion": "^12.38.0",
     "jose": "^6.2.2",
     "lucide-react": "^1.8.0",
     "next": "16.2.3",
+    "pg": "^8.20.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "recharts": "^3.8.1",
-    "ws": "^8.20.0"
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
