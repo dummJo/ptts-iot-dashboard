@@ -12,7 +12,7 @@ const prismaClientSingleton = () => {
   const adapter = new PrismaNeon(pool as any)
 
   return new PrismaClient({
-    adapter,
+    adapter: adapter as any,
     log: ['error', 'warn']
   })
 }
