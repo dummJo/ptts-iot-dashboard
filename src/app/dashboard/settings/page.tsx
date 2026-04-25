@@ -11,8 +11,11 @@ import { apiClient } from "@/lib/apiClient";
  */
 
 export default function SettingsPage() {
-  const [apiKeys, setApiKeys] = useState({ smartSensorPTTS: "", smartSensorRonds: "" });
-  const [activeKeyTab, setActiveKeyTab] = useState<"smartSensorPTTS" | "smartSensorRonds">("smartSensorPTTS");
+  const [apiKeys, setApiKeys] = useState({
+    smartSensorPTTS: "",
+    smartSensorRonds: "",
+  });
+  const [activeKeyTab, setActiveKeyTab] = useState<"smartSensorRonds">("smartSensorRonds");
   const [savedKeys, setSavedKeys] = useState<string[]>([]);
   const [isSyncing, setIsSyncing] = useState(false);
   const [tab, setTab] = useState<"swagger" | "api" | "users" | "notifications">("swagger");
@@ -128,13 +131,7 @@ export default function SettingsPage() {
                     <p className="text-[12px] text-[var(--text-muted)] uppercase tracking-widest font-bold opacity-40">External IoT Data Bridges</p>
                   </div>
                   <div className="space-y-8 max-w-xl">
-                    <div className="space-y-4">
-                      <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">Primary Telemetry Provider</p>
-                      <div className="flex gap-px bg-[var(--border-dim)] border border-[var(--border-dim)]">
-                         <input type="password" placeholder="PTTS/ABB Link Token" className="flex-1 bg-black p-4 text-[13px] outline-none border-none text-white font-mono" />
-                         <button className="px-8 py-4 bg-white text-black text-[10px] font-bold tracking-[0.2em] uppercase">Update</button>
-                      </div>
-                    </div>
+
                     <div className="space-y-4">
                       <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">Secondary Vibration Hub</p>
                       <div className="flex gap-px bg-[var(--border-dim)] border border-[var(--border-dim)]">
