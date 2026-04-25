@@ -9,7 +9,6 @@ const prismaClientSingleton = () => {
   const adapter = new PrismaPg(pool)
 
   return new PrismaClient({
-    // @ts-expect-error adapter type mismatch warning
     adapter,
     log: ['error', 'warn']
   })
