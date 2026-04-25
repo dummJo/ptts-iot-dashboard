@@ -133,9 +133,16 @@ export default function SettingsPage() {
                   <div className="space-y-8 max-w-xl">
 
                     <div className="space-y-4">
+                      <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">Primary CIAM Hub (ABB Powertrain)</p>
+                      <div className="flex gap-px bg-[var(--border-dim)] border border-[var(--border-dim)]">
+                         <input type="password" placeholder="ABB CIAM API Key (Client Secret)" value={apiKeys.smartSensorPTTS} onChange={(e) => setApiKeys({ ...apiKeys, smartSensorPTTS: e.target.value })} className="flex-1 bg-black p-4 text-[13px] outline-none border-none text-white font-mono" />
+                         <button className="px-8 py-4 bg-white text-black text-[10px] font-bold tracking-[0.2em] uppercase">Update</button>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
                       <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">Secondary Vibration Hub</p>
                       <div className="flex gap-px bg-[var(--border-dim)] border border-[var(--border-dim)]">
-                         <input type="password" placeholder="RONDS Relay Key" className="flex-1 bg-black p-4 text-[13px] outline-none border-none text-white font-mono" />
+                         <input type="password" placeholder="RONDS Relay Key" value={apiKeys.smartSensorRonds} onChange={(e) => setApiKeys({ ...apiKeys, smartSensorRonds: e.target.value })} className="flex-1 bg-black p-4 text-[13px] outline-none border-none text-white font-mono" />
                          <button className="px-8 py-4 bg-white text-black text-[10px] font-bold tracking-[0.2em] uppercase">Update</button>
                       </div>
                     </div>

@@ -27,8 +27,8 @@ if not ABB_CLIENT_ID or not ABB_CLIENT_SECRET:
     exit(1)
 
 # Endpoints
-ABB_TOKEN_URL = "https://accessmanagement.motion.abb.com/polaris/connect/token" # Typical IdentityServer4 / OpenID Connect token endpoint
-ABB_API_BASE = "https://api.conditionmonitoring.motion.abb.com/motion/ability/v1"
+ABB_TOKEN_URL = "https://api.accessmanagement.motion.abb.com/polaris/oidc/token" # Updated 2026 API Gateway endpoint
+ABB_API_BASE = "https://api.powertrain.abb.com/api"
 
 def get_abb_access_token():
     print("[AUTH] Requesting CIAM Access Token...")

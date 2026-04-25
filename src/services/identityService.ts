@@ -35,64 +35,56 @@ export async function getDynamicBearerToken(): Promise<string> {
     return currentSession.token;
   }
 
-  // 2. Perform Dynamic Identity Handshake
+  // 2. Perform Dynamic Identity Handshake using API Key
   const credentials = {
-    username: process.env.ABB_USERNAME,
-    password: process.env.ABB_PASSWORD
+    client_id: process.env.ABB_CLIENT_ID,
+    client_secret: process.env.ABB_CLIENT_SECRET
   };
 
-  if (!credentials.username) {
-    throw new Error('IDENTITY_ERROR: ABB_USERNAME missing in environment.');
+  if (!credentials.client_id) {
+    throw new Error('IDENTITY_ERROR: ABB_CLIENT_ID missing in environment.');
   }
-  if (!credentials.password) {
-    throw new Error('IDENTITY_ERROR: ABB_PASSWORD missing in environment.');
+  if (!credentials.client_secret) {
+    throw new Error('IDENTITY_ERROR: ABB_CLIENT_SECRET missing in environment.');
   }
 
   // Known Identity Providers & Client Registry (Discovery Pool)
   const endpoints = [
-    'https://polaris.iam.motion.abb.com/oauth2/token',
     'https://api.accessmanagement.motion.abb.com/polaris/oidc/token',
-    'https://accessmanagement.motion.abb.com/polaris/token'
+    'https://polaris.iam.motion.abb.com/oauth2/token'
   ];
 
   const clientPool = [
-    'k2spGAvfEich60kU63_lz7Ogrwsa', // Portal ID
-    'iB3nB9Vvn5t55Vff_123xATBEf4a', // Gateway ID
-    '88691515-d913-43c3-b78b-333e6181b53e' // Dev ID
+    credentials.client_id
   ];
 
   console.log('[IDENTITY] Initiating dynamic discovery for new Bearer Token...');
 
   for (const url of endpoints) {
-    // Try with and without DEFAULT/ prefix to cover all user store configurations
-    const usernameVariants = [credentials.username, `DEFAULT/${credentials.username}`];
-
-    for (const user of usernameVariants) {
-      for (const client_id of clientPool) {
-        try {
-          const response = await axios.post(url, 
-            new URLSearchParams({
-              grant_type: 'password',
-              username: user,
-              password: credentials.password,
-              client_id: client_id,
-              scope: 'openid profile email'
-            }).toString(),
-            { 
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              timeout: 10000 
-            }
-          );
+    for (const client_id of clientPool) {
+      try {
+        const response = await axios.post(url, 
+          new URLSearchParams({
+            grant_type: 'client_credentials',
+            client_id: client_id as string,
+            client_secret: credentials.client_secret as string,
+            scope: 'openid'
+          }).toString(),
+          { 
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            timeout: 10000 
+          }
+        );
 
           const { access_token, expires_in } = response.data;
           
           currentSession = {
             token: access_token,
             expiresAt: Date.now() + (expires_in * 1000),
-            clientId: client_id
+            clientId: client_id as string
           };
 
-          console.log(`[IDENTITY] Verified via ${user} | ID: ${client_id}`);
+          console.log(`[IDENTITY] Verified via API Key | ID: ${client_id}`);
           return access_token;
 
         } catch (error: any) {
@@ -106,7 +98,6 @@ export async function getDynamicBearerToken(): Promise<string> {
         }
       }
     }
-  }
 
   throw new Error('IDENTITY_DISCOVERY_FAILED: Handshake rejected by all gateways.');
 }
