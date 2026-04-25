@@ -116,7 +116,7 @@ export default function DashboardPage() {
         {/* Clinical Scrollable Area */}
         <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
           
-          <div className="max-w-[1700px] mx-auto p-6 lg:p-12 space-y-12 animate-fade-in">
+          <div className="max-w-[1700px] mx-auto p-4 lg:p-6 space-y-6 animate-fade-in">
             
             {/* Primary Metrics Layer (Monolith Layout) */}
             <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-px bg-[var(--border-dim)] border border-[var(--border-dim)]">
@@ -128,7 +128,7 @@ export default function DashboardPage() {
             </section>
 
             {/* Deep Analytics Layer */}
-            <section className="grid grid-cols-1 xl:grid-cols-12 gap-12 items-stretch">
+            <section className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
               <div className="xl:col-span-8">
                 <div className="h-full border border-[var(--border-dim)] bg-[#0a0a0a] p-1">
                   <TrendChart trendData={trendData} assets={topAssets} />
@@ -142,7 +142,7 @@ export default function DashboardPage() {
             </section>
 
             {/* Logistical Inventory Layer */}
-            <section className="grid grid-cols-1 xl:grid-cols-12 gap-12 items-stretch">
+            <section className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
               <div className="xl:col-span-8 order-2 xl:order-1">
                 <AssetTable assets={dynamicAssets} onOverridesChange={handleOverridesChange} />
               </div>
@@ -161,7 +161,7 @@ export default function DashboardPage() {
             </section>
 
             {/* Professional Legal & Metadata Strip */}
-            <footer className="pt-20 pb-12 opacity-30 border-t border-[var(--border-dim)]">
+            <footer className="pt-10 pb-6 opacity-30 border-t border-[var(--border-dim)]">
               <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-[9px] tracking-[0.3em] font-bold uppercase transition-opacity hover:opacity-100 duration-500">
                 <div className="flex items-center gap-8">
                   <p>System Build: <span className="text-white">v2.0.0-Stable</span></p>

@@ -79,7 +79,7 @@ export default function SettingsPage() {
         </header>
 
         <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
-          <div className="max-w-[1200px] mx-auto p-6 lg:p-12 space-y-12 animate-fade-in">
+          <div className="max-w-[1200px] mx-auto p-4 lg:p-6 space-y-8 animate-fade-in">
             
             {/* Primary Control Switch */}
             <section className="flex flex-wrap gap-px bg-[var(--border-dim)] border border-[var(--border-dim)]">
@@ -97,7 +97,7 @@ export default function SettingsPage() {
             </section>
 
             {/* Dynamic Control Panels */}
-            <div className="space-y-12">
+            <div className="space-y-6">
               
               {tab === "swagger" && (
                 <div className="border border-[var(--border-dim)] bg-[#0a0a0a] p-12 space-y-10">
@@ -144,8 +144,8 @@ export default function SettingsPage() {
               )}
 
               {tab === "users" && (
-                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                   <div className="border border-[var(--border-dim)] bg-[#0a0a0a] p-12 space-y-10">
+                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                   <div className="border border-[var(--border-dim)] bg-[#0a0a0a] p-6 space-y-6">
                       <h2 className="text-[20px] font-bold text-white tracking-tight">Provisioning</h2>
                       <form onSubmit={handleCreateUser} className="space-y-6">
                          <div className="space-y-2">
@@ -199,7 +199,7 @@ export default function SettingsPage() {
                         <span className="text-[10px] font-bold tracking-widest text-[var(--online)]">ACTIVE</span>
                       </div>
                    </div>
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-6">
                          <p className="text-[11px] font-bold tracking-[0.2em] text-white border-b border-white/10 pb-4">TELEGRAM GATEWAY</p>
                          <div className="space-y-4">
@@ -223,7 +223,7 @@ export default function SettingsPage() {
             </div>
 
             {/* Elite Sub-footer */}
-            <footer className="pt-20 pb-8 flex items-center justify-between opacity-20 text-[9px] font-bold tracking-[0.4em] uppercase">
+            <footer className="pt-10 pb-6 flex items-center justify-between opacity-20 text-[9px] font-bold tracking-[0.4em] uppercase">
                 <p>Command Console Alpha-1</p>
                 <p>Consultant Grade Config Module</p>
             </footer>

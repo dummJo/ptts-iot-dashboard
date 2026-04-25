@@ -49,18 +49,18 @@
 }
 
 .light {
-  --bg: #0a0a0b; /* Sophisticated Deep Slate, not white */
+  --bg: #f5f5f7; /* True light background */
   --bg-gradient: radial-gradient(circle at 0% 0%, rgba(0, 113, 227, 0.05), transparent 40%);
-  --surface: rgba(22, 22, 24, 0.95);
-  --surface-2: rgba(32, 32, 35, 0.98);
-  --surface-3: rgba(45, 45, 48, 0.98);
-  --border: rgba(255, 255, 255, 0.08);
-  --border-dim: rgba(255, 255, 255, 0.03);
-  --text: #f5f5f7;
-  --text-muted: #a1a1a6;
-  --text-faint: #424245;
-  --text-bright: #ffffff;
-  --sidebar-bg: #050505;
+  --surface: rgba(255, 255, 255, 0.95);
+  --surface-2: rgba(250, 250, 250, 0.98);
+  --surface-3: rgba(240, 240, 240, 0.98);
+  --border: rgba(0, 0, 0, 0.1);
+  --border-dim: rgba(0, 0, 0, 0.05);
+  --text: #1d1d1f;
+  --text-muted: #86868b;
+  --text-faint: #d2d2d7;
+  --text-bright: #000000;
+  --sidebar-bg: #fbfbfd;
 }
 
 body {
