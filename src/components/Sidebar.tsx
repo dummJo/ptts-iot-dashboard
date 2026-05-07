@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, useActionState } from "react";
 import LogoutButton from "./LogoutButton";
 import { loginAction, getCurrentSessionAction } from "@/app/actions/auth";
@@ -18,6 +18,7 @@ const navItems = [
 
 export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: number }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [uptime, setUptime] = useState("00:00:00");
   const [showSwitch, setShowSwitch] = useState(false);
   const [switchState, switchAction, switchPending] = useActionState(loginAction, null);
@@ -37,7 +38,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
     try {
       const res = await syncCiamAction();
       if (res.success) {
-        window.location.reload();
+        router.refresh();
       } else {
         alert(`Sync Failed: ${res.error}`);
       }
@@ -85,10 +86,12 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
     const fetchAlarmsCount = async () => {
       try {
         const savedOrg = localStorage.getItem("ptts-selected-org") || "demo-mode";
-        const res = await fetch(`/api/dashboard?orgId=${savedOrg}`);
+        const res = await fetch(`/api/alarms/count?orgId=${savedOrg}`);
         if (res.ok) {
           const data = await res.json();
-          setAlarmCount((data.healthSummary?.warning || 0) + (data.healthSummary?.fault || 0));
+          if (data.success) {
+            setAlarmCount((data.data?.warning || 0) + (data.data?.critical || 0));
+          }
         }
       } catch (e) {}
     };
@@ -176,7 +179,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         </div>
         <div className="space-y-1">
           <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Registry Nodes</p>
-          <p className="text-[12px] font-medium text-[var(--text-muted)]">147 <span className="text-[var(--text-faint)]">/ 200</span></p>
+          <p className="text-[12px] font-medium text-[var(--text-muted)]">{organizations.length} <span className="text-[var(--text-faint)]">scope(s)</span></p>
         </div>
       </div>
 
@@ -209,7 +212,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
             const val = e.target.value;
             setSelectedOrg(val);
             localStorage.setItem("ptts-selected-org", val);
-            window.location.reload();
+            router.refresh();
           }}
           className={`w-full bg-black border ${!ciamConnected ? 'border-[var(--fault)]' : 'border-[var(--border-dim)]'} text-[11px] font-bold text-[var(--text-muted)] p-2 outline-none focus:border-[var(--ptts)] cursor-pointer transition-colors`}
         >

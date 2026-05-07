@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server';
 import { AbbBridge } from '@/services/bridge/abbBridge';
+import { requireAuth } from '@/lib/auth-guard';
 
-/**
- * DYNAMIC ORGANIZATION DISCOVERY
- * Purpose: Fetches authorized organizations directly from ABB CIAM/Powertrain Gateway.
- * Zero-touch: Any organization added in the ABB portal automatically appears here.
- */
 export async function GET() {
   try {
+    const auth = await requireAuth();
+    if (!auth.authenticated) return auth.response;
     // 1. Initial Identity Scope (Demo Mode)
     const organizations = [
       { id: 'demo-mode', name: 'Live Demo', type: 'Demo' }

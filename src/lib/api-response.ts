@@ -14,7 +14,7 @@ export interface ApiResponse<T = any> {
   timestamp: string;
 }
 
-export class Response {
+export class ApiResponse {
   static success<T>(data: T, status = 200) {
     return NextResponse.json({
       success: true,

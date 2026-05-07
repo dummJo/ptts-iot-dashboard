@@ -1,8 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
 
-// ⚡ INDUSTRIAL UPGRADE: Signing key is based on AUTH_SECRET.
-// We use TextEncoder to ensure cross-platform compatibility (Node.js & Edge Runtime).
-const AUTH_SECRET = process.env.AUTH_SECRET ?? "***REMOVED***";
+const AUTH_SECRET = process.env.AUTH_SECRET;
+if (!AUTH_SECRET) throw new Error("AUTH_SECRET environment variable is required");
 const SECRET = new TextEncoder().encode(AUTH_SECRET);
 
 export async function createSession(username: string, role: string): Promise<string> {

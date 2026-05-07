@@ -1,14 +1,10 @@
 import { NextResponse } from 'next/server';
-
-/**
- * API Integration Test Proxy
- * ─────────────────────────────────────────────────────────────────────────────
- * Menjembatani request dari browser ke cloud provider (ABB/RONDS) 
- * untuk menghindari kebijakan CORS dan mengamankan API Key.
- */
+import { requireAuth } from '@/lib/auth-guard';
 
 export async function POST(req: Request) {
   try {
+    const auth = await requireAuth('admin');
+    if (!auth.authenticated) return auth.response;
     const { provider, apiKey } = await req.json();
 
     if (!provider || !apiKey) {

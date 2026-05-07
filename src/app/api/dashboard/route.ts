@@ -1,16 +1,15 @@
-import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { TelemetryService } from '@/services/telemetryService';
 import { AbbBridge } from '@/services/bridge/abbBridge';
-import { Response } from '@/lib/api-response';
+import { ApiResponse } from '@/lib/api-response';
+import { requireAuth } from '@/lib/auth-guard';
 import { formatLocalNumber } from '@/lib/utils';
 import type { DashboardData, TrendPoint, Asset, Alarm } from '@/lib/types';
 
-/**
- * Dashboard Overview API - Powered by PostgreSQL
- */
 export async function GET(req: Request) {
   try {
+    const auth = await requireAuth();
+    if (!auth.authenticated) return auth.response;
     const { searchParams } = new URL(req.url);
     const orgId = searchParams.get('orgId') || 'demo-mode';
 
@@ -120,7 +119,7 @@ export async function GET(req: Request) {
       });
     }
 
-    const trendData: TrendPoint[] = (trendAsset?.telemetries || []).reverse().map(t => ({
+    const trendData: TrendPoint[] = (trendAsset?.telemetries || []).reverse().map((t: { timestamp: Date; temp: number | null; vibOverall: number | null; vibVelocity: number | null; motorCurrent: number | null }) => ({
       time: t.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       temp: t.temp || 0,
       vib: t.vibOverall || 0,
@@ -128,8 +127,8 @@ export async function GET(req: Request) {
       current: t.motorCurrent || 0,
     }));
 
-    const topAssets: Asset[] = assetsData.map(a => {
-      const latest = a.telemetries[0] || {};
+    const topAssets: Asset[] = assetsData.map((a: typeof assetsData[number]) => {
+      const latest = a.telemetries[0] || {} as Record<string, unknown>;
       return {
         id: a.tagId,
         name: a.name,
@@ -158,7 +157,7 @@ export async function GET(req: Request) {
       take: 10
     });
 
-    const recentAlerts: Alarm[] = activeAlarms.map(al => ({
+    const recentAlerts: Alarm[] = activeAlarms.map((al: typeof activeAlarms[number]) => ({
       id: al.id,
       asset: al.asset.tagId,
       type: al.alarmType,
@@ -193,7 +192,7 @@ export async function GET(req: Request) {
           label: "AVG TEMP",
           value: formatLocalNumber(topAssets.reduce((sum, a) => sum + a.temp, 0) / (topAssets.length || 1), 0),
           unit: "°C",
-          sub: `Ambient: 28°C`,
+          sub: `${topAssets.length} sensor(s) reporting`,
           trend: "Stable",
           trendUp: true,
           color: "var(--ptts-teal)",
@@ -226,7 +225,7 @@ export async function GET(req: Request) {
       vibrationBarData: topAssets.map(a => ({ name: a.id, value: a.vib })),
       system: {
         connected: assetsData.length > 0,
-        lastSync: assetsData.reduce((latest, a) => {
+        lastSync: assetsData.reduce((latest: Date, a: typeof assetsData[number]) => {
           const t = a.telemetries[0]?.timestamp;
           if (!t) return latest;
           return t > latest ? t : latest;
@@ -234,10 +233,10 @@ export async function GET(req: Request) {
       }
     };
 
-    return Response.success(data);
+    return ApiResponse.success(data);
   } catch (error) {
     console.error('[Dashboard API] Error:', error);
-    return Response.error('Failed to fetch dashboard data');
+    return ApiResponse.error('Failed to fetch dashboard data');
   }
 }
 
@@ -246,21 +245,24 @@ export async function GET(req: Request) {
  */
 export async function POST(req: Request) {
   try {
+    const auth = await requireAuth();
+    if (!auth.authenticated) return auth.response;
+
     const payload = await req.json();
     
     if (!payload.data || !Array.isArray(payload.data)) {
-      return Response.badRequest('Invalid payload format');
+      return ApiResponse.badRequest('Invalid payload format');
     }
 
     const processedCount = await TelemetryService.ingestBatch(payload.data);
 
-    return Response.success({ 
+    return ApiResponse.success({ 
       processed: processedCount,
       timestamp: new Date().toISOString()
     });
 
   } catch (error) {
     console.error('[Dashboard Ingestion] Error:', error);
-    return Response.error('Ingestion failed');
+    return ApiResponse.error('Ingestion failed');
   }
 }

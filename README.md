@@ -13,12 +13,12 @@
 **PT PRIMA TEKINDO TIRTA SEJAHTERA**
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.x-black?style=flat-square&logo=next.js)](https://nextjs.org)
-[![NestJS](https://img.shields.io/badge/NestJS-10.x-E0234E?style=flat-square&logo=nestjs)](https://nestjs.com)
+[![Prisma](https://img.shields.io/badge/Prisma-7.x-2D3748?style=flat-square&logo=prisma)](https://prisma.io)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-336791?style=flat-square&logo=postgresql)](https://postgresql.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript)](https://typescriptlang.org)
 [![License](https://img.shields.io/badge/License-Private-red?style=flat-square)]()
 
-> **Sistem Monitoring Industrial berbasis Web** — menghubungkan data sensor ABB / RONDS secara real-time ke dashboard SCADA/HMI berbasis browser, dengan backend NestJS dan database PostgreSQL.
+> **Sistem Monitoring Industrial berbasis Web** — menghubungkan data sensor ABB / RONDS secara real-time ke dashboard SCADA/HMI berbasis browser, dengan Next.js full-stack (Prisma ORM) dan database PostgreSQL.
 
 </div>
 
@@ -28,37 +28,29 @@
 
 ```
 [ ABB / RONDS Smart Sensor ]
-           │  (MQTT)
+           │  (MQTT / REST)
            ▼
   ┌─────────────────────┐
-  │   MQTT Broker Cloud  │
+  │  ABB Powertrain API  │  ← Cloud Gateway (CIAM OAuth2)
   └────────┬────────────┘
            │
            ▼
   ┌─────────────────────┐
-  │  NestJS Backend API  │  ← port 3001
-  │  5 Microservices     │     TypeORM + PostgreSQL
-  │  - Telemetry         │
-  │  - Config            │
-  │  - Reports           │
-  │  - Alarms            │
-  │  - Assets            │
+  │  Next.js Full-Stack  │  ← port 3000
+  │  App Router + Prisma │     Direct PostgreSQL
+  │  - API Routes        │     (Telemetry, Config,
+  │  - Server Actions    │      Alarms, Assets, Reports)
+  │  - ABB Bridge        │
   └────────┬────────────┘
-           │  (REST / HTTP)
+           │
            ▼
   ┌─────────────────────┐
-  │  Next.js Dashboard   │  ← port 3000
-  │  SCADA / HMI Layer   │     Recharts + TypeScript
+  │  PostgreSQL          │  ← Supabase / Local
   └─────────────────────┘
-           │
-           ▼
-        [ User ]
 ```
 
 > **Cross-Domain Mapping:**
-> `Sensor` → `MQTT` → `NestJS (PLC)` → `PostgreSQL (Historian)` → `Next.js (HMI/SCADA)`
-
-**Backend Repository:** [DummVinci/ptts-iot-backend](https://github.com/dummJo/ptts-iot-backend)
+> `Sensor` → `ABB Cloud` → `Next.js (Prisma)` → `PostgreSQL (Historian)` → `Dashboard (HMI/SCADA)`
 
 ### 📄 Standardized Documentation
 - [**API Service Contract**](./docs/API_CONTRACT.md) — Specs for NestJS Developers
@@ -158,8 +150,8 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
 |---|---|
 | **Frontend** | Next.js 16, TypeScript, Tailwind CSS |
 | **Chart** | Recharts (drill-down zoom support) |
-| **Auth** | SCRYPT · JWT, HTTPOnly Cookie |
-| **Backend** | NestJS 10, TypeORM, class-validator |
+| **Auth** | Scrypt (per-user salt) · JWT, HTTPOnly Cookie |
+| **Backend** | Next.js API Routes + Server Actions, Prisma ORM |
 | **Database** | PostgreSQL 14+ |
 | **Broker (Planned)** | MQTT Cloud Broker |
 | **Deploy** | Vercel (Frontend), Railway / Render (Backend) |
@@ -213,8 +205,8 @@ Detail lengkap di [SETUP.md](./SETUP.md#database-schema).
 <div align="center">
 
 **PTTS SmartSensor IoT Platform · v2.0.0**
-*Full-stack integration: NestJS + PostgreSQL + Next.js*
+*Full-stack: Next.js + Prisma + PostgreSQL + ABB Powertrain API*
 
-`Sensor → MQTT → NestJS → PostgreSQL → Next.js → User`
+`Sensor → ABB Cloud → Next.js (Prisma) → PostgreSQL → Dashboard`
 
 </div>

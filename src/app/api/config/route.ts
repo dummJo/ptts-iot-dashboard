@@ -1,19 +1,18 @@
-import { Response } from '@/lib/api-response';
+import { ApiResponse } from '@/lib/api-response';
+import { requireAuth } from '@/lib/auth-guard';
 import prisma from '@/lib/prisma';
 import { encryptData, decryptData } from '@/lib/security';
 
-/**
- * System Configuration API - Powered by PostgreSQL
- */
-
 export async function GET() {
   try {
+    const auth = await requireAuth();
+    if (!auth.authenticated) return auth.response;
     const config = await prisma.systemConfig.findUnique({
       where: { id: 1 }
     });
 
     if (!config) {
-      return Response.success({
+      return ApiResponse.success({
         apiKeys: [],
         notifications: {
           telegramToken: "",
@@ -33,7 +32,7 @@ export async function GET() {
       status: 'active'
     }));
 
-    return Response.success({
+    return ApiResponse.success({
       apiKeys,
       notifications: {
         telegramToken: config.telegramToken ? decryptData(config.telegramToken) : "",
@@ -47,12 +46,15 @@ export async function GET() {
 
   } catch (error) {
     console.error('[Config API] Error:', error);
-    return Response.error('Failed to fetch config');
+    return ApiResponse.error('Failed to fetch config');
   }
 }
 
 export async function POST(req: Request) {
   try {
+    const auth = await requireAuth('admin');
+    if (!auth.authenticated) return auth.response;
+
     const body = await req.json();
     const { apiKeys, notifications, settings } = body;
 
@@ -86,10 +88,10 @@ export async function POST(req: Request) {
       }
     });
 
-    return Response.success({ timestamp: updated.updatedAt });
+    return ApiResponse.success({ timestamp: updated.updatedAt });
 
   } catch (error) {
     console.error('[Config API] Save error:', error);
-    return Response.error('Failed to save configuration');
+    return ApiResponse.error('Failed to save configuration');
   }
 }

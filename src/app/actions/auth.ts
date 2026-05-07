@@ -5,9 +5,6 @@ import { createSession, verifySession } from "@/lib/session";
 import prisma from "@/lib/prisma";
 import { hashPassword, verifyPassword } from "@/lib/security";
 
-// Block common injection patterns
-const INJECTION_PATTERN = /(['";\\]|--|\/\*|\bOR\b|\bAND\b|\bUNION\b|\bSELECT\b|\bDROP\b|\bINSERT\b)/i;
-
 function sanitize(input: string): string {
   return input.trim().slice(0, 128);
 }
@@ -21,9 +18,6 @@ export async function loginAction(
     const password = sanitize(formData.get("password") as string ?? "");
 
     if (!username || !password) return { error: "Username and password required." };
-    if (INJECTION_PATTERN.test(username) || INJECTION_PATTERN.test(password)) {
-      return { error: "Invalid input detected." };
-    }
 
     // Find user in PostgreSQL via Prisma
     const user = await prisma.user.findUnique({
@@ -49,7 +43,7 @@ export async function loginAction(
     const jar = await cookies();
     jar.set("ptts-session", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production" && process.env.HTTPS_ONLY === "true", // Disabled by default for local IoT network access
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 60 * 60, // 60 minutes
       path: "/",
@@ -95,10 +89,6 @@ export async function createUserAction(
   if (username.length < 3) return { success: false, error: "Username must be at least 3 characters." };
   if (password.length < 6) return { success: false, error: "Password must be at least 6 characters." };
 
-  if (INJECTION_PATTERN.test(username) || INJECTION_PATTERN.test(password)) {
-    return { success: false, error: "Invalid input detected." };
-  }
-
   try {
     const hash = hashPassword(password);
     await prisma.user.create({
@@ -112,7 +102,7 @@ export async function createUserAction(
 }
 
 export async function fetchUsersAction(): Promise<
-  { success: boolean; users?: Array<{ username: string; hash: string; role: string }>; error?: string }
+  { success: boolean; users?: Array<{ username: string; role: string; createdAt: string }>; error?: string }
 > {
   const jar = await cookies();
   const sessionToken = jar.get("ptts-session")?.value;
@@ -129,10 +119,10 @@ export async function fetchUsersAction(): Promise<
       orderBy: { createdAt: 'desc' }
     });
 
-    const users = usersData.map(u => ({
+    const users = usersData.map((u: { username: string; role: string; createdAt: Date }) => ({
       username: u.username,
-      hash: u.passwordHash,
       role: u.role,
+      createdAt: u.createdAt.toISOString(),
     }));
 
     return { success: true, users };

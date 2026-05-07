@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { requireAuth } from '@/lib/auth-guard';
 import type { ReportPeriod } from '@/lib/types';
-
-/**
- * Reports endpoint - proxies to NestJS backend.
- * Generates period-based reports from PostgreSQL aggregations.
- */
 async function fetchWithRetry(url: string, maxRetries = 2): Promise<Response> {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
@@ -38,6 +34,9 @@ async function fetchWithRetry(url: string, maxRetries = 2): Promise<Response> {
 
 export async function GET(req: NextRequest) {
   try {
+    const auth = await requireAuth();
+    if (!auth.authenticated) return auth.response;
+
     const period = (req.nextUrl.searchParams.get('period') ?? 'monthly') as ReportPeriod;
     const validPeriods: ReportPeriod[] = ['daily', 'weekly', 'monthly', '3months', '6months', '12months'];
 

@@ -1,49 +1,38 @@
 import crypto from 'crypto';
 
-/**
- * Industrial-grade Security Utility
- * Uses Scrypt for password hashing and AES-256-GCM for data encryption.
- */
-
 const SCRYPT_PARAMS = {
-  N: 16384, // Cost factor (2^14)
-  r: 8,     // Block size
-  p: 1,     // Parallelization factor
+  N: 16384,
+  r: 8,
+  p: 1,
 };
 
-const SALT = process.env.AUTH_SALT || "***REMOVED***";
-const MASTER_KEY_SECRET = process.env.MASTER_KEY_SECRET || "***REMOVED***";
-
-/**
- * Hashes a password using Scrypt with industrial parameters.
- * @param password The plain text password
- * @returns Hex string of the hash
- */
-export function hashPassword(password: string): string {
-  return crypto.scryptSync(password, SALT, 64, SCRYPT_PARAMS).toString('hex');
+function getSecret(name: string): string {
+  const val = process.env[name];
+  if (!val) throw new Error(`${name} environment variable is required`);
+  return val;
 }
 
-/**
- * Verifies a password against a hash.
- * @param password The plain text password
- * @param hash The stored hash
- * @returns Boolean indicating match
- */
-export function verifyPassword(password: string, hash: string): boolean {
-  try {
-    const newHash = hashPassword(password);
-    const hashBuf = Buffer.from(hash, 'hex');
-    const newHashBuf = Buffer.from(newHash, 'hex');
+const MASTER_KEY_SECRET = getSecret('MASTER_KEY_SECRET');
+const ENCRYPTION_SALT = getSecret('AUTH_SALT');
 
-    // If lengths match, try timing-safe scrypt comparison
-    if (hashBuf.length === newHashBuf.length) {
-      if (crypto.timingSafeEqual(hashBuf, newHashBuf)) return true;
+export function hashPassword(password: string): string {
+  const salt = crypto.randomBytes(32).toString('hex');
+  const hash = crypto.scryptSync(password, salt, 64, SCRYPT_PARAMS).toString('hex');
+  return `${salt}:${hash}`;
+}
+
+export function verifyPassword(password: string, stored: string): boolean {
+  try {
+    if (stored.includes(':')) {
+      const [salt, hash] = stored.split(':');
+      const newHash = crypto.scryptSync(password, salt, 64, SCRYPT_PARAMS).toString('hex');
+      return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(newHash, 'hex'));
     }
 
-    // Fallback for legacy SHA256 hashes (64 hex characters == 32 bytes)
-    if (hash.length === 64) {
+    // Legacy SHA256 fallback (64 hex chars = 32 bytes)
+    if (stored.length === 64) {
       const sha256Hash = crypto.createHash("sha256").update(password).digest("hex");
-      return crypto.timingSafeEqual(Buffer.from(hash, 'hex'), Buffer.from(sha256Hash, 'hex'));
+      return crypto.timingSafeEqual(Buffer.from(stored, 'hex'), Buffer.from(sha256Hash, 'hex'));
     }
   } catch (err) {
     console.error("verifyPassword error:", err);
@@ -60,7 +49,7 @@ export function verifyPassword(password: string, hash: string): boolean {
 export function encryptData(text: string): string {
   const iv = crypto.randomBytes(16);
   // Derive a 32-byte key for AES-256
-  const key = crypto.scryptSync(MASTER_KEY_SECRET, SALT, 32);
+  const key = crypto.scryptSync(MASTER_KEY_SECRET, ENCRYPTION_SALT, 32);
   const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
   
   let encrypted = cipher.update(text, 'utf8', 'hex');
@@ -81,7 +70,7 @@ export function decryptData(encryptedText: string): string {
     const [ivHex, authTagHex, encryptedData] = encryptedText.split(':');
     const iv = Buffer.from(ivHex, 'hex');
     const authTag = Buffer.from(authTagHex, 'hex');
-    const key = crypto.scryptSync(MASTER_KEY_SECRET, SALT, 32);
+    const key = crypto.scryptSync(MASTER_KEY_SECRET, ENCRYPTION_SALT, 32);
     
     const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
     decipher.setAuthTag(authTag);

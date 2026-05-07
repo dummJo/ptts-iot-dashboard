@@ -43,3 +43,9 @@ next-env.d.ts
 
 # local data storage (mock/persistence)
 /data
+
+# scratch/debug files
+/scratch
+abb_*.py
+test_connection.js
+sensorfact.txt

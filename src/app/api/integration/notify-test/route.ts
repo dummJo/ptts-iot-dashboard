@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server';
-import { NotificationService } from '@/lib/notifications';
+import { requireAuth } from '@/lib/auth-guard';
 
-/**
- * Notification Test API
- * Directly tests credentials without saving them to DB.
- */
 export async function POST(req: Request) {
   try {
+    const auth = await requireAuth('admin');
+    if (!auth.authenticated) return auth.response;
     const { channel, token, chatId, apiUrl } = await req.json();
 
     const timestamp = new Date().toLocaleTimeString();
