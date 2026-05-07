@@ -126,7 +126,7 @@ export default function LoginClient() {
 
   /* ── MONOLITHIC SPLASH SEQUENCE ────────────────────────────────────────── */
   if (phase !== "login") return (
-    <div className={`fixed inset-0 z-[9999] bg-[#000000] overflow-hidden flex flex-col items-center justify-center select-none transition-opacity duration-700 ${isExiting ? "opacity-0" : "opacity-100"}`} style={{ fontFamily: "var(--font-inter), sans-serif" }}>
+    <div className={`fixed inset-0 z-[9999] bg-[var(--bg)] overflow-hidden flex flex-col items-center justify-center select-none transition-opacity duration-700 ${isExiting ? "opacity-0" : "opacity-100"}`} style={{ fontFamily: "var(--font-inter), sans-serif" }}>
       
       {/* ── Apple Style Ambient Blur Gradients (Vibrant) ── */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -138,20 +138,20 @@ export default function LoginClient() {
         
         {/* ── Monolithic Precision Logo ── */}
         <div className={`relative w-28 h-28 flex items-center justify-center mb-10 transition-all duration-1000 ${phase === "logo" ? "opacity-0 scale-90" : "opacity-100 scale-100"}`}>
-          <div className="absolute inset-0 bg-white/5 backdrop-blur-3xl shadow-[0_20px_60px_rgba(0,0,0,0.6)]" />
+          <div className="absolute inset-0 bg-[var(--avatar-bg)] backdrop-blur-3xl shadow-[var(--shadow-elite)]" />
           <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none" />
           
           <div className="relative w-16 h-16 flex items-center justify-center">
-            <img src="https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png" alt="PTTS" className="w-full h-full object-contain brightness-0 invert opacity-90" />
+            <img src="https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png" alt="PTTS" className="w-full h-full object-contain logo-adaptive opacity-90" />
           </div>
         </div>
 
         {/* ── Cinematic Typography ── */}
         <div className={`text-center space-y-3 mb-12 transition-all duration-700 delay-100 ${phase === "logo" ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}>
-          <h1 className="text-4xl md:text-6xl font-semibold tracking-[0.2em] text-[#f5f5f7]">
-            SMART<span className="text-[#86868b] font-light">SENSOR</span>
+          <h1 className="text-4xl md:text-6xl font-semibold tracking-[0.2em] text-[var(--text)]">
+            SMART<span className="text-[var(--text-muted)] font-light">SENSOR</span>
           </h1>
-          <p className="text-sm md:text-base tracking-[0.4em] text-[#a1a1a6] uppercase">
+          <p className="text-sm md:text-base tracking-[0.4em] text-[var(--text-muted)] uppercase">
             Industrial IoT Platform <span className="opacity-40 font-mono italic">v2.0.0</span>
           </p>
         </div>
@@ -159,20 +159,20 @@ export default function LoginClient() {
         {/* ── Apple-Style Loading Indicator ── */}
         <div className={`w-64 md:w-80 space-y-4 transition-opacity duration-500 ${["bar","ready"].includes(phase) ? "opacity-100" : "opacity-0"}`}>
           <div className="flex justify-between items-end px-1">
-            <span className="text-[10px] font-semibold tracking-widest text-[#a1a1a6] uppercase w-48 truncate">
+            <span className="text-[10px] font-semibold tracking-widest text-[var(--text-muted)] uppercase w-48 truncate">
               {phase === "ready" ? "System ready. Engaging." : "Loading telemetry data..."}
             </span>
             <div className="text-right">
-              <span className="text-[10px] font-semibold text-[#f5f5f7] tabular-nums tracking-widest">
+              <span className="text-[10px] font-semibold text-[var(--text)] tabular-nums tracking-widest">
                 {pct}%
               </span>
             </div>
           </div>
           
           {/* Progress Bar Container: Monolithic Bar */}
-          <div className="h-1 w-full bg-white/5 overflow-hidden backdrop-blur-md border border-white/5">
-            <div 
-              className="h-full bg-white relative"
+          <div className="h-1 w-full bg-[var(--avatar-bg)] overflow-hidden backdrop-blur-md border border-[var(--border-dim)]">
+            <div
+              className="h-full bg-[var(--text-bright)] relative"
               style={{ width: `${pct}%`, transition: "width 0.2s linear" }}
             >
               <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-r from-transparent to-white opacity-40" />
@@ -180,7 +180,7 @@ export default function LoginClient() {
           </div>
           
           {/* Subdued metrics blending into background */}
-          <div className="flex justify-between pt-2 text-[9px] text-[#86868b] tracking-[0.2em] font-medium font-mono uppercase">
+          <div className="flex justify-between pt-2 text-[9px] text-[var(--text-muted)] tracking-[0.2em] font-medium font-mono uppercase">
             <span>SCRYPT-AES</span>
             <span>WEBSOCKET</span>
             <span>12MS LATENCY</span>
@@ -189,7 +189,7 @@ export default function LoginClient() {
       </div>
 
       {/* ── Subdued Minimalist Footer ── */}
-      <div className="absolute bottom-8 left-0 right-0 text-center text-[9px] text-[#86868b] tracking-[0.4em] uppercase font-medium opacity-0 animate-[fade-in_2s_ease-out_forwards_1.5s]">
+      <div className="absolute bottom-8 left-0 right-0 text-center text-[9px] text-[var(--text-muted)] tracking-[0.4em] uppercase font-medium opacity-0 animate-[fade-in_2s_ease-out_forwards_1.5s]">
         © 2026 PTTS SmartSensor
       </div>
 
@@ -209,7 +209,7 @@ export default function LoginClient() {
       </div>
 
       {/* Monolithic Console Pane */}
-      <div className="relative z-10 w-full max-w-[380px] mx-4 p-8 flex flex-col animate-fade-up border border-[var(--border)] bg-[#050505] shadow-elite"
+      <div className="relative z-10 w-full max-w-[380px] mx-4 p-8 flex flex-col animate-fade-up border border-[var(--border)] bg-[var(--surface-elevated)] shadow-elite"
            style={{ 
              background: 'var(--surface)', 
              backdropFilter: 'blur(32px)',
@@ -235,10 +235,10 @@ export default function LoginClient() {
             </button>
 
             {open && (
-              <div className="absolute right-0 top-full mt-2 w-36 z-50 overflow-hidden shadow-2xl bg-black border border-[var(--border)]">
+              <div className="absolute right-0 top-full mt-2 w-36 z-50 overflow-hidden shadow-2xl bg-[var(--surface-input)] border border-[var(--border)]">
                 {LANGS.map(l => (
                   <button key={l.code} onClick={() => { setLang(l.code); setOpen(false); }}
-                    className="flex items-center justify-between w-full px-5 py-4 text-[17px] font-bold transition-colors text-left border-b border-white/5 last:border-0"
+                    className="flex items-center justify-between w-full px-5 py-4 text-[17px] font-bold transition-colors text-left border-b border-[var(--border-dim)] last:border-0"
                     style={{
                       color:      lang === l.code ? C.gold  : C.muted,
                       background: lang === l.code ? "rgba(255,255,255,0.05)" : "transparent",
@@ -254,9 +254,9 @@ export default function LoginClient() {
 
         {/* Brand Identity Header */}
         <div className="flex flex-col items-center mb-8 mt-2">
-          <div className="w-14 h-14 overflow-hidden flex-shrink-0 mb-4 border border-[var(--border)] bg-[#0a0a0a] flex items-center justify-center shadow-lg"
+          <div className="w-14 h-14 overflow-hidden flex-shrink-0 mb-4 border border-[var(--border)] bg-[var(--surface-inset)] flex items-center justify-center shadow-lg"
                style={{ backdropFilter: 'blur(20px)' }}>
-            <img src={LOGO} alt="PTTS" className="w-8 h-8 object-contain brightness-0 invert opacity-90" />
+            <img src={LOGO} alt="PTTS" className="w-8 h-8 object-contain logo-adaptive opacity-90" />
           </div>
           <h1 className="text-[32px] font-extrabold tracking-tight text-center" style={{ color: C.cream, fontFamily: 'var(--font-inter)' }}>
             IOT DASHBOARD
@@ -332,7 +332,7 @@ export default function LoginClient() {
 
           <div className="flex items-center justify-between px-1">
             <label className="flex items-center gap-2.5 cursor-pointer group">
-              <div className="w-[18px] h-[18px] border flex items-center justify-center transition-all bg-black"
+              <div className="w-[18px] h-[18px] border flex items-center justify-center transition-all bg-[var(--surface-input)]"
                    style={{ borderColor: remember ? C.gold : 'var(--border-dim)' }}>
                 {remember && (
                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"

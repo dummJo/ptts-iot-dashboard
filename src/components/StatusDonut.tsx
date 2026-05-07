@@ -45,7 +45,7 @@ export default function StatusDonut({ linkSummary, healthSummary }: StatusDonutP
       <div className="scada-card flex flex-col">
         <div className="scada-card-header flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-0">
           <span className="scada-label">MACHINE HEALTH (CONDITION)</span>
-          <span className="text-[10px] md:text-xs font-bold tracking-widest text-[#00e676]">
+          <span className="text-[10px] md:text-xs font-bold tracking-widest" style={{ color: "var(--online)" }}>
             {healthSummary?.good || 0} HEALTHY
           </span>
         </div>

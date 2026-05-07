@@ -91,7 +91,7 @@ export default function ThresholdModal({
             <p className="text-xs font-bold tracking-[.25em]" style={{ color: "var(--ptts-teal)" }}>
               VIBRATION THRESHOLD CONFIGURATION
             </p>
-            <p className="text-[15px] font-black text-white mt-1">{asset.name}</p>
+            <p className="text-[15px] font-black mt-1" style={{ color: "var(--text-bright)" }}>{asset.name}</p>
             <p className="text-xs tracking-widest mt-0.5" style={{ color: "var(--text-muted)" }}>
               {asset.id}
             </p>
@@ -143,7 +143,7 @@ export default function ThresholdModal({
             </p>
             <div className="flex justify-between text-xs mb-1.5" style={{ color: "var(--text-faint)" }}>
               <span>0</span>
-              <span className="font-black" style={{ color: "#fff" }}>{formatLocalNumber(asset.vib, 2)} mm/s</span>
+              <span className="font-black" style={{ color: "var(--text-bright)" }}>{formatLocalNumber(asset.vib, 2)} mm/s</span>
               <span>{formatLocalNumber(sliderMax, 0)}</span>
             </div>
             <RangeBar value={asset.vib} warning={warning} fault={fault} max={sliderMax} />

@@ -94,12 +94,12 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="flex h-screen w-full bg-[#050505] overflow-hidden font-sans">
+    <div className="flex h-screen w-full bg-[var(--bg)] overflow-hidden font-sans">
       
       {/* Dynamic Shell Layer */}
       <Sidebar pollInterval={pollInterval} />
 
-      <main className="flex-1 flex flex-col min-w-0 h-screen relative bg-black">
+      <main className="flex-1 flex flex-col min-w-0 h-screen relative bg-[var(--bg)]">
         
         {/* Superior Top Interface */}
         <header className="flex-none z-30">
@@ -121,7 +121,7 @@ export default function DashboardPage() {
             {/* Primary Metrics Layer (Monolith Layout) */}
             <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-px bg-[var(--border-dim)] border border-[var(--border-dim)]">
               {dynamicKPIs.map((k: any) => (
-                <div key={k.label} className="bg-black p-6">
+                <div key={k.label} className="bg-[var(--bg)] p-6">
                   <KPICard {...k} />
                 </div>
               ))}
@@ -130,12 +130,12 @@ export default function DashboardPage() {
             {/* Deep Analytics Layer */}
             <section className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
               <div className="xl:col-span-8">
-                <div className="h-full border border-[var(--border-dim)] bg-[#0a0a0a] p-1">
+                <div className="h-full border border-[var(--border-dim)] bg-[var(--surface-inset)] p-1">
                   <TrendChart trendData={trendData} assets={topAssets} />
                 </div>
               </div>
               <div className="xl:col-span-4 h-full">
-                <div className="h-full border border-[var(--border-dim)] bg-[#0a0a0a] p-1">
+                <div className="h-full border border-[var(--border-dim)] bg-[var(--surface-inset)] p-1">
                   <StatusDonut linkSummary={linkSummary} healthSummary={dynamicHealthSummary} />
                 </div>
               </div>

@@ -124,7 +124,7 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
   if (!show || !mounted) return null;
 
   return createPortal(
-    <div className="fixed top-0 left-0 right-0 bottom-0 z-[99999] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md animate-fade-in" style={{ height: "100vh", width: "100vw" }}>
+    <div className="fixed top-0 left-0 right-0 bottom-0 z-[99999] flex items-center justify-center p-6 backdrop-blur-md animate-fade-in" style={{ height: "100vh", width: "100vw", background: "var(--overlay-bg)" }}>
       <div className="w-full max-w-4xl max-h-[90vh] flex flex-col scada-card overflow-hidden shadow-2xl border-2 border-ptts/40">
         
         {/* Header */}

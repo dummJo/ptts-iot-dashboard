@@ -58,7 +58,7 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
 
               return (
                 <tr key={a.id}
-                  className="transition-colors cursor-pointer hover:bg-white/5 active:scale-[0.99] transition-transform duration-200"
+                  className="transition-colors cursor-pointer hover:bg-[var(--avatar-bg)] active:scale-[0.99] transition-transform duration-200"
                   style={{
                     borderBottom: "1px solid var(--border-dim)",
                     background: idx % 2 === 0 ? "transparent" : "var(--surface-2)",

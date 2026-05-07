@@ -8,17 +8,16 @@ export default function LogoutButton() {
         aria-label="Logout"
         className="flex items-center gap-2 flex-1 px-3 py-2 rounded-none text-xs font-bold tracking-widest transition-all"
         style={{
-          color: "#fff",
-          background: "#7a0000",
-          border: "1px solid #CC000060",
+          color: "var(--text-inverse)",
+          background: "var(--fault)",
+          border: "1px solid var(--fault)",
+          opacity: 0.85,
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = "#9a0000";
-          e.currentTarget.style.borderColor = "#CC000090";
+          e.currentTarget.style.opacity = "1";
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.background = "#7a0000";
-          e.currentTarget.style.borderColor = "#CC000060";
+          e.currentTarget.style.opacity = "0.85";
         }}
       >
         <span>⏻</span>

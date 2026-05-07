@@ -131,8 +131,8 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
     <aside className="relative flex flex-col w-52 min-h-screen shrink-0 z-40 bg-[var(--sidebar-bg)] border-r border-[var(--border)] font-sans antialiased">
       <div className="px-6 py-8 border-b border-[var(--border-dim)]">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 rounded-none bg-white/5 border border-white/10 flex items-center justify-center">
-            <img src={LOGO} alt="P" className="w-5 h-5 object-contain brightness-0 invert opacity-80" />
+          <div className="w-8 h-8 rounded-none bg-[var(--avatar-bg)] border border-[var(--avatar-border)] flex items-center justify-center">
+            <img src={LOGO} alt="P" className="w-5 h-5 object-contain logo-adaptive opacity-80" />
           </div>
           <div className="leading-none">
             <p className="text-[14px] font-bold tracking-tight text-[var(--text-bright)]">PTTS</p>
@@ -163,7 +163,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
                   {item.label}
                 </span>
                 {badge && badge > 0 && (
-                  <span className="ml-auto text-[10px] px-1.5 py-0.5 font-bold bg-[var(--fault)] text-white flex items-center justify-center">
+                  <span className="ml-auto text-[10px] px-1.5 py-0.5 font-bold bg-[var(--fault)] text-[var(--text-inverse)] flex items-center justify-center">
                     {badge}
                   </span>
                 )}
@@ -172,7 +172,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
           })}
       </nav>
 
-      <div className="px-5 py-6 space-y-4 border-t border-[var(--border-dim)] bg-[#0a0a0a]">
+      <div className="px-5 py-6 space-y-4 border-t border-[var(--border-dim)] bg-[var(--surface-inset)]">
         <div className="space-y-1">
           <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Chronos Uptime</p>
           <p className="text-[12px] font-mono font-medium text-[var(--text-muted)]">{uptime}</p>
@@ -183,7 +183,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         </div>
       </div>
 
-      <div className="px-5 py-6 space-y-3 border-t border-[var(--border-dim)] bg-[#0a0a0a]">
+      <div className="px-5 py-6 space-y-3 border-t border-[var(--border-dim)] bg-[var(--surface-inset)]">
         <div className="flex items-center justify-between mb-2">
           <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Scope</p>
           {!ciamConnected && (
@@ -191,15 +191,15 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
               <div className="group relative">
                 <span className="text-[8px] font-bold text-[var(--fault)] animate-pulse cursor-help uppercase tracking-tighter">OFFLINE</span>
                 {ciamError && (
-                  <div className="absolute bottom-full right-0 mb-2 w-48 p-2 bg-slate-900 border border-red-500/30 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                    <p className="text-[9px] text-red-400 leading-tight">{ciamError}</p>
+                  <div className="absolute bottom-full right-0 mb-2 w-48 p-2 bg-[var(--surface-2)] border border-[var(--fault)]/30 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                    <p className="text-[9px] leading-tight" style={{ color: "var(--fault)" }}>{ciamError}</p>
                   </div>
                 )}
               </div>
               <button 
                 onClick={handleCiamSync}
                 disabled={ciamPending}
-                className="text-[8px] px-2 py-0.5 border border-[var(--fault)] text-[var(--fault)] hover:bg-[var(--fault)] hover:text-white transition-all font-bold uppercase disabled:opacity-50"
+                className="text-[8px] px-2 py-0.5 border border-[var(--fault)] text-[var(--fault)] hover:bg-[var(--fault)] hover:text-[var(--text-bright)] transition-all font-bold uppercase disabled:opacity-50"
               >
                 {ciamPending ? "..." : "SYNC"}
               </button>
@@ -214,17 +214,17 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
             localStorage.setItem("ptts-selected-org", val);
             router.refresh();
           }}
-          className={`w-full bg-black border ${!ciamConnected ? 'border-[var(--fault)]' : 'border-[var(--border-dim)]'} text-[11px] font-bold text-[var(--text-muted)] p-2 outline-none focus:border-[var(--ptts)] cursor-pointer transition-colors`}
+          className={`w-full bg-[var(--surface-input)] border ${!ciamConnected ? 'border-[var(--fault)]' : 'border-[var(--border-dim)]'} text-[11px] font-bold text-[var(--text-muted)] p-2 outline-none focus:border-[var(--ptts)] cursor-pointer transition-colors`}
         >
           {organizations.map(org => (
-            <option key={org.id} value={org.id} className="bg-black text-[var(--text-muted)]">{org.name}</option>
+            <option key={org.id} value={org.id} className="bg-[var(--surface-input)] text-[var(--text-muted)]">{org.name}</option>
           ))}
         </select>
       </div>
 
       <div className="p-4 bg-[var(--surface)] border-t border-[var(--border)]">
         <div className="flex items-center gap-3 mb-3 cursor-pointer group" onClick={() => setShowSwitch(true)}>
-          <div className="w-7 h-7 bg-white/5 border border-white/10 flex items-center justify-center text-[10px] font-bold text-[var(--online)]">
+          <div className="w-7 h-7 bg-[var(--avatar-bg)] border border-[var(--avatar-border)] flex items-center justify-center text-[10px] font-bold text-[var(--online)]">
             {currentUser?.username?.substring(0,2).toUpperCase() || "ID"}
           </div>
           <div className="overflow-hidden">
@@ -240,27 +240,27 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
       </div>
 
       {showSwitch && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[var(--surface-input)]/90 backdrop-blur-sm"
              onClick={(e) => { if (e.target === e.currentTarget) setShowSwitch(false); }}>
           <div className="w-80 p-6 bg-[var(--surface-2)] border border-[var(--border)] animate-fade-in shadow-elite">
             <div className="flex items-center justify-between mb-8">
               <p className="text-[10px] font-bold tracking-[0.3em] text-[var(--text-muted)] uppercase">Kernel Access Overlay</p>
-              <button onClick={() => setShowSwitch(false)} className="text-[var(--text-faint)] hover:text-white">✕</button>
+              <button onClick={() => setShowSwitch(false)} className="text-[var(--text-faint)] hover:text-[var(--text-bright)]">✕</button>
             </div>
             <form action={switchAction} className="space-y-6">
               <div className="space-y-2">
                 <label className="text-[9px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">Entity UID</label>
                 <input name="username" type="text" placeholder="Access Code"
-                  className="w-full bg-black border border-[var(--border)] px-3 py-2 text-[13px] outline-none focus:border-[var(--ptts)] transition-all" />
+                  className="w-full bg-[var(--surface-input)] border border-[var(--border)] px-3 py-2 text-[13px] outline-none focus:border-[var(--ptts)] transition-all" />
               </div>
               <div className="space-y-2">
                 <label className="text-[9px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">Encryption Key</label>
                 <input name="password" type="password" placeholder="Key Token"
-                  className="w-full bg-black border border-[var(--border)] px-3 py-2 text-[13px] outline-none focus:border-[var(--ptts)] transition-all" />
+                  className="w-full bg-[var(--surface-input)] border border-[var(--border)] px-3 py-2 text-[13px] outline-none focus:border-[var(--ptts)] transition-all" />
               </div>
               {switchState?.error && <p className="text-[10px] font-bold text-[var(--fault)] uppercase tracking-widest">{switchState.error}</p>}
               <button type="submit" disabled={switchPending}
-                className="w-full py-3 bg-[var(--text-muted)] text-black text-[10px] font-bold tracking-[0.4em] uppercase hover:bg-white transition-all disabled:opacity-50">
+                className="w-full py-3 bg-[var(--text-muted)] text-[var(--text-inverse)] text-[10px] font-bold tracking-[0.4em] uppercase hover:bg-[var(--text-bright)] transition-all disabled:opacity-50">
                 {switchPending ? "Authorizing..." : "Engage Protocol →"}
               </button>
             </form>
