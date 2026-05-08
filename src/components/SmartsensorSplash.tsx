@@ -71,12 +71,12 @@ export default function SmartsensorSplash() {
         </div>
 
         <h1 className="text-3xl md:text-5xl font-semibold tracking-[0.3em] uppercase text-center" style={{ color: "var(--text-bright)" }}>
-          SmartSensor<span className="font-light" style={{ color: "var(--text-faint)" }}>Console</span>
+          PTTS <span className="font-light" style={{ color: "var(--text-faint)" }}>All in One Hub</span>
         </h1>
         <div className="flex items-center justify-center gap-3 mt-3 mb-12">
           <span className="w-6 h-[1px]" style={{ background: "var(--ptts-teal)" }} />
           <p className="text-[10px] tracking-[0.6em] uppercase font-bold" style={{ color: "var(--ptts-teal)" }}>
-            Condition Monitoring
+            Unified Industrial Console
           </p>
           <span className="w-6 h-[1px]" style={{ background: "var(--ptts-teal)" }} />
         </div>
