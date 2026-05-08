@@ -7,8 +7,8 @@ const fontSerif = Instrument_Serif({ subsets: ["latin"], weight: "400", display:
 const fontMono = JetBrains_Mono({ subsets: ["latin"], display: 'swap', variable: '--font-mono' });
 
 export const metadata: Metadata = {
-  title: "PTTS SmartSensor Dashboard",
-  description: "Real-time IoT monitoring — Unified Operations Console",
+  title: "PTTS All in One Hub",
+  description: "Unified Industrial Console — Smartsensor & Monitoring System",
   icons: {
     icon: "/favicon.ico",
   },
