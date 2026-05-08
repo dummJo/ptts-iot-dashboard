@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { formatLocalNumber } from "@/lib/utils";
 
 const STATUS_LINES = [
-  { from: 0,  to: 30,  text: "INITIALIZING SENSOR MESH" },
-  { from: 30, to: 65,  text: "SYNCING TELEMETRY STREAM" },
-  { from: 65, to: 92,  text: "CALIBRATING THRESHOLDS" },
+  { from: 0,  to: 30,  text: "INITIALIZING RUNTIME" },
+  { from: 30, to: 65,  text: "ESTABLISHING SECURE CHANNEL" },
+  { from: 65, to: 92,  text: "LOADING WORKSPACE" },
   { from: 92, to: 101, text: "CONSOLE READY" },
 ];
 
@@ -100,9 +100,9 @@ export default function SmartsensorSplash() {
             />
           </div>
           <div className="flex justify-between pt-1 text-[8px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>
-            <span>SENSOR_MESH</span>
-            <span>TELEMETRY</span>
-            <span>THRESHOLDS</span>
+            <span>RUNTIME</span>
+            <span>SECURE_LINK</span>
+            <span>WORKSPACE</span>
           </div>
         </div>
       </div>
