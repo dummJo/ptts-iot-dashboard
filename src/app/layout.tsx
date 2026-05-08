@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import AppWrapper from "@/components/AppWrapper";
 
 const fontInter = Inter({ subsets: ["latin"], display: 'swap', variable: '--font-inter' });
 const fontSerif = Instrument_Serif({ subsets: ["latin"], weight: "400", display: 'swap', variable: '--font-serif' });
@@ -47,9 +46,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={`${fontInter.className} ${fontInter.variable} ${fontSerif.variable} ${fontMono.variable} antialiased`} suppressHydrationWarning>
-        <AppWrapper>
-          {children}
-        </AppWrapper>
+        {children}
       </body>
     </html>
   );

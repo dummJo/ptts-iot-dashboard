@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/ThemeToggle";
 import ChangelogModal from "@/components/ChangelogModal";
 
@@ -16,6 +17,8 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
   const [dateStr, setDateStr] = useState("");
   const [timeStr, setTimeStr] = useState("");
   const [showChangelog, setShowChangelog] = useState(false);
+  const pathname = usePathname() ?? "";
+  const modeCrumb = pathname.startsWith("/dashboard/monitoring") ? "MONITORING" : "SMARTSENSOR";
 
   useEffect(() => {
     const updateTime = () => {
@@ -36,7 +39,7 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
       <div className="flex items-center gap-2 text-[10px] md:text-xs tracking-widest font-bold">
         <span className="hidden md:inline" style={{ color:"var(--text-muted)" }}>PTTS</span>
         <span className="hidden md:inline" style={{ color:"var(--text-faint)" }}>›</span>
-        <span className="hidden md:inline" style={{ color:"var(--text-muted)" }}>SMARTSENSOR</span>
+        <span className="hidden md:inline" style={{ color:"var(--text-muted)" }}>{modeCrumb}</span>
         <span className="hidden md:inline" style={{ color:"var(--text-faint)" }}>›</span>
         <span className="text-[13px] md:text-xs" style={{ color:"var(--ptts-teal)" }}>{title.toUpperCase()}</span>
       </div>

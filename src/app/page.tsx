@@ -6,7 +6,7 @@ export default async function Home() {
   const session = jar.get("ptts-session")?.value;
 
   if (session) {
-    redirect("/dashboard");
+    redirect("/select-mode");
   } else {
     redirect("/login");
   }
