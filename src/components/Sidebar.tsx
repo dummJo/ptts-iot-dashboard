@@ -9,11 +9,12 @@ import { syncCiamAction } from "@/app/actions/ciam";
 const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png";
 
 const navItems = [
-  { href: "/dashboard",          label: "Dashboard",  icon: "〣" },
-  { href: "/dashboard/assets",   label: "Asset Map",   icon: "⊞" },
-  { href: "/dashboard/alerts",   label: "Alarms",     icon: "◬", isAlarm: true },
-  { href: "/dashboard/reports",  label: "Deep Trends", icon: "∿" },
-  { href: "/dashboard/settings", label: "Kernel Config", icon: "⚙" },
+  { href: "/select-mode",                 label: "Switch Mode",   icon: "⇆" },
+  { href: "/dashboard/smartsensor",       label: "Dashboard",     icon: "〣" },
+  { href: "/dashboard/assets",            label: "Asset Map",     icon: "⊞" },
+  { href: "/dashboard/alerts",            label: "Alarms",        icon: "◬", isAlarm: true },
+  { href: "/dashboard/reports",           label: "Deep Trends",   icon: "∿" },
+  { href: "/dashboard/settings",          label: "Kernel Config", icon: "⚙" },
 ];
 
 export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: number }) {
