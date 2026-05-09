@@ -29,8 +29,8 @@ const T: Record<Lang, {
   pwd: string; pwd_ph: string; remember: string;
   btn: string; pending: string; footer: string;
 }> = {
-  en: { sub:"Operator Sign In",    uid:"Operator ID",  uid_ph:"Enter your operator ID",   pwd:"Password",   pwd_ph:"Enter your password",    remember:"Stay signed in", btn:"Sign In",  pending:"Verifying...", footer:"PTTS All in One Hub" },
-  id: { sub:"Masuk Operator",      uid:"ID Operator",  uid_ph:"Masukkan ID operator Anda", pwd:"Kata Sandi", pwd_ph:"Masukkan kata sandi",     remember:"Ingat saya",     btn:"Masuk",    pending:"Memverifikasi...", footer:"PTTS All in One Hub" },
+  en: { sub:"Operator Sign In",    uid:"Operator ID",  uid_ph:"Enter your operator ID",   pwd:"Password",   pwd_ph:"Enter your password",    remember:"Stay signed in", btn:"Sign In",  pending:"Verifying...", footer:"PTTS EdgeCore" },
+  id: { sub:"Masuk Operator",      uid:"ID Operator",  uid_ph:"Masukkan ID operator Anda", pwd:"Kata Sandi", pwd_ph:"Masukkan kata sandi",     remember:"Ingat saya",     btn:"Masuk",    pending:"Memverifikasi...", footer:"PTTS EdgeCore" },
   ja: { sub:"オペレーターサインイン", uid:"オペレーター ID", uid_ph:"ID を入力してください",    pwd:"パスワード",  pwd_ph:"パスワードを入力してください", remember:"ログイン状態を保持", btn:"サインイン", pending:"確認中...", footer:"PT プリマ テキンド ティルタ セジャテラ" },
   ko: { sub:"운영자 로그인",          uid:"운영자 ID",     uid_ph:"운영자 ID를 입력하세요",   pwd:"비밀번호",   pwd_ph:"비밀번호를 입력하세요",    remember:"로그인 유지",     btn:"로그인",    pending:"확인 중...", footer:"PT 프리마 테킨도 티르타 세자테라" },
   zh: { sub:"操作员登录",             uid:"操作员 ID",     uid_ph:"请输入操作员 ID",          pwd:"密码",       pwd_ph:"请输入密码",               remember:"保持登录",        btn:"登录",      pending:"验证中...", footer:"PT 普里马 特金多 蒂尔塔 塞贾特拉" },
@@ -149,10 +149,10 @@ export default function LoginClient() {
         {/* ── Cinematic Typography ── */}
         <div className={`text-center space-y-3 mb-12 transition-all duration-700 delay-100 ${phase === "logo" ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}>
           <h1 className="text-4xl md:text-6xl font-semibold tracking-[0.2em] text-[var(--text)]">
-            PTTS<span className="text-[var(--text-muted)] font-light"> Hub</span>
+            PTTS<span className="text-[var(--text-muted)] font-light"> EdgeCore</span>
           </h1>
           <p className="text-sm md:text-base tracking-[0.4em] text-[var(--text-muted)] uppercase">
-            All in One Industrial Console <span className="opacity-40 font-mono italic">v2.0.0</span>
+            Unified Industrial Runtime <span className="opacity-40 font-mono italic">v2.0.0</span>
           </p>
         </div>
 
@@ -190,7 +190,7 @@ export default function LoginClient() {
 
       {/* ── Subdued Minimalist Footer ── */}
       <div className="absolute bottom-8 left-0 right-0 text-center text-[9px] text-[var(--text-muted)] tracking-[0.4em] uppercase font-medium opacity-0 animate-[fade-in_2s_ease-out_forwards_1.5s]">
-        © 2026 PTTS All in One Hub
+        © 2026 PTTS EdgeCore
       </div>
 
       <style dangerouslySetInnerHTML={{__html: `
@@ -367,7 +367,7 @@ export default function LoginClient() {
 
         <div className="mt-10 pt-6 flex flex-col items-center opacity-40" style={{ borderTop: `1px solid var(--border-dim)` }}>
           <p className="text-[10px] tracking-[0.2em] font-bold uppercase" style={{ color: C.muted }}>
-            PTTS Industrial OS · v2.0.0
+            PTTS EdgeCore · v2.0.0
           </p>
           <div className="flex items-center gap-1.5 mt-1.5">
             <div className="w-1 h-1 rounded-full bg-[var(--online)]" />
