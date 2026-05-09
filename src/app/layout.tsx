@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Instrument_Serif, JetBrains_Mono } from "next/font/google";
+import { Geist, Geist_Mono, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
 
-const fontInter = Inter({ subsets: ["latin"], display: 'swap', variable: '--font-inter' });
-const fontSerif = Instrument_Serif({ subsets: ["latin"], weight: "400", display: 'swap', variable: '--font-serif' });
-const fontMono = JetBrains_Mono({ subsets: ["latin"], display: 'swap', variable: '--font-mono' });
+const fontSans = Geist({ subsets: ["latin"], display: 'swap', variable: '--font-inter' });
+const fontSerif = DM_Serif_Display({ subsets: ["latin"], weight: "400", display: 'swap', variable: '--font-serif' });
+const fontMono = Geist_Mono({ subsets: ["latin"], display: 'swap', variable: '--font-mono' });
 
 export const metadata: Metadata = {
   title: "PTTS EdgeCore",
@@ -45,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className={`${fontInter.className} ${fontInter.variable} ${fontSerif.variable} ${fontMono.variable} antialiased`} suppressHydrationWarning>
+      <body className={`${fontSans.className} ${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased`} suppressHydrationWarning>
         {children}
       </body>
     </html>
