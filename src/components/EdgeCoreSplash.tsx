@@ -10,16 +10,16 @@ const STATUS_LINES = [
   { from: 92, to: 101, text: "CONSOLE READY" },
 ];
 
-export default function SmartsensorSplash() {
+export default function EdgeCoreSplash() {
   const [active, setActive] = useState(false);
   const [progress, setProgress] = useState(0);
   const [exiting, setExiting] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const pending = sessionStorage.getItem("ptts-smartsensor-splash-pending");
+    const pending = sessionStorage.getItem("ptts-edgecore-splash-pending");
     if (pending !== "1") return;
-    sessionStorage.removeItem("ptts-smartsensor-splash-pending");
+    sessionStorage.removeItem("ptts-edgecore-splash-pending");
     setActive(true);
   }, []);
 
@@ -71,12 +71,12 @@ export default function SmartsensorSplash() {
         </div>
 
         <h1 className="text-3xl md:text-5xl font-semibold tracking-[0.3em] uppercase text-center" style={{ color: "var(--text-bright)" }}>
-          PTTS <span className="font-light" style={{ color: "var(--text-faint)" }}>All in One Hub</span>
+          PTTS <span className="font-light" style={{ color: "var(--text-faint)" }}>EdgeCore</span>
         </h1>
         <div className="flex items-center justify-center gap-3 mt-3 mb-12">
           <span className="w-6 h-[1px]" style={{ background: "var(--ptts-teal)" }} />
           <p className="text-[10px] tracking-[0.6em] uppercase font-bold" style={{ color: "var(--ptts-teal)" }}>
-            Unified Industrial Console
+            Unified Industrial Runtime
           </p>
           <span className="w-6 h-[1px]" style={{ background: "var(--ptts-teal)" }} />
         </div>

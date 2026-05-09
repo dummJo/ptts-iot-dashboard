@@ -18,7 +18,22 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
   const [timeStr, setTimeStr] = useState("");
   const [showChangelog, setShowChangelog] = useState(false);
   const pathname = usePathname() ?? "";
-  const modeCrumb = pathname.startsWith("/dashboard/monitoring") ? "MONITORING" : "SMARTSENSOR";
+  const segMap: Record<string, string> = {
+    operations: "LIVE OPERATIONS",
+    condition:  "CONDITION INTEL",
+    devices:    "DEVICE FABRIC",
+    topology:   "TOPOLOGY",
+    automation: "AUTOMATION",
+    analytics:  "ANALYTICS",
+    historian:  "HISTORIAN",
+    plugins:    "PLUGINS",
+    ai:         "AI ENGINE",
+    events:     "EVENT CENTER",
+    system:     "SYSTEM",
+    settings:   "SETTINGS",
+  };
+  const seg = pathname.split("/")[2] ?? "";
+  const modeCrumb = segMap[seg] ?? "EDGECORE";
 
   useEffect(() => {
     const updateTime = () => {

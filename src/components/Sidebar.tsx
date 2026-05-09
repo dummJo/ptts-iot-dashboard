@@ -8,13 +8,32 @@ import { syncCiamAction } from "@/app/actions/ciam";
 
 const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png";
 
-const navItems = [
-  { href: "/select-mode",                 label: "Switch Mode",   icon: "⇆" },
-  { href: "/dashboard/smartsensor",       label: "Dashboard",     icon: "〣" },
-  { href: "/dashboard/assets",            label: "Asset Map",     icon: "⊞" },
-  { href: "/dashboard/alerts",            label: "Alarms",        icon: "◬", isAlarm: true },
-  { href: "/dashboard/reports",           label: "Deep Trends",   icon: "∿" },
-  { href: "/dashboard/settings",          label: "Kernel Config", icon: "⚙" },
+type NavEntry =
+  | { type: "link";    href: string; label: string; icon: string; isAlarm?: boolean; adminOnly?: boolean }
+  | { type: "section"; label: string };
+
+const navItems: NavEntry[] = [
+  { type: "link", href: "/select-mode", label: "Switch Domain", icon: "⇆" },
+
+  { type: "section", label: "Runtime" },
+  { type: "link", href: "/console/operations", label: "Live Operations",        icon: "⚡" },
+  { type: "link", href: "/console/condition",  label: "Condition Intelligence", icon: "◈" },
+
+  { type: "section", label: "Infrastructure" },
+  { type: "link", href: "/console/devices",   label: "Device Fabric", icon: "⊞" },
+  { type: "link", href: "/console/topology",  label: "Live Topology", icon: "⌘" },
+
+  { type: "section", label: "Intelligence" },
+  { type: "link", href: "/console/automation", label: "Automation Studio", icon: "⚙" },
+  { type: "link", href: "/console/analytics",  label: "Analytics",         icon: "∿" },
+  { type: "link", href: "/console/historian",  label: "Historian",         icon: "⏱" },
+  { type: "link", href: "/console/ai",         label: "AI Engine",         icon: "✦" },
+
+  { type: "section", label: "System" },
+  { type: "link", href: "/console/events",   label: "Event Center",   icon: "◬", isAlarm: true },
+  { type: "link", href: "/console/plugins",  label: "Plugins",        icon: "⊕" },
+  { type: "link", href: "/console/system",   label: "System Control", icon: "◯" },
+  { type: "link", href: "/console/settings", label: "Settings",       icon: "⚙", adminOnly: true },
 ];
 
 export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: number }) {
@@ -136,8 +155,8 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
             <img src={LOGO} alt="P" className="w-5 h-5 object-contain logo-adaptive opacity-80" />
           </div>
           <div className="leading-none">
-            <p className="text-[14px] font-bold tracking-tight text-[var(--text-bright)]">PTTS</p>
-            <p className="text-[10px] font-medium tracking-widest text-[var(--text-muted)] uppercase mt-0.5">Industrial OS</p>
+            <p className="text-[14px] font-bold tracking-tight text-[var(--text-bright)]">PTTS EDGECORE</p>
+            <p className="text-[10px] font-medium tracking-widest text-[var(--text-muted)] uppercase mt-0.5">Unified Runtime</p>
           </div>
         </div>
         
@@ -149,18 +168,27 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         </div>
       </div>
 
-      <nav className="flex-1 px-4 py-8 space-y-1">
+      <nav className="flex-1 px-4 py-6 space-y-0.5 overflow-y-auto">
         {navItems
-          .filter(item => !(item.href.includes("settings") && currentUser?.role !== "admin"))
-          .map((item) => {
+          .filter(item => !(item.type === "link" && item.adminOnly && currentUser?.role !== "admin"))
+          .map((item, i) => {
+            if (item.type === "section") {
+              return (
+                <div key={`s-${i}`} className="pt-4 pb-1.5 mt-2 px-3 border-t border-[var(--border-dim)]">
+                  <p className="text-[8px] font-bold tracking-[0.4em] uppercase" style={{ color: "var(--text-faint)" }}>
+                    {item.label}
+                  </p>
+                </div>
+              );
+            }
             const active = pathname === item.href;
             const badge = item.isAlarm ? alarmCount : null;
             return (
               <Link key={item.href} href={item.href}
-                className="flex items-center gap-3 px-3 py-2.5 transition-all group"
+                className="flex items-center gap-3 px-3 py-2 transition-all group"
                 style={active ? { color: "var(--text-bright)" } : { color: "var(--text-muted)" }}>
-                <span className={`text-[15px] ${active ? "opacity-100" : "opacity-40 group-hover:opacity-80 transition-opacity"}`}>{item.icon}</span>
-                <span className={`text-[13px] font-medium tracking-tight ${active ? "translate-x-0" : "-translate-x-1 group-hover:translate-x-0 transition-transform"}`}>
+                <span className={`text-[15px] w-4 text-center ${active ? "opacity-100" : "opacity-40 group-hover:opacity-80 transition-opacity"}`}>{item.icon}</span>
+                <span className={`text-[12px] font-medium tracking-tight ${active ? "translate-x-0" : "-translate-x-1 group-hover:translate-x-0 transition-transform"}`}>
                   {item.label}
                 </span>
                 {badge && badge > 0 && (
