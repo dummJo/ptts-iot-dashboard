@@ -16,74 +16,48 @@ function AmbientBackground() {
   );
 }
 
-function ConditionIcon() {
+function SmartSensorIcon() {
   return (
-    <svg viewBox="0 0 120 80" className="w-28 h-16 md:w-32 md:h-20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square">
+    <svg viewBox="0 0 120 80" className="w-32 h-20 md:w-40 md:h-24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square">
       <path d="M2 40 Q14 10 26 40 T50 40 T74 40 T98 40 T120 40" strokeOpacity="0.85" />
       <circle cx="60" cy="40" r="6" fill="currentColor" fillOpacity="0.15" />
       <circle cx="60" cy="40" r="11" strokeOpacity="0.35" />
       <circle cx="60" cy="40" r="17" strokeOpacity="0.18" />
-      <line x1="60" y1="22" x2="60" y2="14" />
-      <line x1="60" y1="58" x2="60" y2="66" />
+      <circle cx="60" cy="40" r="24" strokeOpacity="0.10" />
+      <line x1="60" y1="16" x2="60" y2="8" />
+      <line x1="60" y1="64" x2="60" y2="72" />
     </svg>
   );
 }
 
-function OperationsIcon() {
+function GatewayIcon() {
   return (
-    <svg viewBox="0 0 120 80" className="w-28 h-16 md:w-32 md:h-20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square">
-      <rect x="6" y="20" width="36" height="40" strokeOpacity="0.85" />
-      <circle cx="24" cy="40" r="11" strokeOpacity="0.7" />
-      <line x1="24" y1="29" x2="24" y2="51" strokeOpacity="0.6" />
-      <line x1="13" y1="40" x2="35" y2="40" strokeOpacity="0.6" />
-      <line x1="16.2" y1="32.2" x2="31.8" y2="47.8" strokeOpacity="0.6" />
-      <line x1="31.8" y1="32.2" x2="16.2" y2="47.8" strokeOpacity="0.6" />
-      <path d="M42 40 H58" strokeOpacity="0.5" strokeDasharray="3 3" />
-      <rect x="58" y="24" width="56" height="32" strokeOpacity="0.85" />
-      <text x="86" y="44" textAnchor="middle" fontSize="9" fontWeight="700" fill="currentColor" stroke="none" letterSpacing="2">VSD</text>
-      <line x1="64" y1="60" x2="64" y2="68" />
-      <line x1="86" y1="60" x2="86" y2="68" />
-      <line x1="108" y1="60" x2="108" y2="68" />
-      <line x1="60" y1="68" x2="112" y2="68" strokeOpacity="0.6" />
-    </svg>
-  );
-}
+    <svg viewBox="0 0 160 80" className="w-40 h-20 md:w-48 md:h-24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square">
+      {/* Central gateway box */}
+      <rect x="56" y="24" width="48" height="32" strokeOpacity="0.9" />
+      <line x1="62" y1="35" x2="98" y2="35" strokeOpacity="0.4" />
+      <circle cx="68" cy="30" r="2" fill="currentColor" fillOpacity="0.6" stroke="none" />
+      <circle cx="76" cy="30" r="2" fill="currentColor" fillOpacity="0.4" stroke="none" />
+      <circle cx="84" cy="30" r="2" fill="currentColor" fillOpacity="0.2" stroke="none" />
+      <text x="80" y="50" textAnchor="middle" fontSize="7" fontWeight="700" fill="currentColor" stroke="none" letterSpacing="1.5">GATEWAY</text>
 
-function AutomationIcon() {
-  return (
-    <svg viewBox="0 0 120 80" className="w-28 h-16 md:w-32 md:h-20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square">
-      <rect x="4" y="30" width="28" height="20" strokeOpacity="0.85" />
-      <rect x="46" y="14" width="28" height="20" strokeOpacity="0.85" />
-      <rect x="46" y="46" width="28" height="20" strokeOpacity="0.85" />
-      <rect x="88" y="30" width="28" height="20" strokeOpacity="0.85" />
-      <path d="M32 40 L46 24" strokeOpacity="0.55" />
-      <path d="M32 40 L46 56" strokeOpacity="0.55" />
-      <path d="M74 24 L88 40" strokeOpacity="0.55" />
-      <path d="M74 56 L88 40" strokeOpacity="0.55" />
-      <circle cx="18" cy="40" r="2" fill="currentColor" stroke="none" />
-      <circle cx="60" cy="24" r="2" fill="currentColor" stroke="none" />
-      <circle cx="60" cy="56" r="2" fill="currentColor" stroke="none" />
-      <circle cx="102" cy="40" r="2" fill="currentColor" stroke="none" />
-    </svg>
-  );
-}
+      {/* Left — pump/motor */}
+      <rect x="4" y="30" width="28" height="20" strokeOpacity="0.8" />
+      <circle cx="18" cy="40" r="7" strokeOpacity="0.6" />
+      <line x1="18" y1="33" x2="18" y2="47" strokeOpacity="0.4" />
+      <line x1="11" y1="40" x2="25" y2="40" strokeOpacity="0.4" />
+      <path d="M32 40 H56" strokeOpacity="0.45" strokeDasharray="3 3" />
 
-function FabricIcon() {
-  return (
-    <svg viewBox="0 0 120 80" className="w-28 h-16 md:w-32 md:h-20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square">
-      <circle cx="60" cy="40" r="6"  fill="currentColor" fillOpacity="0.2" strokeOpacity="0.9" />
-      <circle cx="20" cy="20" r="5"  strokeOpacity="0.85" />
-      <circle cx="100" cy="20" r="5" strokeOpacity="0.85" />
-      <circle cx="20" cy="60" r="5"  strokeOpacity="0.85" />
-      <circle cx="100" cy="60" r="5" strokeOpacity="0.85" />
-      <circle cx="60" cy="10" r="4"  strokeOpacity="0.7" />
-      <circle cx="60" cy="70" r="4"  strokeOpacity="0.7" />
-      <line x1="20" y1="20" x2="60" y2="40" strokeOpacity="0.5" />
-      <line x1="100" y1="20" x2="60" y2="40" strokeOpacity="0.5" />
-      <line x1="20" y1="60" x2="60" y2="40" strokeOpacity="0.5" />
-      <line x1="100" y1="60" x2="60" y2="40" strokeOpacity="0.5" />
-      <line x1="60" y1="14" x2="60" y2="34" strokeOpacity="0.5" />
-      <line x1="60" y1="46" x2="60" y2="66" strokeOpacity="0.5" />
+      {/* Right — VSD drive */}
+      <rect x="128" y="28" width="28" height="24" strokeOpacity="0.8" />
+      <text x="142" y="43" textAnchor="middle" fontSize="7" fontWeight="700" fill="currentColor" stroke="none" letterSpacing="1">VSD</text>
+      <path d="M104 40 H128" strokeOpacity="0.45" strokeDasharray="3 3" />
+
+      {/* Bottom — device nodes */}
+      <circle cx="72" cy="68" r="4" strokeOpacity="0.65" />
+      <circle cx="88" cy="68" r="4" strokeOpacity="0.65" />
+      <line x1="72" y1="56" x2="72" y2="64" strokeOpacity="0.4" />
+      <line x1="88" y1="56" x2="88" y2="64" strokeOpacity="0.4" />
     </svg>
   );
 }
@@ -97,9 +71,10 @@ interface ModeCardProps {
   accent: string;
   onSelect: () => void;
   delay: number;
+  features?: string[];
 }
 
-function ModeCard({ tag, title, subtitle, description, icon, accent, onSelect, delay }: ModeCardProps) {
+function ModeCard({ tag, title, subtitle, description, icon, accent, onSelect, delay, features }: ModeCardProps) {
   return (
     <motion.button
       type="button"
@@ -109,7 +84,7 @@ function ModeCard({ tag, title, subtitle, description, icon, accent, onSelect, d
       transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ y: -6, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } }}
       whileTap={{ scale: 0.98 }}
-      className="group relative flex flex-col items-stretch text-left w-full p-6 md:p-7 transition-colors duration-300 outline-none"
+      className="group relative flex flex-col items-stretch text-left w-full p-7 md:p-9 transition-colors duration-300 outline-none"
       style={{
         background: "var(--surface)",
         border: "1px solid var(--border)",
@@ -122,7 +97,7 @@ function ModeCard({ tag, title, subtitle, description, icon, accent, onSelect, d
       />
       <div className="absolute top-0 left-0 w-full h-[2px] opacity-70" style={{ background: accent }} />
 
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-5">
         <span className="text-[9px] tracking-[0.4em] font-bold" style={{ color: "var(--text-faint)" }}>
           {tag}
         </span>
@@ -131,22 +106,33 @@ function ModeCard({ tag, title, subtitle, description, icon, accent, onSelect, d
         </span>
       </div>
 
-      <div className="flex items-center justify-center h-24 md:h-28 mb-5" style={{ color: accent }}>
+      <div className="flex items-center justify-center h-28 md:h-32 mb-6" style={{ color: accent }}>
         {icon}
       </div>
 
-      <h2 className="text-xl md:text-2xl font-semibold tracking-[0.16em] uppercase" style={{ color: "var(--text-bright)" }}>
+      <h2 className="text-2xl md:text-3xl font-semibold tracking-[0.16em] uppercase" style={{ color: "var(--text-bright)" }}>
         {title}
       </h2>
       <p className="text-[10px] tracking-[0.4em] uppercase font-bold mt-2" style={{ color: accent }}>
         {subtitle}
       </p>
 
-      <div className="my-4 h-[1px] w-full" style={{ background: "var(--border-dim)" }} />
+      <div className="my-5 h-[1px] w-full" style={{ background: "var(--border-dim)" }} />
 
-      <p className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
+      <p className="text-sm leading-relaxed mb-5" style={{ color: "var(--text-muted)" }}>
         {description}
       </p>
+
+      {features && (
+        <div className="flex flex-wrap gap-2 mt-auto">
+          {features.map((f) => (
+            <span key={f} className="text-[9px] tracking-[0.3em] font-bold uppercase px-2 py-1"
+              style={{ background: `${accent}14`, border: `1px solid ${accent}33`, color: accent }}>
+              {f}
+            </span>
+          ))}
+        </div>
+      )}
     </motion.button>
   );
 }
@@ -154,16 +140,14 @@ function ModeCard({ tag, title, subtitle, description, icon, accent, onSelect, d
 export default function ModeSelector() {
   const router = useRouter();
 
-  const goCondition = () => {
+  const goSmartSensor = () => {
     if (typeof window !== "undefined") {
       sessionStorage.setItem("ptts-edgecore-splash-pending", "1");
     }
     router.push("/console/condition");
   };
 
-  const goOperations  = () => router.push("/console/operations");
-  const goAutomation  = () => router.push("/console/automation");
-  const goEdgeFabric  = () => router.push("/console/devices");
+  const goGateway = () => router.push("/console/operations");
 
   return (
     <div
@@ -182,7 +166,7 @@ export default function ModeSelector() {
               PTTS · EdgeCore Runtime
             </span>
             <span className="text-xs md:text-sm tracking-[0.3em] font-bold uppercase" style={{ color: "var(--text-bright)" }}>
-              Select EdgeCore Domain
+              Select Console
             </span>
           </div>
         </div>
@@ -197,60 +181,42 @@ export default function ModeSelector() {
           className="text-center mb-10 md:mb-14"
         >
           <p className="text-[10px] md:text-[11px] tracking-[0.6em] uppercase font-bold mb-3" style={{ color: "var(--ptts-teal)" }}>
-            Authenticated · Choose Domain
+            Authenticated · Choose Console
           </p>
           <h1 className="text-3xl md:text-5xl font-semibold tracking-[0.25em] uppercase" style={{ color: "var(--text-bright)" }}>
-            EdgeCore Domains
+            PTTS Consoles
           </h1>
           <div className="flex items-center justify-center gap-3 mt-4">
             <span className="w-8 h-[1px]" style={{ background: "var(--border-bright,var(--border))" }} />
             <span className="text-[9px] md:text-[10px] tracking-[0.5em] uppercase font-bold" style={{ color: "var(--text-muted)" }}>
-              Four Pillars · One Runtime
+              Two Consoles · One Platform
             </span>
             <span className="w-8 h-[1px]" style={{ background: "var(--border-bright,var(--border))" }} />
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 md:gap-6 w-full max-w-7xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-8 w-full max-w-4xl">
           <ModeCard
-            tag="DOMAIN 01 · CONDITION"
-            title="Condition Intelligence"
-            subtitle="Predictive Asset Health"
-            description="Vibration, temperature and RMS telemetry across the asset fleet. FFT analysis, anomaly detection and lifecycle insights."
-            icon={<ConditionIcon />}
+            tag="CONSOLE 01 · SMARTSENSOR"
+            title="SmartSensor"
+            subtitle="Condition Monitoring"
+            description="Vibration, temperature and RMS telemetry across the asset fleet. FFT spectrum analysis, anomaly detection and predictive lifecycle insights."
+            icon={<SmartSensorIcon />}
             accent="var(--ptts-teal)"
-            onSelect={goCondition}
+            onSelect={goSmartSensor}
             delay={0.10}
+            features={["VIBRATION", "TEMPERATURE", "FFT", "RMS", "ANOMALY"]}
           />
           <ModeCard
-            tag="DOMAIN 02 · RUNTIME"
-            title="Live Operations"
-            subtitle="Industrial Process Runtime"
-            description="Live multipump orchestration with ABB VSDs. Pressure, flow, energy and lead-lag sequencing in one console."
-            icon={<OperationsIcon />}
+            tag="CONSOLE 02 · IOT GATEWAY"
+            title="IoT Gateway"
+            subtitle="Drive Monitoring PTTS"
+            description="Multipump VSD orchestration, live operations, device fabric, automation workflows, analytics and edge intelligence — complete industrial runtime for ABB drives."
+            icon={<GatewayIcon />}
             accent="#007aff"
-            onSelect={goOperations}
+            onSelect={goGateway}
             delay={0.20}
-          />
-          <ModeCard
-            tag="DOMAIN 03 · LOGIC"
-            title="Automation Studio"
-            subtitle="Visual Workflow Engine"
-            description="Node-based automation. Inputs, logic, AI predict and outputs across protocols, drives and notifications."
-            icon={<AutomationIcon />}
-            accent="#9b88ff"
-            onSelect={goAutomation}
-            delay={0.30}
-          />
-          <ModeCard
-            tag="DOMAIN 04 · FABRIC"
-            title="Edge Fabric"
-            subtitle="Device & Protocol Layer"
-            description="Unified device registry and protocol abstraction. Modbus, BACnet, OPC-UA, MQTT — discovered, normalized and live."
-            icon={<FabricIcon />}
-            accent="#f5a623"
-            onSelect={goEdgeFabric}
-            delay={0.40}
+            features={["OPERATIONS", "DEVICES", "AUTOMATION", "ANALYTICS", "AI ENGINE"]}
           />
         </div>
       </main>
