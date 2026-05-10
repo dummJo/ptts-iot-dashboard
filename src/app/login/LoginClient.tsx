@@ -126,76 +126,60 @@ export default function LoginClient() {
 
   /* ── MONOLITHIC SPLASH SEQUENCE ────────────────────────────────────────── */
   if (phase !== "login") return (
-    <div className={`fixed inset-0 z-[9999] bg-[var(--bg)] overflow-hidden flex flex-col items-center justify-center select-none transition-opacity duration-700 ${isExiting ? "opacity-0" : "opacity-100"}`} style={{ fontFamily: "var(--font-inter), sans-serif" }}>
-      
-      {/* ── Apple Style Ambient Blur Gradients (Vibrant) ── */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="absolute top-0 -left-1/4 w-[800px] h-[800px] rounded-full blur-[140px] bg-[#007aff] opacity-30 animate-[pulse_10s_ease-in-out_infinite_alternate]" />
-        <div className="absolute bottom-0 -right-1/4 w-[800px] h-[800px] rounded-full blur-[140px] bg-[#32ade6] opacity-30 animate-[pulse_12s_ease-in-out_infinite_alternate]" />
-      </div>
-
-      <div className="relative z-10 flex flex-col items-center animate-[fade-in_1s_ease-out_forwards]">
-        
-        {/* ── Monolithic Precision Logo ── */}
-        <div className={`relative w-28 h-28 flex items-center justify-center mb-10 transition-all duration-1000 ${phase === "logo" ? "opacity-0 scale-90" : "opacity-100 scale-100"}`}>
-          <div className="absolute inset-0 bg-[var(--avatar-bg)] backdrop-blur-3xl shadow-[var(--shadow-elite)]" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none" />
-          
-          <div className="relative w-16 h-16 flex items-center justify-center">
-            <img src="https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png" alt="PTTS" className="w-full h-full object-contain logo-adaptive opacity-90" />
-          </div>
+    <div
+      className={`fixed inset-0 z-[9999] bg-[var(--bg)] overflow-hidden flex flex-col items-center justify-center select-none transition-opacity duration-700 ${isExiting ? "opacity-0" : "opacity-100"}`}
+    >
+      <div className="flex flex-col items-center gap-10">
+        {/* Logo */}
+        <div
+          className="transition-all duration-[800ms]"
+          style={{ opacity: phase === "logo" ? 0 : 0.72, transform: phase === "logo" ? "scale(0.94)" : "scale(1)" }}
+        >
+          <img src={LOGO} alt="PTTS" className="w-12 h-12 object-contain logo-adaptive" />
         </div>
 
-        {/* ── Cinematic Typography ── */}
-        <div className={`text-center space-y-3 mb-12 transition-all duration-700 delay-100 ${phase === "logo" ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}>
-          <h1 className="text-4xl md:text-6xl font-semibold tracking-[0.2em] text-[var(--text)]">
-            PTTS<span className="text-[var(--text-muted)] font-light"> EdgeCore</span>
+        {/* Wordmark */}
+        <div
+          className="text-center space-y-2 transition-all duration-700"
+          style={{
+            opacity: phase === "logo" ? 0 : 1,
+            transform: phase === "logo" ? "translateY(12px)" : "translateY(0)",
+          }}
+        >
+          <h1
+            className="text-4xl md:text-6xl"
+            style={{ fontFamily: "var(--font-serif)", color: "var(--text-bright)", fontWeight: 400 }}
+          >
+            PTTS EdgeCore
           </h1>
-          <p className="text-sm md:text-base tracking-[0.4em] text-[var(--text-muted)] uppercase">
-            Unified Industrial Runtime <span className="opacity-40 font-mono italic">v2.0.0</span>
+          <p className="text-sm" style={{ color: "var(--text-faint)", letterSpacing: "0.18em" }}>
+            Unified Industrial Runtime
           </p>
         </div>
 
-        {/* ── Apple-Style Loading Indicator ── */}
-        <div className={`w-64 md:w-80 space-y-4 transition-opacity duration-500 ${["bar","ready"].includes(phase) ? "opacity-100" : "opacity-0"}`}>
-          <div className="flex justify-between items-end px-1">
-            <span className="text-[10px] font-semibold tracking-widest text-[var(--text-muted)] uppercase w-48 truncate">
-              {phase === "ready" ? "System ready. Engaging." : "Loading telemetry data..."}
-            </span>
-            <div className="text-right">
-              <span className="text-[10px] font-semibold text-[var(--text)] tabular-nums tracking-widest">
-                {pct}%
-              </span>
-            </div>
-          </div>
-          
-          {/* Progress Bar Container: Monolithic Bar */}
-          <div className="h-1 w-full bg-[var(--avatar-bg)] overflow-hidden backdrop-blur-md border border-[var(--border-dim)]">
+        {/* Progress */}
+        <div
+          className="w-52 md:w-64 flex flex-col gap-3 transition-opacity duration-500"
+          style={{ opacity: (["bar", "ready"] as typeof phase[]).includes(phase) ? 1 : 0 }}
+        >
+          <div className="h-px w-full overflow-hidden" style={{ background: "var(--border-dim)" }}>
             <div
-              className="h-full bg-[var(--text-bright)] relative"
-              style={{ width: `${pct}%`, transition: "width 0.2s linear" }}
-            >
-              <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-r from-transparent to-white opacity-40" />
-            </div>
+              className="h-full"
+              style={{ width: `${pct}%`, background: "var(--ptts-teal)", transition: "width 0.2s linear" }}
+            />
           </div>
-          
-          {/* Subdued metrics blending into background */}
-          <div className="flex justify-between pt-2 text-[9px] text-[var(--text-muted)] tracking-[0.2em] font-medium font-mono uppercase">
-            <span>SCRYPT-AES</span>
-            <span>WEBSOCKET</span>
-            <span>12MS LATENCY</span>
-          </div>
+          <p className="text-[11px] text-center" style={{ color: "var(--text-faint)", letterSpacing: "0.06em" }}>
+            {phase === "ready" ? "System ready" : "Loading workspace…"}
+          </p>
         </div>
       </div>
 
-      {/* ── Subdued Minimalist Footer ── */}
-      <div className="absolute bottom-8 left-0 right-0 text-center text-[9px] text-[var(--text-muted)] tracking-[0.4em] uppercase font-medium opacity-0 animate-[fade-in_2s_ease-out_forwards_1.5s]">
+      <div
+        className="absolute bottom-8 left-0 right-0 text-center text-[11px] transition-opacity duration-[1000ms] delay-500"
+        style={{ color: "var(--text-faint)", opacity: phase === "logo" ? 0 : 0.5 }}
+      >
         © 2026 PTTS EdgeCore
       </div>
-
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-      `}} />
     </div>
   );
 
