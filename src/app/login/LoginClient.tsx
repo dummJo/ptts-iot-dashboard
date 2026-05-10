@@ -53,13 +53,7 @@ const C = {
 
 /* ── Digitalization Background Animation ────────────────────── */
 function DigitalBackground() {
-  return (
-    <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none transition-opacity duration-1000">
-      <div className="absolute top-0 -left-1/4 w-[800px] h-[800px] rounded-full blur-[140px] opacity-20 bg-[var(--online)] animate-[pulse_10s_ease-in-out_infinite_alternate]" />
-      <div className="absolute bottom-0 -right-1/4 w-[800px] h-[800px] rounded-full blur-[140px] opacity-30 bg-[#007aff] animate-[pulse_12s_ease-in-out_infinite_alternate]" />
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full blur-[150px] opacity-10 bg-[var(--ptts-teal)] animate-[pulse_14s_ease-in-out_infinite_alternate]" />
-    </div>
-  );
+  return null;
 }
 
 export default function LoginClient() {
@@ -183,52 +177,33 @@ export default function LoginClient() {
     </div>
   );
 
-  /* ── APPLE CONCEPT LIQUID GLASS LOGIN FORM ──────────────────────────────────────────── */
   return (
-    <div className="fixed inset-0 flex items-center justify-center overflow-hidden animate-slide-in" style={{ background: C.bg }}>
+    <div className="fixed inset-0 flex items-center justify-center" style={{ background: "var(--bg)" }}>
 
-      {/* Full-width Immersive Ambient Background Layer */}
-      <div className="absolute inset-0 z-0">
-        <DigitalBackground />
-      </div>
+      {/* Login card */}
+      <div className="w-full max-w-sm mx-5 p-8 flex flex-col" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
 
-      {/* Monolithic Console Pane */}
-      <div className="relative z-10 w-full max-w-[380px] mx-4 p-8 flex flex-col animate-fade-up border border-[var(--border)] bg-[var(--surface-elevated)] shadow-elite"
-           style={{ 
-             background: 'var(--surface)', 
-             backdropFilter: 'blur(32px)',
-             WebkitBackdropFilter: 'blur(32px)',
-           }}>
-           
-        {/* Language & Theme Toggle (Top Right) */}
-        <div className="absolute top-5 right-6 flex items-center gap-2">
+        {/* Controls */}
+        <div className="flex justify-end gap-2 mb-7">
           <ThemeToggle />
-          
           <div className="relative" ref={dropRef}>
             <button onClick={() => setOpen(!open)}
-              className="flex items-center justify-center w-8 h-8 rounded-none transition-colors"
-              style={{
-                color: open ? C.gold : C.muted,
-                background: open ? C.bgInput : "transparent",
-              }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+              className="w-8 h-8 flex items-center justify-center transition-colors"
+              style={{ color: open ? "var(--ptts-teal)" : "var(--text-faint)", background: open ? "var(--surface-2)" : "transparent" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
                 fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
                 <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
               </svg>
             </button>
-
             {open && (
-              <div className="absolute right-0 top-full mt-2 w-36 z-50 overflow-hidden shadow-2xl bg-[var(--surface-input)] border border-[var(--border)]">
+              <div className="absolute right-0 top-full mt-1 w-36 z-50 overflow-hidden" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
                 {LANGS.map(l => (
                   <button key={l.code} onClick={() => { setLang(l.code); setOpen(false); }}
-                    className="flex items-center justify-between w-full px-5 py-4 text-[17px] font-bold transition-colors text-left border-b border-[var(--border-dim)] last:border-0"
-                    style={{
-                      color:      lang === l.code ? C.gold  : C.muted,
-                      background: lang === l.code ? "rgba(255,255,255,0.05)" : "transparent",
-                    }}>
-                    <span>{l.label}</span>
-                    <span className="font-normal text-sm opacity-60">{l.native}</span>
+                    className="flex items-center justify-between w-full px-4 py-3 text-sm transition-colors text-left"
+                    style={{ color: lang === l.code ? "var(--ptts-teal)" : "var(--text-muted)", background: lang === l.code ? "var(--surface-2)" : "transparent", borderBottom: "1px solid var(--border-dim)" }}>
+                    <span className="font-semibold">{l.label}</span>
+                    <span className="text-xs opacity-60">{l.native}</span>
                   </button>
                 ))}
               </div>
@@ -236,140 +211,107 @@ export default function LoginClient() {
           </div>
         </div>
 
-        {/* Brand Identity Header */}
-        <div className="flex flex-col items-center mb-8 mt-2">
-          <div className="w-14 h-14 overflow-hidden flex-shrink-0 mb-4 border border-[var(--border)] bg-[var(--surface-inset)] flex items-center justify-center shadow-lg"
-               style={{ backdropFilter: 'blur(20px)' }}>
-            <img src={LOGO} alt="PTTS" className="w-8 h-8 object-contain logo-adaptive opacity-90" />
-          </div>
-          <h1 className="text-[32px] font-extrabold tracking-tight text-center" style={{ color: C.cream, fontFamily: 'var(--font-inter)' }}>
-            IOT DASHBOARD
+        {/* Brand */}
+        <div className="flex flex-col items-center mb-8">
+          <img src={LOGO} alt="PTTS" className="w-10 h-10 object-contain logo-adaptive mb-5" style={{ opacity: 0.75 }} />
+          <h1 className="text-3xl md:text-4xl text-center" style={{ fontFamily: "var(--font-serif)", color: "var(--text-bright)", fontWeight: 400 }}>
+            PTTS EdgeCore
           </h1>
-          <p className="text-[15px] mt-2 font-medium text-center opacity-80" style={{ color: C.muted }}>
+          <p className="text-sm mt-2 text-center" style={{ color: "var(--text-faint)", letterSpacing: "0.06em" }}>
             {t.sub}
           </p>
         </div>
 
-        {/* Error Notification */}
+        {/* Error */}
         {state?.error && (
-          <div className="flex items-center gap-3 px-4 py-3 mb-6 animate-fade-up shadow-sm"
-            style={{ 
-              background: "rgba(220, 38, 38, 0.05)", 
-              border: `1px solid rgba(220, 38, 38, 0.2)`, 
-              color: "var(--fault)", 
-            }}>
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <div className="flex items-center gap-3 px-4 py-3 mb-5" style={{ background: "rgba(220,38,38,0.06)", border: "1px solid rgba(220,38,38,0.2)", color: "var(--fault)" }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
             </svg>
-            <span className="text-[14px] font-semibold">{state.error}</span>
+            <span className="text-sm font-medium">{state.error}</span>
           </div>
         )}
 
-        <form action={action} className="space-y-6">
-          
-          {/* Apple-style Soft Inputs Container */}
-          <div className="space-y-4">
-            
-            {/* Username */}
-            <div className="relative group">
-              <input type="text" name="username" autoComplete="username"
-                required maxLength={64} placeholder={t.uid_ph}
-                className="w-full px-5 py-4 text-[16px] font-semibold outline-none transition-all placeholder-opacity-50"
-                style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  border: `1px solid var(--border)`,
-                  color: C.cream,
-                  boxShadow: 'inset 0 0 15px rgba(0,0,0,0.3)',
-                }}
-                onFocus={e => { e.target.style.borderColor = C.gold; e.target.style.boxShadow = `0 0 0 3px ${C.gold}20, inset 0 2px 4px rgba(0,0,0,0.02)`; }}
-                onBlur={e  => { e.target.style.borderColor = 'var(--border)';       e.target.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.02)"; }}
-              />
-            </div>
+        <form action={action} className="space-y-3">
+          {/* Username */}
+          <input type="text" name="username" autoComplete="username"
+            required maxLength={64} placeholder={t.uid_ph}
+            className="w-full px-4 py-3 text-sm outline-none transition-colors"
+            style={{ background: "var(--bg)", border: "1px solid var(--border)", color: "var(--text-bright)" }}
+            onFocus={e => e.currentTarget.style.borderColor = "var(--ptts-teal)"}
+            onBlur={e  => e.currentTarget.style.borderColor = "var(--border)"}
+          />
 
-            {/* Password */}
-            <div className="relative group">
-              <input type={showPw ? "text" : "password"} name="password"
-                autoComplete="current-password" required maxLength={64}
-                placeholder={t.pwd_ph}
-                className="w-full px-5 py-4 pr-12 text-[16px] font-semibold outline-none transition-all placeholder-opacity-50"
-                style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  border: `1px solid var(--border)`,
-                  color: C.cream,
-                  boxShadow: 'inset 0 0 15px rgba(0,0,0,0.3)',
-                }}
-                onFocus={e => { e.target.style.borderColor = C.gold; e.target.style.boxShadow = `0 0 0 3px ${C.gold}20, inset 0 2px 4px rgba(0,0,0,0.02)`; }}
-                onBlur={e  => { e.target.style.borderColor = 'var(--border)';       e.target.style.boxShadow = "inset 0 2px 4px rgba(0,0,0,0.02)"; }}
-              />
-              <button type="button" onClick={() => setShowPw(!showPw)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-none p-2 hover:bg-[rgba(150,150,150,0.1)] transition-colors"
-                style={{ color: C.muted }}>
-                {showPw ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                )}
-              </button>
-            </div>
+          {/* Password */}
+          <div className="relative">
+            <input type={showPw ? "text" : "password"} name="password"
+              autoComplete="current-password" required maxLength={64} placeholder={t.pwd_ph}
+              className="w-full px-4 py-3 pr-11 text-sm outline-none transition-colors"
+              style={{ background: "var(--bg)", border: "1px solid var(--border)", color: "var(--text-bright)" }}
+              onFocus={e => e.currentTarget.style.borderColor = "var(--ptts-teal)"}
+              onBlur={e  => e.currentTarget.style.borderColor = "var(--border)"}
+            />
+            <button type="button" onClick={() => setShowPw(!showPw)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 transition-opacity hover:opacity-100 opacity-50"
+              style={{ color: "var(--text-muted)" }}>
+              {showPw ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              )}
+            </button>
           </div>
 
-          <div className="flex items-center justify-between px-1">
-            <label className="flex items-center gap-2.5 cursor-pointer group">
-              <div className="w-[18px] h-[18px] border flex items-center justify-center transition-all bg-[var(--surface-input)]"
-                   style={{ borderColor: remember ? C.gold : 'var(--border-dim)' }}>
+          <div className="flex items-center justify-between pt-1">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <div className="w-4 h-4 border flex items-center justify-center transition-colors"
+                style={{ borderColor: remember ? "var(--ptts-teal)" : "var(--border)", background: remember ? "var(--ptts-teal)" : "transparent" }}>
                 {remember && (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                    fill="none" stroke={C.gold} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--bg)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="20 6 9 17 4 12"/>
                   </svg>
                 )}
                 <input type="checkbox" className="hidden" checked={remember} onChange={() => setRem(!remember)} />
               </div>
-              <span className="text-[14px] font-medium" style={{ color: C.muted }}>{t.remember}</span>
+              <span className="text-xs" style={{ color: "var(--text-muted)" }}>{t.remember}</span>
             </label>
-            <a href="mailto:adam@ptts.co.id" className="text-[14px] font-semibold hover:opacity-80 transition-opacity" style={{ color: C.gold }}>
-              Forgot Password?
+            <a href="mailto:adam@ptts.co.id" className="text-xs transition-opacity hover:opacity-80" style={{ color: "var(--ptts-teal)" }}>
+              Forgot password?
             </a>
           </div>
 
           <button type="submit" disabled={pending}
-            className="w-full py-4 text-[15px] tracking-[0.4em] font-bold uppercase transition-all disabled:opacity-30 mt-6 shadow-2xl active:scale-[0.99]"
-            style={{
-              background: pending ? 'rgba(255,255,255,0.1)' : 'white',
-              color: pending ? C.muted : 'black',
-              border: "none",
-            }}>
+            className="w-full py-3 text-sm font-semibold transition-opacity disabled:opacity-40 mt-1"
+            style={{ background: "var(--text-bright)", color: "var(--bg)", border: "none" }}>
             {pending ? (
               <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
                 {t.pending}
               </span>
             ) : t.btn}
           </button>
         </form>
 
-        <div className="mt-10 pt-6 flex flex-col items-center opacity-40" style={{ borderTop: `1px solid var(--border-dim)` }}>
-          <p className="text-[10px] tracking-[0.2em] font-bold uppercase" style={{ color: C.muted }}>
-            PTTS EdgeCore · v2.0.0
-          </p>
-          <div className="flex items-center gap-1.5 mt-1.5">
-            <div className="w-1 h-1 rounded-full bg-[var(--online)]" />
-            <span className="text-[9px] font-bold tracking-widest uppercase opacity-60" style={{ color: C.muted }}>Secure Encryption Active</span>
-          </div>
+        <div className="mt-8 pt-5 text-center" style={{ borderTop: "1px solid var(--border-dim)" }}>
+          <p className="text-[11px]" style={{ color: "var(--text-faint)" }}>PTTS EdgeCore · v2.0.0</p>
         </div>
       </div>
 
-      {/* Auto Logout Toast */}
+      {/* Inactivity toast */}
       {showInactivityToast && (
-        <div className="fixed top-8 right-8 z-50 animate-slide-in flex shadow-2xl" 
-          style={{ background: 'var(--surface)', backdropFilter: 'blur(20px)', border: '1px solid var(--border)', color: "var(--text)", padding: "16px 20px", borderRadius: "16px" }}>
+        <div className="fixed top-6 right-6 z-50 flex shadow-lg"
+          style={{ background: "var(--surface)", border: "1px solid var(--border)", color: "var(--text)", padding: "14px 18px" }}>
           <div className="flex-1 mr-4">
-            <p className="text-[15px] font-semibold">Session Expired</p>
-            <p className="text-[13px] mt-1 opacity-70">For your security, please log in again.</p>
+            <p className="text-sm font-semibold">Session Expired</p>
+            <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>For your security, please log in again.</p>
           </div>
-          <button onClick={() => setShowInactivityToast(false)} className="self-start opacity-50 hover:opacity-100 transition-opacity">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          <button onClick={() => setShowInactivityToast(false)} className="self-start opacity-40 hover:opacity-100 transition-opacity">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
           </button>
         </div>
       )}
