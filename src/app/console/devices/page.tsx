@@ -75,7 +75,7 @@ export default function AssetsPage() {
         </header>
 
         <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
-          <div className="max-w-[1700px] mx-auto p-6 lg:p-12 space-y-12 animate-fade-in">
+          <div className="console-canvas animate-fade-in">
             
             {/* Primary Analysis Layer */}
             <section className="grid grid-cols-1 xl:grid-cols-12 gap-12 items-stretch">

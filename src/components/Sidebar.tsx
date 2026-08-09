@@ -24,6 +24,7 @@ const navItems: NavEntry[] = [
   { type: "link", href: "/console/topology",  label: "Live Topology", icon: "⌘" },
 
   { type: "section", label: "Intelligence" },
+  { type: "link", href: "/console/energy",     label: "Energy Management", icon: "⌁" },
   { type: "link", href: "/console/automation", label: "Automation Studio", icon: "⚙" },
   { type: "link", href: "/console/analytics",  label: "Analytics",         icon: "∿" },
   { type: "link", href: "/console/historian",  label: "Historian",         icon: "⏱" },
@@ -44,6 +45,26 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
   const [switchState, switchAction, switchPending] = useActionState(loginAction, null);
   const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null);
   const [alarmCount, setAlarmCount] = useState(0);
+
+  // Collapsed rail. Persisted so the choice survives navigation between the
+  // console pages, each of which mounts its own Sidebar instance.
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    try {
+      setCollapsed(localStorage.getItem("ptts-sidebar-collapsed") === "1");
+    } catch {}
+  }, []);
+
+  const toggleCollapsed = () => {
+    setCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("ptts-sidebar-collapsed", next ? "1" : "0");
+      } catch {}
+      return next;
+    });
+  };
 
   const [selectedOrg, setSelectedOrg] = useState("demo-mode");
   const [ciamConnected, setCiamConnected] = useState(true);
@@ -148,34 +169,55 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
   }, [pollInterval]);
 
   return (
-    <aside className="relative flex flex-col w-52 min-h-screen shrink-0 z-40 bg-[var(--sidebar-bg)] border-r border-[var(--border)] font-sans antialiased">
-      <div className="px-6 py-8 border-b border-[var(--border-dim)]">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-8 rounded-none bg-[var(--avatar-bg)] border border-[var(--avatar-border)] flex items-center justify-center">
+    <aside
+      className={`relative flex flex-col min-h-screen shrink-0 z-40 bg-[var(--sidebar-bg)] border-r border-[var(--border)] font-sans antialiased transition-[width] duration-200 ${
+        collapsed ? "w-16" : "w-56"
+      }`}
+    >
+      <div className={`border-b border-[var(--border-dim)] ${collapsed ? "px-3 py-5" : "px-5 py-6"}`}>
+        <div className={`flex items-center gap-3 ${collapsed ? "justify-center" : "mb-5"}`}>
+          <div className="w-9 h-9 rounded-[var(--r-sm)] bg-[var(--avatar-bg)] border border-[var(--avatar-border)] flex items-center justify-center shrink-0">
             <img src={LOGO} alt="P" className="w-5 h-5 object-contain logo-adaptive opacity-80" />
           </div>
-          <div className="leading-none">
-            <p className="text-[14px] font-bold tracking-tight text-[var(--text-bright)]">PTTS EDGECORE</p>
-            <p className="text-[10px] font-medium tracking-widest text-[var(--text-muted)] uppercase mt-0.5">Unified Runtime</p>
+          {!collapsed && (
+            <div className="leading-none min-w-0">
+              <p className="text-[14px] font-semibold tracking-tight text-[var(--text-bright)] truncate">PTTS EdgeCore</p>
+              <p className="text-[11px] font-medium text-[var(--text-muted)] mt-1 truncate">Unified Runtime</p>
+            </div>
+          )}
+        </div>
+
+        {!collapsed && (
+          <div className="inline-flex items-center gap-2">
+            <span className={`led ${pollInterval === 0 ? "led-offline" : "led-online"}`} />
+            <span className="text-[11px] font-semibold text-[var(--text-muted)]">
+              {pollInterval === 0 ? "Kernel standby" : "Kernel operational"}
+            </span>
           </div>
-        </div>
-        
-        <div className="inline-flex items-center gap-2 group cursor-help">
-          <span className={`w-1.5 h-1.5 rounded-full ${pollInterval === 0 ? "bg-[var(--offline)]" : "bg-[var(--online)]"}`} />
-          <span className="text-[9px] font-bold tracking-[0.2em] text-[var(--text-muted)] uppercase">
-            {pollInterval === 0 ? "KERNEL: STANDBY" : "KERNEL: OPERATIONAL"}
-          </span>
-        </div>
+        )}
       </div>
 
-      <nav className="flex-1 px-4 py-6 space-y-0.5 overflow-y-auto">
+      <button
+        type="button"
+        onClick={toggleCollapsed}
+        aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        aria-expanded={!collapsed}
+        title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        className="mx-3 mt-3 h-8 flex items-center justify-center rounded-[var(--r-sm)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-bright)] hover:bg-[var(--surface-2)] transition-colors"
+      >
+        <span aria-hidden="true">{collapsed ? "»" : "«"}</span>
+      </button>
+
+      <nav className={`flex-1 py-4 space-y-0.5 overflow-y-auto custom-scrollbar ${collapsed ? "px-2" : "px-3"}`}>
         {navItems
           .filter(item => !(item.type === "link" && item.adminOnly && currentUser?.role !== "admin"))
           .map((item, i) => {
             if (item.type === "section") {
-              return (
+              return collapsed ? (
+                <div key={`s-${i}`} className="my-2 mx-2 h-px" style={{ background: "var(--border-dim)" }} />
+              ) : (
                 <div key={`s-${i}`} className="pt-4 pb-1.5 mt-2 px-3 border-t border-[var(--border-dim)]">
-                  <p className="text-[8px] font-bold tracking-[0.4em] uppercase" style={{ color: "var(--text-faint)" }}>
+                  <p className="text-[11px] font-semibold uppercase" style={{ color: "var(--text-faint)", letterSpacing: "var(--tracking-label)" }}>
                     {item.label}
                   </p>
                 </div>
@@ -185,14 +227,29 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
             const badge = item.isAlarm ? alarmCount : null;
             return (
               <Link key={item.href} href={item.href}
-                className="flex items-center gap-3 px-3 py-2 transition-all group"
+                title={collapsed ? item.label : undefined}
+                aria-current={active ? "page" : undefined}
+                className={`relative flex items-center gap-3 py-2 rounded-[var(--r-sm)] transition-colors ${
+                  collapsed ? "px-0 justify-center" : "px-3"
+                } ${active ? "bg-[var(--surface-2)]" : "hover:bg-[var(--surface-2)]"}`}
                 style={active ? { color: "var(--text-bright)" } : { color: "var(--text-muted)" }}>
-                <span className={`text-[15px] w-4 text-center ${active ? "opacity-100" : "opacity-40 group-hover:opacity-80 transition-opacity"}`}>{item.icon}</span>
-                <span className={`text-[12px] font-medium tracking-tight ${active ? "translate-x-0" : "-translate-x-1 group-hover:translate-x-0 transition-transform"}`}>
-                  {item.label}
-                </span>
+                {active && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-r"
+                    style={{ background: "var(--ptts-teal)" }}
+                  />
+                )}
+                <span aria-hidden="true" className={`text-[15px] w-4 text-center ${active ? "opacity-100" : "opacity-55"}`}>{item.icon}</span>
+                {!collapsed && <span className="text-[13px] font-medium truncate">{item.label}</span>}
                 {badge && badge > 0 && (
-                  <span className="ml-auto text-[10px] px-1.5 py-0.5 font-bold bg-[var(--fault)] text-[var(--text-inverse)] flex items-center justify-center">
+                  <span
+                    className={`text-[11px] font-semibold flex items-center justify-center bg-[var(--fault)] text-white rounded-[var(--r-pill)] ${
+                      collapsed
+                        ? "absolute top-0.5 right-0.5 min-w-[16px] h-4 px-1"
+                        : "ml-auto min-w-[20px] h-5 px-1.5"
+                    }`}
+                  >
                     {badge}
                   </span>
                 )}
@@ -201,20 +258,26 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
           })}
       </nav>
 
-      <div className="px-5 py-6 space-y-4 border-t border-[var(--border-dim)] bg-[var(--surface-inset)]">
-        <div className="space-y-1">
-          <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Chronos Uptime</p>
-          <p className="text-[12px] font-mono font-medium text-[var(--text-muted)]">{uptime}</p>
+      <div
+        className="px-5 py-5 space-y-3 border-t border-[var(--border-dim)] bg-[var(--surface-inset)]"
+        hidden={collapsed}
+      >
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[11px] font-semibold text-[var(--text-faint)] uppercase" style={{ letterSpacing: "var(--tracking-label)" }}>Uptime</span>
+          <span className="num text-[13px] text-[var(--text-muted)]">{uptime}</span>
         </div>
-        <div className="space-y-1">
-          <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Registry Nodes</p>
-          <p className="text-[12px] font-medium text-[var(--text-muted)]">{organizations.length} <span className="text-[var(--text-faint)]">scope(s)</span></p>
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[11px] font-semibold text-[var(--text-faint)] uppercase" style={{ letterSpacing: "var(--tracking-label)" }}>Scopes</span>
+          <span className="num text-[13px] text-[var(--text-muted)]">{organizations.length}</span>
         </div>
       </div>
 
-      <div className="px-5 py-6 space-y-3 border-t border-[var(--border-dim)] bg-[var(--surface-inset)]">
+      <div
+        className="px-5 py-5 space-y-3 border-t border-[var(--border-dim)] bg-[var(--surface-inset)]"
+        hidden={collapsed}
+      >
         <div className="flex items-center justify-between mb-2">
-          <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Scope</p>
+          <p className="text-[11px] font-semibold text-[var(--text-faint)] uppercase" style={{ letterSpacing: "var(--tracking-label)" }}>Scope</p>
           {!ciamConnected && (
             <div className="flex items-center gap-2">
               <div className="group relative">
@@ -243,7 +306,8 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
             localStorage.setItem("ptts-selected-org", val);
             router.refresh();
           }}
-          className={`w-full bg-[var(--surface-input)] border ${!ciamConnected ? 'border-[var(--fault)]' : 'border-[var(--border-dim)]'} text-[11px] font-bold text-[var(--text-muted)] p-2 outline-none focus:border-[var(--ptts)] cursor-pointer transition-colors`}
+          aria-label="Organization scope"
+          className={`w-full bg-[var(--surface-input)] border rounded-[var(--r-sm)] ${!ciamConnected ? 'border-[var(--fault)]' : 'border-[var(--border)]'} text-[13px] font-medium text-[var(--text)] px-2.5 py-2 outline-none focus:border-[var(--ptts)] cursor-pointer transition-colors`}
         >
           {organizations.map(org => (
             <option key={org.id} value={org.id} className="bg-[var(--surface-input)] text-[var(--text-muted)]">{org.name}</option>
@@ -251,21 +315,34 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
         </select>
       </div>
 
-      <div className="p-4 bg-[var(--surface)] border-t border-[var(--border)]">
-        <div className="flex items-center gap-3 mb-3 cursor-pointer group" onClick={() => setShowSwitch(true)}>
-          <div className="w-7 h-7 bg-[var(--avatar-bg)] border border-[var(--avatar-border)] flex items-center justify-center text-[10px] font-bold text-[var(--online)]">
-            {currentUser?.username?.substring(0,2).toUpperCase() || "ID"}
-          </div>
-          <div className="overflow-hidden">
-            <p className="text-[12px] font-bold text-[var(--text-bright)] truncate leading-none">{currentUser?.username || "Guest Entity"}</p>
-            <p className="text-[9px] font-bold tracking-widest text-[var(--online)] uppercase mt-1">{currentUser?.role || "Pending..."}</p>
-          </div>
-        </div>
-        <LogoutButton />
+      <div className={`bg-[var(--surface)] border-t border-[var(--border)] ${collapsed ? "p-2" : "p-4"}`}>
+        <button
+          type="button"
+          onClick={() => setShowSwitch(true)}
+          title={collapsed ? (currentUser?.username || "Switch user") : undefined}
+          className={`w-full flex items-center gap-3 rounded-[var(--r-sm)] hover:bg-[var(--surface-2)] transition-colors ${
+            collapsed ? "justify-center p-1.5" : "p-1.5 mb-2"
+          }`}
+        >
+          <span className="w-8 h-8 shrink-0 rounded-[var(--r-sm)] bg-[var(--avatar-bg)] border border-[var(--avatar-border)] flex items-center justify-center text-[12px] font-semibold text-[var(--online)]">
+            {currentUser?.username?.substring(0, 2).toUpperCase() || "ID"}
+          </span>
+          {!collapsed && (
+            <span className="overflow-hidden text-left">
+              <span className="block text-[13px] font-semibold text-[var(--text-bright)] truncate leading-tight">
+                {currentUser?.username || "Guest Entity"}
+              </span>
+              <span className="block text-[11px] font-medium text-[var(--text-muted)] truncate">
+                {currentUser?.role || "Pending…"}
+              </span>
+            </span>
+          )}
+        </button>
+        {!collapsed && <LogoutButton />}
       </div>
 
-      <div className="mt-auto px-5 py-6 opacity-20 hover:opacity-100 transition-opacity duration-500">
-        <p className="text-[8px] tracking-[0.4em] font-bold text-[var(--text-faint)] uppercase text-center">By DummVinci</p>
+      <div className="mt-auto px-5 py-4 opacity-30 hover:opacity-100 transition-opacity duration-300" hidden={collapsed}>
+        <p className="text-[11px] font-medium text-[var(--text-faint)] text-center">By DummVinci</p>
       </div>
 
       {showSwitch && (

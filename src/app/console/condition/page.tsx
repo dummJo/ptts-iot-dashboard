@@ -118,7 +118,7 @@ export default function SmartsensorDashboardPage() {
         {/* Clinical Scrollable Area */}
         <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
 
-          <div className="max-w-[1700px] mx-auto p-4 lg:p-6 space-y-6 animate-fade-in">
+          <div className="console-canvas animate-fade-in">
 
             {/* Primary Metrics Layer (Monolith Layout) */}
             <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-px bg-[var(--border-dim)] border border-[var(--border-dim)]">

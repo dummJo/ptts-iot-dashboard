@@ -45,13 +45,13 @@ export default function AutomationPage() {
         </header>
 
         <div className="flex-1 overflow-auto p-6 space-y-6">
-          <div className="flex items-center gap-3 px-3 py-2" style={{ background: "var(--surface)", border: "1px dashed var(--border)" }}>
+          <div className="flex items-center gap-3 px-3 py-2" style={{ background: "var(--surface)", border: "1px dashed var(--border)", borderRadius: "var(--r-sm)" }}>
             <span className="w-2 h-2" style={{ background: "var(--ptts-teal)" }} />
             <span className="text-[10px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>DRAFT TEMPLATE · NODE WORKFLOW MOCK</span>
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-[280px_1fr] gap-6">
-            <aside className="p-5 space-y-5" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+            <aside className="p-5 space-y-5" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}>
               <h2 className="text-[11px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-bright)" }}>Node Palette</h2>
               {PALETTE.map(g => (
                 <div key={g.group}>
@@ -70,7 +70,7 @@ export default function AutomationPage() {
 
             <section className="space-y-4">
               {FLOWS.map(f => (
-                <article key={f.name} className="p-5" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+                <article key={f.name} className="p-5" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}>
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h3 className="text-[14px] font-bold tracking-tight" style={{ color: "var(--text-bright)" }}>{f.name}</h3>

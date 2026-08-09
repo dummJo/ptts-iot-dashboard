@@ -113,12 +113,12 @@ export default function MonitoringDashboardPage() {
         </header>
 
         <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
-          <div className="max-w-[1700px] mx-auto p-4 lg:p-6 space-y-6 animate-fade-in">
+          <div className="console-canvas animate-fade-in">
 
             {/* DRAFT BANNER */}
             <div
               className="flex items-center gap-3 px-4 py-2.5"
-              style={{ background: "var(--surface)", border: "1px dashed var(--border)" }}
+              style={{ background: "var(--surface)", border: "1px dashed var(--border)", borderRadius: "var(--r-sm)" }}
             >
               <span className="w-1.5 h-1.5 bg-[var(--warning)] animate-pulse" />
               <span className="text-[10px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--warning)" }}>
@@ -151,7 +151,7 @@ export default function MonitoringDashboardPage() {
                   <div
                     key={p.id}
                     className="flex flex-col"
-                    style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+                    style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}
                   >
                     <div
                       className="flex items-center justify-between px-3 py-2"
@@ -233,7 +233,7 @@ export default function MonitoringDashboardPage() {
             <section className="grid grid-cols-1 xl:grid-cols-12 gap-6">
               <div
                 className="xl:col-span-7 p-5"
-                style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+                style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}
               >
                 <h3 className="text-[11px] font-bold tracking-[0.4em] uppercase mb-4" style={{ color: "var(--text-muted)" }}>
                   Lead-Lag Sequence
@@ -268,7 +268,7 @@ export default function MonitoringDashboardPage() {
 
               <div
                 className="xl:col-span-5 p-5 flex flex-col gap-4"
-                style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+                style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}
               >
                 <h3 className="text-[11px] font-bold tracking-[0.4em] uppercase" style={{ color: "var(--text-muted)" }}>
                   Process Control
@@ -337,7 +337,7 @@ export default function MonitoringDashboardPage() {
                   ABB VSD Diagnostics
                 </h2>
               </div>
-              <div style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+              <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}>
                 <table className="w-full text-xs">
                   <thead>
                     <tr style={{ borderBottom: "1px solid var(--border-dim)" }}>

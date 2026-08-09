@@ -42,12 +42,12 @@ export default function HistorianPage() {
         </header>
 
         <div className="flex-1 overflow-auto p-6 space-y-6">
-          <div className="flex items-center gap-3 px-3 py-2" style={{ background: "var(--surface)", border: "1px dashed var(--border)" }}>
+          <div className="flex items-center gap-3 px-3 py-2" style={{ background: "var(--surface)", border: "1px dashed var(--border)", borderRadius: "var(--r-sm)" }}>
             <span className="w-2 h-2" style={{ background: "var(--ptts-teal)" }} />
             <span className="text-[10px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>DRAFT TEMPLATE · TIME SERIES BROWSER</span>
           </div>
 
-          <section className="p-5 space-y-4" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+          <section className="p-5 space-y-4" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}>
             <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-3 items-end">
               <div>
                 <label className="text-[9px] tracking-[0.3em] font-bold uppercase mb-1.5 block" style={{ color: "var(--text-faint)" }}>Tag Search</label>
@@ -66,7 +66,7 @@ export default function HistorianPage() {
             </div>
           </section>
 
-          <section style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+          <section style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}>
             <div className="px-5 py-3 flex items-center justify-between" style={{ borderBottom: "1px solid var(--border-dim)" }}>
               <h2 className="text-[11px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-bright)" }}>Stored Series</h2>
               <span className="text-[9px] tracking-[0.3em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>{filtered.length} of {SERIES.length}</span>

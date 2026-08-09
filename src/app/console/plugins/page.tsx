@@ -31,7 +31,7 @@ export default function PluginsPage() {
         </header>
 
         <div className="flex-1 overflow-auto p-6 space-y-6">
-          <div className="flex items-center gap-3 px-3 py-2" style={{ background: "var(--surface)", border: "1px dashed var(--border)" }}>
+          <div className="flex items-center gap-3 px-3 py-2" style={{ background: "var(--surface)", border: "1px dashed var(--border)", borderRadius: "var(--r-sm)" }}>
             <span className="w-2 h-2" style={{ background: "var(--ptts-teal)" }} />
             <span className="text-[10px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>DRAFT TEMPLATE · PLUGIN ECOSYSTEM</span>
           </div>
@@ -40,7 +40,7 @@ export default function PluginsPage() {
             {PLUGINS.map(p => {
               const installed = p.status === "INSTALLED";
               return (
-                <article key={p.name} className="p-5 flex flex-col" style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+                <article key={p.name} className="p-5 flex flex-col" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}>
                   <div className="flex items-start justify-between mb-3">
                     <span className="px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase"
                       style={{ color: categoryColor[p.category], border: `1px solid ${categoryColor[p.category]}40` }}>
