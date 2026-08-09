@@ -3,6 +3,45 @@ import { requireAuth } from '@/lib/auth-guard';
 import prisma from '@/lib/prisma';
 import { encryptData, decryptData } from '@/lib/security';
 
+/**
+ * Validates the optional `settings.energy` tariff block.
+ * Returns an error message, or null when the payload is acceptable.
+ */
+function validateEnergySettings(settings: unknown): string | null {
+  const energy = (settings as Record<string, unknown> | null)?.energy;
+  if (energy == null) return null;
+  if (typeof energy !== 'object' || Array.isArray(energy)) {
+    return 'settings.energy must be an object';
+  }
+
+  const e = energy as Record<string, unknown>;
+  const num = (k: string) => (typeof e[k] === 'number' ? (e[k] as number) : undefined);
+
+  const checks: Array<[string, number | undefined, number, number]> = [
+    ['baseRatePerKwh',    num('baseRatePerKwh'),    0, 1_000_000],
+    ['peakMultiplier',    num('peakMultiplier'),    1, 10],
+    ['peakStartHour',     num('peakStartHour'),     0, 23],
+    ['peakEndHour',       num('peakEndHour'),       1, 24],
+    ['utcOffsetMinutes',  num('utcOffsetMinutes'),  -720, 840],
+    ['co2FactorKgPerKwh', num('co2FactorKgPerKwh'), 0, 5],
+  ];
+
+  for (const [key, value, min, max] of checks) {
+    if (e[key] === undefined) continue;
+    if (value === undefined || !Number.isFinite(value) || value < min || value > max) {
+      return `settings.energy.${key} must be a number between ${min} and ${max}`;
+    }
+  }
+
+  const start = num('peakStartHour');
+  const end = num('peakEndHour');
+  if (start !== undefined && end !== undefined && start >= end) {
+    return 'settings.energy.peakStartHour must be earlier than peakEndHour';
+  }
+
+  return null;
+}
+
 export async function GET() {
   try {
     const auth = await requireAuth();
@@ -57,6 +96,11 @@ export async function POST(req: Request) {
 
     const body = await req.json();
     const { apiKeys, notifications, settings } = body;
+
+    // Tariff values become money on the Energy console, so a malformed payload
+    // is rejected outright rather than coerced into a plausible-looking default.
+    const energyError = validateEnergySettings(settings);
+    if (energyError) return ApiResponse.badRequest(energyError);
 
     const keysMap: Record<string, any> = {};
     if (Array.isArray(apiKeys)) {

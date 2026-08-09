@@ -51,6 +51,46 @@ export function truncate(str: string, length: number): string {
 }
 
 /**
+ * Compacts large magnitudes for stat tiles and axis ticks (1.284 jt, 12,9 rb).
+ * Uses Indonesian short scale so the console reads the same as an invoice.
+ */
+export function formatCompact(value: number, decimals = 1): string {
+  if (!Number.isFinite(value)) return '--';
+  const abs = Math.abs(value);
+  if (abs >= 1_000_000_000) return `${formatLocalNumber(value / 1_000_000_000, decimals)} M`;
+  if (abs >= 1_000_000) return `${formatLocalNumber(value / 1_000_000, decimals)} jt`;
+  if (abs >= 1_000) return `${formatLocalNumber(value / 1_000, decimals)} rb`;
+  return formatLocalNumber(value, abs >= 100 ? 0 : decimals);
+}
+
+/**
+ * Formats a money amount. Kept compact by default because these values live in
+ * stat tiles; pass compact=false for table cells where the exact figure matters.
+ */
+export function formatCurrency(value: number, currency = 'IDR', compact = true): string {
+  if (!Number.isFinite(value)) return '--';
+  const symbol = currency === 'IDR' ? 'Rp' : `${currency} `;
+  if (compact) return `${symbol}${formatCompact(value)}`;
+  return `${symbol}${Math.round(value).toLocaleString('id-ID')}`;
+}
+
+/**
+ * Formats an ISO timestamp as a local wall-clock reading for a given UTC offset.
+ * Telemetry is stored in UTC but operators read the plant clock (WIB by default).
+ */
+export function formatLocalClock(iso: string | null, utcOffsetMinutes = 420): string {
+  if (!iso) return '--';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '--';
+  const shifted = new Date(d.getTime() + utcOffsetMinutes * 60_000);
+  const hh = String(shifted.getUTCHours()).padStart(2, '0');
+  const mm = String(shifted.getUTCMinutes()).padStart(2, '0');
+  const dd = String(shifted.getUTCDate()).padStart(2, '0');
+  const mon = String(shifted.getUTCMonth() + 1).padStart(2, '0');
+  return `${dd}/${mon} ${hh}:${mm}`;
+}
+
+/**
  * Returns the CSS color associated with an industrial status.
  */
 export function getStatusColor(status: string): string {
