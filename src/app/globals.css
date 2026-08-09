@@ -180,6 +180,46 @@
   --topbar-glass: rgba(255, 255, 255, 0.85);
 }
 
+/**
+ * Tailwind token bridge.
+ *
+ * Tailwind v4 builds utilities from @theme, not from bare custom properties.
+ * Without this block, `bg-surface`, `text-text-bright`, `border-ptts/40` and 31
+ * other class names used across the app compiled to nothing — TopBar and
+ * ChangelogModal have been rendering without their intended surfaces and
+ * borders. `inline` keeps the utilities pointing at the live variable, so they
+ * still follow the .light theme swap.
+ */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-surface-inset: var(--surface-inset);
+
+  --color-border: var(--border);
+  --color-border-dim: var(--border-dim);
+  --color-border-bright: var(--border-bright);
+
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+  --color-text-bright: var(--text-bright);
+  --color-text-inverse: var(--text-inverse);
+
+  --color-ptts: var(--ptts);
+  --color-ptts-teal: var(--ptts-teal);
+
+  --color-online: var(--online);
+  --color-warning: var(--warning);
+  --color-fault: var(--fault);
+  --color-offline: var(--offline);
+
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+}
+
 body {
   background: var(--bg);
   background-image: var(--bg-gradient);
