@@ -280,7 +280,7 @@ export default function EnergyManagementPage() {
 
             {/* ── KPI strip ─────────────────────────────────────────────── */}
             <section className="grid-12">
-              <div className="col-span-1 md:col-span-3 xl:col-span-4 2xl:col-span-2">
+              <div className="col-span-1 md:col-span-3 xl:col-span-3">
                 <StatTile
                   label="Konsumsi"
                   value={formatCompact(totals.kwh)}
@@ -290,14 +290,14 @@ export default function EnergyManagementPage() {
                   deltaGood={deltaKwh?.good}
                 />
               </div>
-              <div className="col-span-1 md:col-span-3 xl:col-span-4 2xl:col-span-2">
+              <div className="col-span-1 md:col-span-3 xl:col-span-3">
                 <StatTile
                   label="Biaya"
                   value={formatCurrency(totals.cost, tariff.currency)}
                   detail={`WBP ${formatCurrency(totals.costWbp, tariff.currency)} · LWBP ${formatCurrency(totals.costLwbp, tariff.currency)}`}
                 />
               </div>
-              <div className="col-span-1 md:col-span-3 xl:col-span-4 2xl:col-span-2">
+              <div className="col-span-1 md:col-span-3 xl:col-span-3">
                 <StatTile
                   label="Beban puncak"
                   value={formatLocalNumber(totals.peakKw, 1)}
@@ -305,44 +305,25 @@ export default function EnergyManagementPage() {
                   detail={totals.peakAt ? `Tercatat ${formatLocalClock(totals.peakAt, offset)}` : "Belum tercatat"}
                 />
               </div>
-              <div className="col-span-1 md:col-span-3 xl:col-span-4 2xl:col-span-2">
+              <div className="col-span-1 md:col-span-3 xl:col-span-3">
                 <StatTile
                   label="Load factor"
                   value={formatLocalNumber(totals.loadFactor * 100, 0)}
                   unit="%"
                   detail={
                     totals.loadFactor < 0.5
-                      ? "Rendah — kapasitas terpasang jarang terpakai"
+                      ? "Rendah — kapasitas jarang terpakai"
                       : "Profil beban relatif rata"
-                  }
-                />
-              </div>
-              <div className="col-span-1 md:col-span-3 xl:col-span-4 2xl:col-span-2">
-                <StatTile
-                  label="Emisi CO₂"
-                  value={formatCompact(totals.co2Kg)}
-                  unit="kg"
-                  detail={`Faktor grid ${formatLocalNumber(tariff.co2FactorKgPerKwh, 2)} kg/kWh`}
-                />
-              </div>
-              <div className="col-span-1 md:col-span-3 xl:col-span-4 2xl:col-span-2">
-                <StatTile
-                  label="Energi spesifik"
-                  value={totals.specificEnergy !== null ? formatLocalNumber(totals.specificEnergy, 2) : "—"}
-                  unit={totals.specificEnergy !== null ? "kWh/m³" : undefined}
-                  detail={
-                    totals.specificEnergy === null
-                      ? "Butuh data flow meter — belum terpasang"
-                      : "Per meter kubik terpompa"
                   }
                 />
               </div>
             </section>
 
-            {/* ── Load profile + tariff split ───────────────────────────── */}
-            <section className="grid-12">
-              <div className="col-span-1 md:col-span-6 xl:col-span-8">
-                <div className="scada-card flex flex-col h-full">
+            {/* ── Load profile — the reason this page exists, so it gets the
+                 width and the height. Secondary facts sit on one line under it
+                 rather than in four more cards. ──────────────────────────── */}
+            <section>
+              <div className="scada-card flex flex-col">
                   <div className="scada-card-header">
                     <span className="scada-label">Profil beban · kW</span>
                     <div className="flex items-center gap-4">
@@ -351,7 +332,7 @@ export default function EnergyManagementPage() {
                     </div>
                   </div>
                   <div className="p-4 pt-3">
-                    <div style={{ width: "100%", height: 300 }}>
+                    <div style={{ width: "100%", height: "clamp(300px, 40vh, 560px)" }}>
                       <ResponsiveContainer width="100%" height="100%">
                         <AreaChart data={profile} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
                           <defs>
@@ -419,16 +400,47 @@ export default function EnergyManagementPage() {
                       </ResponsiveContainer>
                     </div>
                   </div>
-                </div>
-              </div>
 
+                  {/* Secondary facts, one line. Each of these used to be its own
+                      card or a paragraph of prose. */}
+                  <div
+                    className="flex flex-wrap items-center gap-x-6 gap-y-1.5 px-5 py-3 text-[13px]"
+                    style={{ borderTop: "1px solid var(--border-dim)", color: "var(--text-muted)" }}
+                  >
+                    <span>
+                      Porsi biaya WBP{" "}
+                      <span className="num font-semibold" style={{ color: "var(--text-bright)" }}>
+                        {totals.cost > 0 ? formatLocalNumber((totals.costWbp / totals.cost) * 100, 1) : "0,0"}%
+                      </span>{" "}
+                      · dibayar {formatLocalNumber(tariff.peakMultiplier, 2)}× tarif dasar pada jam{" "}
+                      {tariff.peakStartHour}:00–{tariff.peakEndHour}:00
+                    </span>
+                    <span>
+                      CO₂{" "}
+                      <span className="num font-semibold" style={{ color: "var(--text-bright)" }}>
+                        {formatCompact(totals.co2Kg)} kg
+                      </span>
+                    </span>
+                    <span>
+                      Cakupan data{" "}
+                      <span className="num font-semibold" style={{ color: "var(--text-bright)" }}>
+                        {totals.coveragePct}%
+                      </span>
+                      {totals.coveragePct < 100 && " — kWh di bawah 100% adalah ekstrapolasi"}
+                    </span>
+                  </div>
+              </div>
+            </section>
+
+            {/* ── Top consumers + tariff mix ────────────────────────────── */}
+            <section className="grid-12">
               <div className="col-span-1 md:col-span-6 xl:col-span-4">
                 <div className="scada-card flex flex-col h-full">
                   <div className="scada-card-header">
                     <span className="scada-label">Bauran tarif</span>
                   </div>
                   <div className="p-4 flex flex-col gap-4">
-                    <div style={{ width: "100%", height: 190 }}>
+                    <div style={{ width: "100%", height: 210 }}>
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
                           <Pie
@@ -482,11 +494,8 @@ export default function EnergyManagementPage() {
                   </div>
                 </div>
               </div>
-            </section>
 
-            {/* ── Top consumers + efficiency read ───────────────────────── */}
-            <section className="grid-12">
-              <div className="col-span-1 md:col-span-6 xl:col-span-7">
+              <div className="col-span-1 md:col-span-6 xl:col-span-8">
                 <div className="scada-card flex flex-col h-full">
                   <div className="scada-card-header">
                     <span className="scada-label">Konsumen teratas · kWh</span>
@@ -495,7 +504,7 @@ export default function EnergyManagementPage() {
                     </span>
                   </div>
                   <div className="p-4 pt-3">
-                    <div style={{ width: "100%", height: Math.max(200, topConsumers.length * 42) }}>
+                    <div style={{ width: "100%", height: Math.max(240, topConsumers.length * 46) }}>
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                           data={topConsumers}
@@ -552,54 +561,6 @@ export default function EnergyManagementPage() {
                 </div>
               </div>
 
-              <div className="col-span-1 md:col-span-6 xl:col-span-5">
-                <div className="scada-card flex flex-col h-full">
-                  <div className="scada-card-header">
-                    <span className="scada-label">Pembacaan efisiensi</span>
-                  </div>
-                  <div className="p-5 flex flex-col gap-4 text-[14px]" style={{ color: "var(--text-muted)" }}>
-                    <div className="flex flex-col gap-1">
-                      <span className="scada-label">Porsi biaya di jendela WBP</span>
-                      <span className="num text-[20px]" style={{ color: "var(--text-bright)" }}>
-                        {totals.cost > 0 ? formatLocalNumber((totals.costWbp / totals.cost) * 100, 1) : "0,0"}%
-                      </span>
-                      <p>
-                        WBP dibayar {formatLocalNumber(tariff.peakMultiplier, 2)}× tarif dasar. Menggeser beban
-                        yang bisa ditunda ke luar jam {tariff.peakStartHour}:00–{tariff.peakEndHour}:00
-                        menurunkan biaya tanpa menurunkan produksi.
-                      </p>
-                    </div>
-
-                    <div className="h-px" style={{ background: "var(--border-dim)" }} />
-
-                    <div className="flex flex-col gap-1">
-                      <span className="scada-label">Load factor</span>
-                      <span className="num text-[20px]" style={{ color: "var(--text-bright)" }}>
-                        {formatLocalNumber(totals.loadFactor * 100, 0)}%
-                      </span>
-                      <p>
-                        {totals.loadFactor < 0.5
-                          ? "Beban puncak jauh di atas rata-rata. Pola ini yang biasanya dijawab kontrol VSD — throttling mekanis membuang energi yang tetap ditagih."
-                          : "Beban relatif rata terhadap puncaknya; ruang penghematan dari perataan beban saja terbatas."}
-                      </p>
-                    </div>
-
-                    <div className="h-px" style={{ background: "var(--border-dim)" }} />
-
-                    <div className="flex flex-col gap-1">
-                      <span className="scada-label">Cakupan data</span>
-                      <span className="num text-[20px]" style={{ color: "var(--text-bright)" }}>
-                        {totals.coveragePct}%
-                      </span>
-                      <p>
-                        Persentase jam dalam rentang yang benar-benar mengirim <code>motor_kw</code>.
-                        kWh dihitung sebagai permintaan rata-rata × durasi jendela tarif, jadi pada
-                        cakupan rendah angkanya ekstrapolasi — bukan hasil ukur.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </section>
 
             {/* ── Per-asset table ───────────────────────────────────────── */}

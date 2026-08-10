@@ -11,7 +11,7 @@ export default function VibrationBar({ vibrationData = [] }: { vibrationData?: V
         <span className="text-[12px] font-semibold num" style={{ color:"var(--warning)" }}>LIM: {formatLocalNumber(3.5, 1)}</span>
       </div>
       <div className="p-4">
-        <ResponsiveContainer width="100%" height={155}>
+        <ResponsiveContainer width="100%" height={Math.max(180, vibrationData.length * 44)}>
           <BarChart data={vibrationData} layout="vertical" margin={{ left:0, right:28, top:0, bottom:0 }}>
             <CartesianGrid horizontal={false} stroke="var(--border-dim)" />
             <XAxis type="number" tick={{ fontSize:11, fill:"var(--text-faint)", fontFamily:"inherit" }}

@@ -190,15 +190,21 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
       </div>
 
       <div className="p-2 md:p-4 md:pt-2 w-full max-w-full overflow-hidden">
-        <div style={{ width: "100%", height: 220, touchAction: "pan-x" }}>
+        {/* Was a fixed 220px, which left roughly 130px of actual plot after the
+            axes and brush — the same height on a laptop and on a 1440px-tall
+            monitor. Scales with the viewport now, still bounded at both ends. */}
+        <div style={{ width: "100%", height: "clamp(240px, 30vh, 440px)", touchAction: "pan-x" }}>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={displayData} margin={{ top: 4, right: 0, left: -24, bottom: 0 }}>
+            {/* left:-24 used to claw back the default y-axis gutter, which pushed
+                the brush's start/end labels past the plot edge. Axis widths are
+                set explicitly below instead, so the margins can stay honest. */}
+            <LineChart data={displayData} margin={{ top: 4, right: 12, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="2 4" stroke="var(--border-dim)" />
             <XAxis dataKey="time" tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
               tickLine={false} axisLine={false} interval="preserveStartEnd" />
-            <YAxis yAxisId="left" tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
+            <YAxis yAxisId="left" width={40} tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
               tickLine={false} axisLine={false} tickFormatter={(v) => formatLocalNumber(v, 1)} />
-            <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
+            <YAxis yAxisId="right" width={40} orientation="right" tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
               tickLine={false} axisLine={false} tickFormatter={(v) => formatLocalNumber(v, 0)} />
             {activeMetrics.has("temp") && (
               <ReferenceLine yAxisId="right" y={tempLimit} stroke="var(--fault)" strokeDasharray="4 4" strokeOpacity={0.6}

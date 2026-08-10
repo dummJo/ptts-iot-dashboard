@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/ThemeToggle";
 import ChangelogModal from "@/components/ChangelogModal";
 
@@ -17,30 +16,13 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
   const [dateStr, setDateStr] = useState("");
   const [timeStr, setTimeStr] = useState("");
   const [showChangelog, setShowChangelog] = useState(false);
-  const pathname = usePathname() ?? "";
-  const segMap: Record<string, string> = {
-    operations: "LIVE OPERATIONS",
-    condition:  "CONDITION INTEL",
-    devices:    "DEVICE FABRIC",
-    topology:   "TOPOLOGY",
-    automation: "AUTOMATION",
-    analytics:  "ANALYTICS",
-    energy:     "ENERGY",
-    historian:  "HISTORIAN",
-    plugins:    "PLUGINS",
-    ai:         "AI ENGINE",
-    events:     "EVENT CENTER",
-    system:     "SYSTEM",
-    settings:   "SETTINGS",
-  };
-  const seg = pathname.split("/")[2] ?? "";
-  const modeCrumb = segMap[seg] ?? "EDGECORE";
-
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      setDateStr(now.toLocaleDateString("id-ID", { weekday:"long", year:"numeric", month:"long", day:"numeric" }));
-      setTimeStr(now.toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit", second:"2-digit" }));
+      // Short date only. The full "Senin, 10 Agustus 2026" spelled out the day of
+      // the week next to a live clock and carried no operational information.
+      setDateStr(now.toLocaleDateString("id-ID", { day:"2-digit", month:"short" }));
+      setTimeStr(now.toLocaleTimeString("en-GB", { hour:"2-digit", minute:"2-digit" }));
     };
 
     updateTime();
@@ -51,62 +33,61 @@ export default function TopBar({ title, onRefresh, refreshing, connected = true,
   return (
     <div className="sticky top-0 z-50 flex items-center justify-between px-4 md:px-5 py-2 backdrop-blur-xl transition-colors duration-250 responsive-container"
       style={{ background: "var(--topbar-glass)", borderBottom: "1px solid var(--border-dim)", minHeight: 44, boxShadow: "0 4px 30px rgba(0,0,0,0.05)" }}>
-      {/* Left — breadcrumb */}
-      <div className="flex items-center gap-2 text-[10px] md:text-xs tracking-widest font-bold">
-        <span className="hidden md:inline" style={{ color:"var(--text-muted)" }}>PTTS</span>
-        <span className="hidden md:inline" style={{ color:"var(--text-faint)" }}>›</span>
-        <span className="hidden md:inline" style={{ color:"var(--text-muted)" }}>{modeCrumb}</span>
-        <span className="hidden md:inline" style={{ color:"var(--text-faint)" }}>›</span>
-        <span className="text-[13px] md:text-xs" style={{ color:"var(--ptts-teal)" }}>{title.toUpperCase()}</span>
-      </div>
+      {/* Left — page title. The old three-level "PTTS › SECTION › TITLE" crumb
+          was not navigable, so it spent a third of the bar restating the sidebar. */}
+      <h1 className="text-[14px] font-semibold truncate" style={{ color: "var(--text-bright)" }}>
+        {title}
+      </h1>
 
-      {/* Center — timestamp */}
-      <div className="hidden lg:flex items-center gap-3 text-xs font-mono">
-        <span style={{ color:"var(--text-faint)" }}>{dateStr.toUpperCase()}</span>
-        <span className="tabular-nums" style={{ color:"var(--text-muted)" }}>{timeStr}</span>
-        <div className="flex items-center gap-1.5 px-2 py-0.5"
-          style={{ 
-            background: connected ? "var(--badge-online-bg)" : "var(--badge-fault-bg)", 
-            border: `1px solid ${connected ? "var(--online)" : "var(--fault)"}` 
-          }}>
-          <span className={`led ${connected ? "led-online" : "led-fault"}`} style={{ width:6, height:6 }} />
-          <span style={{ color: connected ? "var(--online)" : "var(--fault)" }} className="text-[12px] font-semibold">
-            {connected ? "LIVE" : "OFFLINE"}
-          </span>
-        </div>
-      </div>
-
-      {/* Right — controls */}
+      {/* Right — status and controls, one group */}
       <div className="flex items-center gap-2">
-        <button 
-          onClick={() => setShowChangelog(true)}
-          className="w-8 h-8 flex items-center justify-center text-[15px] font-bold transition-all border border-border bg-surface hover:bg-surface-2"
-          title="System Logs"
-          style={{ color: "var(--ptts-teal)" }}
+        <span className="hidden lg:flex items-center gap-2 num text-[12px] mr-1" style={{ color: "var(--text-faint)" }}>
+          {dateStr} {timeStr}
+        </span>
+
+        <span
+          className={`badge ${connected ? "badge-ok" : "badge-fault"}`}
+          title={connected ? "Live data link" : "Data link down"}
         >
-          ⓘ
-        </button>
-        <ThemeToggle />
+          <span aria-hidden="true" className={`led ${connected ? "led-online" : "led-fault"}`} style={{ width: 6, height: 6 }} />
+          {connected ? "Live" : "Offline"}
+        </span>
+
         {onPollChange && (
-          <div className="hidden sm:block">
-            <label htmlFor="poll-interval" className="sr-only">Polling Interval</label>
-            <select id="poll-interval" aria-label="Polling Interval" value={pollInterval} onChange={(e) => onPollChange(Number(e.target.value))}
-              className="text-xs px-2 py-1.5 font-bold tracking-widest transition-all outline-none"
-              style={{ border:"1px solid var(--border)", color:"var(--text)", background:"var(--surface)" }}>
+          <>
+            <label htmlFor="poll-interval" className="sr-only">Polling interval</label>
+            <select
+              id="poll-interval"
+              value={pollInterval}
+              onChange={(e) => onPollChange(Number(e.target.value))}
+              className="hidden sm:block text-[13px] px-2 py-1.5 rounded-[var(--r-sm)] outline-none"
+              style={{ border: "1px solid var(--border)", color: "var(--text)", background: "var(--surface)" }}
+            >
               <option value={5000}>5s</option>
               <option value={60000}>1m</option>
               <option value={300000}>5m</option>
-              <option value={0}>OFF</option>
+              <option value={0}>Off</option>
             </select>
-          </div>
+          </>
         )}
+
         {onRefresh && (
-          <button onClick={onRefresh} disabled={refreshing}
-            className="text-[10px] md:text-xs px-2 md:px-2.5 py-1.5 font-bold tracking-widest transition-all disabled:opacity-50"
-            style={{ border:"1px solid var(--border)", color:"var(--text-muted)", background:"var(--surface)" }}>
-            {refreshing ? "..." : "⟳"}
+          <button type="button" onClick={onRefresh} disabled={refreshing} className="btn" aria-label="Refresh data">
+            <span aria-hidden="true">{refreshing ? "…" : "⟳"}</span>
           </button>
         )}
+
+        <ThemeToggle />
+
+        <button
+          type="button"
+          onClick={() => setShowChangelog(true)}
+          className="btn"
+          aria-label="System changelog"
+          title="System changelog"
+        >
+          <span aria-hidden="true">ⓘ</span>
+        </button>
       </div>
 
       <ChangelogModal isOpen={showChangelog} onClose={() => setShowChangelog(false)} />
