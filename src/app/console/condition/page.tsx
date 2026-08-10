@@ -157,17 +157,17 @@ export default function SmartsensorDashboardPage() {
             <section className="pt-8">
               <div className="flex items-center gap-4 mb-6 px-2">
                 <span className="w-1 h-1 bg-[var(--fault)]" />
-                <h2 className="text-[11px] font-bold tracking-[0.4em] text-[var(--text-muted)] uppercase">Incident Registry</h2>
+                <h2 className="text-[12px] font-bold tracking-[0.06em] text-[var(--text-muted)] uppercase">Incident Registry</h2>
               </div>
               <AlertsTable alerts={recentAlerts} />
             </section>
 
             {/* Professional Legal & Metadata Strip */}
             <footer className="pt-10 pb-6 opacity-30 border-t border-[var(--border-dim)]">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-[9px] tracking-[0.3em] font-bold uppercase transition-opacity hover:opacity-100 duration-500">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-[11px] tracking-[0.06em] font-bold uppercase transition-opacity hover:opacity-100 duration-500">
                 <div className="flex items-center gap-8">
-                  <p>System Build: <span className="text-white">v2.0.0-Stable</span></p>
-                  <p>Host: <span className="text-white">Primary Cloud Instance</span></p>
+                  <p>System Build: <span className="text-[var(--text-bright)]">v2.0.0-Stable</span></p>
+                  <p>Host: <span className="text-[var(--text-bright)]">Primary Cloud Instance</span></p>
                 </div>
                 <div className="flex items-center gap-8">
                   <p className="flex items-center gap-2 text-[var(--online)]">

@@ -26,7 +26,7 @@ export default function AIEnginePage() {
         <div className="flex-1 overflow-auto p-6 space-y-6">
           <div className="flex items-center gap-3 px-3 py-2" style={{ background: "var(--surface)", border: "1px dashed var(--border)", borderRadius: "var(--r-sm)" }}>
             <span className="w-2 h-2" style={{ background: "var(--ptts-teal)" }} />
-            <span className="text-[10px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>DRAFT TEMPLATE · INTELLIGENCE LAYER</span>
+            <span className="text-[12px] tracking-[0.06em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>DRAFT TEMPLATE · INTELLIGENCE LAYER</span>
           </div>
 
           <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -37,7 +37,7 @@ export default function AIEnginePage() {
               { label: "Pending Reviews",   value: "7",       color: "var(--warning)" },
             ].map(s => (
               <div key={s.label} className="p-4" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}>
-                <p className="text-[9px] tracking-[0.3em] font-bold uppercase mb-2" style={{ color: "var(--text-faint)" }}>{s.label}</p>
+                <p className="text-[11px] tracking-[0.06em] font-bold uppercase mb-2" style={{ color: "var(--text-faint)" }}>{s.label}</p>
                 <p className="text-2xl font-semibold tabular-nums" style={{ color: s.color }}>{s.value}</p>
               </div>
             ))}
@@ -57,14 +57,14 @@ export default function AIEnginePage() {
                 <p className="text-[12px] leading-relaxed flex-1" style={{ color: "var(--text-muted)" }}>{m.desc}</p>
 
                 <div className="mt-4 space-y-2">
-                  <div className="flex items-center justify-between text-[9px] tracking-[0.3em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>
+                  <div className="flex items-center justify-between text-[11px] tracking-[0.06em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>
                     <span>Confidence</span>
                     <span className="tabular-nums" style={{ color: "var(--text-bright)" }}>{m.confidence}%</span>
                   </div>
                   <div className="h-[3px] w-full" style={{ background: "var(--border-dim)" }}>
                     <div className="h-full transition-all" style={{ width: `${m.confidence}%`, background: "var(--ptts-teal)" }} />
                   </div>
-                  <p className="text-[9px] tracking-[0.3em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>
+                  <p className="text-[11px] tracking-[0.06em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>
                     Last run · <span style={{ color: "var(--text-muted)" }}>{m.lastRun}</span>
                   </p>
                 </div>

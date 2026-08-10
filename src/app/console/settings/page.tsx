@@ -70,10 +70,10 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#050505] overflow-hidden">
+    <div className="flex h-screen w-full bg-[var(--bg)] overflow-hidden">
       <Sidebar pollInterval={0} />
 
-      <main className="flex-1 flex flex-col min-w-0 h-screen relative bg-black">
+      <main className="flex-1 flex flex-col min-w-0 h-screen relative bg-[var(--surface-inset)]">
         <header className="flex-none z-30">
           <TopBar title="Settings · System Control" />
         </header>
@@ -90,7 +90,7 @@ export default function SettingsPage() {
                 { id: "notifications", label: "Relay Config" }
               ].filter(t => !t.adminOnly || currentUserRole === 'admin').map(t => (
                 <button key={t.id} onClick={() => setTab(t.id as any)}
-                  className={`px-8 py-4 text-[10px] font-bold tracking-[0.3em] uppercase transition-all ${tab === t.id ? "bg-white text-black" : "bg-black text-[var(--text-muted)] hover:text-white"}`}>
+                  className={`px-8 py-4 text-[12px] font-bold tracking-[0.06em] uppercase transition-all ${tab === t.id ? "bg-[var(--text-bright)] text-[var(--text-inverse)]" : "bg-[var(--surface-inset)] text-[var(--text-muted)] hover:text-[var(--text-bright)]"}`}>
                   {t.label}
                 </button>
               ))}
@@ -100,50 +100,50 @@ export default function SettingsPage() {
             <div className="space-y-6">
               
               {tab === "swagger" && (
-                <div className="border border-[var(--border-dim)] bg-[#0a0a0a] p-12 space-y-10">
+                <div className="border border-[var(--border-dim)] bg-[var(--surface-inset)] p-12 space-y-10">
                   <div className="space-y-2">
-                    <p className="text-[10px] font-bold tracking-[0.4em] text-[var(--online)] uppercase">Status: Online</p>
-                    <h2 className="text-[24px] font-bold tracking-tight text-white leading-tight">Backend Interface Specification</h2>
+                    <p className="text-[12px] font-bold tracking-[0.06em] text-[var(--online)] uppercase">Status: Online</p>
+                    <h2 className="text-[24px] font-bold tracking-tight text-[var(--text-bright)] leading-tight">Backend Interface Specification</h2>
                     <p className="text-[13px] text-[var(--text-muted)] max-w-2xl leading-relaxed">
                       This instance is integrated with the NestJS Core Environment. All telemetry data is processed via Scrypt-secured JSON Web Tokens and served through the clinical API layer.
                     </p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-[var(--border-dim)] border border-[var(--border-dim)]">
-                    <div className="bg-black p-8 space-y-4">
-                      <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Service Endpoint</p>
+                    <div className="bg-[var(--surface-inset)] p-8 space-y-4">
+                      <p className="text-[11px] font-bold tracking-[0.06em] text-[var(--text-faint)] uppercase">Service Endpoint</p>
                       <p className="text-[14px] font-mono text-[var(--text-muted)]">http://localhost:3001/api/v1</p>
                     </div>
-                    <div className="bg-black p-8 space-y-4">
-                      <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase">Latency Status</p>
+                    <div className="bg-[var(--surface-inset)] p-8 space-y-4">
+                      <p className="text-[11px] font-bold tracking-[0.06em] text-[var(--text-faint)] uppercase">Latency Status</p>
                       <p className="text-[14px] font-mono text-[var(--online)]">8ms (Stable)</p>
                     </div>
                   </div>
-                  <button className="px-8 py-4 border border-white/10 text-[10px] font-bold tracking-[0.4em] uppercase hover:bg-white hover:text-black transition-all">
+                  <button className="px-8 py-4 border border-[var(--border)] text-[12px] font-bold tracking-[0.06em] uppercase hover:bg-[var(--text-bright)] hover:text-[var(--text-inverse)] transition-all">
                     Access Raw Registry →
                   </button>
                 </div>
               )}
 
               {tab === "api" && (
-                <div className="border border-[var(--border-dim)] bg-[#0a0a0a] p-12 space-y-10">
+                <div className="border border-[var(--border-dim)] bg-[var(--surface-inset)] p-12 space-y-10">
                   <div className="space-y-1">
-                    <h2 className="text-[20px] font-bold text-white tracking-tight">Active Link Protocols</h2>
+                    <h2 className="text-[20px] font-bold text-[var(--text-bright)] tracking-tight">Active Link Protocols</h2>
                     <p className="text-[12px] text-[var(--text-muted)] uppercase tracking-widest font-bold opacity-40">External IoT Data Bridges</p>
                   </div>
                   <div className="space-y-8 max-w-xl">
 
                     <div className="space-y-4">
-                      <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">Primary CIAM Hub (ABB Powertrain)</p>
+                      <p className="text-[12px] font-semibold tracking-[0.06em] text-[var(--text-faint)] uppercase">Primary CIAM Hub (ABB Powertrain)</p>
                       <div className="flex gap-px bg-[var(--border-dim)] border border-[var(--border-dim)]">
-                         <input type="password" placeholder="ABB CIAM API Key (Client Secret)" value={apiKeys.smartSensorPTTS} onChange={(e) => setApiKeys({ ...apiKeys, smartSensorPTTS: e.target.value })} className="flex-1 bg-black p-4 text-[13px] outline-none border-none text-white font-mono" />
-                         <button className="px-8 py-4 bg-white text-black text-[10px] font-bold tracking-[0.2em] uppercase">Update</button>
+                         <input type="password" placeholder="ABB CIAM API Key (Client Secret)" value={apiKeys.smartSensorPTTS} onChange={(e) => setApiKeys({ ...apiKeys, smartSensorPTTS: e.target.value })} className="flex-1 bg-[var(--surface-inset)] p-4 text-[13px] outline-none border-none text-[var(--text-bright)] font-mono" />
+                         <button className="px-8 py-4 bg-[var(--text-bright)] text-[var(--text-inverse)] text-[12px] font-semibold tracking-[0.06em] uppercase">Update</button>
                       </div>
                     </div>
                     <div className="space-y-4">
-                      <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">Secondary Vibration Hub</p>
+                      <p className="text-[12px] font-semibold tracking-[0.06em] text-[var(--text-faint)] uppercase">Secondary Vibration Hub</p>
                       <div className="flex gap-px bg-[var(--border-dim)] border border-[var(--border-dim)]">
-                         <input type="password" placeholder="RONDS Relay Key" value={apiKeys.smartSensorRonds} onChange={(e) => setApiKeys({ ...apiKeys, smartSensorRonds: e.target.value })} className="flex-1 bg-black p-4 text-[13px] outline-none border-none text-white font-mono" />
-                         <button className="px-8 py-4 bg-white text-black text-[10px] font-bold tracking-[0.2em] uppercase">Update</button>
+                         <input type="password" placeholder="RONDS Relay Key" value={apiKeys.smartSensorRonds} onChange={(e) => setApiKeys({ ...apiKeys, smartSensorRonds: e.target.value })} className="flex-1 bg-[var(--surface-inset)] p-4 text-[13px] outline-none border-none text-[var(--text-bright)] font-mono" />
+                         <button className="px-8 py-4 bg-[var(--text-bright)] text-[var(--text-inverse)] text-[12px] font-semibold tracking-[0.06em] uppercase">Update</button>
                       </div>
                     </div>
                   </div>
@@ -152,37 +152,37 @@ export default function SettingsPage() {
 
               {tab === "users" && (
                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                   <div className="border border-[var(--border-dim)] bg-[#0a0a0a] p-6 space-y-6">
-                      <h2 className="text-[20px] font-bold text-white tracking-tight">Provisioning</h2>
+                   <div className="border border-[var(--border-dim)] bg-[var(--surface-inset)] p-6 space-y-6">
+                      <h2 className="text-[20px] font-bold text-[var(--text-bright)] tracking-tight">Provisioning</h2>
                       <form onSubmit={handleCreateUser} className="space-y-6">
                          <div className="space-y-2">
-                            <label className="text-[9px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">User UID</label>
-                            <input value={newUser.username} onChange={e => setNewUser({...newUser, username: e.target.value})} className="w-full bg-black border border-[var(--border-dim)] p-4 text-[13px] outline-none" />
+                            <label className="text-[11px] font-semibold tracking-[0.06em] text-[var(--text-faint)] uppercase">User UID</label>
+                            <input value={newUser.username} onChange={e => setNewUser({...newUser, username: e.target.value})} className="w-full bg-[var(--surface-inset)] border border-[var(--border-dim)] p-4 text-[13px] outline-none" />
                          </div>
                          <div className="space-y-2">
-                            <label className="text-[9px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">Access Role</label>
-                            <select value={newUser.role} onChange={e => setNewUser({...newUser, role: e.target.value})} className="w-full bg-black border border-[var(--border-dim)] p-4 text-[13px] outline-none uppercase font-bold tracking-widest text-[var(--text-muted)]">
+                            <label className="text-[11px] font-semibold tracking-[0.06em] text-[var(--text-faint)] uppercase">Access Role</label>
+                            <select value={newUser.role} onChange={e => setNewUser({...newUser, role: e.target.value})} className="w-full bg-[var(--surface-inset)] border border-[var(--border-dim)] p-4 text-[13px] outline-none uppercase font-bold tracking-widest text-[var(--text-muted)]">
                                <option value="operator">Operator</option>
                                <option value="engineer">Engineer</option>
                                <option value="admin">Admin</option>
                             </select>
                          </div>
                          <div className="space-y-2">
-                            <label className="text-[9px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">Shield Key</label>
-                            <input type="password" value={newUser.password} onChange={e => setNewUser({...newUser, password: e.target.value})} className="w-full bg-black border border-[var(--border-dim)] p-4 text-[13px] outline-none" />
+                            <label className="text-[11px] font-semibold tracking-[0.06em] text-[var(--text-faint)] uppercase">Shield Key</label>
+                            <input type="password" value={newUser.password} onChange={e => setNewUser({...newUser, password: e.target.value})} className="w-full bg-[var(--surface-inset)] border border-[var(--border-dim)] p-4 text-[13px] outline-none" />
                          </div>
-                         <button className="w-full py-4 bg-white text-black text-[10px] font-bold tracking-[0.3em] uppercase transition-all hover:bg-[var(--text-muted)]">Establish Credential</button>
+                         <button className="w-full py-4 bg-[var(--text-bright)] text-[var(--text-inverse)] text-[12px] font-bold tracking-[0.06em] uppercase transition-all hover:bg-[var(--text-muted)]">Establish Credential</button>
                       </form>
                    </div>
-                   <div className="border border-[var(--border-dim)] bg-[#0a0a0a] p-0 flex flex-col">
+                   <div className="border border-[var(--border-dim)] bg-[var(--surface-inset)] p-0 flex flex-col">
                       <div className="p-8 border-b border-[var(--border-dim)]">
-                        <h2 className="text-[14px] font-bold text-white tracking-[0.2em] uppercase">Active Credential Registry</h2>
+                        <h2 className="text-[15px] font-semibold text-[var(--text-bright)] tracking-[0.02em] uppercase">Active Credential Registry</h2>
                       </div>
                       <div className="flex-1 overflow-auto custom-scrollbar">
                          <table className="w-full">
                             <tbody>
                                {users.map(u => (
-                                 <tr key={u.username} className="border-b border-[var(--border-dim)] hover:bg-white/5 transition-colors">
+                                 <tr key={u.username} className="border-b border-[var(--border-dim)] hover:bg-[var(--avatar-bg)] transition-colors">
                                     <td className="px-8 py-5 text-[12px] font-mono text-[var(--text-muted)]">{u.username}</td>
                                     <td className="px-8 py-5 text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--online)]">{u.role}</td>
                                  </tr>
@@ -195,11 +195,11 @@ export default function SettingsPage() {
               )}
 
               {tab === "notifications" && (
-                <div className="border border-[var(--border-dim)] bg-[#0a0a0a] p-12 space-y-10">
+                <div className="border border-[var(--border-dim)] bg-[var(--surface-inset)] p-12 space-y-10">
                    <div className="flex items-center justify-between">
                       <div className="space-y-1">
-                        <h2 className="text-[20px] font-bold text-white tracking-tight">Relay Engine</h2>
-                        <p className="text-[11px] font-bold text-[var(--text-faint)] uppercase tracking-[0.3em]">Communication Pathways</p>
+                        <h2 className="text-[20px] font-bold text-[var(--text-bright)] tracking-tight">Relay Engine</h2>
+                        <p className="text-[12px] font-bold text-[var(--text-faint)] uppercase tracking-[0.06em]">Communication Pathways</p>
                       </div>
                       <div className="flex items-center gap-3 px-4 py-2 border border-[var(--online)] bg-[var(--online)]/5">
                         <span className="w-2 h-2 rounded-full bg-[var(--online)]" />
@@ -208,29 +208,29 @@ export default function SettingsPage() {
                    </div>
                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-6">
-                         <p className="text-[11px] font-bold tracking-[0.2em] text-white border-b border-white/10 pb-4">TELEGRAM GATEWAY</p>
+                         <p className="text-[12px] font-semibold tracking-[0.06em] text-[var(--text-bright)] border-b border-[var(--border)] pb-4">TELEGRAM GATEWAY</p>
                          <div className="space-y-4">
-                            <input placeholder="Bot Auth Token" className="w-full bg-black border border-[var(--border-dim)] p-4 text-[12px] outline-none" />
-                            <input placeholder="Target Chat ID" className="w-full bg-black border border-[var(--border-dim)] p-4 text-[12px] outline-none" />
+                            <input placeholder="Bot Auth Token" className="w-full bg-[var(--surface-inset)] border border-[var(--border-dim)] p-4 text-[12px] outline-none" />
+                            <input placeholder="Target Chat ID" className="w-full bg-[var(--surface-inset)] border border-[var(--border-dim)] p-4 text-[12px] outline-none" />
                          </div>
                       </div>
                       <div className="space-y-6">
-                         <p className="text-[11px] font-bold tracking-[0.2em] text-white border-b border-white/10 pb-4">WHATSAPP RELAY</p>
+                         <p className="text-[12px] font-semibold tracking-[0.06em] text-[var(--text-bright)] border-b border-[var(--border)] pb-4">WHATSAPP RELAY</p>
                          <div className="space-y-4">
-                            <input placeholder="Gateway Endpoint" className="w-full bg-black border border-[var(--border-dim)] p-4 text-[12px] outline-none" />
-                            <input type="password" placeholder="Access Token" className="w-full bg-black border border-[var(--border-dim)] p-4 text-[12px] outline-none" />
+                            <input placeholder="Gateway Endpoint" className="w-full bg-[var(--surface-inset)] border border-[var(--border-dim)] p-4 text-[12px] outline-none" />
+                            <input type="password" placeholder="Access Token" className="w-full bg-[var(--surface-inset)] border border-[var(--border-dim)] p-4 text-[12px] outline-none" />
                          </div>
                       </div>
                    </div>
                    <div className="pt-10 border-t border-[var(--border-dim)] flex justify-end">
-                      <button className="px-12 py-4 bg-white text-black text-[11px] font-bold tracking-[0.3em] uppercase hover:bg-[var(--text-muted)] transition-all">Consolidate & Sync</button>
+                      <button className="px-12 py-4 bg-[var(--text-bright)] text-[var(--text-inverse)] text-[12px] font-bold tracking-[0.06em] uppercase hover:bg-[var(--text-muted)] transition-all">Consolidate & Sync</button>
                    </div>
                 </div>
               )}
             </div>
 
             {/* Elite Sub-footer */}
-            <footer className="pt-10 pb-6 flex items-center justify-between opacity-20 text-[9px] font-bold tracking-[0.4em] uppercase">
+            <footer className="pt-10 pb-6 flex items-center justify-between opacity-20 text-[11px] font-bold tracking-[0.06em] uppercase">
                 <p>Command Console Alpha-1</p>
                 <p>Consultant Grade Config Module</p>
             </footer>

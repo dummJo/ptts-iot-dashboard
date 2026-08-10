@@ -244,7 +244,7 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
                 {!collapsed && <span className="text-[13px] font-medium truncate">{item.label}</span>}
                 {badge && badge > 0 && (
                   <span
-                    className={`text-[11px] font-semibold flex items-center justify-center bg-[var(--fault)] text-white rounded-[var(--r-pill)] ${
+                    className={`text-[11px] font-semibold flex items-center justify-center bg-[var(--fault)] text-[var(--text-bright)] rounded-[var(--r-pill)] ${
                       collapsed
                         ? "absolute top-0.5 right-0.5 min-w-[16px] h-4 px-1"
                         : "ml-auto min-w-[20px] h-5 px-1.5"
@@ -281,17 +281,17 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
           {!ciamConnected && (
             <div className="flex items-center gap-2">
               <div className="group relative">
-                <span className="text-[8px] font-bold text-[var(--fault)] animate-pulse cursor-help uppercase tracking-tighter">OFFLINE</span>
+                <span className="text-[11px] font-semibold text-[var(--fault)] animate-pulse cursor-help uppercase tracking-tighter">OFFLINE</span>
                 {ciamError && (
                   <div className="absolute bottom-full right-0 mb-2 w-48 p-2 bg-[var(--surface-2)] border border-[var(--fault)]/30 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
-                    <p className="text-[9px] leading-tight" style={{ color: "var(--fault)" }}>{ciamError}</p>
+                    <p className="text-[12px] leading-snug" style={{ color: "var(--fault)" }}>{ciamError}</p>
                   </div>
                 )}
               </div>
               <button 
                 onClick={handleCiamSync}
                 disabled={ciamPending}
-                className="text-[8px] px-2 py-0.5 border border-[var(--fault)] text-[var(--fault)] hover:bg-[var(--fault)] hover:text-[var(--text-bright)] transition-all font-bold uppercase disabled:opacity-50"
+                className="text-[11px] px-2 py-0.5 border border-[var(--fault)] text-[var(--fault)] hover:bg-[var(--fault)] hover:text-[var(--text-bright)] transition-all font-bold uppercase disabled:opacity-50"
               >
                 {ciamPending ? "..." : "SYNC"}
               </button>
@@ -350,23 +350,23 @@ export default function Sidebar({ pollInterval = 60000 }: { pollInterval?: numbe
              onClick={(e) => { if (e.target === e.currentTarget) setShowSwitch(false); }}>
           <div className="w-80 p-6 bg-[var(--surface-2)] border border-[var(--border)] animate-fade-in shadow-elite">
             <div className="flex items-center justify-between mb-8">
-              <p className="text-[10px] font-bold tracking-[0.3em] text-[var(--text-muted)] uppercase">Kernel Access Overlay</p>
+              <p className="text-[12px] font-bold tracking-[0.06em] text-[var(--text-muted)] uppercase">Kernel Access Overlay</p>
               <button onClick={() => setShowSwitch(false)} className="text-[var(--text-faint)] hover:text-[var(--text-bright)]">✕</button>
             </div>
             <form action={switchAction} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-[9px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">Entity UID</label>
+                <label className="text-[11px] font-semibold tracking-[0.06em] text-[var(--text-faint)] uppercase">Entity UID</label>
                 <input name="username" type="text" placeholder="Access Code"
                   className="w-full bg-[var(--surface-input)] border border-[var(--border)] px-3 py-2 text-[13px] outline-none focus:border-[var(--ptts)] transition-all" />
               </div>
               <div className="space-y-2">
-                <label className="text-[9px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">Encryption Key</label>
+                <label className="text-[11px] font-semibold tracking-[0.06em] text-[var(--text-faint)] uppercase">Encryption Key</label>
                 <input name="password" type="password" placeholder="Key Token"
                   className="w-full bg-[var(--surface-input)] border border-[var(--border)] px-3 py-2 text-[13px] outline-none focus:border-[var(--ptts)] transition-all" />
               </div>
               {switchState?.error && <p className="text-[10px] font-bold text-[var(--fault)] uppercase tracking-widest">{switchState.error}</p>}
               <button type="submit" disabled={switchPending}
-                className="w-full py-3 bg-[var(--text-muted)] text-[var(--text-inverse)] text-[10px] font-bold tracking-[0.4em] uppercase hover:bg-[var(--text-bright)] transition-all disabled:opacity-50">
+                className="w-full py-3 bg-[var(--text-muted)] text-[var(--text-inverse)] text-[12px] font-bold tracking-[0.06em] uppercase hover:bg-[var(--text-bright)] transition-all disabled:opacity-50">
                 {switchPending ? "Authorizing..." : "Engage Protocol →"}
               </button>
             </form>

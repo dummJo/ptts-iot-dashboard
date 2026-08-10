@@ -54,14 +54,14 @@ export default function TopologyPage() {
         <div className="flex-1 overflow-auto p-6 space-y-6">
           <div className="flex items-center gap-3 px-3 py-2" style={{ background: "var(--surface)", border: "1px dashed var(--border)", borderRadius: "var(--r-sm)" }}>
             <span className="w-2 h-2" style={{ background: "var(--ptts-teal)" }} />
-            <span className="text-[10px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>DRAFT TEMPLATE · TOPOLOGY MOCK</span>
+            <span className="text-[12px] tracking-[0.06em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>DRAFT TEMPLATE · TOPOLOGY MOCK</span>
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-[1fr_320px] gap-6">
             <section className="p-6" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}>
               <div className="flex items-center justify-between mb-5">
-                <h2 className="text-[11px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-bright)" }}>Edge Network · Live Map</h2>
-                <span className="text-[9px] tracking-[0.3em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>{NODES.length} nodes · {EDGES.length} links</span>
+                <h2 className="text-[12px] tracking-[0.06em] font-bold uppercase" style={{ color: "var(--text-bright)" }}>Edge Network · Live Map</h2>
+                <span className="text-[11px] tracking-[0.06em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>{NODES.length} nodes · {EDGES.length} links</span>
               </div>
 
               <div className="relative w-full overflow-x-auto" style={{ background: "var(--surface-2)", border: "1px solid var(--border-dim)" }}>
@@ -99,7 +99,7 @@ export default function TopologyPage() {
             </section>
 
             <aside className="p-6 space-y-4" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}>
-              <h2 className="text-[11px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-bright)" }}>Protocol Runtime</h2>
+              <h2 className="text-[12px] tracking-[0.06em] font-bold uppercase" style={{ color: "var(--text-bright)" }}>Protocol Runtime</h2>
               <ul className="space-y-2">
                 {PROTOCOLS.map(p => (
                   <li key={p.name} className="px-3 py-2.5 flex items-center justify-between" style={{ background: "var(--surface-2)", border: "1px solid var(--border-dim)" }}>
@@ -107,7 +107,7 @@ export default function TopologyPage() {
                       <span className="w-1.5 h-1.5" style={{ background: healthColor[p.health] }} />
                       <span className="text-[11px] font-bold" style={{ color: "var(--text-bright)" }}>{p.name}</span>
                     </div>
-                    <div className="flex items-center gap-3 text-[9px] tracking-widest font-bold uppercase tabular-nums" style={{ color: "var(--text-faint)" }}>
+                    <div className="flex items-center gap-3 text-[11px] tracking-[0.06em] font-semibold uppercase tabular-nums" style={{ color: "var(--text-faint)" }}>
                       <span>{p.latency}ms</span>
                       <span style={{ color: healthColor[p.health] }}>{p.health}</span>
                     </div>

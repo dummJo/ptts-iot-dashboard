@@ -47,15 +47,15 @@ export default function AutomationPage() {
         <div className="flex-1 overflow-auto p-6 space-y-6">
           <div className="flex items-center gap-3 px-3 py-2" style={{ background: "var(--surface)", border: "1px dashed var(--border)", borderRadius: "var(--r-sm)" }}>
             <span className="w-2 h-2" style={{ background: "var(--ptts-teal)" }} />
-            <span className="text-[10px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>DRAFT TEMPLATE · NODE WORKFLOW MOCK</span>
+            <span className="text-[12px] tracking-[0.06em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>DRAFT TEMPLATE · NODE WORKFLOW MOCK</span>
           </div>
 
           <div className="grid grid-cols-1 xl:grid-cols-[280px_1fr] gap-6">
             <aside className="p-5 space-y-5" style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}>
-              <h2 className="text-[11px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-bright)" }}>Node Palette</h2>
+              <h2 className="text-[12px] tracking-[0.06em] font-bold uppercase" style={{ color: "var(--text-bright)" }}>Node Palette</h2>
               {PALETTE.map(g => (
                 <div key={g.group}>
-                  <p className="text-[9px] tracking-[0.3em] font-bold uppercase mb-2" style={{ color: "var(--ptts-teal)" }}>{g.group}</p>
+                  <p className="text-[11px] tracking-[0.06em] font-bold uppercase mb-2" style={{ color: "var(--ptts-teal)" }}>{g.group}</p>
                   <ul className="space-y-1">
                     {g.items.map(it => (
                       <li key={it} className="px-2.5 py-1.5 text-[11px] font-medium cursor-grab transition-colors hover:bg-[var(--surface-2)]"
@@ -77,10 +77,10 @@ export default function AutomationPage() {
                       <p className="text-[11px] mt-0.5" style={{ color: "var(--text-muted)" }}>{f.desc}</p>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="text-[9px] tracking-[0.3em] font-bold uppercase tabular-nums" style={{ color: "var(--text-faint)" }}>
+                      <span className="text-[11px] tracking-[0.06em] font-bold uppercase tabular-nums" style={{ color: "var(--text-faint)" }}>
                         {f.runs.toLocaleString()} runs
                       </span>
-                      <span className="px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase"
+                      <span className="px-2 py-0.5 rounded-[var(--r-pill)] text-[11px] font-semibold uppercase tracking-[0.06em]"
                         style={{
                           color: f.enabled ? "var(--online)" : "var(--text-faint)",
                           border: `1px solid ${f.enabled ? "var(--online)" : "var(--border)"}`,

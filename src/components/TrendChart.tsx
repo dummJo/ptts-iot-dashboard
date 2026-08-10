@@ -256,12 +256,12 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
                 onChange={(e) => setTempLimit(parseFloat(e.target.value) || 0)}
                 onBlur={() => setEditTemp(false)}
                 onKeyDown={(e) => e.key === "Enter" && setEditTemp(false)}
-                className="w-14 px-1 py-0.5 text-xs font-black rounded-none outline-none font-mono"
+                className="w-14 px-1 py-0.5 text-xs font-semibold outline-none font-mono"
                 style={{ background: "var(--surface-2)", border: "1px solid var(--fault)", color: "var(--fault)" }}
               />
             ) : (
               <button onClick={() => setEditTemp(true)} title="Click to adjust"
-                className="font-black underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70"
+                className="font-semibold underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70"
                 style={{ color: "var(--fault)", background: "none", border: "none", padding: 0 }}>
                 {formatLocalNumber(tempLimit, 0)}°C ✎
               </button>
@@ -276,12 +276,12 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
                 onChange={(e) => setVibLimit(parseFloat(e.target.value) || 0)}
                 onBlur={() => setEditVib(false)}
                 onKeyDown={(e) => e.key === "Enter" && setEditVib(false)}
-                className="w-16 px-1 py-0.5 text-xs font-black rounded-none outline-none font-mono"
+                className="w-16 px-1 py-0.5 text-xs font-semibold outline-none font-mono"
                 style={{ background: "var(--surface-2)", border: "1px solid var(--warning)", color: "var(--warning)" }}
               />
             ) : (
               <button onClick={() => setEditVib(true)} title="Click to adjust"
-                className="font-black underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70"
+                className="font-semibold underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70"
                 style={{ color: "var(--warning)", background: "none", border: "none", padding: 0 }}>
                 {formatLocalNumber(vibLimit, 1)} mm/s ✎
               </button>

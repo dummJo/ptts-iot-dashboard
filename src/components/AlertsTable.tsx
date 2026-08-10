@@ -40,7 +40,7 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
     
     return parts.map((part, i) => {
       if (part.startsWith("**") && part.endsWith("**")) {
-        return <strong key={i} className="font-black text-text-bright">{part.slice(2, -2)}</strong>;
+        return <strong key={i} className="font-semibold text-text-bright">{part.slice(2, -2)}</strong>;
       }
       return <span key={i}>{part}</span>;
     });
