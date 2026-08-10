@@ -19,24 +19,24 @@ export default function StatusDonut({ linkSummary, healthSummary }: StatusDonutP
     <div className="flex flex-col gap-3">
       {/* ── Connectivity Card ── */}
       <div className="scada-card p-3">
-        <div className="scada-card-header mb-2 text-[10px] md:text-xs">
+        <div className="scada-card-header mb-2">
            <span className="scada-label">NETWORK CONNECTIVITY</span>
-           <span className="text-text-muted">{totalLink} NODES</span>
+           <span className="text-[13px] text-text-muted">{totalLink} NODES</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-           <div className="flex items-center justify-between p-2 rounded-none bg-bg border border-border-dim">
+           <div className="panel-inset flex items-center justify-between p-2">
                <div className="flex items-center gap-1.5 md:gap-2">
-                 <span className="led led-online" style={{ width:6, height:6 }} />
-                 <span className="text-[10px] md:text-xs font-bold text-text-muted">ONLINE</span>
+                 <span className="led led-online" style={{ width:6, height:6 }} aria-hidden="true" />
+                 <span className="scada-label">ONLINE</span>
               </div>
-              <span className="text-xs md:text-[14px] font-black text-online">{linkSummary?.online || 0}</span>
+              <span className="text-[15px] font-semibold num text-online">{linkSummary?.online || 0}</span>
            </div>
-           <div className="flex items-center justify-between p-2 rounded-none bg-bg border border-border-dim">
+           <div className="panel-inset flex items-center justify-between p-2">
                <div className="flex items-center gap-1.5 md:gap-2">
-                 <span className="led led-fault" style={{ width:6, height:6 }} />
-                 <span className="text-[10px] md:text-xs font-bold text-text-muted">OFFLINE</span>
+                 <span className="led led-fault" style={{ width:6, height:6 }} aria-hidden="true" />
+                 <span className="scada-label">OFFLINE</span>
               </div>
-              <span className="text-xs md:text-[14px] font-black text-fault">{linkSummary?.offline || 0}</span>
+              <span className="text-[15px] font-semibold num text-fault">{linkSummary?.offline || 0}</span>
            </div>
         </div>
       </div>
@@ -45,7 +45,10 @@ export default function StatusDonut({ linkSummary, healthSummary }: StatusDonutP
       <div className="scada-card flex flex-col">
         <div className="scada-card-header flex-col sm:flex-row items-start sm:items-center gap-1 sm:gap-0">
           <span className="scada-label">MACHINE HEALTH (CONDITION)</span>
-          <span className="text-[10px] md:text-xs font-bold tracking-widest" style={{ color: "var(--online)" }}>
+          <span
+            className="text-[12px] font-semibold uppercase"
+            style={{ color: "var(--online)", letterSpacing: "var(--tracking-label)" }}
+          >
             {healthSummary?.good || 0} HEALTHY
           </span>
         </div>
@@ -58,23 +61,23 @@ export default function StatusDonut({ linkSummary, healthSummary }: StatusDonutP
                   {healthData.map((e, i) => <Cell key={i} fill={e.color} />)}
                 </Pie>
                 <Tooltip
-                  contentStyle={{ background:"var(--surface-2)", border:"1px solid var(--border)", borderRadius:0, fontSize:10, fontFamily:"inherit" }}
+                  contentStyle={{ background:"var(--surface-2)", border:"1px solid var(--border)", borderRadius:"var(--r-sm)", fontSize:12, fontFamily:"inherit" }}
                   itemStyle={{ color:"var(--text)" }}
                 />
               </PieChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-2xl font-bold" style={{ color:"var(--text-bright)" }}>
+              <span className="text-[26px] font-medium leading-none num" style={{ color:"var(--text-bright)" }}>
                 {Math.round(((healthSummary?.good || 0) / (totalLink || 1)) * 100)}%
               </span>
-              <span className="text-sm tracking-widest" style={{ color:"var(--text-faint)" }}>GOOD</span>
+              <span className="scada-label mt-1" style={{ color:"var(--text-faint)" }}>GOOD</span>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mt-4 sm:mt-2">
             {healthData.map((d) => (
-              <div key={d.name} className="flex flex-row sm:flex-col items-center justify-between sm:justify-center px-4 sm:px-1 py-2 sm:py-1.5 rounded-none md:rounded-none border border-border-dim bg-bg/50">
-                <span className="text-[10px] md:text-[10px] uppercase font-bold text-text-faint md:mb-0.5 tracking-widest">{d.name}</span>
-                <span className="text-sm md:text-[15px] font-black leading-none" style={{ color: d.color }}>{d.value}</span>
+              <div key={d.name} className="panel-inset flex flex-row sm:flex-col items-center justify-between sm:justify-center px-4 sm:px-1 py-2 sm:py-1.5">
+                <span className="scada-label md:mb-0.5">{d.name}</span>
+                <span className="text-[15px] font-semibold leading-none num" style={{ color: d.color }}>{d.value}</span>
               </div>
             ))}
           </div>
