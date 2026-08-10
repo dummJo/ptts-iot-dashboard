@@ -5,10 +5,13 @@ import { truncate } from "@/lib/utils";
 
 import { apiClient } from "@/lib/apiClient";
 
-const SEV: Record<string, { led: string; color: string; bg: string; label: string }> = {
-  critical: { led: "led-fault",   color: "var(--fault)",   bg: "var(--badge-fault-bg)",   label: "CRITICAL" },
-  warning:  { led: "led-warning", color: "var(--warning)", bg: "var(--badge-warning-bg)", label: "WARNING"  },
-  info:     { led: "led-online",  color: "var(--online)",  bg: "var(--badge-online-bg)",  label: "INFO"     },
+// `warning` previously pointed at var(--badge-warning-bg); the token is called
+// --badge-warn-bg, so warning-severity cards rendered with no tint — the one
+// severity where the colour cue matters most for triage.
+const SEV: Record<string, { led: string; color: string; bg: string; badge: string; label: string }> = {
+  critical: { led: "led-fault",   color: "var(--fault)",   bg: "var(--badge-fault-bg)",  badge: "badge-fault", label: "CRITICAL" },
+  warning:  { led: "led-warning", color: "var(--warning)", bg: "var(--badge-warn-bg)",   badge: "badge-warn",  label: "WARNING"  },
+  info:     { led: "led-online",  color: "var(--online)",  bg: "var(--badge-online-bg)", badge: "badge-ok",    label: "INFO"     },
 };
 
 export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
@@ -67,35 +70,28 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
       <div className="scada-card-header">
         <span className="scada-label">ACTIVE ALARMS · TODAY</span>
         <div className="flex items-center gap-2">
-          <span className="led led-fault" style={{ width: 6, height: 6 }} />
-          <button
-            onClick={handleExportLog}
-            disabled={alerts.length === 0}
-            className="text-xs font-bold tracking-widest transition-all px-3 py-1.5 rounded-none shadow-sm disabled:opacity-40"
-            style={{ 
-              color: "var(--text-muted)", 
-              background: "var(--surface-2)",
-              border: "1px solid var(--border)"
-            }}
-          >
-            EXPORT LOG
+          <span aria-hidden="true" className="led led-fault" style={{ width: 6, height: 6 }} />
+          <button type="button" onClick={handleExportLog} disabled={alerts.length === 0} className="btn">
+            Export log
           </button>
           <button
+            type="button"
             onClick={handleAckAll}
             disabled={loading || alerts.length === 0}
-            className="text-xs font-bold tracking-widest transition-all px-3 py-1.5 rounded-none shadow-sm disabled:opacity-40"
-            style={{ 
-              color: "var(--bg)", 
-              background: "var(--ptts-teal)",
-              border: "1px solid var(--ptts-teal)"
-            }}
+            className="btn btn-primary"
           >
-            {loading ? "PROCESSING..." : "ACKNOWLEDGE ALL"}
+            {loading ? "Processing…" : "Acknowledge all"}
           </button>
         </div>
       </div>
 
-      <div className="p-4 grid grid-cols-3 gap-3">
+      {alerts.length === 0 && (
+        <p className="px-5 py-8 text-[13px] text-center" style={{ color: "var(--text-faint)" }}>
+          No active alarms.
+        </p>
+      )}
+
+      <div className="p-4 grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-3">
         {alerts.map((a) => {
           const s = SEV[a.severity] ?? SEV.info;
           const isAcked = acknowledged.has(a.id);
@@ -103,55 +99,52 @@ export default function AlertsTable({ alerts = [] }: { alerts?: Alarm[] }) {
           return (
             <div
               key={a.id}
-              className="rounded-none p-3 flex flex-col gap-2 transition-opacity"
+              className="p-3.5 flex flex-col gap-2.5 transition-opacity"
               style={{
                 background: s.bg,
                 border: `1px solid ${isAcked ? "var(--border)" : s.color + "40"}`,
-                opacity: isAcked ? 0.5 : 1,
+                borderRadius: "var(--r-md)",
+                opacity: isAcked ? 0.55 : 1,
               }}
             >
               {/* Header row — severity + time */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <span className={`led ${isAcked ? "led-offline" : s.led}`} style={{ width: 7, height: 7 }} />
-                  <span
-                    className="text-xs font-bold tracking-[.15em]"
-                    style={{ color: isAcked ? "var(--text-faint)" : s.color }}
-                  >
-                    {s.label}
-                  </span>
-                </div>
-                <span className="text-xs font-mono" style={{ color: "var(--text-faint)" }}>
+              <div className="flex items-center justify-between gap-2">
+                <span className={`badge ${isAcked ? "" : s.badge}`}>
+                  <span aria-hidden="true" className={`led ${isAcked ? "led-offline" : s.led}`} style={{ width: 7, height: 7 }} />
+                  {s.label}
+                </span>
+                <span className="num text-[12px]" style={{ color: "var(--text-faint)" }}>
                   {a.time}
                 </span>
               </div>
 
-              {/* Asset name — bold */}
-              <p className="text-sm font-bold leading-snug" style={{ color: "var(--text-bright)" }}>
+              {/* Asset name */}
+              <p className="text-[14px] font-semibold leading-snug" style={{ color: "var(--text-bright)" }}>
                 {truncate(a.asset, 28)}
               </p>
 
-              {/* Message — normal weight, readable */}
-              <p className="text-base leading-relaxed" style={{ color: "var(--text-muted)" }}>
+              {/* Message */}
+              <p className="text-[13px] leading-relaxed" style={{ color: "var(--text-muted)" }}>
                 {formatMessage(truncate(a.message, 120))}
               </p>
 
               {/* Footer row — alarm ID + ACK button */}
-              <div className="flex items-center justify-between mt-1">
-                <span className="text-xs font-mono italic" style={{ color: "var(--text-faint)" }}>
+              <div className="flex items-center justify-between gap-2 mt-auto pt-1">
+                <span className="num text-[12px] truncate" style={{ color: "var(--text-faint)" }}>
                   {a.id}
                 </span>
                 <button
+                  type="button"
                   onClick={() => handleAck(a.id)}
                   disabled={isAcked}
-                  className="text-xs px-2.5 py-1 rounded-none font-bold tracking-widest transition-all disabled:opacity-40 disabled:cursor-default"
-                  style={{
-                    border: `1px solid ${isAcked ? "var(--border)" : s.color}`,
-                    color: isAcked ? "var(--text-faint)" : s.color,
-                    background: isAcked ? "transparent" : "var(--bg)",
-                  }}
+                  className="btn shrink-0"
+                  style={
+                    isAcked
+                      ? undefined
+                      : { borderColor: s.color, color: s.color, background: "var(--bg)" }
+                  }
                 >
-                  {isAcked ? "ACKNOWLEDGED" : "ACKNOWLEDGE"}
+                  {isAcked ? "Acknowledged" : "Acknowledge"}
                 </button>
               </div>
             </div>
