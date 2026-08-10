@@ -15,24 +15,28 @@ import { motion } from "framer-motion";
 
 export default function KPICard({ label, value, unit, sub, trend, trendUp, color, ledClass }: KPICardProps) {
   return (
-    <motion.div 
+    <motion.div
       className="scada-card flex flex-col h-full"
-      whileHover={{ y: -6, scale: 1.02, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } }}
-      whileTap={{ scale: 0.97, transition: { duration: 0.2, ease: "easeOut" } }}
+      // A 6px lift plus a 2% scale re-rasterised the text on every hover across a
+      // grid of these. Lift only, and less of it.
+      whileHover={{ y: -2, transition: { duration: 0.18, ease: "easeOut" } }}
+      whileTap={{ scale: 0.995, transition: { duration: 0.12, ease: "easeOut" } }}
     >
       <div className="scada-card-header">
         <span className="scada-label">{label}</span>
-        <span className={`led ${ledClass}`} />
+        <span aria-hidden="true" className={`led ${ledClass}`} />
       </div>
-      <div className="p-3 md:p-4 flex-1 flex flex-col justify-between gap-1 md:gap-2">
-        <div className="flex items-end gap-1 flex-wrap">
-          <span className="scada-value text-2xl md:text-4xl" style={{ color }}>{value}</span>
-          <span className="scada-unit pb-1 text-[10px] md:text-[15px]">{unit}</span>
+      <div className="px-5 py-4 flex-1 flex flex-col gap-1.5">
+        <div className="flex items-baseline gap-1.5 flex-wrap">
+          {/* Size comes from .scada-value's clamp; the old text-2xl md:text-4xl
+              overrode it and reintroduced the wrapping it was meant to prevent. */}
+          <span className="scada-value" style={{ color }}>{value}</span>
+          <span className="scada-unit">{unit}</span>
         </div>
-        <p className="text-[11px] md:text-sm leading-tight mt-1" style={{ color: "var(--text-muted)", minHeight: 34 }}>{sub}</p>
-        <div className="flex items-center gap-1.5 text-xs md:text-sm font-bold tracking-wide mt-auto pt-2"
+        <p className="text-[13px] leading-snug" style={{ color: "var(--text-muted)" }}>{sub}</p>
+        <div className="flex items-center gap-1.5 text-[13px] font-semibold mt-auto pt-2"
           style={{ color: trendUp ? "var(--online)" : "var(--fault)" }}>
-          <span className="text-[10px] md:text-xs">{trendUp ? "▲" : "▼"}</span>
+          <span aria-hidden="true" className="text-[11px]">{trendUp ? "▲" : "▼"}</span>
           <span className="truncate">{trend}</span>
         </div>
       </div>

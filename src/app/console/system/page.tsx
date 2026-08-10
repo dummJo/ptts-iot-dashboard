@@ -44,14 +44,14 @@ export default function SystemControlPage() {
         </header>
 
         <div className="flex-1 overflow-auto p-6 space-y-6">
-          <div className="flex items-center gap-3 px-3 py-2" style={{ background: "var(--surface)", border: "1px dashed var(--border)" }}>
+          <div className="flex items-center gap-3 px-3 py-2" style={{ background: "var(--surface)", border: "1px dashed var(--border)", borderRadius: "var(--r-sm)" }}>
             <span className="w-2 h-2" style={{ background: "var(--ptts-teal)" }} />
-            <span className="text-[10px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>DRAFT TEMPLATE · RUNTIME OPERATIONS</span>
+            <span className="text-[12px] tracking-[0.06em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>DRAFT TEMPLATE · RUNTIME OPERATIONS</span>
           </div>
 
-          <section style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+          <section style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}>
             <div className="px-5 py-3" style={{ borderBottom: "1px solid var(--border-dim)" }}>
-              <h2 className="text-[11px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-bright)" }}>Runtime Services</h2>
+              <h2 className="text-[12px] tracking-[0.06em] font-bold uppercase" style={{ color: "var(--text-bright)" }}>Runtime Services</h2>
             </div>
             <div className="divide-y divide-[var(--border-dim)]">
               {SERVICES.map(s => (
@@ -63,7 +63,7 @@ export default function SystemControlPage() {
                   <p className="text-[11px]" style={{ color: "var(--text-muted)" }}>{s.desc}</p>
                   <p className="text-[10px] font-mono tabular-nums" style={{ color: "var(--text-faint)" }}>{s.uptime}</p>
                   <p className="text-[10px] font-mono tabular-nums" style={{ color: "var(--text-muted)" }}>{s.throughput}</p>
-                  <span className="px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase justify-self-start"
+                  <span className="px-2 py-0.5 rounded-[var(--r-pill)] text-[11px] font-semibold uppercase tracking-[0.06em] justify-self-start"
                     style={{ color: statusColor[s.status], border: `1px solid ${statusColor[s.status]}40` }}>
                     {s.status}
                   </span>
@@ -72,13 +72,13 @@ export default function SystemControlPage() {
             </div>
           </section>
 
-          <section style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+          <section style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}>
             <div className="px-5 py-3" style={{ borderBottom: "1px solid var(--border-dim)" }}>
-              <h2 className="text-[11px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--text-bright)" }}>Edge Gateways</h2>
+              <h2 className="text-[12px] tracking-[0.06em] font-bold uppercase" style={{ color: "var(--text-bright)" }}>Edge Gateways</h2>
             </div>
             <table className="w-full text-left">
               <thead>
-                <tr className="text-[9px] tracking-[0.3em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>
+                <tr className="text-[11px] tracking-[0.06em] font-bold uppercase" style={{ color: "var(--text-faint)" }}>
                   <th className="px-5 py-3">ID</th>
                   <th className="px-5 py-3">SITE</th>
                   <th className="px-5 py-3">IP</th>
@@ -96,7 +96,7 @@ export default function SystemControlPage() {
                     <td className="px-5 py-3 text-right font-mono tabular-nums" style={{ color: "var(--text-muted)" }}>{g.cpu}%</td>
                     <td className="px-5 py-3 text-right font-mono tabular-nums" style={{ color: "var(--text-muted)" }}>{g.mem}%</td>
                     <td className="px-5 py-3">
-                      <span className="px-2 py-0.5 text-[9px] font-bold tracking-widest uppercase"
+                      <span className="px-2 py-0.5 rounded-[var(--r-pill)] text-[11px] font-semibold uppercase tracking-[0.06em]"
                         style={{ color: healthColor[g.health], border: `1px solid ${healthColor[g.health]}40` }}>
                         {g.health}
                       </span>

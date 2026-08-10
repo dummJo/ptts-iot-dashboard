@@ -150,6 +150,106 @@ export interface ReportSummary {
   assets: AssetReportRow[];
 }
 
+// ── Energy Management ─────────────────────────────────────────────────
+/**
+ * PLN industrial tariffs are split into two windows:
+ *   WBP  (Waktu Beban Puncak)      — peak window, billed at `peakMultiplier` × base
+ *   LWBP (Luar Waktu Beban Puncak) — everything else, billed at base rate
+ *
+ * Every numeric default in DEFAULT_TARIFF is a PLACEHOLDER, not a quoted rate.
+ * PTTS must enter the figures from its own PLN invoice before any cost shown by
+ * this console is treated as money. `isDefault` propagates that to the UI.
+ */
+export interface TariffConfig {
+  currency: string;
+  baseRatePerKwh: number;     // LWBP rate, currency units per kWh
+  peakMultiplier: number;     // "K factor" applied to the WBP window
+  peakStartHour: number;      // local hour, inclusive
+  peakEndHour: number;        // local hour, exclusive
+  utcOffsetMinutes: number;   // 420 = WIB (UTC+7)
+  co2FactorKgPerKwh: number;
+  isDefault: boolean;
+}
+
+export type TariffWindow = 'wbp' | 'lwbp';
+
+export interface EnergyPoint {
+  t: string;            // ISO timestamp of bucket start
+  label: string;        // axis label
+  kw: number;           // mean demand across the bucket
+  kwh: number;          // energy attributed to the bucket
+  window: TariffWindow;
+}
+
+export interface AssetEnergyRow {
+  id: string;
+  name: string;
+  type: string;
+  kwh: number;
+  kwhWbp: number;
+  kwhLwbp: number;
+  cost: number;
+  sharePct: number;
+  peakKw: number;
+  coveragePct: number;  // share of hours in range with at least one sample
+}
+
+export interface EnergyTotals {
+  kwh: number;
+  kwhWbp: number;
+  kwhLwbp: number;
+  cost: number;
+  costWbp: number;
+  costLwbp: number;
+  co2Kg: number;
+  peakKw: number;
+  peakAt: string | null;
+  avgKw: number;
+  loadFactor: number;      // avgKw / peakKw — 0 when peak is unknown
+  coveragePct: number;
+  specificEnergy: number | null;  // kWh/m³ — null when no flow data exists
+}
+
+export interface EnergySummary {
+  range: { from: string; to: string; label: string };
+  /** True when the payload is a deterministic stand-in, not measured data. */
+  simulated: boolean;
+  tariff: TariffConfig;
+  totals: EnergyTotals;
+  previous: { kwh: number; cost: number; co2Kg: number } | null;
+  profile: EnergyPoint[];
+  assets: AssetEnergyRow[];
+  generatedAt: string;
+}
+
+export type EnergyRangeKey = 'today' | '7d' | '30d' | 'custom';
+
+export const EMPTY_ENERGY: EnergySummary = {
+  range: { from: '', to: '', label: '' },
+  simulated: false,
+  tariff: {
+    currency: 'IDR',
+    baseRatePerKwh: 0,
+    peakMultiplier: 1,
+    peakStartHour: 18,
+    peakEndHour: 22,
+    utcOffsetMinutes: 420,
+    co2FactorKgPerKwh: 0,
+    isDefault: true,
+  },
+  totals: {
+    kwh: 0, kwhWbp: 0, kwhLwbp: 0,
+    cost: 0, costWbp: 0, costLwbp: 0,
+    co2Kg: 0, peakKw: 0, peakAt: null,
+    avgKw: 0, loadFactor: 0, coveragePct: 0,
+    specificEnergy: null,
+  },
+  previous: null,
+  profile: [],
+  assets: [],
+  generatedAt: '',
+};
+
 // ── MQTT Inbound Data Contract ────────────────────────────────────────
 /**
  * Shape of the data received from an MQTT-to-HTTP bridge.

@@ -1,96 +1,223 @@
 @import "tailwindcss";
 
 /**
- * PTTS DESIGN SYSTEM v2.0
- * Industrial Grade — Sophisticated Minimalism
+ * PTTS DESIGN SYSTEM v3.0 — "EdgeCore EMS"
+ * ─────────────────────────────────────────────────────────────────────────────
+ * Industrial, but readable. Layered surfaces instead of pure black, soft radii
+ * instead of hard corners, and a type scale that survives a 27" monitor.
+ *
+ * Compatibility contract: every token name from v2.0 is still defined here.
+ * Pages set colours inline via var(--surface) / var(--border) etc., so renaming
+ * a token silently breaks screens that are never opened during review.
  */
 
 :root {
-  /* Dark (Elite Monolith) */
-  --bg: #000000;
-  --bg-gradient: radial-gradient(circle at 0% 0%, rgba(50, 173, 230, 0.03), transparent 30%),
-                 radial-gradient(circle at 100% 100%, rgba(0, 102, 204, 0.03), transparent 30%);
+  /* ── Surfaces (dark, default) ─────────────────────────────────────────── */
+  --bg: #0a0b0d;
+  --bg-gradient:
+    radial-gradient(circle at 0% 0%, rgba(41, 205, 244, 0.05), transparent 38%),
+    radial-gradient(circle at 100% 100%, rgba(0, 113, 227, 0.05), transparent 38%);
 
-  --surface: rgba(18, 18, 18, 0.85);
-  --surface-2: rgba(28, 28, 30, 0.95);
-  --surface-3: rgba(44, 44, 46, 0.95);
-  --surface-input: #000000;
-  --surface-inset: #0a0a0a;
-  --surface-elevated: #050505;
+  --surface: #131519;
+  --surface-2: #191c21;
+  --surface-3: #21252b;
+  --surface-input: #0e1013;
+  --surface-inset: #0e1013;
+  --surface-elevated: #191c21;
 
-  --border: rgba(255, 255, 255, 0.08);
-  --border-dim: rgba(255, 255, 255, 0.04);
-  --border-bright: rgba(255, 255, 255, 0.15);
+  --border: rgba(255, 255, 255, 0.09);
+  --border-dim: rgba(255, 255, 255, 0.05);
+  --border-bright: rgba(255, 255, 255, 0.18);
 
-  --shadow-elite: 0 40px 100px -20px rgba(0, 0, 0, 0.8);
-
-  --text: #f5f5f7;
-  --text-muted: #86868b;
-  --text-faint: #424245;
+  /* ── Text ─────────────────────────────────────────────────────────────── */
+  --text: #e6e8eb;
+  --text-muted: #9aa1ab;
+  --text-faint: #6b7280;
   --text-bright: #ffffff;
-  --text-inverse: #000000;
+  --text-inverse: #0a0b0d;
 
-  --overlay-bg: rgba(0, 0, 0, 0.9);
-  --avatar-bg: rgba(255, 255, 255, 0.05);
-  --avatar-border: rgba(255, 255, 255, 0.1);
+  --overlay-bg: rgba(10, 11, 13, 0.88);
+  --avatar-bg: rgba(255, 255, 255, 0.06);
+  --avatar-border: rgba(255, 255, 255, 0.12);
 
-  /* Accent: PURE PRECISION */
-  --ptts: #0071e3;
+  /* ── Brand ────────────────────────────────────────────────────────────── */
+  --ptts: #2b8fff;
   --ptts-teal: #29cdf4;
-  --ptts-glow: rgba(41, 205, 244, 0.2);
+  --ptts-glow: rgba(41, 205, 244, 0.22);
 
-  /* Status (Subdued but Clear) */
-  --online: #30d158;
-  --warning: #ffd60a;
-  --fault: #ff453a;
-  --offline: #48484a;
+  /* ── Status ───────────────────────────────────────────────────────────── */
+  --online: #35d07f;
+  --warning: #ffc53d;
+  --fault: #ff5c53;
+  --offline: #4b5158;
 
-  /* Metric Channels (Clinical Palette) */
+  --badge-online-bg: rgba(53, 208, 127, 0.12);
+  --badge-warn-bg: rgba(255, 197, 61, 0.12);
+  --badge-fault-bg: rgba(255, 92, 83, 0.12);
+  --badge-neutral-bg: rgba(255, 255, 255, 0.06);
+
+  /* ── Metric channels (condition monitoring) ───────────────────────────── */
   --metric-vib: #64d2ff;
-  --metric-temp: #ffd60a;
-  --metric-rms: #ff9f0a;
-  --metric-power: #bf5af2;
-  --metric-current: #30d158;
+  --metric-temp: #ffc53d;
+  --metric-rms: #ff9f4a;
+  --metric-power: #b98cff;
+  --metric-current: #35d07f;
 
-  --sidebar-bg: #000000;
-  --topbar-glass: rgba(0, 0, 0, 0.75);
+  /* ── Categorical chart palette ────────────────────────────────────────── */
+  /* Slot order is the colourblind-safety mechanism, not decoration — never
+     cycle or reorder it. These steps are the validated set for a dark chart
+     surface: all six clear the lightness band, chroma floor, adjacent-pair CVD
+     separation (worst ΔE 8.4), normal-vision floor (19.3) and 3:1 contrast
+     against --surface. An earlier hand-picked set failed four of those checks.
+     Changing any value means re-running the palette validator on the whole set. */
+  --ch-1: #3987e5;  /* blue    */
+  --ch-2: #d95926;  /* orange  */
+  --ch-3: #199e70;  /* aqua    */
+  --ch-4: #c98500;  /* yellow  */
+  --ch-5: #d55181;  /* magenta */
+  --ch-6: #008300;  /* green   */
+
+  /* ── Energy semantics ─────────────────────────────────────────────────── */
+  /* Drawn from the categorical slots so the tariff split inherits the
+     validated blue/orange separation — the strongest pair in the set. */
+  --e-grid: var(--ch-1);   /* PLN grid import                                */
+  --e-solar: var(--ch-4);  /* PV generation                                  */
+  --e-genset: var(--ch-2); /* Diesel genset                                  */
+  --e-wbp: var(--ch-2);    /* Waktu Beban Puncak — peak tariff window        */
+  --e-lwbp: var(--ch-1);   /* Luar Waktu Beban Puncak — off-peak             */
+  --e-co2: #9aa1ab;
+
+  /* ── Radius ───────────────────────────────────────────────────────────── */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-pill: 999px;
+
+  /* ── Type scale ───────────────────────────────────────────────────────── */
+  --fs-micro: 11px;
+  --fs-label: 12px;
+  --fs-body: 14px;
+  --fs-metric: clamp(28px, 2.1vw, 44px);
+  --tracking-label: 0.06em;
+
+  /* ── Elevation ────────────────────────────────────────────────────────── */
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.28), 0 4px 12px -6px rgba(0, 0, 0, 0.42);
+  --elev-2: 0 2px 4px rgba(0, 0, 0, 0.32), 0 16px 32px -12px rgba(0, 0, 0, 0.55);
+  --shadow-elite: 0 32px 80px -24px rgba(0, 0, 0, 0.7); /* legacy alias */
+
+  /* ── Shell ────────────────────────────────────────────────────────────── */
+  --sidebar-bg: #0e1013;
+  --topbar-glass: rgba(14, 16, 19, 0.82);
 }
 
 .light {
-  --bg: #f5f5f7;
-  --bg-gradient: radial-gradient(circle at 0% 0%, rgba(0, 113, 227, 0.05), transparent 40%);
-  --surface: rgba(255, 255, 255, 0.95);
-  --surface-2: rgba(250, 250, 250, 0.98);
-  --surface-3: rgba(240, 240, 240, 0.98);
+  --bg: #f4f6f8;
+  --bg-gradient:
+    radial-gradient(circle at 0% 0%, rgba(0, 113, 227, 0.06), transparent 42%),
+    radial-gradient(circle at 100% 100%, rgba(41, 205, 244, 0.05), transparent 42%);
+
+  --surface: #ffffff;
+  --surface-2: #fafbfc;
+  --surface-3: #eef1f4;
   --surface-input: #ffffff;
-  --surface-inset: #f0f0f2;
-  --surface-elevated: #f5f5f7;
+  --surface-inset: #eef1f4;
+  --surface-elevated: #ffffff;
 
-  --border: rgba(0, 0, 0, 0.1);
-  --border-dim: rgba(0, 0, 0, 0.05);
-  --border-bright: rgba(0, 0, 0, 0.15);
+  --border: rgba(15, 23, 42, 0.12);
+  --border-dim: rgba(15, 23, 42, 0.07);
+  --border-bright: rgba(15, 23, 42, 0.2);
 
-  --shadow-elite: 0 20px 60px -15px rgba(0, 0, 0, 0.15);
-
-  --text: #1d1d1f;
-  --text-muted: #6e6e73;
-  --text-faint: #aeaeb2;
-  --text-bright: #000000;
+  --text: #1e2530;
+  --text-muted: #5b6472;
+  --text-faint: #8b95a3;
+  --text-bright: #0b1017;
   --text-inverse: #ffffff;
 
-  --overlay-bg: rgba(255, 255, 255, 0.92);
-  --avatar-bg: rgba(0, 0, 0, 0.05);
-  --avatar-border: rgba(0, 0, 0, 0.1);
+  --overlay-bg: rgba(244, 246, 248, 0.9);
+  --avatar-bg: rgba(15, 23, 42, 0.05);
+  --avatar-border: rgba(15, 23, 42, 0.12);
 
   --ptts: #0066cc;
-  --ptts-teal: #0099cc;
-  --online: #248a3d;
-  --warning: #b25000;
-  --fault: #d70015;
-  --offline: #c7c7cc;
+  --ptts-teal: #0b93b8;
+  --ptts-glow: rgba(11, 147, 184, 0.18);
 
-  --sidebar-bg: #fbfbfd;
-  --topbar-glass: rgba(255, 255, 255, 0.8);
+  --online: #10893e;
+  --warning: #a35a00;
+  --fault: #cf2318;
+  --offline: #b6bdc6;
+
+  --badge-online-bg: rgba(16, 137, 62, 0.1);
+  --badge-warn-bg: rgba(163, 90, 0, 0.1);
+  --badge-fault-bg: rgba(207, 35, 24, 0.1);
+  --badge-neutral-bg: rgba(15, 23, 42, 0.05);
+
+  --metric-vib: #0b7fbf;
+  --metric-temp: #a35a00;
+  --metric-rms: #b45309;
+  --metric-power: #7c3aed;
+  --metric-current: #10893e;
+
+  /* Same six hues, re-stepped for the light surface — not an automatic flip.
+     Validated as a set against #ffffff: worst adjacent CVD ΔE 9.1,
+     normal-vision 19.6. Slots 3, 4 and 5 sit below 3:1 contrast on white, so
+     anything drawn in them needs relief — visible direct labels or the
+     accompanying data table. The energy views satisfy this via the per-asset
+     table; a new chart using ch-3/4/5 on light must do the same. */
+  --ch-1: #2a78d6;
+  --ch-2: #eb6834;
+  --ch-3: #1baf7a;
+  --ch-4: #eda100;
+  --ch-5: #e87ba4;
+  --ch-6: #008300;
+
+  --e-co2: #5b6472;
+
+  --elev-1: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px -6px rgba(15, 23, 42, 0.12);
+  --elev-2: 0 2px 4px rgba(15, 23, 42, 0.07), 0 16px 32px -12px rgba(15, 23, 42, 0.16);
+  --shadow-elite: 0 24px 64px -20px rgba(15, 23, 42, 0.2);
+
+  --sidebar-bg: #ffffff;
+  --topbar-glass: rgba(255, 255, 255, 0.85);
+}
+
+/**
+ * Tailwind token bridge.
+ *
+ * Tailwind v4 builds utilities from @theme, not from bare custom properties.
+ * Without this block, `bg-surface`, `text-text-bright`, `border-ptts/40` and 31
+ * other class names used across the app compiled to nothing — TopBar and
+ * ChangelogModal have been rendering without their intended surfaces and
+ * borders. `inline` keeps the utilities pointing at the live variable, so they
+ * still follow the .light theme swap.
+ */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-surface-inset: var(--surface-inset);
+
+  --color-border: var(--border);
+  --color-border-dim: var(--border-dim);
+  --color-border-bright: var(--border-bright);
+
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+  --color-text-bright: var(--text-bright);
+  --color-text-inverse: var(--text-inverse);
+
+  --color-ptts: var(--ptts);
+  --color-ptts-teal: var(--ptts-teal);
+
+  --color-online: var(--online);
+  --color-warning: var(--warning);
+  --color-fault: var(--fault);
+  --color-offline: var(--offline);
+
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
 }
 
 body {
@@ -100,91 +227,331 @@ body {
   color: var(--text);
   font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.005em;
 }
 
-/* ─── Elite Components ────────────────────────────── */
+/* ─── Layout primitives ──────────────────────────────────────────────────── */
 
-.scada-card {
+/**
+ * Fluid console canvas. Replaces `max-w-[1700px] mx-auto p-4 lg:p-6`, which left
+ * ~430px of dead margin per side on a 2560px display.
+ */
+.console-canvas {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  padding: clamp(16px, 1.6vw, 32px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 1.2vw, 28px);
+}
+
+/* 12-column grid that keeps subdividing past Tailwind's 2xl stop. */
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: clamp(12px, 1vw, 20px);
+}
+
+@media (min-width: 900px) {
+  .grid-12 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1280px) {
+  .grid-12 { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+}
+
+/* ─── Surfaces ───────────────────────────────────────────────────────────── */
+
+.scada-card,
+.panel {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 0; /* Pure precision: 0 radius */
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: var(--r-md);
+  box-shadow: var(--elev-1);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.25s ease,
+    background 0.2s ease;
 }
 
-.scada-card:hover {
+.scada-card:hover,
+.panel:hover {
   border-color: var(--border-bright);
-  background: var(--surface-2);
+  box-shadow: var(--elev-2);
+}
+
+/* Static containers that should not react to the pointer. */
+.panel-flat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+
+.panel-inset {
+  background: var(--surface-inset);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--r-sm);
 }
 
 .scada-card-header {
-  padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem 0.75rem;
   border-bottom: 1px solid var(--border-dim);
 }
 
+/* ─── Typography ─────────────────────────────────────────────────────────── */
+
 .scada-label {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
   color: var(--text-muted);
   text-transform: uppercase;
 }
 
+/* Section heading above a group of cards. */
+.section-label {
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
 .scada-value {
-  font-family: var(--font-mono); /* Precision indicator */
-  font-size: 2.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-metric);
   font-weight: 500;
+  line-height: 1.05;
   letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
   color: var(--text-bright);
 }
 
-/* Modern Typography Presets */
+/* Was referenced by KPICard since v2 but never defined — numbers rendered
+   with default body styling and drifted out of alignment with their value. */
+.scada-unit {
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--text-faint);
+}
+
 .h1-elite {
-  font-size: 3rem;
+  font-size: clamp(2rem, 3vw, 3rem);
   font-weight: 600;
   letter-spacing: -0.03em;
   color: var(--text-bright);
 }
 
 .h2-elite {
-  font-size: 1.75rem;
+  font-size: clamp(1.25rem, 1.6vw, 1.75rem);
   font-weight: 500;
   letter-spacing: -0.02em;
 }
 
-/* Scrollbar (Invisible but functional) */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--border-bright);
-  border-radius: 10px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+.num {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
 }
 
-/* Animations (Subtle Linear) */
+/* ─── Badges ─────────────────────────────────────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.1875rem 0.5rem;
+  border-radius: var(--r-pill);
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: var(--badge-neutral-bg);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.badge-ok {
+  background: var(--badge-online-bg);
+  border-color: color-mix(in srgb, var(--online) 40%, transparent);
+  color: var(--online);
+}
+
+.badge-warn {
+  background: var(--badge-warn-bg);
+  border-color: color-mix(in srgb, var(--warning) 40%, transparent);
+  color: var(--warning);
+}
+
+.badge-fault {
+  background: var(--badge-fault-bg);
+  border-color: color-mix(in srgb, var(--fault) 40%, transparent);
+  color: var(--fault);
+}
+
+/* ─── Controls ───────────────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--surface-3);
+  border-color: var(--border-bright);
+  color: var(--text-bright);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--ptts);
+  border-color: var(--ptts);
+  color: #ffffff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--ptts) 84%, #ffffff);
+  border-color: color-mix(in srgb, var(--ptts) 84%, #ffffff);
+  color: #ffffff;
+}
+
+.seg {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-inset);
+}
+
+.seg-item {
+  padding: 0.375rem 0.75rem;
+  border-radius: calc(var(--r-sm) - 3px);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease;
+  white-space: nowrap;
+}
+
+.seg-item:hover { color: var(--text-bright); }
+
+.seg-item[data-active="true"] {
+  background: var(--surface-3);
+  color: var(--text-bright);
+}
+
+:where(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--ptts-teal);
+  outline-offset: 2px;
+}
+
+/* ─── Tables ─────────────────────────────────────────────────────────────── */
+
+.data-table { width: 100%; border-collapse: collapse; }
+
+.data-table thead th {
+  padding: 0.625rem 1rem;
+  text-align: left;
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-faint);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.data-table tbody td {
+  padding: 0.75rem 1rem;
+  font-size: var(--fs-body);
+  color: var(--text);
+  border-bottom: 1px solid var(--border-dim);
+}
+
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+.data-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.data-table tbody tr:hover { background: var(--surface-2); }
+
+/* ─── Scrollbar ──────────────────────────────────────────────────────────── */
+
+.custom-scrollbar::-webkit-scrollbar { width: 8px; height: 8px; }
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--border-bright);
+  border-radius: var(--r-pill);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+
+/* ─── Animations ─────────────────────────────────────────────────────────── */
+
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
 @keyframes slide-up-fade {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.animate-fade-in { animation: fade-in 0.8s ease-out forwards; }
-.animate-slide-up { animation: slide-up-fade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
+.animate-slide-up { animation: slide-up-fade 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-slide-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ─── Status LEDs ────────────────────────────────────────────────────────── */
 
 .led {
   border-radius: 50%;
   display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex: none;
 }
 
-.led-online { background: var(--online); box-shadow: 0 0 10px rgba(48, 209, 88, 0.3); }
-.led-fault { background: var(--fault); box-shadow: 0 0 10px rgba(255, 69, 58, 0.3); }
-.led-warning { background: var(--warning); }
+.led-online { background: var(--online); box-shadow: 0 0 0 3px var(--badge-online-bg); }
+.led-fault { background: var(--fault); box-shadow: 0 0 0 3px var(--badge-fault-bg); }
+.led-warning { background: var(--warning); box-shadow: 0 0 0 3px var(--badge-warn-bg); }
+.led-offline { background: var(--offline); }
+
+/* ─── Misc ───────────────────────────────────────────────────────────────── */
 
 .logo-adaptive { filter: brightness(0) invert(1); }
 .light .logo-adaptive { filter: brightness(0) invert(0); }
+
+@media print {
+  body { background: #ffffff; color: #000000; }
+}

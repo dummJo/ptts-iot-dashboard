@@ -28,17 +28,15 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
     <div className="scada-card flex flex-col">
       <div className="scada-card-header">
         <span className="scada-label">ASSET TAG LIST · LIVE READINGS</span>
-        <button className="text-xs font-bold tracking-widest transition-all"
-          style={{ color: "var(--ptts-teal)" }}>ALL →</button>
+        <button type="button" className="btn">ALL →</button>
       </div>
-      <div className="overflow-x-auto scrollbar-hide">
-        <table className="w-full text-sm min-w-[700px] lg:min-w-0">
+      <div className="overflow-x-auto custom-scrollbar">
+        <table className="data-table min-w-[760px] lg:min-w-0">
           <thead>
-            <tr style={{ borderBottom: "1px solid var(--border-dim)", background: "var(--surface-2)" }}>
+            <tr>
               {["TAG ID", "ASSET NAME", "TYPE", "TEMP", "VIBRATION", "LINK", "HEALTH", "CFG"].map((h, i) => (
-                <th key={h} className={`px-3 py-2.5 font-black tracking-[.2em] text-sm
-                  ${i >= 3 && i <= 4 ? "text-right" : i === 7 ? "text-center" : "text-left"}`}
-                  style={{ color: "var(--text-muted)" }}>
+                <th key={h} scope="col"
+                  className={i >= 3 && i <= 4 ? "!text-right" : i === 7 ? "!text-center" : undefined}>
                   {h}
                 </th>
               ))}
@@ -58,53 +56,46 @@ export default function AssetTable({ assets = [], onOverridesChange }: { assets?
 
               return (
                 <tr key={a.id}
-                  className="transition-colors cursor-pointer hover:bg-[var(--avatar-bg)] active:scale-[0.99] transition-transform duration-200"
-                  style={{
-                    borderBottom: "1px solid var(--border-dim)",
-                    background: idx % 2 === 0 ? "transparent" : "var(--surface-2)",
-                  }}
+                  className="cursor-pointer"
+                  style={{ background: idx % 2 === 0 ? "transparent" : "var(--surface-2)" }}
                   onClick={() => setSelectedAsset(a)}
                 >
-                  <td className="px-3 py-3.5 font-mono text-xs tracking-tighter" style={{ color: "var(--text-faint)" }}>
-                    <span style={{ color: "var(--ptts-teal)", opacity: 0.6 }}>TAG-</span>{a.id.substring(0, 8)}
+                  <td className="num" style={{ color: "var(--text-faint)" }}>
+                    <span style={{ color: "var(--ptts-teal)", opacity: 0.7 }}>TAG-</span>{a.id.substring(0, 8)}
                   </td>
-                  <td className="px-3 py-3.5 font-black text-sm" style={{ color: "var(--text-bright)" }}>{a.name.toUpperCase()}</td>
-                  <td className="px-3 py-3.5 text-sm font-bold tracking-widest" style={{ color: "var(--text-muted)" }}>
-                    {a.type.replace("PTTS ", "").replace("RONDS ", "").toUpperCase()}
+                  <td className="font-semibold" style={{ color: "var(--text-bright)" }}>{a.name}</td>
+                  <td style={{ color: "var(--text-muted)" }}>
+                    {a.type.replace("PTTS ", "").replace("RONDS ", "")}
                   </td>
-                  <td className="px-3 py-3.5 text-right font-mono font-black text-sm tabular-nums"
-                    style={{ color: tempColor }}>{formatTemp(a.temp)}</td>
-                  <td className="px-3 py-3.5 text-right font-mono font-black text-sm tabular-nums"
-                    style={{ color: vibColor }}>{formatVib(a.vib)}</td>
-                  
+                  <td className="num !text-right" style={{ color: tempColor }}>{formatTemp(a.temp)}</td>
+                  <td className="num !text-right" style={{ color: vibColor }}>{formatVib(a.vib)}</td>
+
                   {/* LINK STATUS (Connectivity) */}
-                  <td className="px-3 py-3">
-                    <span className="flex items-center gap-1.5">
-                      <span className="led" style={{ width: 6, height: 6, background: lColor, boxShadow: a.link === 'online' ? `0 0 6px ${lColor}` : 'none' }} />
-                      <span className="text-xs font-black tracking-widest" style={{ color: lColor, textShadow: '0 0 8px currentColor' }}>
+                  <td>
+                    <span className="flex items-center gap-2">
+                      <span aria-hidden="true" className="led" style={{ width: 6, height: 6, background: lColor }} />
+                      <span className="text-[13px] font-semibold" style={{ color: lColor }}>
                         {a.link.toUpperCase()}
                       </span>
                     </span>
                   </td>
 
                   {/* HEALTH STATUS (Condition) */}
-                  <td className="px-3 py-3">
-                    <div className="inline-flex items-center px-2 py-0.5 rounded-none border"
-                      style={{
-                        background: currentHealth === 'fault' ? 'var(--badge-fault-bg)' : currentHealth === 'warning' ? 'var(--badge-warning-bg)' : 'var(--badge-online-bg)',
-                        borderColor: `var(--${currentHealth === 'fault' ? 'fault' : currentHealth === 'warning' ? 'warning' : 'online'})`,
-                        color: hColor
-                      }}>
-                      <span className="text-xs font-black tracking-[0.15em]">{hp}</span>
-                    </div>
+                  <td>
+                    {/* Was styled inline against var(--badge-warning-bg), a token that
+                        does not exist — warning rows rendered with no tint at all. */}
+                    <span className={`badge ${currentHealth === 'fault' ? 'badge-fault' : currentHealth === 'warning' ? 'badge-warn' : 'badge-ok'}`}>
+                      {hp}
+                    </span>
                   </td>
-                  
+
                   {/* CONFIG BUTTON */}
-                  <td className="px-3 py-3 text-center">
+                  <td className="!text-center">
                     <button
+                      type="button"
                       onClick={(e) => { e.stopPropagation(); setSelectedAsset(a); }}
-                      aria-label={canEdit ? "Configure Thresholds" : "View Thresholds"}
-                      className="text-[14px] leading-none transition-opacity hover:opacity-100"
+                      aria-label={canEdit ? `Configure thresholds for ${a.name}` : `View thresholds for ${a.name}`}
+                      className="text-[16px] leading-none transition-opacity hover:opacity-100"
                       style={{ color: canEdit ? "var(--ptts-teal)" : "var(--text-muted)", opacity: canEdit ? 0.85 : 0.6 }}
                       title={canEdit ? "Configure Thresholds" : "View Thresholds"}
                     >

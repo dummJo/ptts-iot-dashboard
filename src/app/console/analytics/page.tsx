@@ -39,18 +39,18 @@ function mapDaysToPeriod(days: number): ReportPeriod {
 function PrintTemplate({ report }: { report: ReportSummary }) {
   const LOGO = "https://www.ptts.co.id/uploads/1/3/3/7/133745061/logo-ptts_3.png";
   return (
-    <div id="print-report" className="hidden print:block print:fixed print:inset-0 print:bg-white print:text-black print:p-12"
+    <div id="print-report" className="hidden print:block print:fixed print:inset-0 print:bg-[var(--text-bright)] print:text-[var(--text-inverse)] print:p-12"
       style={{ fontFamily: "'Inter', sans-serif", fontSize: 10 }}>
       <div style={{ display:"flex", alignItems:"center", borderBottom:"1px solid #000", paddingBottom:20, marginBottom:30 }}>
         <img src={LOGO} alt="PTTS" style={{ width:40, height:40, objectFit:"contain", filter: "grayscale(100%)" }} />
         <div style={{ marginLeft:24 }}>
           <div style={{ fontSize:14, fontWeight:700, letterSpacing:4 }}>PTTS</div>
-          <div style={{ fontSize:8, color:"#666", marginTop:4 }}>INDUSTRIAL SYSTEMS AUDIT · PROPERTY OF PTTS SMART SENSOR</div>
+          <div style={{ fontSize:8, color:"var(--text-faint)", marginTop:4 }}>INDUSTRIAL SYSTEMS AUDIT · PROPERTY OF PTTS SMART SENSOR</div>
         </div>
         <div style={{ marginLeft:"auto", textAlign:"right" }}>
           <div style={{ fontSize:12, fontWeight:700 }}>CONDITION REPORT</div>
-          <div style={{ fontSize:8, color:"#666" }}>PERIOD: {report.period.toUpperCase()}</div>
-          <div style={{ fontSize:8, color:"#666" }}>{report.dateRange.from} – {report.dateRange.to}</div>
+          <div style={{ fontSize:8, color:"var(--text-faint)" }}>PERIOD: {report.period.toUpperCase()}</div>
+          <div style={{ fontSize:8, color:"var(--text-faint)" }}>{report.dateRange.from} – {report.dateRange.to}</div>
         </div>
       </div>
       {/* (Table and details would go here in monolithic style) */}
@@ -119,12 +119,12 @@ export default function TrendsPage() {
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#050505] overflow-hidden">
+    <div className="flex h-screen w-full bg-[var(--bg)] overflow-hidden">
       {report && <PrintTemplate report={report} />}
       
       <Sidebar pollInterval={pollInterval} />
       
-      <main className="flex-1 flex flex-col min-w-0 h-screen relative bg-black">
+      <main className="flex-1 flex flex-col min-w-0 h-screen relative bg-[var(--surface-inset)]">
         <header className="flex-none z-30">
           <TopBar 
             title="Analytics · Deep Trends"
@@ -137,14 +137,14 @@ export default function TrendsPage() {
         </header>
 
         <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
-          <div className="max-w-[1700px] mx-auto p-6 lg:p-12 space-y-12 animate-fade-in">
+          <div className="console-canvas animate-fade-in">
             
             {/* 1. Real-time Telemetry Overlay */}
             <section className="grid grid-cols-1 xl:grid-cols-12 gap-px bg-[var(--border-dim)] border border-[var(--border-dim)]">
-              <div className="xl:col-span-9 bg-black p-4">
+              <div className="xl:col-span-9 bg-[var(--surface-inset)] p-4">
                 <TrendChart trendData={dashboardData.trendData} assets={dashboardData.topAssets} />
               </div>
-              <div className="xl:col-span-3 bg-black p-4">
+              <div className="xl:col-span-3 bg-[var(--surface-inset)] p-4">
                 <VibrationBar vibrationData={dashboardData.vibrationBarData} />
               </div>
             </section>
@@ -153,38 +153,38 @@ export default function TrendsPage() {
             <section className="space-y-6">
               <div className="flex items-center gap-4 px-2">
                 <span className="w-1 h-1 bg-[var(--online)]" />
-                <h2 className="text-[11px] font-bold tracking-[0.4em] text-[var(--text-muted)] uppercase">Report Engine</h2>
+                <h2 className="text-[12px] font-bold tracking-[0.06em] text-[var(--text-muted)] uppercase">Report Engine</h2>
               </div>
 
-              <div className="border border-[var(--border-dim)] bg-[#0a0a0a]">
+              <div className="border border-[var(--border-dim)] bg-[var(--surface-inset)]">
                 <div className="p-6 border-b border-[var(--border-dim)] flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="flex items-center gap-4">
                     {/* Period Selector Popout */}
                     <div className="relative" ref={popoutRef}>
                       <button onClick={() => setPopoutOpen(!popoutOpen)}
-                        className="flex items-center gap-4 px-5 py-3 bg-black border border-[var(--border)] text-[12px] font-bold tracking-[0.1em] text-[var(--text-bright)] hover:border-[var(--text-muted)] transition-all">
+                        className="flex items-center gap-4 px-5 py-3 bg-[var(--surface-inset)] border border-[var(--border)] text-[12px] font-bold tracking-[0.1em] text-[var(--text-bright)] hover:border-[var(--text-muted)] transition-all">
                         <span>PERIOD: {mode === "custom" ? "Custom Range" : PERIOD_OPTIONS.find(o => o.key === period)?.label.toUpperCase()}</span>
                         <span className={`opacity-40 transition-transform ${popoutOpen ? 'rotate-180' : ''}`}>▼</span>
                       </button>
 
                       {popoutOpen && (
-                        <div className="absolute left-0 top-full z-50 mt-2 w-72 bg-[#121212] border border-[var(--border)] shadow-elite animate-fade-in">
+                        <div className="absolute left-0 top-full z-50 mt-2 w-72 bg-[var(--surface)] border border-[var(--border)] shadow-elite animate-fade-in">
                           <div className="flex border-b border-[var(--border-dim)]">
-                            <button onClick={() => setMode("preset")} className={`flex-1 py-3 text-[10px] font-bold tracking-widest ${mode === "preset" ? "bg-white/5 text-white" : "text-white/40"}`}>PRESETS</button>
-                            <button onClick={() => setMode("custom")} className={`flex-1 py-3 text-[10px] font-bold tracking-widest ${mode === "custom" ? "bg-white/5 text-white" : "text-white/40"}`}>CUSTOM</button>
+                            <button onClick={() => setMode("preset")} className={`flex-1 py-3 text-[10px] font-bold tracking-widest ${mode === "preset" ? "bg-[var(--avatar-bg)] text-[var(--text-bright)]" : "text-[var(--text-faint)]"}`}>PRESETS</button>
+                            <button onClick={() => setMode("custom")} className={`flex-1 py-3 text-[10px] font-bold tracking-widest ${mode === "custom" ? "bg-[var(--avatar-bg)] text-[var(--text-bright)]" : "text-[var(--text-faint)]"}`}>CUSTOM</button>
                           </div>
                           <div className="p-2">
                             {mode === "preset" && PERIOD_OPTIONS.map(opt => (
                               <button key={opt.key} onClick={() => { setPeriod(opt.key); setPopoutOpen(false); }}
-                                className="w-full px-4 py-3 text-left text-[11px] font-medium hover:bg-white/5 text-[var(--text-muted)] hover:text-white transition-colors">
+                                className="w-full px-4 py-3 text-left text-[11px] font-medium hover:bg-[var(--avatar-bg)] text-[var(--text-muted)] hover:text-[var(--text-bright)] transition-colors">
                                 {opt.label} · <span className="opacity-40">{opt.sub}</span>
                               </button>
                             ))}
                             {mode === "custom" && (
                               <div className="p-4 space-y-4">
-                                <input type="date" value={customFrom} onChange={e => setCustomFrom(e.target.value)} className="w-full bg-black border border-[var(--border)] p-2 text-[11px] outline-none" />
-                                <input type="date" value={customTo} onChange={e => setCustomTo(e.target.value)} className="w-full bg-black border border-[var(--border)] p-2 text-[11px] outline-none" />
-                                <button onClick={() => setPopoutOpen(false)} className="w-full py-2 bg-white text-black text-[10px] font-bold tracking-widest uppercase">Apply</button>
+                                <input type="date" value={customFrom} onChange={e => setCustomFrom(e.target.value)} className="w-full bg-[var(--surface-inset)] border border-[var(--border)] p-2 text-[11px] outline-none" />
+                                <input type="date" value={customTo} onChange={e => setCustomTo(e.target.value)} className="w-full bg-[var(--surface-inset)] border border-[var(--border)] p-2 text-[11px] outline-none" />
+                                <button onClick={() => setPopoutOpen(false)} className="w-full py-2 bg-[var(--text-bright)] text-[var(--text-inverse)] text-[10px] font-bold tracking-widest uppercase">Apply</button>
                               </div>
                             )}
                           </div>
@@ -193,15 +193,15 @@ export default function TrendsPage() {
                     </div>
 
                     <button onClick={handleGenerateReport} disabled={loadingReport}
-                      className="px-6 py-3 bg-white text-black text-[11px] font-bold tracking-[0.2em] uppercase hover:bg-[var(--text-muted)] transition-all disabled:opacity-30">
+                      className="px-6 py-3 bg-[var(--text-bright)] text-[var(--text-inverse)] text-[12px] font-semibold tracking-[0.06em] uppercase hover:bg-[var(--text-muted)] transition-all disabled:opacity-30">
                       {loadingReport ? "Executing..." : "Extract Data"}
                     </button>
                   </div>
 
                   {report && (
                     <div className="flex gap-4">
-                      <button onClick={() => window.print()} className="px-4 py-2 border border-[var(--border)] text-[10px] font-bold tracking-widest text-[var(--text-muted)] hover:text-white transition-all uppercase">PDF</button>
-                      <button className="px-4 py-2 border border-[var(--border)] text-[10px] font-bold tracking-widest text-[var(--text-muted)] hover:text-white transition-all uppercase">Export Raw</button>
+                      <button onClick={() => window.print()} className="px-4 py-2 border border-[var(--border)] text-[10px] font-bold tracking-widest text-[var(--text-muted)] hover:text-[var(--text-bright)] transition-all uppercase">PDF</button>
+                      <button className="px-4 py-2 border border-[var(--border)] text-[10px] font-bold tracking-widest text-[var(--text-muted)] hover:text-[var(--text-bright)] transition-all uppercase">Export Raw</button>
                     </div>
                   )}
                 </div>
@@ -218,8 +218,8 @@ export default function TrendsPage() {
                         { label: "Avg Kinetic", val: `${report.avgVib}mm/s`, unit: "Velocity" },
                         { label: "Total Alarms", val: report.totalAlarms, unit: "Events" },
                       ].map(m => (
-                        <div key={m.label} className="bg-black p-6">
-                          <p className="text-[9px] font-bold tracking-[0.3em] text-[var(--text-faint)] uppercase mb-2">{m.label}</p>
+                        <div key={m.label} className="bg-[var(--surface-inset)] p-6">
+                          <p className="text-[11px] font-bold tracking-[0.06em] text-[var(--text-faint)] uppercase mb-2">{m.label}</p>
                           <p className="text-[20px] font-mono font-medium text-[var(--text-bright)]">{m.val} <span className="text-[10px] text-[var(--text-faint)]">{m.unit}</span></p>
                         </div>
                       ))}
@@ -229,15 +229,15 @@ export default function TrendsPage() {
                     <div className="overflow-x-auto">
                       <table className="w-full border-collapse">
                         <thead>
-                          <tr className="bg-[#0a0a0a] border-b border-[var(--border-dim)]">
+                          <tr className="bg-[var(--surface-inset)] border-b border-[var(--border-dim)]">
                             {["UID","Name","Type","Avg Thermal","Max Thermal","Avg Kinetic","Max Kinetic","Health"].map(h => (
-                               <th key={h} className="px-6 py-4 text-left text-[9px] font-bold tracking-[0.2em] text-[var(--text-faint)] uppercase">{h}</th>
+                               <th key={h} className="px-6 py-4 text-left text-[11px] font-semibold tracking-[0.06em] text-[var(--text-faint)] uppercase">{h}</th>
                             ))}
                           </tr>
                         </thead>
-                        <tbody className="bg-black">
+                        <tbody className="bg-[var(--surface-inset)]">
                           {report.assets.map((a: AssetReportRow) => (
-                            <tr key={a.id} className="border-b border-[var(--border-dim)] hover:bg-white/[0.02] transition-colors">
+                            <tr key={a.id} className="border-b border-[var(--border-dim)] hover:bg-[var(--text-bright)]/[0.02] transition-colors">
                               <td className="px-6 py-5 text-[11px] font-mono text-[var(--text-muted)]">{a.id}</td>
                               <td className="px-6 py-5 text-[12px] font-bold text-[var(--text-bright)]">{a.name}</td>
                               <td className="px-6 py-5 text-[11px] text-[var(--text-faint)] uppercase tracking-widest">{a.type}</td>
@@ -246,7 +246,7 @@ export default function TrendsPage() {
                               <td className="px-6 py-5 text-[12px] font-mono text-[var(--text-muted)]">{a.avgVib}</td>
                               <td className="px-6 py-5 text-[12px] font-mono font-bold text-[var(--text-bright)]">{a.maxVib}</td>
                               <td className="px-6 py-5">
-                                <span className="text-[9px] font-bold tracking-[0.2em] uppercase px-2 py-1 bg-white/5 border border-white/10"
+                                <span className="text-[11px] font-semibold tracking-[0.06em] uppercase px-2 py-1 bg-[var(--avatar-bg)] border border-[var(--border)]"
                                       style={{ color: getHealthColor(a.health) }}>{a.health}</span>
                               </td>
                             </tr>
@@ -258,7 +258,7 @@ export default function TrendsPage() {
                 ) : (
                   <div className="py-24 flex flex-col items-center justify-center gap-4 opacity-20">
                     <span className="text-[40px]">≗</span>
-                    <p className="text-[11px] font-bold tracking-[0.4em] uppercase">Engine Standby - Filter Selection Required</p>
+                    <p className="text-[12px] font-bold tracking-[0.06em] uppercase">Engine Standby - Filter Selection Required</p>
                   </div>
                 )}
               </div>

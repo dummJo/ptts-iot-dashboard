@@ -88,7 +88,7 @@ export default function MonitoringDashboardPage() {
       sub: "Live combined drive draw",
       trend: "-2.3% vs prev hr",
       trendUp: true,
-      color: "#007aff",
+      color: "var(--ptts)",
       ledClass: "led-online",
     },
     {
@@ -113,18 +113,18 @@ export default function MonitoringDashboardPage() {
         </header>
 
         <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar">
-          <div className="max-w-[1700px] mx-auto p-4 lg:p-6 space-y-6 animate-fade-in">
+          <div className="console-canvas animate-fade-in">
 
             {/* DRAFT BANNER */}
             <div
               className="flex items-center gap-3 px-4 py-2.5"
-              style={{ background: "var(--surface)", border: "1px dashed var(--border)" }}
+              style={{ background: "var(--surface)", border: "1px dashed var(--border)", borderRadius: "var(--r-sm)" }}
             >
               <span className="w-1.5 h-1.5 bg-[var(--warning)] animate-pulse" />
-              <span className="text-[10px] tracking-[0.4em] font-bold uppercase" style={{ color: "var(--warning)" }}>
+              <span className="text-[12px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--warning)" }}>
                 DRAFT TEMPLATE
               </span>
-              <span className="text-[10px] tracking-[0.3em] uppercase font-bold" style={{ color: "var(--text-faint)" }}>
+              <span className="text-[12px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-faint)" }}>
                 · Placeholder data — live ABB VSD telemetry pending integration
               </span>
             </div>
@@ -142,7 +142,7 @@ export default function MonitoringDashboardPage() {
             <section>
               <div className="flex items-center gap-4 mb-4 px-2">
                 <span className="w-1 h-1 bg-[var(--ptts-teal)]" />
-                <h2 className="text-[11px] font-bold tracking-[0.4em] uppercase" style={{ color: "var(--text-muted)" }}>
+                <h2 className="text-[12px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-muted)" }}>
                   Multipump Array · ABB Drive Tier
                 </h2>
               </div>
@@ -151,7 +151,7 @@ export default function MonitoringDashboardPage() {
                   <div
                     key={p.id}
                     className="flex flex-col"
-                    style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+                    style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}
                   >
                     <div
                       className="flex items-center justify-between px-3 py-2"
@@ -159,18 +159,18 @@ export default function MonitoringDashboardPage() {
                     >
                       <div className="flex items-center gap-2">
                         <span className={`led ${stateLed[p.state]}`} />
-                        <span className="text-xs font-bold tracking-[0.3em]" style={{ color: "var(--text-bright)" }}>
+                        <span className="text-[14px] font-semibold tracking-[0.04em]" style={{ color: "var(--text-bright)" }}>
                           {p.id}
                         </span>
                       </div>
-                      <span className="text-[9px] tracking-[0.3em] font-bold uppercase" style={{ color: stateColor[p.state] }}>
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.06em]" style={{ color: stateColor[p.state] }}>
                         {p.state}
                       </span>
                     </div>
 
                     <div className="p-4 flex flex-col gap-3">
                       <div>
-                        <p className="text-[9px] tracking-[0.3em] uppercase font-bold" style={{ color: "var(--text-faint)" }}>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-faint)" }}>
                           VSD MODEL
                         </p>
                         <p className="text-xs font-bold tracking-wide" style={{ color: "var(--text)" }}>
@@ -180,7 +180,7 @@ export default function MonitoringDashboardPage() {
 
                       <div className="grid grid-cols-2 gap-3 pt-1">
                         <div>
-                          <p className="text-[9px] tracking-[0.3em] uppercase font-bold" style={{ color: "var(--text-faint)" }}>
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-faint)" }}>
                             FREQ
                           </p>
                           <p className="text-lg font-semibold tabular-nums" style={{ color: "var(--text-bright)" }}>
@@ -188,7 +188,7 @@ export default function MonitoringDashboardPage() {
                           </p>
                         </div>
                         <div>
-                          <p className="text-[9px] tracking-[0.3em] uppercase font-bold" style={{ color: "var(--text-faint)" }}>
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-faint)" }}>
                             CURRENT
                           </p>
                           <p className="text-lg font-semibold tabular-nums" style={{ color: "var(--text-bright)" }}>
@@ -196,7 +196,7 @@ export default function MonitoringDashboardPage() {
                           </p>
                         </div>
                         <div>
-                          <p className="text-[9px] tracking-[0.3em] uppercase font-bold" style={{ color: "var(--text-faint)" }}>
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-faint)" }}>
                             POWER
                           </p>
                           <p className="text-lg font-semibold tabular-nums" style={{ color: "var(--text-bright)" }}>
@@ -204,7 +204,7 @@ export default function MonitoringDashboardPage() {
                           </p>
                         </div>
                         <div>
-                          <p className="text-[9px] tracking-[0.3em] uppercase font-bold" style={{ color: "var(--text-faint)" }}>
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-faint)" }}>
                             RUNTIME
                           </p>
                           <p className="text-lg font-semibold tabular-nums" style={{ color: "var(--text-bright)" }}>
@@ -214,7 +214,7 @@ export default function MonitoringDashboardPage() {
                       </div>
 
                       <div
-                        className="mt-1 px-2 py-1 text-center text-[9px] tracking-[0.4em] font-bold uppercase"
+                        className="mt-1 px-2 py-1 text-center text-[11px] font-semibold uppercase tracking-[0.06em]"
                         style={{
                           background: "var(--bg)",
                           border: "1px solid var(--border-dim)",
@@ -233,9 +233,9 @@ export default function MonitoringDashboardPage() {
             <section className="grid grid-cols-1 xl:grid-cols-12 gap-6">
               <div
                 className="xl:col-span-7 p-5"
-                style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+                style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}
               >
-                <h3 className="text-[11px] font-bold tracking-[0.4em] uppercase mb-4" style={{ color: "var(--text-muted)" }}>
+                <h3 className="text-[12px] font-semibold uppercase tracking-[0.06em] mb-4" style={{ color: "var(--text-muted)" }}>
                   Lead-Lag Sequence
                 </h3>
                 <div className="flex items-center gap-3 flex-wrap">
@@ -248,10 +248,10 @@ export default function MonitoringDashboardPage() {
                           border: `1px solid ${p.state === "RUN" ? "var(--online)" : p.state === "FAULT" ? "var(--fault)" : "var(--border)"}`,
                         }}
                       >
-                        <span className="text-[9px] tracking-[0.3em] uppercase font-bold" style={{ color: "var(--text-faint)" }}>
+                        <span className="text-[11px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-faint)" }}>
                           {p.role}
                         </span>
-                        <span className="text-sm font-bold tracking-[0.2em]" style={{ color: "var(--text-bright)" }}>
+                        <span className="text-[14px] font-semibold tracking-[0.04em]" style={{ color: "var(--text-bright)" }}>
                           {p.id}
                         </span>
                       </div>
@@ -261,36 +261,34 @@ export default function MonitoringDashboardPage() {
                     </div>
                   ))}
                 </div>
-                <p className="text-[10px] tracking-[0.3em] uppercase font-bold mt-4" style={{ color: "var(--text-faint)" }}>
+                <p className="text-[12px] font-semibold uppercase tracking-[0.06em] mt-4" style={{ color: "var(--text-faint)" }}>
                   Rotation interval: 168h · auto-balance ON
                 </p>
               </div>
 
               <div
                 className="xl:col-span-5 p-5 flex flex-col gap-4"
-                style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+                style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}
               >
-                <h3 className="text-[11px] font-bold tracking-[0.4em] uppercase" style={{ color: "var(--text-muted)" }}>
+                <h3 className="text-[12px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-muted)" }}>
                   Process Control
                 </h3>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] tracking-[0.3em] uppercase font-bold" style={{ color: "var(--text-muted)" }}>
+                  <span className="text-[12px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-muted)" }}>
                     MODE
                   </span>
-                  <div className="flex" style={{ border: "1px solid var(--border)" }}>
+                  <div className="seg" role="group" aria-label="Control mode">
                     {(["MANUAL", "AUTO"] as const).map((m) => {
                       const on = (m === "AUTO") === auto;
                       return (
                         <button
                           key={m}
                           type="button"
+                          className="seg-item"
+                          data-active={on}
+                          aria-pressed={on}
                           onClick={() => setAuto(m === "AUTO")}
-                          className="px-3 py-1.5 text-[10px] tracking-[0.3em] font-bold uppercase transition-colors"
-                          style={{
-                            background: on ? "var(--ptts-teal)" : "transparent",
-                            color: on ? "var(--bg)" : "var(--text-muted)",
-                          }}
                         >
                           {m}
                         </button>
@@ -301,7 +299,7 @@ export default function MonitoringDashboardPage() {
 
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[10px] tracking-[0.3em] uppercase font-bold" style={{ color: "var(--text-muted)" }}>
+                    <span className="text-[12px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-muted)" }}>
                       Pressure Setpoint
                     </span>
                     <span className="text-sm font-bold tabular-nums" style={{ color: "var(--ptts-teal)" }}>
@@ -318,12 +316,12 @@ export default function MonitoringDashboardPage() {
                     aria-label="Pressure setpoint"
                     className="w-full accent-[var(--ptts-teal)]"
                   />
-                  <div className="flex justify-between text-[9px] tracking-[0.3em] uppercase font-bold mt-1" style={{ color: "var(--text-faint)" }}>
+                  <div className="flex justify-between text-[11px] font-semibold uppercase tracking-[0.06em] mt-1" style={{ color: "var(--text-faint)" }}>
                     <span>2.0</span><span>5.0</span><span>8.0</span>
                   </div>
                 </div>
 
-                <p className="text-[9px] tracking-[0.3em] uppercase font-bold pt-2" style={{ color: "var(--text-faint)" }}>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.06em] pt-2" style={{ color: "var(--text-faint)" }}>
                   Visual only · setpoint not propagated to drives in this draft
                 </p>
               </div>
@@ -333,19 +331,19 @@ export default function MonitoringDashboardPage() {
             <section>
               <div className="flex items-center gap-4 mb-4 px-2">
                 <span className="w-1 h-1 bg-[var(--fault)]" />
-                <h2 className="text-[11px] font-bold tracking-[0.4em] uppercase" style={{ color: "var(--text-muted)" }}>
+                <h2 className="text-[12px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-muted)" }}>
                   ABB VSD Diagnostics
                 </h2>
               </div>
-              <div style={{ background: "var(--surface)", border: "1px solid var(--border)" }}>
+              <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "var(--r-md)", overflow: "hidden" }}>
                 <table className="w-full text-xs">
                   <thead>
                     <tr style={{ borderBottom: "1px solid var(--border-dim)" }}>
-                      <th className="text-left px-4 py-2 text-[9px] tracking-[0.3em] uppercase font-bold" style={{ color: "var(--text-faint)" }}>Code</th>
-                      <th className="text-left px-4 py-2 text-[9px] tracking-[0.3em] uppercase font-bold" style={{ color: "var(--text-faint)" }}>Drive</th>
-                      <th className="text-left px-4 py-2 text-[9px] tracking-[0.3em] uppercase font-bold" style={{ color: "var(--text-faint)" }}>Description</th>
-                      <th className="text-left px-4 py-2 text-[9px] tracking-[0.3em] uppercase font-bold" style={{ color: "var(--text-faint)" }}>Severity</th>
-                      <th className="text-right px-4 py-2 text-[9px] tracking-[0.3em] uppercase font-bold" style={{ color: "var(--text-faint)" }}>Time</th>
+                      <th className="text-left px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-faint)" }}>Code</th>
+                      <th className="text-left px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-faint)" }}>Drive</th>
+                      <th className="text-left px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-faint)" }}>Description</th>
+                      <th className="text-left px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-faint)" }}>Severity</th>
+                      <th className="text-right px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.06em]" style={{ color: "var(--text-faint)" }}>Time</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -354,7 +352,7 @@ export default function MonitoringDashboardPage() {
                         <td className="px-4 py-3 font-mono font-bold" style={{ color: "var(--text-bright)" }}>{f.code}</td>
                         <td className="px-4 py-3" style={{ color: "var(--text-muted)" }}>{f.drive}</td>
                         <td className="px-4 py-3" style={{ color: "var(--text)" }}>{f.text}</td>
-                        <td className="px-4 py-3 text-[10px] tracking-[0.3em] font-bold uppercase" style={{ color: severityColor[f.severity] }}>{f.severity}</td>
+                        <td className="px-4 py-3 text-[12px] font-semibold uppercase tracking-[0.06em]" style={{ color: severityColor[f.severity] }}>{f.severity}</td>
                         <td className="px-4 py-3 text-right font-mono tabular-nums" style={{ color: "var(--text-faint)" }}>{f.time}</td>
                       </tr>
                     ))}
@@ -364,7 +362,7 @@ export default function MonitoringDashboardPage() {
             </section>
 
             <footer className="pt-10 pb-6 opacity-30 border-t border-[var(--border-dim)]">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-[9px] tracking-[0.3em] font-bold uppercase">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8 text-[11px] font-semibold uppercase tracking-[0.06em]">
                 <p>Module: <span style={{ color: "var(--text-bright)" }}>Monitoring System · Multipump Draft</span></p>
                 <p>© 2026 PTTS · By DummVinci</p>
               </div>

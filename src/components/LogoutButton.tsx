@@ -1,27 +1,33 @@
 import { logoutAction } from "@/app/actions/auth";
 
+/**
+ * Compact icon button. This used to be a full-width saturated red bar pinned to
+ * the bottom of the sidebar — the loudest element on every screen, for the
+ * action a user takes once a day.
+ */
 export default function LogoutButton() {
   return (
-    <form action={logoutAction}>
+    <form action={logoutAction} className="shrink-0">
       <button
         type="submit"
-        aria-label="Logout"
-        className="flex items-center gap-2 flex-1 px-3 py-2 rounded-none text-xs font-bold tracking-widest transition-all"
+        aria-label="Log out"
+        title="Log out"
+        className="w-8 h-8 flex items-center justify-center rounded-[var(--r-sm)] border transition-colors"
         style={{
-          color: "var(--text-inverse)",
-          background: "var(--fault)",
-          border: "1px solid var(--fault)",
-          opacity: 0.85,
+          color: "var(--text-muted)",
+          borderColor: "var(--border)",
+          background: "var(--surface)",
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.opacity = "1";
+          e.currentTarget.style.color = "var(--fault)";
+          e.currentTarget.style.borderColor = "var(--fault)";
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.opacity = "0.85";
+          e.currentTarget.style.color = "var(--text-muted)";
+          e.currentTarget.style.borderColor = "var(--border)";
         }}
       >
-        <span>⏻</span>
-        <span>LOGOUT</span>
+        <span aria-hidden="true">⏻</span>
       </button>
     </form>
   );

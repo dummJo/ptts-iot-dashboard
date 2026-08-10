@@ -39,6 +39,8 @@ const SERVICE_MAP = {
   alarms:    process.env.NEXT_PUBLIC_ALARMS_SERVICE_URL    ?? GLOBAL_BASE,
   /** Asset registry: equipment database CRUD */
   assets:    process.env.NEXT_PUBLIC_ASSETS_SERVICE_URL    ?? GLOBAL_BASE,
+  /** Energy aggregation: kWh, tariff cost, CO₂ */
+  energy:    process.env.NEXT_PUBLIC_ENERGY_SERVICE_URL    ?? GLOBAL_BASE,
 } as const;
 
 // ── Feature Flags ────────────────────────────────────────────────────────────

@@ -62,7 +62,7 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
       if (trimmed.startsWith("## ")) {
         return (
           <div key={i} className="mt-8 mb-4 border-b border-ptts/20 pb-2">
-            <h3 className="text-base font-black text-ptts-teal tracking-[.25em] uppercase">
+            <h3 className="text-base font-semibold text-ptts-teal tracking-[.25em] uppercase">
               {trimmed.replace("## ", "")}
             </h3>
           </div>
@@ -72,7 +72,7 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
       // Category Header: ### Added
       if (trimmed.startsWith("### ")) {
         return (
-          <h4 key={i} className="mt-5 mb-2 text-base font-black tracking-widest text-text-bright uppercase flex items-center gap-2">
+          <h4 key={i} className="mt-5 mb-2 text-base font-semibold tracking-widest text-text-bright uppercase flex items-center gap-2">
             <span className="w-1.5 h-1.5 bg-ptts-teal/60 rounded-full" />
             {trimmed.replace("### ", "")}
           </h4>
@@ -131,7 +131,7 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
         <div className="scada-card-header !bg-surface-3 py-3 border-b-2 border-ptts/30">
           <div className="flex items-center gap-3">
              <span className="led led-online" style={{ width: 8, height: 8 }} />
-             <span className="scada-label !text-sm !text-text-bright font-black tracking-widest">
+             <span className="scada-label !text-sm !text-text-bright font-semibold tracking-widest">
                SYSTEM UPDATE LOG · {CURRENT_VERSION}
              </span>
           </div>
@@ -170,17 +170,17 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
                   value={ackText}
                   onChange={(e) => setAckText(e.target.value)}
                   placeholder="ENTER ACK..."
-                  className="w-full md:w-48 px-4 py-2 bg-bg border border-border rounded-none text-sm font-mono tracking-widest text-text-bright outline-none focus:border-ptts/60 transition-all uppercase"
+                  className="w-full md:w-48 px-4 py-2 bg-bg border border-border text-sm font-mono tracking-widest text-text-bright outline-none focus:border-ptts/60 transition-all uppercase"
                 />
               </div>
 
               <button
                 onClick={handleAcknowledge}
                 disabled={ackText.toUpperCase() !== "ACK"}
-                className="w-full md:w-auto px-8 py-3 rounded-none font-black text-[15px] tracking-[.2em] transition-all disabled:opacity-30 disabled:grayscale"
+                className="w-full md:w-auto px-8 py-3 font-semibold text-[15px] tracking-[.2em] transition-all disabled:opacity-30 disabled:grayscale"
                 style={{ 
                   background: "var(--ptts)", 
-                  color: "#fff", 
+                  color: "var(--text-bright)", 
                   boxShadow: ackText.toUpperCase() === "ACK" ? "0 0 15px var(--ptts-glow)" : "none"
                 }}
               >
@@ -189,7 +189,7 @@ export default function ChangelogModal({ isOpen: manualOpen, onClose }: { isOpen
             </>
           ) : (
              <div className="flex-1 flex justify-end">
-               <button onClick={onClose} className="px-8 py-2.5 rounded-none font-bold text-sm tracking-widest transition-all" style={{ background: "var(--surface-3)", border: "1px solid var(--border)", color: "var(--text-bright)" }}>
+               <button onClick={onClose} className="px-8 py-2.5 font-bold text-sm tracking-widest transition-all" style={{ background: "var(--surface-3)", border: "1px solid var(--border)", color: "var(--text-bright)" }}>
                  CLOSE
                </button>
              </div>

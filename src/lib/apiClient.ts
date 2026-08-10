@@ -17,6 +17,8 @@ import type {
   ConfigState,
   ReportSummary,
   ReportPeriod,
+  EnergySummary,
+  EnergyRangeKey,
 } from './types';
 import { serviceUrl, REQUEST_CONFIG } from './config';
 import { ApiResponse } from './api-response';
@@ -155,6 +157,32 @@ export const apiClient = {
   async getReport(period: ReportPeriod): Promise<ReportSummary> {
     return apiFetch<ReportSummary>(
       `${serviceUrl('reports')}/api/reports?period=${period}`,
+      { cache: 'no-store' }
+    );
+  },
+
+  // ── Energy Service ────────────────────────────────────────────────────────
+
+  /**
+   * Fetches the aggregated energy summary for an organization.
+   * Backend contract: GET /api/energy → EnergySummary
+   * Aggregation runs in Postgres (mean demand per asset per tariff window);
+   * see src/services/energyService.ts for why raw rows are never streamed.
+   */
+  async getEnergy(opts: {
+    orgId?: string;
+    range?: EnergyRangeKey;
+    from?: string;
+    to?: string;
+  } = {}): Promise<EnergySummary> {
+    const qs = new URLSearchParams();
+    qs.set('orgId', opts.orgId ?? 'demo-mode');
+    qs.set('range', opts.range ?? '7d');
+    if (opts.from) qs.set('from', opts.from);
+    if (opts.to) qs.set('to', opts.to);
+
+    return apiFetch<EnergySummary>(
+      `${serviceUrl('energy')}/api/energy?${qs.toString()}`,
       { cache: 'no-store' }
     );
   },

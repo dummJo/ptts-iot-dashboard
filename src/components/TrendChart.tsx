@@ -35,8 +35,11 @@ const METRICS: {
   { key: "temp",     label: "Temperature",unit: "°C",   color: "var(--metric-temp)",     yAxisId: "right" },
   { key: "rms",      label: "RMS",        unit: "mm/s", color: "var(--metric-rms)",      yAxisId: "left"  },
   { key: "powerKW",  label: "Motor kW",   unit: "kW",   color: "var(--metric-power)",    yAxisId: "right" },
-  { key: "freq",     label: "Frequency",  unit: "Hz",   color: "var(--metric-freq)",     yAxisId: "right" },
-  { key: "velocity", label: "Velocity",   unit: "mm/s", color: "var(--metric-velocity)", yAxisId: "left"  },
+  // --metric-freq / --metric-velocity were never defined in globals.css, so these
+  // two series rendered with an invalid stroke. Mapped onto validated categorical
+  // slots that stay separable from the five --metric-* hues above.
+  { key: "freq",     label: "Frequency",  unit: "Hz",   color: "var(--ch-5)",            yAxisId: "right" },
+  { key: "velocity", label: "Velocity",   unit: "mm/s", color: "var(--ch-1)",            yAxisId: "left"  },
   { key: "current",  label: "Current",    unit: "A",    color: "var(--metric-current)",  yAxisId: "right" },
 ];
 
@@ -129,8 +132,8 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
             aria-label="Select Asset"
             value={assetId}
             onChange={(e) => setAssetId(e.target.value)}
-            className="text-[10px] md:text-xs px-2 py-1.5 md:py-1 rounded-none font-bold tracking-widest outline-none cursor-pointer transition-all max-w-[140px] md:max-w-[180px] truncate"
-            style={{ background: "var(--surface-2)", color: "var(--ptts-teal)", border: "1px solid var(--border)" }}
+            className="text-[13px] px-2.5 py-2 rounded-[var(--r-sm)] outline-none cursor-pointer transition-colors max-w-[200px] md:max-w-[240px] truncate"
+            style={{ background: "var(--surface-2)", color: "var(--text)", border: "1px solid var(--border)" }}
           >
             {assetOptions.map((a) => (
               <option key={a.id} value={a.id}>{a.name}</option>
@@ -144,7 +147,7 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
             aria-label="Time Granularity"
             value={gran}
             onChange={(e) => setGran(e.target.value as GranKey)}
-            className="text-[10px] md:text-xs px-2 py-1.5 md:py-1 rounded-none font-bold tracking-widest outline-none cursor-pointer transition-all"
+            className="text-[13px] px-2.5 py-2 rounded-[var(--r-sm)] outline-none cursor-pointer transition-colors"
             style={{ background: "var(--surface-2)", color: "var(--text)", border: "1px solid var(--border)" }}
           >
             {GRANULARITY.map((g) => (
@@ -161,8 +164,10 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
           return (
             <button
               key={m.key}
+              type="button"
+              aria-pressed={on}
               onClick={() => toggleMetric(m.key)}
-              className="flex items-center gap-1.5 px-2 py-1 rounded-none text-xs font-bold tracking-widest transition-all"
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-[var(--r-pill)] text-[13px] font-semibold transition-colors"
               style={{
                 background: on ? "var(--bg)" : "var(--surface-2)",
                 border: `1px solid ${on ? m.color : "var(--border)"}`,
@@ -170,6 +175,7 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
               }}
             >
               <span
+                aria-hidden="true"
                 className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full inline-block"
                 style={{ background: on ? m.color : "var(--border)" }}
               />
@@ -178,21 +184,27 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
             </button>
           );
         })}
-        <span className="hidden md:inline text-[10px] md:text-sm self-center ml-1" style={{ color: "var(--text-faint)" }}>
+        <span className="hidden md:inline text-[13px] self-center ml-1" style={{ color: "var(--text-faint)" }}>
           Click to toggle metrics
         </span>
       </div>
 
       <div className="p-2 md:p-4 md:pt-2 w-full max-w-full overflow-hidden">
-        <div style={{ width: "100%", height: 220, touchAction: "pan-x" }}>
+        {/* Was a fixed 220px, which left roughly 130px of actual plot after the
+            axes and brush — the same height on a laptop and on a 1440px-tall
+            monitor. Scales with the viewport now, still bounded at both ends. */}
+        <div style={{ width: "100%", height: "clamp(240px, 30vh, 440px)", touchAction: "pan-x" }}>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={displayData} margin={{ top: 4, right: 0, left: -24, bottom: 0 }}>
+            {/* left:-24 used to claw back the default y-axis gutter, which pushed
+                the brush's start/end labels past the plot edge. Axis widths are
+                set explicitly below instead, so the margins can stay honest. */}
+            <LineChart data={displayData} margin={{ top: 4, right: 12, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="2 4" stroke="var(--border-dim)" />
             <XAxis dataKey="time" tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
               tickLine={false} axisLine={false} interval="preserveStartEnd" />
-            <YAxis yAxisId="left" tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
+            <YAxis yAxisId="left" width={40} tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
               tickLine={false} axisLine={false} tickFormatter={(v) => formatLocalNumber(v, 1)} />
-            <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
+            <YAxis yAxisId="right" width={40} orientation="right" tick={{ fontSize: 9, fill: "var(--text-faint)", fontFamily: "inherit" }}
               tickLine={false} axisLine={false} tickFormatter={(v) => formatLocalNumber(v, 0)} />
             {activeMetrics.has("temp") && (
               <ReferenceLine yAxisId="right" y={tempLimit} stroke="var(--fault)" strokeDasharray="4 4" strokeOpacity={0.6}
@@ -250,12 +262,12 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
                 onChange={(e) => setTempLimit(parseFloat(e.target.value) || 0)}
                 onBlur={() => setEditTemp(false)}
                 onKeyDown={(e) => e.key === "Enter" && setEditTemp(false)}
-                className="w-14 px-1 py-0.5 text-xs font-black rounded-none outline-none font-mono"
+                className="w-14 px-1 py-0.5 text-xs font-semibold outline-none font-mono"
                 style={{ background: "var(--surface-2)", border: "1px solid var(--fault)", color: "var(--fault)" }}
               />
             ) : (
               <button onClick={() => setEditTemp(true)} title="Click to adjust"
-                className="font-black underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70"
+                className="font-semibold underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70"
                 style={{ color: "var(--fault)", background: "none", border: "none", padding: 0 }}>
                 {formatLocalNumber(tempLimit, 0)}°C ✎
               </button>
@@ -270,12 +282,12 @@ export default function TrendChart({ trendData = [], assets = [] }: TrendChartPr
                 onChange={(e) => setVibLimit(parseFloat(e.target.value) || 0)}
                 onBlur={() => setEditVib(false)}
                 onKeyDown={(e) => e.key === "Enter" && setEditVib(false)}
-                className="w-16 px-1 py-0.5 text-xs font-black rounded-none outline-none font-mono"
+                className="w-16 px-1 py-0.5 text-xs font-semibold outline-none font-mono"
                 style={{ background: "var(--surface-2)", border: "1px solid var(--warning)", color: "var(--warning)" }}
               />
             ) : (
               <button onClick={() => setEditVib(true)} title="Click to adjust"
-                className="font-black underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70"
+                className="font-semibold underline decoration-dotted underline-offset-2 transition-opacity hover:opacity-70"
                 style={{ color: "var(--warning)", background: "none", border: "none", padding: 0 }}>
                 {formatLocalNumber(vibLimit, 1)} mm/s ✎
               </button>
