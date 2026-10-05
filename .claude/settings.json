@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "dummvinci": {
+      "source": {
+        "source": "github",
+        "repo": "dummJo/dummvinci-md"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "dummvinci-harness@dummvinci": true
+  }
+}
